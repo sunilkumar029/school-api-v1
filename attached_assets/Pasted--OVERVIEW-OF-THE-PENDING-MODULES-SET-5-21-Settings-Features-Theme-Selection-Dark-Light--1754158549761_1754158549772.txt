@@ -1,0 +1,238 @@
+✅ OVERVIEW OF THE PENDING MODULES (SET-5)
+21. Settings
+🌟 Features:
+Theme Selection: Dark / Light / System Default
+
+Font Size Adjuster: Small / Medium / Large
+
+Language Selector: Multi-language support (if applicable)
+
+Role Switcher (if multi-role): Switch between student/staff/admin (if available)
+
+Security Settings:
+
+Change Password
+
+Enable 2FA (if supported)
+
+Notification Preferences: Toggle system/email/phone notifications
+
+App Version Info & Logout
+
+🧱 Layout Structure:
+TopBar: "Settings"
+
+Sections:
+
+Appearance
+
+Account Settings
+
+Notifications
+
+About App
+
+Use: Toggle switches, pickers, dropdowns
+
+22. Notifications & Latest Activity
+🌟 Features:
+Notification List: Date-wise, role-based
+
+Categorized Tabs: All, Events, Tasks, Payments, Alerts
+
+Activity Feed: Latest activities by user/org (like task completed, profile updated)
+
+Badge Counters for unread messages
+
+🧱 Layout Structure:
+TopBar: "Notifications"
+
+Tabs: Notifications | Activities
+
+Infinite scroll list with time-stamps & colored tags
+
+Allow swipe to delete or mark read
+
+23. Expense Claims
+🌟 Features:
+Submit Claim: Form with category, amount, date, receipt attachment
+
+View Past Claims: List of claims by status (Pending/Approved/Rejected)
+
+Claim Status Tracking with timeline/status pill
+
+Admin View: Approve / Reject / Comments
+
+🧱 Layout Structure:
+Tabbed Layout: "My Claims", "New Claim"
+
+List View: Card-based or table row layout
+
+Modal or BottomSheet for Claim Submission
+
+24. My Request
+🌟 Features:
+Submit Requests: Leave, Shift Change, Work Equipment, General
+
+Track Status: (Pending/Approved/Rejected)
+
+Detailed History of all past requests
+
+Approver Comments / Notes
+
+🧱 Layout Structure:
+TopBar: "My Requests"
+
+Tabs: "New Request", "Request History"
+
+Use dropdown to select request type
+
+Expandable cards or bottom sheet for history
+
+25. My Rewards
+🌟 Features:
+Rewards Earned: Points, stars, ranks
+
+Badges or Achievements: Gamified tokens
+
+Reward History: Reason + Date
+
+Leaderboard (Optional)
+
+🧱 Layout Structure:
+TopBar: "My Rewards"
+
+Sectioned: Current Points | Badges Earned | History
+
+Progress ring for next level (if gamified)
+
+Use: Cards, badges, colored status
+
+26. Inventory
+Subsections:
+a. Products
+Product List with categories
+
+Stock status (In Stock, Low, Out of Stock)
+
+Add / Edit / Remove Product
+
+Role-based view (Admin only can edit)
+
+b. Suppliers
+Supplier contact info
+
+Linked products
+
+Add / Edit / Deactivate Supplier
+
+c. Orders
+Create Purchase Orders
+
+Track incoming/outgoing stock
+
+Order status: Draft, Ordered, Received
+
+🧱 Layout Structure:
+TopBar: "Inventory"
+
+Tabs: Products | Suppliers | Orders
+
+Table/Card layout for stock view
+
+Action button: + Add New
+
+27. Invoice
+🌟 Features:
+View Invoices: Role-based (students: fee invoices; admin: vendor/staff invoices)
+
+Generate Invoice (Admin/Finance role)
+
+Payment Status: Paid, Due, Overdue
+
+Download as PDF
+
+Filter by: Date, User, Status
+
+🧱 Layout Structure:
+TopBar: "Invoices"
+
+Search & Filter bar
+
+Invoice cards with quick info
+
+Details page with full breakdown
+
+28. My Task
+🌟 Features:
+Task list: Assigned to the logged-in user
+
+Status: To-do, In Progress, Done
+
+Due date & priority tag
+
+Comments / attachments
+
+Add new tasks (if allowed by role)
+
+🧱 Layout Structure:
+TopBar: "My Tasks"
+
+Tabs/Filters: By Status or Date
+
+Drag & drop (optional) or toggle for status
+
+List view or Kanban-like board
+
+29. Sports
+a. Add Team
+Create/manage teams by category (e.g., football, cricket)
+
+Assign captain, coach
+
+Track team members
+
+Upload logo or jersey image
+
+b. Schedule Match
+Calendar or list view
+
+Add match details: Team A vs B, Date, Location, Score, Notes
+
+Notifications to participants
+
+c. Intelligent Tutoring Systems (ITS)
+Integrate AI-powered feedback or suggestions
+
+Quizzes and smart tests
+
+Progress tracking with visual graphs
+
+d. AI Personalized System Learning
+Personalized learning recommendations
+
+AI progress chart
+
+Suggestions based on past activity
+
+Access to custom materials
+
+🧱 Layout Structure:
+Tabs or nested pages:
+
+Teams
+
+Match Schedule
+
+AI Tutoring
+
+AI Learning
+
+Use cards, graphs, filters, role-based content
+
+🔁 Placement Strategy
+All these screens go under sidebar menu (not bottom tab)
+
+Use consistent TopBar with title and action buttons
+
+Follow unified tailwindcss design tokens, spacing, and component styles

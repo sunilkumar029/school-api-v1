@@ -1,0 +1,110 @@
+✅ OVERVIEW OF THE PENDING MODULES (SET-5)
+21. Settings
+🌟 Features:
+Theme Selection: Dark / Light / System Default
+
+Font Size Adjuster: Small / Medium / Large
+
+Language Selector: Multi-language support (if applicable)
+
+Role Switcher (if multi-role): Switch between student/staff/admin (if available)
+
+Security Settings:
+
+Change Password
+
+Enable 2FA (if supported)
+
+Notification Preferences: Toggle system/email/phone notifications
+
+App Version Info & Logout
+
+🧱 Layout Structure:
+TopBar: "Settings"
+
+Sections:
+
+Appearance
+
+Account Settings
+
+Notifications
+
+About App
+
+Use: Toggle switches, pickers, dropdowns
+
+22. Notifications & Latest Activity
+🌟 Features:
+Notification List: Date-wise, role-based
+
+Categorized Tabs: All, Events, Tasks, Payments, Alerts
+
+Activity Feed: Latest activities by user/org (like task completed, profile updated)
+
+Badge Counters for unread messages
+
+🧱 Layout Structure:
+TopBar: "Notifications"
+
+Tabs: Notifications | Activities
+
+Infinite scroll list with time-stamps & colored tags
+
+Allow swipe to delete or mark read
+
+23. Expense Claims
+🌟 Features:
+Submit Claim: Form with category, amount, date, receipt attachment
+
+View Past Claims: List of claims by status (Pending/Approved/Rejected)
+
+Claim Status Tracking with timeline/status pill
+
+Admin View: Approve / Reject / Comments
+
+🧱 Layout Structure:
+Tabbed Layout: "My Claims", "New Claim"
+
+List View: Card-based or table row layout
+
+Modal or BottomSheet for Claim Submission
+
+24. My Request
+🌟 Features:
+Submit Requests: Leave, Shift Change, Work Equipment, General
+
+Track Status: (Pending/Approved/Rejected)
+
+Detailed History of all past requests
+
+Approver Comments / Notes
+
+🧱 Layout Structure:
+TopBar: "My Requests"
+
+Tabs: "New Request", "Request History"
+
+Use dropdown to select request type
+
+Expandable cards or bottom sheet for history
+
+25. My Rewards
+🌟 Features:
+Rewards Earned: Points, stars, ranks
+
+Badges or Achievements: Gamified tokens
+
+Reward History: Reason + Date
+
+Leaderboard (Optional)
+
+🧱 Layout Structure:
+TopBar: "My Rewards"
+
+Sectioned: Current Points | Badges Earned | History
+
+Progress ring for next level (if gamified)
+
+Use: Cards, badges, colored status
+
