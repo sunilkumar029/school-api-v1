@@ -1,0 +1,253 @@
+🛏️ Hostel Module
+1. booking-list.tsx
+Purpose: View all current and past hostel bookings made by students.
+
+📐 Layout:
+Top Filter Bar:
+
+Search by student name/class
+
+Filter by date range
+
+Filter: Current / Expired / All
+
+Booking List (Scroll or Paginated):
+
+Card/List Item with:
+
+Student Photo, Name
+
+Class
+
+Room Number
+
+Booking Date (From - To)
+
+Status Badge (Active / Expired)
+
+[❌ Cancel Booking] button (optional)
+
+🛠️ Features:
+Role: Admin or Hostel Manager only
+
+Cancel Booking (opens confirm modal)
+
+Status auto-determined by current date
+
+Empty state handling (no bookings)
+
+Paginated list (infinite scroll or 10 per page)
+
+Responsive for mobile
+
+2. room-list.tsx
+Purpose: Display and manage all hostel rooms.
+
+📐 Layout:
+Top Filter:
+
+Filter by block/floor
+
+Search by Room No.
+
+Room Cards/Grid:
+
+Room Number
+
+Room Type (AC/Non-AC or Boys/Girls)
+
+Total Capacity vs Occupied (e.g., 3/4)
+
+Assigned Students count
+
+[Edit Room Info] button (opens modal)
+
+🛠️ Features:
+Role: Admin/Hostel Warden
+
+Display available vs full rooms
+
+Visual indicator: Green (available), Red (full)
+
+Modal to edit room name, capacity, gender type
+
+Auto-disable assign if full
+
+3. visitor-list.tsx
+Purpose: View all registered visitors to the hostel premises.
+
+📐 Layout:
+Filter Section:
+
+Date Range
+
+Search by visitor name/student visited
+
+Visitor Logs Table/List:
+
+Visitor Name
+
+Visiting Whom (student name & room)
+
+Purpose
+
+In-Time, Out-Time
+
+Status: Completed / In
+
+🛠️ Features:
+Can mark visitor as “Checked Out” manually
+
+Auto-archive old logs after 7 days
+
+Optional: QR scan for in/out log
+
+Export to CSV (optional)
+
+Show photo or ID proof if uploaded
+
+4. add-visitor.tsx
+Purpose: Register a new visitor at the hostel.
+
+📐 Layout:
+Form Fields:
+
+Visitor Name
+
+Purpose
+
+ID Proof (upload image)
+
+Visiting Student Name (autocomplete or dropdown)
+
+Contact No.
+
+Expected In-Time
+
+[Submit] Button
+
+🛠️ Features:
+After submission, redirect to visitor-list
+
+Store with status: In, out-time = null
+
+ID image stored securely (optional view later)
+
+Show validation errors (all fields required)
+
+Role: Reception/Hostel Manager
+
+📚 Library Module
+5. ecourse.tsx
+Purpose: Browse and access electronic course materials (ebooks, videos, PDFs).
+
+📐 Layout:
+Top Filter/Sort:
+
+Subject / Class dropdowns
+
+Sort by: Recent / Alphabetical
+
+List/Grid View of E-Courses:
+
+Title
+
+Type (PDF / Video)
+
+Description (short)
+
+[Open] button (viewer modal or new screen)
+
+🛠️ Features:
+Role: Students + Teachers
+
+Files hosted securely (cloud/S3)
+
+Viewer support:
+
+PDF viewer inside modal or fullscreen
+
+Video player embedded
+
+Download restricted if needed
+
+💰 Finance Module
+6. staff-payroll.tsx
+Purpose: Manage and view salary-related details of staff members.
+
+📐 Layout:
+Filter/Search:
+
+Filter by Role / Month
+
+Search by name
+
+Payroll Table:
+
+Staff Name
+
+Department
+
+Basic Salary
+
+Deductions
+
+Bonus
+
+Net Salary
+
+Status (Paid / Pending)
+
+[Download Slip] button
+
+🛠️ Features:
+Admin/Accountant Role only
+
+[Add Payroll] button → opens modal:
+
+Auto-calculate Net based on input
+
+Month selector
+
+Export to PDF/CSV
+
+Status badge & color coded
+
+View breakdown in modal or expandable row
+
+7. student-fee.tsx
+Purpose: View and manage fees of students.
+
+📐 Layout:
+Search/Filter:
+
+Filter by Class / Payment Status
+
+Search by student name
+
+Fee Table:
+
+Student Name
+
+Class
+
+Total Fee
+
+Paid
+
+Balance
+
+Status (Paid / Partially Paid / Pending)
+
+[View Details] button
+
+🛠️ Features:
+View full payment history
+
+Fee receipts list/download
+
+[Update Payment] button (Admin only)
+
+Auto-tag late payments
+
+Optional reminder system

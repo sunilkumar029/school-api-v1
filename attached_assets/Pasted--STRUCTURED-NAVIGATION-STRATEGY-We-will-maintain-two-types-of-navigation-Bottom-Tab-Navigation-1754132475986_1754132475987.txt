@@ -1,0 +1,291 @@
+✅ STRUCTURED NAVIGATION STRATEGY
+We will maintain two types of navigation:
+
+🔽 Bottom Tab Navigation → Only for:
+Home
+
+Notifications
+
+Settings
+
+📂 Side Drawer Menu → For all other pages:
+Events, Wallet, Analytics, Food Court, Timesheet, Users, Chat, etc.
+
+This keeps the bottom tab simple, uncluttered, and moves heavy modules to a logical drawer-based secondary menu.
+
+✅ FOLDER STRUCTURE (Clean Separation)
+bash
+Copy
+Edit
+src/
+├── navigation/
+│   ├── BottomTabs.jsx       # Home, Notifications, Settings
+│   ├── DrawerNavigator.jsx  # Side drawer with extended modules
+│   └── RootNavigator.jsx    # Combines everything
+├── screens/
+│   ├── tabs/
+│   │   ├── HomeScreen.jsx
+│   │   ├── NotificationScreen.jsx
+│   │   └── SettingsScreen.jsx
+│   ├── drawer/
+│   │   ├── Events/
+│   │   ├── Wallet/
+│   │   ├── Analytics/
+│   │   ├── FoodCourt/
+│   │   ├── Timesheet/
+│   │   ├── Users/
+│   │   └── Chat/
+├── components/
+├── context/
+├── hooks/
+└── constants/
+🧭 NAVIGATION FLOW
+1. BottomTab Navigator:
+Route: /tabs
+
+Screens: Home, Notifications, Settings
+
+2. DrawerNavigator:
+Opens from hamburger icon in top bar
+
+Contains all secondary modules
+
+🔳 SIDEBAR MENU STRUCTURE (UX-Friendly Grouping)
+mathematica
+Copy
+Edit
+Events
+Wallet
+Analytics
+Food Court
+  ├── Food List
+  ├── Manage Orders
+  └── Menu
+Timesheet
+  ├── Fill Timesheet
+  ├── Apply Leave
+  ├── Stand-By
+  ├── Shift Management
+  ├── Requests
+  └── FAQ
+Users
+  ├── Staff
+  ├── Teachers
+  ├── Students
+  ├── Parents
+  └── Drivers
+Chat
+Each section opens a drawer item → routes to subpage with tabs or segmented navigation.
+
+🧩 MODULE-BY-MODULE DESIGN LAYOUT & UX STRATEGY
+Below is a high-level layout + what to include in each module:
+
+1. 🏫 Dashboard (Home)
+Already designed (see previous step), features:
+
+Greetings
+
+Overview Cards (Attendance, Wallet, Leaves, Tasks)
+
+Quick Actions
+
+Events
+
+Announcements
+
+2. 📅 Events
+Page Layout:
+Search bar
+
+Tabs: Upcoming | Past | Create Event (admin only)
+
+Event Cards (title, date/time, location, tags, attendees)
+
+Features:
+RSVP system (for students, parents)
+
+Push notifications for new events
+
+Role-based view (e.g., teachers create/manage, others view)
+
+3. 💳 Wallet
+Page Layout:
+Current Balance
+
+Transaction History (credit/debit)
+
+Payment Gateway (pay fees, recharge wallet)
+
+Downloadable receipts
+
+Recharge Wallet (UPI/card)
+
+Features:
+Wallet-to-wallet transfer (if enabled)
+
+Alert if low balance
+
+Smart reminders
+
+4. 📊 Analytics Dashboard
+Page Layout:
+Interactive charts: Attendance, Fees Collection, Academic Reports
+
+Filters: Class, Date Range, Role, Subject
+
+KPIs: No. of active students, dropout rates, etc.
+
+Features:
+Use bar/pie/line charts
+
+Export as PDF/image
+
+Drill-down navigation
+
+5. 🍽️ Food Court
+Sub-pages:
+A. Food List
+List of items with images, price, availability
+
+Filter by category: Veg, Snacks, Beverages
+
+B. Manage Orders
+Order queue (pending/served)
+
+QR scan for pickup
+
+C. Menu Management (Admin)
+Add/remove items
+
+Update prices
+
+Daily specials
+
+6. ⏱️ Timesheet Module
+Sub-pages:
+A. Fill Timesheet
+Date-wise time log entries
+
+Auto-fill last saved templates
+
+B. Apply Leave
+Leave type, date range, reason
+
+Leave history table
+
+C. Stand-By
+Add yourself to stand-by list
+
+View stand-by roster
+
+D. Shift Management
+Calendar with assigned shifts
+
+Create/Edit shifts (admin/staff)
+
+E. Requests
+Generic requests (hardware, attendance correction)
+
+Status tracking
+
+F. FAQ
+Expandable accordion-style FAQ items
+
+Contact support CTA
+
+7. 👥 Users Management
+Sub-tabs or segmented control:
+A. Staff
+Staff list
+
+Roles & Permissions
+
+Attendance
+
+Assign shifts
+
+B. Teachers
+Teacher profiles
+
+Performance (assignments, feedback)
+
+Schedule
+
+C. Students
+Searchable student list
+
+Attendance
+
+Academic record
+
+Disciplinary notes
+
+D. Parents
+Parent contact info
+
+Linked children
+
+E. Drivers
+Vehicle & Route assignment
+
+Driver license / background check info
+
+8. 💬 Chat Module
+Layout:
+Recent chats list (user-wise)
+
+Search by name
+
+One-to-one or group chat
+
+Features:
+Role-based (e.g., staff ↔ students, admin ↔ all)
+
+Media support: images, files
+
+Push notifications
+
+Typing indicator, unread count
+
+🔄 DYNAMIC MENU BASED ON ROLES
+Each sidebar item is rendered conditionally:
+
+Role	Access
+Admin	All modules
+Teacher	Events, Timesheet, Chat, Students
+Student	Events, Wallet, Chat
+Parent	Events, Wallet, Chat, Student Info
+Driver	Timesheet, Requests
+
+Sidebar logic will be tied to the AuthContext role state.
+
+🎨 DESIGN SYSTEM — Extension for Sidebar + Modules
+Sidebar:
+Fixed width: ~280px
+
+Scrollable list with icons
+
+Section grouping headers
+
+Active item highlight
+
+Module Screens:
+Consistent padding/margin
+
+Titles with icon badges
+
+Floating “+” button for admin actions
+
+Dark/light mode compatible
+
+✅ Summary
+You now have a professional-grade layout plan:
+
+🔽 Bottom Navigation: Only core tabs (Home, Settings, Notifications)
+
+📂 Sidebar: All expanded features (role-aware)
+
+🎯 Each module has clear layout, behavior, and content structure
+
+🧱 Folder structure is modular and organized for maintainability
+

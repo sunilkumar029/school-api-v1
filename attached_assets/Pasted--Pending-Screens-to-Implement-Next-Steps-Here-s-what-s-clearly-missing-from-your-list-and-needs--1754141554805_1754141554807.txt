@@ -1,0 +1,113 @@
+🔎 Pending Screens to Implement (Next Steps)
+Here’s what’s clearly missing from your list and needs to be implemented:
+
+🔸 1. File Management
+📍 Suggested file: file-management.tsx
+
+Key Features:
+Upload, preview, download files
+
+Folder & file tagging
+
+Role-based access (admin, teacher)
+
+Filter by type/owner/date
+
+Share files with classes/students
+
+🔸 2. Academics Module
+Should be broken into multiple screens:
+
+A. academics/teacher-performance.tsx
+Evaluation metrics
+
+Review system by management
+
+B. academics/student-performance.tsx
+Performance charts
+
+Subject-wise breakdown
+
+C. academics/classroom.tsx
+Shared class board
+
+Notes, discussions, tasks
+
+D. academics/online-class.tsx
+Schedule & join sessions
+
+Zoom/Meet integration
+
+E. academics/staff-timetable.tsx
+Staff-wise calendar
+
+Slot assignment
+
+F. academics/class-timetable.tsx
+Period management per class
+
+G. academics/student-marks.tsx
+Entry form, table view
+
+Grade calculation
+
+H. academics/student-attendance.tsx
+Calendar view
+
+Mark presence
+
+📍 Suggest creating a folder:
+app/academics/ with each of the above as separate files.
+
+🔸 3. Exams Module
+📍 Suggested folder: app/exams/
+
+A. create-question.tsx
+Add MCQ/Subjective with editor
+
+Link to class & subject
+
+B. schedule-exam.tsx
+Assign exams to timetable
+
+Add duration, room, instructions
+
+🔸 4. Classes > Subjects Module (if applicable)
+If subjects are managed separately from classes, you may need:
+📍 subjects.tsx
+
+CRUD subjects
+
+Assign to classes & teachers
+
+📂 Suggested Folder Structure Going Forward
+bash
+Copy
+Edit
+app/
+├── academics/
+│   ├── teacher-performance.tsx
+│   ├── student-performance.tsx
+│   ├── classroom.tsx
+│   ├── online-class.tsx
+│   ├── staff-timetable.tsx
+│   ├── class-timetable.tsx
+│   ├── student-marks.tsx
+│   └── student-attendance.tsx
+├── exams/
+│   ├── create-question.tsx
+│   └── schedule-exam.tsx
+├── file-management.tsx
+├── subjects.tsx (if needed)
+You can move other domain-based features like foodcourt, wallet, chat into folders later if needed, but for now they work well in (tabs)/.
+
+🧠 Suggested Work Order (Best UX Progression)
+✅ File Management (most reusable + easy win)
+
+🎓 Academics (start with Student Marks + Attendance)
+
+🧾 Exams (basic scheduling and question bank)
+
+📆 Staff/Class Timetables
+
+🧑‍🏫 Performance/Analytics Dashboards

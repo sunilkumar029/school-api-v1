@@ -1,0 +1,97 @@
+Perfect — we’ll proceed with the Academic Year API + UI together as the first integrated step.
+
+Here’s how we’ll structure this implementation:
+
+---
+
+### ✅ Step: Academic Year – API + UI Integration
+
+#### 📌 Objective:
+
+To build a complete interface for managing academic years, including:
+
+* Viewing the current academic year
+* Listing past/future academic years
+* Adding a new academic year
+* Editing existing ones
+* Deleting or archiving (if supported)
+* Setting the current active year (if applicable)
+
+---
+
+### 🔧 Layout & UI Design Plan
+
+#### 🔲 **Screen Layout**
+
+* **Header (Top Bar)**:
+  Title: `Academic Year`
+  Right Icon: “+” to add a new academic year
+
+* **List of Academic Years**:
+
+  * Card/List format (show year range, status: active/inactive)
+  * Options: Edit | Delete | Set Active (if needed)
+
+* **Modal or Separate Screen: Add/Edit Academic Year**
+
+  * Fields:
+
+    * Start Date (Date Picker)
+    * End Date (Date Picker)
+    * Status (dropdown: Active/Inactive)
+    * Optional: Notes or Description
+  * Submit / Cancel buttons
+
+* **Bottom Navigation** remains persistent (based on previous design system)
+
+---
+
+### 🎨 Design System Elements Used
+
+| Element      | Component Used                     | Tailwind Suggestions                                         |
+| ------------ | ---------------------------------- | ------------------------------------------------------------ |
+| Top Bar      | `AppHeader`                        | `bg-primary text-white text-lg font-semibold p-4`            |
+| Cards        | `AcademicYearCard`                 | `rounded-2xl bg-white dark:bg-neutral-800 p-4 shadow-md`     |
+| Form         | `AcademicYearForm`                 | Use `Label + Input` pairs with adequate spacing              |
+| Button       | `PrimaryButton`, `SecondaryButton` | Tailwind styles: `bg-blue-600`, `bg-gray-300`, `rounded-xl`  |
+| Modal        | `ModalWrapper`                     | For Add/Edit operations                                      |
+| Status Badge | `StatusPill`                       | `bg-green-200 text-green-800 px-2 py-1 rounded-full text-xs` |
+
+---
+
+### 🔁 API Usage Plan
+
+Assuming your backend provides the following routes:
+
+| Operation              | Method        | Endpoint                           | Auth |
+| ---------------------- | ------------- | ---------------------------------- | ---- |
+| Get all academic years | GET           | `/api/academic-years`              | ✅    |
+| Create academic year   | POST          | `/api/academic-years`              | ✅    |
+| Edit academic year     | PUT           | `/api/academic-years/:id`          | ✅    |
+| Delete academic year   | DELETE        | `/api/academic-years/:id`          | ✅    |
+| Set active year        | POST or PATCH | `/api/academic-years/:id/activate` | ✅    |
+
+> 💡 We’ll wrap all API calls inside a service module (`academicYearService.ts`) and use `useQuery`/`useMutation` hooks or React Query or custom hook with context.
+
+---
+
+### 🔄 Flow
+
+1. On load → fetch and list academic years
+2. On “+” tap → show add form modal
+3. On submit → call create API → refresh list
+4. On card options → edit/delete/set active → use appropriate API
+
+---
+
+### ✅ Final Deliverables for This Step
+
+* `AcademicYearScreen.tsx`
+* `AcademicYearForm.tsx`
+* `AcademicYearCard.tsx`
+* `academicYearService.ts`
+* Navigation entry and route setup
+
+---
+
+Let me know once you're ready, and we’ll break this step down further into **task-level actions** (UI components first or API hooks first based on your workflow preference).

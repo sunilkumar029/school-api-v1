@@ -1,0 +1,204 @@
+✅ PENDING PAGE DESIGN PLANS
+1. Classroom (app/academics/classroom.tsx)
+Purpose: Manage classroom resources, assignments, schedules, and activities.
+
+📌 Features:
+Classroom List View: List of active classrooms with:
+
+Name
+
+Grade
+
+Room No.
+
+Assigned teacher
+
+No. of students
+
+Classroom Detail View:
+
+Weekly class timetable (grid-based)
+
+Subject-wise breakdown
+
+Attachments (lesson plans, notes)
+
+Assignment list
+
+Add/Edit Classroom Modal:
+
+Form: Name, Room No., Grade, Teacher
+
+Assign subjects
+
+Role-based Access:
+
+Admin: Full CRUD
+
+Teacher: View + Assignments
+
+Search + Filter:
+
+Grade, teacher, capacity
+
+📐 Layout:
+Header: “Classroom Management”
+
+Tabs: [List View] [Assignments] [Timetable]
+
+Modal: Create/Edit classroom
+
+Cards/FlatList/Grid for class previews
+
+2. Online Class (app/academics/online-class.tsx)
+Purpose: Schedule, manage and attend online classes.
+
+📌 Features:
+Upcoming Classes Section:
+
+Time, Subject, Teacher, Join Link
+
+Join via:
+
+Google Meet / Zoom (open external link)
+
+Create Online Class Modal:
+
+Form: Subject, Time, Duration, Link
+
+Optional: Recurring toggle
+
+Class History: Past classes with recordings (if link provided)
+
+Notifications: Auto-reminder (later phase)
+
+📐 Layout:
+Header: “Online Classes”
+
+Tab Switcher: [Upcoming] [History]
+
+Calendar/List toggle view
+
+Cards with join buttons
+
+3. Staff Timetable (app/academics/staff-timetable.tsx)
+Purpose: View/edit timetable for staff across departments.
+
+📌 Features:
+Timetable Grid:
+
+Y-axis: Staff Names
+
+X-axis: Day slots
+
+Timetable Edit Mode:
+
+Drag-drop slot assigning
+
+Auto conflict check
+
+Filter:
+
+By department, role, name
+
+PDF Export/Print Option
+
+📐 Layout:
+Header: “Staff Timetable”
+
+View: Grid mode (scrollable)
+
+Edit toggle for admins
+
+Save/Undo buttons
+
+Snackbar for slot status
+
+4. Class Timetable (app/academics/class-timetable.tsx)
+Purpose: Timetable per class-grade level.
+
+📌 Features:
+Select Class Dropdown:
+
+Grade 1 to 12 (filter option)
+
+Grid Table:
+
+Periods × Days
+
+Subjects + Teachers
+
+Add/Edit Slot Modal:
+
+Day, Period, Subject, Teacher
+
+Import Timetable:
+
+Optional CSV upload/import in later stage
+
+📐 Layout:
+Header: “Class Timetable”
+
+Dropdown for class selection
+
+Grid view (periods/days)
+
+Add/Edit buttons on each cell
+
+5. Schedule Exam (app/exams/schedule-exam.tsx)
+Purpose: Create and manage exam schedules.
+
+📌 Features:
+Exam List:
+
+Title, Date, Class, Subject
+
+Status: Upcoming / Completed
+
+Create Schedule Modal:
+
+Form: Class, Subject, Date, Time, Duration, Venue
+
+Exam Conflict Checker:
+
+Alert if same class has overlapping exams
+
+Exam Calendar View:
+
+Monthly view with exam events
+
+Filter:
+
+By grade, subject, teacher
+
+📐 Layout:
+Header: “Exam Schedule”
+
+Tabs: [List] [Calendar]
+
+Filter/Sort bar
+
+Modal for scheduling
+
+✅ Sidebar Structure Recommendation (Updated)
+Pages to be shown in Sidebar:
+
+markdown
+Copy
+Edit
+/academics
+  - classroom
+  - online-class
+  - staff-timetable
+  - class-timetable
+  - student-marks
+  - student-attendance
+  - student-performance
+  - teacher-performance
+/exams
+  - create-question
+  - schedule-exam
+/file-management
+✅ You can group “Academics” & “Exams” under collapsible sections in sidebar
+✅ Avoid putting these in (tabs) to maintain clean navigation
+✅ Role-based control: Only allow exam/class editing for admins or assigned staff

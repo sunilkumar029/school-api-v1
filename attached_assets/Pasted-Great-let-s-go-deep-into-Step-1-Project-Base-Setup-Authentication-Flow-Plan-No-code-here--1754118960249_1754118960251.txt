@@ -1,0 +1,174 @@
+Great — let’s go deep into **Step 1: Project Base Setup + Authentication Flow Plan**. No code here — just complete **concepts, structure, design system plan, and dependencies**.
+
+---
+
+## ✅ STEP 1: AUTH MODULE + PROJECT FOUNDATION
+
+---
+
+### 🚀 **PHASE 1: BASE SETUP (Foundation for the Project)**
+
+#### 📦 Project Stack
+
+| Layer         | Technology                      | Purpose                         |
+| ------------- | ------------------------------- | ------------------------------- |
+| Frontend      | **React Native + Expo**         | Mobile app development platform |
+| Styling       | **Tailwind CSS via NativeWind** | Utility-first design system     |
+| Navigation    | **React Navigation (Stack)**    | Routing & navigation            |
+| HTTP Client   | **Axios**                       | API requests                    |
+| State/Storage | **AsyncStorage**                | Save tokens, user data locally  |
+| Auth Context  | **React Context API**           | Global auth + role state        |
+
+---
+
+### 📁 Folder Structure
+
+> We'll keep the project modular, scalable, and organized by **feature groups**.
+
+```
+/src
+  /api              → Axios config + API calls per module
+  /auth             → Org email + Login flow
+  /components       → Shared UI elements (buttons, inputs, cards)
+  /constants        → Colors, fonts, sizes, API base URLs
+  /contexts         → Auth context (token + user role)
+  /hooks            → Reusable logic (useAuth, useFetch, etc.)
+  /layouts          → Screen templates (with headers, spacing)
+  /navigation       → Stack navigators, route guards
+  /screens          → Feature screens grouped (dashboard, events, users...)
+  /utils            → Helpers (formatting, validations)
+App.js              → App entry point
+```
+
+---
+
+### 🎨 Design System (NativeWind + TailwindCSS)
+
+We’ll define and follow a **consistent design system** from the beginning for easy theming and unified UI across all modules.
+
+#### 🎨 Colors (Branding)
+
+* `primary`: `#004AAD` (deep blue)
+* `accent`: `#FFC107` (amber)
+* `neutral`: `#f5f5f5`
+* `text-primary`: `#1E1E1E`
+* `text-secondary`: `#6B7280`
+* `success`: `#10B981`
+* `error`: `#EF4444`
+
+#### 🔤 Typography
+
+* `font-heading`: bold, `text-xl`/`text-2xl`
+* `font-body`: regular, `text-base`/`text-sm`
+* `font-label`: medium, uppercase, `text-xs`
+
+#### 🔳 Components (all reusable)
+
+* `Button` → primary, secondary, loading state
+* `InputField` → label, placeholder, error
+* `Card` → info, metric, status
+* `Modal` → confirmation, info, error
+* `Loader` → screen or inline
+
+#### 📐 Spacing System (Tailwind)
+
+* Padding: `p-2`, `p-4`, `p-6`
+* Margin: `m-2`, `m-4`, `m-6`
+* Rounded: `rounded-xl` (default), `rounded-3xl` (modal)
+* Shadow: `shadow-sm`, `shadow-md`
+
+---
+
+### 🔐 AUTH MODULE STRUCTURE
+
+#### 1. `OrganisationEmailScreen`
+
+* Input: Email
+* Action: Call `POST /organisations/validate-email`
+* Store `base_url` globally (context or storage)
+
+#### 2. `LoginScreen`
+
+* Inputs: Email + Password
+* Action: Call `POST /api/get-token/` on dynamic `base_url`
+* Store token, user ID, and user data (with role)
+* Navigate based on role
+
+#### 3. `AuthRedirector`
+
+* Reads token + role
+* Navigates to correct role-based dashboard
+
+#### 4. `AuthContext`
+
+* Holds:
+
+  * `token`
+  * `base_url`
+  * `userData`
+  * `role`
+* Provides auth state to rest of app
+
+---
+
+### 🔁 Navigation Plan (React Navigation)
+
+| Stack           | Screens                                    |
+| --------------- | ------------------------------------------ |
+| **Auth Stack**  | OrganisationEmail → Login → AuthRedirector |
+| **App Stack**   | Dashboard → Modules → Settings, etc.       |
+| **Role Guards** | Navigation logic that checks role on login |
+
+We'll dynamically load stacks based on roles (Admin, Teacher, Student, etc.).
+
+---
+
+### 📦 Dependencies to Install
+
+```bash
+# Core Expo + React Native
+npx create-expo-app school-management-app
+
+# Navigation
+npm install @react-navigation/native @react-navigation/native-stack
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated react-native-svg
+
+# Tailwind CSS
+npm install nativewind
+# Then setup Babel plugin
+
+# HTTP
+npm install axios
+
+# Local Storage
+npm install @react-native-async-storage/async-storage
+
+# Icons
+npx expo install @expo/vector-icons
+
+# Additional (Later)
+npm install react-native-chart-kit react-native-paper
+```
+
+---
+
+### ✅ Step 1 Completion Checklist
+
+| Task                 | Description                        | Status |
+| -------------------- | ---------------------------------- | ------ |
+| ✅ Project created    | Expo app initialized               | ✅      |
+| ✅ Tailwind CSS setup | NativeWind installed & working     | ✅      |
+| ✅ Folder structure   | Created for modular dev            | ✅      |
+| ✅ Org Email Screen   | Input, API hit, base URL           | 🔄     |
+| ✅ Login Screen       | Input, token, role check           | 🔄     |
+| ✅ AuthContext        | Global state for auth/token        | 🔄     |
+| ✅ Navigation         | AuthStack + AppStack wired         | 🔄     |
+| ✅ Design System      | Defined core colors, spacing, type | ✅      |
+
+---
+
+### 👉 Next Step?
+
+If you’re ready, I’ll describe in full detail the **next micro-step: Organisation Email Screen layout, UX structure, flow, and component design**.
+
+Just confirm and we’ll move to `Step 1.1`.

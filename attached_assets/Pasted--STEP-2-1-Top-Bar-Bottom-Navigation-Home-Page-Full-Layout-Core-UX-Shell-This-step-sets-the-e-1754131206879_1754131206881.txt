@@ -1,0 +1,187 @@
+✅ STEP 2.1 — Top Bar, Bottom Navigation & Home Page Full Layout (Core UX Shell)
+This step sets the entire app shell foundation:
+
+📌 Top Bar: Dynamic menu & title
+
+🔽 Bottom Navigation: Home, Notifications, Settings
+
+🏠 Home Page: Clean, user-friendly, role-flexible dashboard layout with smart components
+
+Let’s break it down thoroughly.
+
+🔝 1. TOP BAR (Header Menu)
+🎯 Goal:
+A unified top app bar that appears across pages with contextual content & actions.
+
+📐 Layout:
+diff
+Copy
+Edit
++------------------------------------------------------+
+| ≡  Page Title                         🔔  ⚙️        |
++------------------------------------------------------+
+Element	Behavior
+☰ Menu Icon	Opens Drawer (for optional side features or profile)
+Title	Dynamic (changes per page, e.g. “Home”, “Settings”)
+🔔 Notifications Icon	Navigates to Notifications tab
+⚙️ Settings Icon	Navigates to Settings tab
+
+In Home screen, the drawer can show user info or additional role-based actions later.
+
+📱 Responsive Behavior:
+Hide settings icon if already on Settings tab
+
+Enable search or extra actions contextually (e.g. in "Events")
+
+🔽 2. BOTTOM NAVIGATION BAR
+📐 Layout:
+diff
+Copy
+Edit
++------------------------------------------+
+| 🏠 Home | 🔔 Notifications | ⚙️ Settings |
++------------------------------------------+
+🧭 Tabs:
+Tab	Icon	Route	Purpose
+Home	🏠	/home	Primary dashboard
+Notifications	🔔	/notifications	View latest alerts
+Settings	⚙️	/settings	App preferences (theme, font size, etc.)
+
+Later, additional tabs (like “Academics”, “Wallet”, “Chat”) can be injected based on the role.
+
+🏠 3. HOME SCREEN — Layout & UX Strategy
+This is the most critical screen and must serve as a dashboard + quick action center.
+
+🔍 Design Goals:
+Clean, intuitive overview
+
+Role-flexible data widgets
+
+Prioritized info (attendance, events, requests, tasks)
+
+Quick access to common actions
+
+📐 Visual Layout Breakdown (Top-to-Bottom):
+css
+Copy
+Edit
+1. Top Greeting Header
+2. Overview Cards Section
+3. Quick Action Buttons Grid
+4. Recent Activity Section
+5. Upcoming Events Section
+6. Announcements / Notices
+1. 👋 Greeting Header
+Info	Example
+Dynamic Greeting	“Good Morning, Mr. Ramesh”
+Profile Pic	Circular avatar
+Role Display	“Admin” or “Student” tag
+School Name	e.g., “Visionaries International”
+
+2. 📊 Overview Cards Section
+Use horizontally scrollable stat cards:
+
+Card Title	Icon	Sample Value
+Attendance	📅	96%
+Events Today	📌	3 Events
+Tasks Due	📋	2 Pending
+Leaves Left	🏖	4 Days
+Balance Wallet	💰	₹1,250
+
+These cards are visually attractive, use gradient backgrounds or shadow.
+
+3. ⚡ Quick Action Grid
+Grid of 4 or 6 tappable icons (role-aware), like:
+
+Action	Icon
+Apply Leave	📝
+View Timetable	🕒
+Mark Attendance	✅
+Chat	💬
+Online Class	🎥
+Raise Request	📢
+
+Each opens the related module. Highlight top-used actions per role.
+
+4. 🕵️ Recent Activity Section
+Mini feed-style layout showing:
+
+✅ Approved leave request
+
+📢 Event added
+
+🕒 Timesheet filled
+
+💬 New message from admin
+
+Max 3–4 items. “View All” opens full notification/activity screen.
+
+5. 📅 Upcoming Events Section
+A calendar-style strip or list of today/tomorrow’s events:
+
+Title	Time	Type
+Science Fair	10 AM	Campus Event
+Online Class	2 PM	Zoom
+
+6. 📣 Announcements / Notices
+Slide-style or stacked list for:
+
+🎓 Exam Notice
+
+📢 Circulars
+
+📅 Holiday Info
+
+These can be fetched from the “Notification & Latest Activity” module.
+
+🧰 COMPONENT STRATEGY
+We'll break Home into reusable components:
+
+Component	Purpose
+TopBar	App header with title & icons
+OverviewCard	Each stat box
+QuickActionButton	Icon + label shortcuts
+EventItem	Mini event preview
+RecentActivityItem	Feed style item
+AnnouncementBanner	Marquee or stack layout
+
+🎨 DESIGN SYSTEM EXTENSION (Specific to Home)
+Colors:
+Overview Cards → Primary/secondary gradients (for visual segmentation)
+
+Quick Actions → Icons in theme color
+
+Text: primary on background, subtle secondary
+
+Typography:
+Greeting → 20–24px, bold
+
+Card numbers → 18px, medium
+
+Body text → 14–16px
+
+Spacing:
+Card margins: 12px
+
+Grid padding: 16px
+
+Section spacing: 24px
+
+🔄 Responsive Behavior
+Case	Behavior
+Small Devices	Stack overview cards
+Long Names	Truncate + ellipsis
+Offline	Show cached data or offline mode banner
+
+🔚 Outcome of Step 2.1
+Once Step 2.1 is implemented:
+
+✅ App has a top bar + bottom nav system
+
+✅ Home screen is fully laid out (visually)
+
+✅ Settings + Notifications tabs are reachable
+
+✅ Structure is ready for role-based expansion
+
+✅ Home UX is smart, actionable, and modular

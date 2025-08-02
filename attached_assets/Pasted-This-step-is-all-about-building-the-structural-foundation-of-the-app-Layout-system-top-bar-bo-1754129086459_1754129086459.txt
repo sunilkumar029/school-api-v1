@@ -1,0 +1,157 @@
+This step is all about building the structural foundation of the app:
+
+🧭 Layout system (top bar, bottom navigation)
+
+🎛 Settings (dark/light mode, font size)
+
+🧩 Modular page routing (with placeholders for now)
+
+📐 Design system integration for scalability
+
+✅ STEP 2: Core App Shell — Layout, Navigation & Settings
+🎯 GOALS FOR STEP 2
+Implement global app layout with:
+
+Bottom Navigation Bar (for core features)
+
+Top App Bar/Menu (page titles, notifications/settings icons)
+
+Implement Settings page:
+
+🔀 Toggle Dark / Light Mode
+
+🔠 Change Font Size (Small / Medium / Large)
+
+Scaffold all major pages as empty screen placeholders
+
+We’ll connect the real data in later steps.
+
+🧱 FOUNDATION OVERVIEW
+🔄 Structure Flow
+mathematica
+Copy
+Edit
+┌────────────────────────────┐
+│     Top App Bar (Dynamic) │
+├────────────────────────────┤
+│                            │
+│     Page Content Here      │
+│                            │
+├────────────────────────────┤
+│  Bottom Tab Navigation     │
+└────────────────────────────┘
+🧭 NAVIGATION SYSTEM
+📦 Stack Navigator + Bottom Tabs
+We'll use:
+
+RootStackNavigator: controls the overall flow
+
+BottomTabNavigator: shows main sections
+
+SettingsStack: inside tab, controls theme/fonts
+
+📥 REQUIRED MODULES
+We’ll need to:
+
+Install @react-navigation/bottom-tabs and @react-navigation/native-stack
+
+Use useColorScheme or Appearance API for theme detection
+
+Use Context API to manage:
+
+Dark/light mode state
+
+Font size
+
+Theme toggling functions
+
+🖼 DESIGN SYSTEM UPDATE (Step 2 Expansion)
+🎨 Colors
+Extend your palette:
+
+Token	Light Mode	Dark Mode
+background	#FFFFFF	#121212
+surface	#F9FAFB	#1E1E1E
+primary	#3D5AFE	#3D5AFE
+textPrimary	#212121	#FFFFFF
+textSecondary	#757575	#CCCCCC
+
+🔠 Typography (Font Sizes)
+Define size variants globally:
+
+small: 14px
+
+medium: 16px (default)
+
+large: 18px
+
+Font size preference should:
+
+Be stored in Context
+
+Apply dynamically across components (Text, Heading, etc.)
+
+🧩 BOTTOM NAVIGATION TABS
+We’ll show the most important modules in the bottom navigation. Suggested tabs:
+
+Tab Icon	Title	Route
+🏠	Home	/home
+📅	Events	/events
+👛	Wallet	/wallet
+📊	Analytics	/analytics
+⚙️	Settings	/settings
+
+Tabs should change based on role later (student vs. staff vs. admin)
+
+📌 TOP BAR (PER SCREEN)
+Each screen gets a top bar with:
+
+Page Title
+
+Optional action buttons (e.g. notification bell, settings gear)
+
+Light background in light mode, dark in dark mode
+
+⚙️ SETTINGS PAGE FUNCTIONALITY
+Feature	Description
+🌓 Dark Mode	Toggle light/dark theme
+🔠 Font Size	Small / Medium / Large switch
+🔁 Reset	Clear all preferences (optional)
+
+All preferences are stored globally (e.g. Context or AsyncStorage).
+
+📑 PAGE PLACEHOLDERS (Scaffold Only)
+Here are the first-level screens we’ll create now (just as empty placeholders):
+
+bash
+Copy
+Edit
+/screens
+  /Home
+    HomeScreen.js
+  /Events
+    EventsScreen.js
+  /Wallet
+    WalletScreen.js
+  /Analytics
+    AnalyticsScreen.js
+  /Settings
+    SettingsScreen.js
+Every page will follow a unified layout system (padding, typography, responsive behavior, etc.).
+
+📦 FINAL OUTCOME OF STEP 2
+By end of Step 2, you'll have:
+
+✅ Bottom navigation tabs with working routing
+
+✅ Unified top app bar on all screens
+
+✅ Light/dark theme toggling
+
+✅ Global font size management
+
+✅ Design system integration
+
+✅ All main pages scaffolded (with placeholders)
+
+✅ Role-agnostic layout ready to connect with backend later

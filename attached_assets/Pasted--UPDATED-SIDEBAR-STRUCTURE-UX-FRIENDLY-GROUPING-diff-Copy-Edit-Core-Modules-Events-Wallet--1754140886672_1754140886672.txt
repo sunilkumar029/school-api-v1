@@ -1,0 +1,295 @@
+🔖 UPDATED SIDEBAR STRUCTURE (UX-FRIENDLY GROUPING)
+diff
+Copy
+Edit
+Core Modules:
+- Events
+- Wallet
+- Analytics
+- Chat
+- File Management
+
+Academic Modules:
+- Department
+- Classes
+- Academics
+  ├── Teacher Performance
+  ├── Student Performance
+  ├── Classroom
+  ├── Online Class
+  ├── Staff Timetable
+  ├── Class Timetable
+  ├── Student Marks
+  └── Student Attendance
+- Exams
+  ├── Create Question
+  └── Schedule Exam
+
+Operations:
+- Food Court
+- Timesheet
+- Users
+🧩 DETAILED MODULE IMPLEMENTATION PLAN
+🔹 9. Department Management
+📌 Layout:
+Department List (table or cards)
+
+Search bar + filters (e.g., academic, admin, support)
+
+"Add Department" form (admin only)
+
+🎯 Features:
+CRUD operations for departments
+
+Assign department head
+
+Link with staff members
+
+Disable/archive unused departments
+
+🔹 10. Classes
+📌 Layout:
+Grid/List view of classes (e.g., Class 1A, 2B)
+
+Tabs: All | Active | Archived
+
+Quick add button
+
+🎯 Features:
+Assign class teacher
+
+Set capacity / section info
+
+View enrolled students
+
+Link to timetable and subjects
+
+🔹 11. File Management
+📌 Layout:
+Folders & files view (like Google Drive)
+
+Filters: Type, Date, Uploaded by
+
+Upload section with drag-and-drop
+
+🎯 Features:
+Preview documents (PDF, DOCX, etc.)
+
+Role-based upload/view/edit
+
+Tags for quick lookup
+
+Link files to students, classes, or exams
+
+Download/share options
+
+🔹 12. Academics
+This is a parent module with several submodules. Use tabs or nested drawer items.
+
+A. 🧑‍🏫 Teacher Performance
+📌 Layout:
+Teacher list with performance rating cards
+
+Filters: Date range, department, subjects
+
+🎯 Features:
+Attendance stats
+
+Student feedback scores
+
+Class coverage %
+
+Administrative feedback panel
+
+B. 👨‍🎓 Student Performance
+📌 Layout:
+Class-wise or student-wise cards
+
+Option to switch between chart & table view
+
+🎯 Features:
+Academic grade trends
+
+Co-curricular participation
+
+Remarks & improvements
+
+Export student report
+
+C. 🏫 Classroom
+📌 Layout:
+Class activity board (like Trello)
+
+Recent updates, pinned notes
+
+🎯 Features:
+Share files & tasks
+
+Assignments & announcements
+
+Enable class discussion (comments/chat)
+
+D. 🧑‍💻 Online Class
+📌 Layout:
+Upcoming classes (list or calendar)
+
+Start/join class button
+
+Meeting ID & link integration
+
+🎯 Features:
+Zoom/Google Meet embed (if available)
+
+Attach study material
+
+Record attendance from session
+
+Notify class via push/email
+
+E. 🗓️ Staff Timetable
+📌 Layout:
+Weekly calendar view (staff-wise)
+
+Filter by department or name
+
+🎯 Features:
+View availability
+
+Assign slots
+
+Auto-scheduling suggestions
+
+Export to PDF
+
+F. 📅 Class Timetable
+📌 Layout:
+Period-wise breakdown
+
+Select class → view/edit timetable
+
+🎯 Features:
+Drag-and-drop period assignment
+
+Link teachers, subjects, rooms
+
+Save & publish feature
+
+G. 📝 Student Marks
+📌 Layout:
+Class/Subject-wise table
+
+Import from Excel/CSV option
+
+🎯 Features:
+Marks entry form
+
+Auto calculate total & grades
+
+Remarks field
+
+Lock after submission (admin control)
+
+H. ✅ Student Attendance
+📌 Layout:
+Daily/weekly/monthly view
+
+Select class > date > student status (Present/Absent/Leave)
+
+🎯 Features:
+Manual entry + QR-based scan
+
+Reports export (PDF/Excel)
+
+Notify parents if absent
+
+Auto sync with timetable
+
+🔹 13. Exams
+Group this into two functional screens:
+
+A. ✍️ Create Questions
+📌 Layout:
+Select Subject → Class → Exam Type
+
+Add question form (MCQ / Subjective)
+
+🎯 Features:
+Rich-text editor for questions
+
+Add images/files
+
+Save as draft or publish
+
+Tag by topic, difficulty
+
+B. 📆 Schedule Exam
+📌 Layout:
+Exam schedule grid
+
+Filter by term/class/subject
+
+🎯 Features:
+Add/edit/delete exam schedules
+
+Link syllabus/topics covered
+
+Set time, marks, room allocation
+
+Notify all stakeholders
+
+🎨 DESIGN SUGGESTIONS (Applied Globally)
+🔘 Sidebar:
+Auto-collapse unused groups (e.g., only show “Academics” > click to expand subpages)
+
+Icons + titles for better navigation
+
+Use toggle to hide/show extra pages for role-specific UX
+
+🧩 Submodules:
+All pages must:
+
+Use same padding/margin system
+
+Support light/dark theme
+
+Show breadcrumbs (e.g., Academics > Student Marks)
+
+Include action FAB (floating action buttons) where needed
+
+Ensure accessibility (font size scaling)
+
+📱 RESPONSIVENESS & MOBILE-SPECIFIC
+Use segmented control or vertical tabs for submodules
+
+Collapse tables into cards for small screens
+
+Modal bottom-sheets for forms and filters
+
+Use pagination or infinite scroll where data-heavy (e.g., student list)
+
+🔐 ROLE-BASED VISIBILITY (Controlled in Context)
+Page	Admin	Teacher	Student	Parent	Driver
+Department	✅	🔒	🔒	🔒	🔒
+Classes	✅	✅	🔒	🔒	🔒
+File Management	✅	✅	✅	✅	🔒
+Teacher Performance	✅	✅ (self)	🔒	🔒	🔒
+Student Performance	✅	✅	✅	✅	🔒
+Classroom	✅	✅	✅	🔒	🔒
+Online Class	✅	✅	✅	✅	🔒
+Timetables	✅	✅	✅	✅	🔒
+Student Marks	✅	✅	✅	✅	🔒
+Attendance	✅	✅	✅ (view)	✅	🔒
+Exams	✅	✅	✅ (view)	✅	🔒
+
+✅ FINAL NOTES
+You now have:
+
+🔧 Full feature-set mapped for each page
+
+🧱 UX-focused layout structures
+
+🎯 Role-based behavior built in
+
+🎨 UI/Design consistency guidelines
+
+📁 Everything linked logically in sidebar groups

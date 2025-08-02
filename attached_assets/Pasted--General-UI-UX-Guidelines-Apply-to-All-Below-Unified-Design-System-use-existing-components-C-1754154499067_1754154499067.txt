@@ -1,0 +1,226 @@
+🧱 General UI/UX Guidelines (Apply to All Below)
+Unified Design System (use existing components):
+
+Card, Badge, Modal, Tabs, Drawer, DataTable, FormInput, ActionButton, Toast
+
+Role-Based Access:
+
+Only display features that match user’s role.
+
+Performance First:
+
+Paginate long lists
+
+Show loading states
+
+Allow filtering/searching in all list views
+
+Mobile-Optimized Navigation:
+
+These pages go under Sidebar Menu, not bottom tabs.
+
+✅ 14. My Performance Module
+Employee Performance
+
+KPIs: Attendance rate, on-time task delivery, rating
+
+Weekly/Monthly breakdown
+
+Charts + DataTable for overview
+
+ProfileLink for self-assessment
+
+Task Performance
+
+Task list with:
+
+Status (In Progress, Done, Late)
+
+Completion % bar
+
+Time taken vs allocated
+
+Filter by date/task type
+
+Department Performance
+
+Compare departments: charts on output, team efficiency
+
+Role-based visibility (only admins can see all depts)
+
+Job Applicants
+
+Applicant List: Photo, role, status (New, Interviewed, Hired)
+
+Filter/search
+
+Modal to view resume/profile
+
+Accept/Reject actions
+
+✅ 15. Human Resource Module
+(Leverages some My Performance features, but broader scope)
+
+HR Dashboard
+
+Total Employees, Open Positions, Current Applicants
+
+Shared screens with My Performance:
+
+Employee Performance
+
+Task Performance
+
+Department Performance
+
+Job Applicants
+
+Suggestion: Reuse existing components but route from /human-resource/ for centralized HR access.
+
+✅ 16. Finance Module
+Money Request
+
+Raise Request: Form (Amount, Reason, Priority)
+
+Approvals: Approve/Reject with notes
+
+History tab
+
+Student Fee
+
+Fee list per student/class
+
+Paid/Pending status
+
+Payment history
+
+Link to Wallet API
+
+Staff Payroll
+
+Staff salary list
+
+Monthly breakdown, bonus, deductions
+
+Export option (PDF/CSV)
+
+✅ 17. Library Module
+Resources
+
+Book list with availability status
+
+Filters: subject, class, type (ebook/physical)
+
+Borrow button / QR scan
+
+Add Resources
+
+Admin-only form: title, author, category, type, uploaded file (for e-course)
+
+E-Course
+
+Digital content view
+
+Grouped by subject/class
+
+Open PDF/Video viewer inline or external
+
+✅ 18. Hostel Module
+Booking List
+
+Student name, room, dates
+
+Cancel booking button
+
+Search by student/class
+
+Room List
+
+Room number, capacity, occupied slots
+
+Filter by building/block
+
+Modal to update room info
+
+Assign Room
+
+Form to assign student to room
+
+Auto-check capacity
+
+Show available rooms dropdown
+
+Visitor List
+
+Visitor name, whom visiting, time
+
+Searchable, filter by date
+
+QR scan log if available
+
+Add Visitor
+
+Add form: name, ID proof, purpose, visiting whom
+
+✅ 19. Weather Module
+Simple Card UI:
+
+Current Temperature, Humidity, Forecast
+
+Optional:
+
+Auto-refresh
+
+API via OpenWeatherMap
+
+Location-based auto-detect (fallback to school PIN)
+
+✅ 20. Transport Module
+Dashboard:
+
+Total buses, drivers, active routes
+
+Driver List:
+
+Name, route, contact
+
+Button to call/send message
+
+Route Management:
+
+Map-based UI or list
+
+Stops + Timings
+
+Assign drivers to routes
+
+📁 Suggested Folder Structure (Updated)
+pgsql
+Copy
+Edit
+app/
+├── my-performance/
+│   ├── employee.tsx
+│   ├── task.tsx
+│   ├── department.tsx
+│   └── applicants.tsx
+├── human-resource/
+│   ├── dashboard.tsx
+│   ├── applicants.tsx (reuse or share)
+│   └── shared.tsx
+├── finance/
+│   ├── money-request.tsx
+│   ├── student-fee.tsx
+│   └── staff-payroll.tsx
+├── library/
+│   ├── resources.tsx
+│   ├── add-resource.tsx
+│   └── ecourse.tsx
+├── hostel/
+│   ├── booking-list.tsx
+│   ├── room-list.tsx
+│   ├── assign-room.tsx
+│   ├── visitor-list.tsx
+│   └── add-visitor.tsx
+├── weather.tsx
+├── transport.tsx
