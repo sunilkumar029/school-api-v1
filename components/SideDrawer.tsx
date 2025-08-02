@@ -109,6 +109,14 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         { title: 'Weather', icon: '🌤️', route: '/weather' },
         { title: 'Transport', icon: '🚌', route: '/transport' },
       ]
+    },
+    {
+      title: 'Personal',
+      items: [
+        { title: 'Expense Claims', icon: '💰', route: '/expense-claims' },
+        { title: 'My Requests', icon: '📋', route: '/my-requests' },
+        { title: 'My Rewards', icon: '🏆', route: '/my-rewards' },
+      ]
     }
   ];
 
