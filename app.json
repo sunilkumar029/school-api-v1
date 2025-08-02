@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "expo-on-replit",
-    "slug": "expo-on-replit",
+    "name": "VisionariesAI School System",
+    "slug": "visionariesai-school-system",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -31,7 +31,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#4A90E2"
         }
       ]
     ],

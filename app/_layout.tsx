@@ -26,6 +26,8 @@ export default function RootLayout() {
     <AuthProvider>
       <ThemeProvider>
         <Stack>
+          <Stack.Screen name="splash" options={{ headerShown: false }} />
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
           <Stack.Screen

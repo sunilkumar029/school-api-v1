@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,24 +9,13 @@ export const AuthRedirectorScreen: React.FC = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!isAuthenticated || !user) {
-      router.replace("/auth/organisation-email");
-      return;
-    }
+    // Small delay to ensure smooth transition from splash
+    const timer = setTimeout(() => {
+      checkAuthStatus();
+    }, 100);
 
-    // Redirect based on user role after a short delay
-    const timeout = setTimeout(() => {
-      if (user.is_superuser) {
-        router.replace("/(tabs)");
-      } else if (user.is_staff) {
-        router.replace("/(tabs)");
-      } else {
-        router.replace("/(tabs)");
-      }
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, [user, isAuthenticated, router]);
+    return () => clearTimeout(timer);
+  }, []);
 
   const getRoleText = () => {
     if (!user) return "Loading...";
