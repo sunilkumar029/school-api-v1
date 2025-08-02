@@ -1,5 +1,5 @@
 modules = ["nodejs-20", "nix"]
-run = "npm install"
+run = "npm run start"
 
 [nix]
 channel = "stable-25_05"
@@ -56,4 +56,4 @@ task = "shell.exec"
 args = "npx eas build --platform android --profile preview"
 
 [deployment]
-run = ["sh", "-c", "npm install"]
+run = ["sh", "-c", "npm run start"]
