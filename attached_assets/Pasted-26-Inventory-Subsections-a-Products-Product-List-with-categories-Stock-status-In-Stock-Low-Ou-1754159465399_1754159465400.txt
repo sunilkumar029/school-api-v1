@@ -1,0 +1,128 @@
+26. Inventory
+Subsections:
+a. Products
+Product List with categories
+
+Stock status (In Stock, Low, Out of Stock)
+
+Add / Edit / Remove Product
+
+Role-based view (Admin only can edit)
+
+b. Suppliers
+Supplier contact info
+
+Linked products
+
+Add / Edit / Deactivate Supplier
+
+c. Orders
+Create Purchase Orders
+
+Track incoming/outgoing stock
+
+Order status: Draft, Ordered, Received
+
+🧱 Layout Structure:
+TopBar: "Inventory"
+
+Tabs: Products | Suppliers | Orders
+
+Table/Card layout for stock view
+
+Action button: + Add New
+
+27. Invoice
+🌟 Features:
+View Invoices: Role-based (students: fee invoices; admin: vendor/staff invoices)
+
+Generate Invoice (Admin/Finance role)
+
+Payment Status: Paid, Due, Overdue
+
+Download as PDF
+
+Filter by: Date, User, Status
+
+🧱 Layout Structure:
+TopBar: "Invoices"
+
+Search & Filter bar
+
+Invoice cards with quick info
+
+Details page with full breakdown
+
+28. My Task
+🌟 Features:
+Task list: Assigned to the logged-in user
+
+Status: To-do, In Progress, Done
+
+Due date & priority tag
+
+Comments / attachments
+
+Add new tasks (if allowed by role)
+
+🧱 Layout Structure:
+TopBar: "My Tasks"
+
+Tabs/Filters: By Status or Date
+
+Drag & drop (optional) or toggle for status
+
+List view or Kanban-like board
+
+29. Sports
+a. Add Team
+Create/manage teams by category (e.g., football, cricket)
+
+Assign captain, coach
+
+Track team members
+
+Upload logo or jersey image
+
+b. Schedule Match
+Calendar or list view
+
+Add match details: Team A vs B, Date, Location, Score, Notes
+
+Notifications to participants
+
+c. Intelligent Tutoring Systems (ITS)
+Integrate AI-powered feedback or suggestions
+
+Quizzes and smart tests
+
+Progress tracking with visual graphs
+
+d. AI Personalized System Learning
+Personalized learning recommendations
+
+AI progress chart
+
+Suggestions based on past activity
+
+Access to custom materials
+
+🧱 Layout Structure:
+Tabs or nested pages:
+
+Teams
+
+Match Schedule
+
+AI Tutoring
+
+AI Learning
+
+Use cards, graphs, filters, role-based content
+
+🔁 Placement Strategy
+All these screens go under sidebar menu (not bottom tab)
+
+Use consistent TopBar with title and action buttons
+
+Follow unified tailwindcss design tokens, spacing, and component styles
