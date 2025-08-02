@@ -1,0 +1,186 @@
+✅ 1. Brand Identity Setup
+✳️ App Name
+Official App Name: VisionariesAI School System
+
+Company Name (optional use in footers): VisionariesAI Labs PVT. LTD.
+
+This name should be consistent across your splash screen, onboarding slides, Play Store metadata, and app settings.
+
+✳️ Logo & Icon
+Requirements:
+
+Logo file (preferably .png, .svg, .ico, and high-res .webp)
+
+App icon in different resolutions:
+
+192x192 (for web icons / favicon)
+
+512x512 (Play Store)
+
+iOS-specific (1024x1024)
+
+If you have an image or want help creating one, let me know.
+
+✳️ How to Change App Name & Logo (Expo React Native)
+🔁 Change App Name
+Edit your app.json or app.config.ts:
+
+json
+Copy
+Edit
+{
+  "expo": {
+    "name": "VisionariesAI School System",
+    "slug": "visionariesai-school-system",
+    "version": "1.0.0",
+    ...
+  }
+}
+🖼️ Change App Icon
+Place your new logo icon at:
+
+bash
+Copy
+Edit
+assets/icon.png
+Then in app.json:
+
+json
+Copy
+Edit
+"icon": "./assets/icon.png",
+🎆 Splash Screen
+Place your splash image here:
+
+bash
+Copy
+Edit
+assets/splash.png
+Then in app.json:
+
+json
+Copy
+Edit
+"splash": {
+  "image": "./assets/splash.png",
+  "resizeMode": "contain",
+  "backgroundColor": "#ffffff"
+}
+✅ 2. Splash Screen
+⏳ Purpose:
+Gives a branded introduction to users while the app is loading. Show the logo and name clearly.
+
+📐 Layout:
+Centered logo/icon (animated or static)
+
+App Name below (bold, clean font)
+
+Background color matching brand palette
+
+Duration: ~2 seconds
+
+🧩 Design Notes:
+Use Lottie animation for extra flair (optional)
+
+Example font: Poppins, Inter, or Nunito Sans
+
+✅ 3. Onboarding Slides (After Splash)
+🎯 Purpose:
+Briefly introduce users to your app's core value and features before login.
+
+✅ Screens (Recommended: 3 or 4 Slides)
+Slide 1: Welcome
+Title: Welcome to VisionariesAI School System
+
+Subtitle: Empowering Schools with Smart Management
+
+Image: Illustration of school/building with digital dashboards
+
+Slide 2: Academic Excellence
+Title: Manage Academics Easily
+
+Subtitle: Timetables, Exams, Performance, and More
+
+Image: Illustration of teacher and student with calendar and charts
+
+Slide 3: All-in-One Administration
+Title: Simplify School Operations
+
+Subtitle: HR, Finance, Library, Hostel, Transport
+
+Image: Admin dashboard illustration
+
+(Optional) Slide 4: Stay Informed
+Title: Real-time Updates and Notifications
+
+Subtitle: Be notified instantly with smart alerts
+
+Image: Bell icon with notification cards
+
+📲 Navigation & Layout:
+Swipeable slides using a swiper library like:
+
+react-native-onboarding-swiper (easy)
+
+react-native-snap-carousel (custom animations)
+
+Dot indicators at the bottom
+
+Final screen: "Get Started" button → navigates to login/signup
+
+Top-right: Skip button for quicker entry
+
+🧠 UX Guidance:
+Keep slides minimal and engaging (less than 20 words per slide)
+
+Use illustrative graphics, not heavy text
+
+Ensure theme matches app (light/dark versions)
+
+✅ 4. Navigation Flow
+mermaid
+Copy
+Edit
+graph TD
+A[Splash Screen (2s)] --> B[Onboarding Slides]
+B --> C[Login / Signup]
+If user is already authenticated → directly go to dashboard.
+
+Store onboarding status in AsyncStorage like:
+
+ts
+Copy
+Edit
+AsyncStorage.setItem("hasSeenOnboarding", "true");
+And check on launch to decide whether to show onboarding or not.
+
+✅ 5. File & Folder Structure Suggestions
+pgsql
+Copy
+Edit
+assets/
+├── icon.png
+├── splash.png
+├── onboarding/
+│   ├── welcome.png
+│   ├── academics.png
+│   ├── admin.png
+│   └── notify.png
+
+app/
+├── onboarding/
+│   ├── index.tsx        # Main onboarding screen with slides
+│   └── slides.ts        # Slide content definitions
+✅ 6. Fonts & Branding Palette (Example)
+Primary Font: Poppins or Inter
+
+Color Palette:
+
+Primary: #4A90E2 (blue)
+
+Secondary: #50E3C2 (teal)
+
+Background: #FFFFFF / #F7F8FA
+
+Text: #333333 or #111
+

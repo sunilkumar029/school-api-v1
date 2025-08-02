@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   View,
@@ -5,7 +6,7 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Image,
+  Image
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
@@ -23,9 +24,9 @@ export default function HomeScreen() {
   const { colors, fontSize } = useTheme();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
+  if (!isAuthenticated) {
+    return null;
+  }
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -89,8 +90,8 @@ export default function HomeScreen() {
       <TopBar
         title="Home"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push("/(tabs)/notifications")}
-        onSettingsPress={() => router.push("/(tabs)/settings")}
+        onNotificationsPress={() => router.push('/(tabs)/notifications')}
+        onSettingsPress={() => router.push('/(tabs)/settings')}
       />
 
       <SideDrawer
@@ -100,43 +101,20 @@ export default function HomeScreen() {
 
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Greeting Header */}
-        <View
-          style={[styles.greetingSection, { backgroundColor: colors.surface }]}
-        >
+        <View style={[styles.greetingSection, { backgroundColor: colors.surface }]}>
           <View style={styles.greetingContent}>
             <View style={styles.avatarContainer}>
-              <View
-                style={[styles.avatar, { backgroundColor: colors.primary }]}
-              >
+              <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
                 <Text style={styles.avatarText}>
-                  {user?.username?.charAt(0).toUpperCase() ||
-                    user?.email?.charAt(0).toUpperCase() ||
-                    "U"}
+                  {user?.username?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
                 </Text>
               </View>
             </View>
             <View style={styles.greetingText}>
-              <Text
-                style={[
-                  styles.greeting,
-                  {
-                    color: colors.textPrimary,
-                    fontSize: fontSizes[fontSize] + 4,
-                  },
-                ]}
-              >
-                {getGreeting()},{" "}
-                {user?.username || user?.email?.split("@")[0] || "User"}! 👋
+              <Text style={[styles.greeting, { color: colors.textPrimary, fontSize: fontSizes[fontSize] + 4 }]}>
+                {getGreeting()}, {user?.username || user?.email?.split('@')[0] || 'User'}! 👋
               </Text>
-              <Text
-                style={[
-                  styles.roleText,
-                  {
-                    color: colors.textSecondary,
-                    fontSize: fontSizes[fontSize],
-                  },
-                ]}
-              >
+              <Text style={[styles.roleText, { color: colors.textSecondary, fontSize: fontSizes[fontSize] }]}>
                 Student • Visionaries International
               </Text>
             </View>
@@ -145,21 +123,15 @@ export default function HomeScreen() {
 
         {/* Overview Cards */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-            Overview
-          </Text>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.overviewScroll}
-          >
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Overview</Text>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.overviewScroll}>
             {overviewData.map((item, index) => (
               <OverviewCard
                 key={index}
                 title={item.title}
                 value={item.value}
                 icon={item.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </ScrollView>
@@ -167,16 +139,14 @@ export default function HomeScreen() {
 
         {/* Quick Actions */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-            Quick Actions
-          </Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
             {quickActions.map((action, index) => (
               <QuickActionButton
                 key={index}
                 title={action.title}
                 icon={action.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -185,21 +155,12 @@ export default function HomeScreen() {
         {/* Recent Activity */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-              Recent Activity
-            </Text>
+            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Recent Activity</Text>
             <TouchableOpacity>
-              <Text style={[styles.viewAllText, { color: colors.primary }]}>
-                View All
-              </Text>
+              <Text style={[styles.viewAllText, { color: colors.primary }]}>View All</Text>
             </TouchableOpacity>
           </View>
-          <View
-            style={[
-              styles.activityContainer,
-              { backgroundColor: colors.surface },
-            ]}
-          >
+          <View style={[styles.activityContainer, { backgroundColor: colors.surface }]}>
             {recentActivities.map((activity, index) => (
               <RecentActivityItem
                 key={index}
@@ -214,9 +175,7 @@ export default function HomeScreen() {
 
         {/* Upcoming Events */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-            Upcoming Events
-          </Text>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Upcoming Events</Text>
           <View style={styles.eventsContainer}>
             {upcomingEvents.map((event, index) => (
               <EventItem
@@ -224,7 +183,7 @@ export default function HomeScreen() {
                 title={event.title}
                 time={event.time}
                 type={event.type}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -232,29 +191,11 @@ export default function HomeScreen() {
 
         {/* Announcements */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-            Announcements
-          </Text>
-          <View
-            style={[
-              styles.announcementsContainer,
-              { backgroundColor: colors.surface },
-            ]}
-          >
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Announcements</Text>
+          <View style={[styles.announcementsContainer, { backgroundColor: colors.surface }]}>
             {announcements.map((announcement, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.announcementItem,
-                  { borderBottomColor: colors.border },
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.announcementText,
-                    { color: colors.textPrimary },
-                  ]}
-                >
+              <View key={index} style={[styles.announcementItem, { borderBottomColor: colors.border }]}>
+                <Text style={[styles.announcementText, { color: colors.textPrimary }]}>
                   {announcement}
                 </Text>
               </View>
@@ -279,14 +220,14 @@ const styles = StyleSheet.create({
     margin: 16,
     borderRadius: 12,
     elevation: 2,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
   greetingContent: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 20,
   },
   avatarContainer: {
@@ -296,48 +237,48 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   avatarText: {
-    color: "#FFFFFF",
+    color: '#FFFFFF',
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   greetingText: {
     flex: 1,
   },
   greeting: {
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 4,
   },
   roleText: {
-    fontWeight: "500",
+    fontWeight: '500',
   },
   section: {
     marginHorizontal: 16,
     marginBottom: 24,
   },
   sectionHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   viewAllText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   overviewScroll: {
     marginTop: 12,
   },
   quickActionsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+    flexDirection: 'row',
+    flexWrap: 'wrap',
     marginTop: 12,
     marginHorizontal: -6,
   },
@@ -345,7 +286,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     elevation: 1,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -358,7 +299,7 @@ const styles = StyleSheet.create({
     padding: 16,
     marginTop: 12,
     elevation: 1,
-    shadowColor: "#000",
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
