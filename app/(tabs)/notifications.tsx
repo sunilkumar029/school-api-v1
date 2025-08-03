@@ -184,7 +184,7 @@ export default function NotificationsScreen() {
     <TouchableOpacity
       style={[
         styles.filterTab,
-        { 
+        {
           backgroundColor: notificationFilter === value ? colors.primary : 'transparent',
           borderColor: colors.border,
         }
@@ -415,6 +415,7 @@ const styles = StyleSheet.create({
   filterTabs: {
     paddingHorizontal: 16,
     paddingVertical: 12,
+    maxHeight: 62,
   },
   filterTab: {
     paddingHorizontal: 16,
@@ -434,6 +435,7 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     paddingHorizontal: 16,
+    paddingVertical: 16,
   },
   notificationCard: {
     borderRadius: 8,

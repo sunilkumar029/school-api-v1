@@ -52,6 +52,7 @@ interface ThemeContextType {
   isDark: boolean;
   setThemeMode: (mode: ThemeMode) => void;
   setFontSize: (size: FontSize) => void;
+  toggleTheme: () => void; // Add toggleTheme to the types
   resetSettings: () => void;
 }
 
@@ -106,6 +107,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     }
   };
 
+  const toggleTheme = async () => {
+    const newMode = themeMode === 'light' ? 'dark' : 'light';
+    await setThemeMode(newMode); // Use setThemeMode to update the theme
+  };
+
   const setFontSize = async (size: FontSize) => {
     try {
       await AsyncStorage.setItem('font_size', size);
@@ -132,6 +138,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     isDark,
     setThemeMode,
     setFontSize,
+    toggleTheme,
     resetSettings,
   };
 

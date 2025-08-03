@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface StudentMark {
   id: string;
@@ -124,9 +125,9 @@ export default function StudentMarksScreen() {
         <Text style={[styles.marks, { color: colors.textPrimary }]}>
           {item.obtainedMarks}/{item.maxMarks}
         </Text>
-        <View style={[styles.gradeBadge, { 
-          backgroundColor: item.grade.startsWith('A') ? '#4CAF50' : 
-                          item.grade.startsWith('B') ? '#FF9800' : '#F44336'
+        <View style={[styles.gradeBadge, {
+          backgroundColor: item.grade.startsWith('A') ? '#4CAF50' :
+            item.grade.startsWith('B') ? '#FF9800' : '#F44336'
         }]}>
           <Text style={styles.gradeText}>{item.grade}</Text>
         </View>
@@ -185,7 +186,7 @@ export default function StudentMarksScreen() {
     <ScrollView style={styles.content}>
       <View style={[styles.formContainer, { backgroundColor: colors.surface }]}>
         <Text style={[styles.formTitle, { color: colors.textPrimary }]}>Enter New Marks</Text>
-        
+
         {/* Student Selection */}
         <View style={styles.formField}>
           <Text style={[styles.fieldLabel, { color: colors.textPrimary }]}>Student *</Text>
@@ -221,7 +222,7 @@ export default function StudentMarksScreen() {
           <TextInput
             style={[styles.textInput, { borderColor: colors.border, color: colors.textPrimary }]}
             value={newMark.maxMarks}
-            onChangeText={(text) => setNewMark({...newMark, maxMarks: text})}
+            onChangeText={(text) => setNewMark({ ...newMark, maxMarks: text })}
             keyboardType="numeric"
             placeholder="100"
             placeholderTextColor={colors.textSecondary}
@@ -234,7 +235,7 @@ export default function StudentMarksScreen() {
           <TextInput
             style={[styles.textInput, { borderColor: colors.border, color: colors.textPrimary }]}
             value={newMark.obtainedMarks}
-            onChangeText={(text) => setNewMark({...newMark, obtainedMarks: text})}
+            onChangeText={(text) => setNewMark({ ...newMark, obtainedMarks: text })}
             keyboardType="numeric"
             placeholder="Enter marks"
             placeholderTextColor={colors.textSecondary}
@@ -262,7 +263,7 @@ export default function StudentMarksScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Student Marks"
         onMenuPress={() => setDrawerVisible(true)}
@@ -307,7 +308,7 @@ export default function StudentMarksScreen() {
       </View>
 
       {activeTab === 'view' ? renderViewContent() : renderEntryContent()}
-    </View>
+    </SafeAreaView>
   );
 }
 

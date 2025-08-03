@@ -17,6 +17,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface OnlineClass {
   id: string;
@@ -142,7 +143,7 @@ export default function OnlineClassScreen() {
             <Text style={styles.joinButtonText}>Join Class</Text>
           </TouchableOpacity>
         )}
-        
+
         {item.status === 'completed' && item.recordingLink && (
           <TouchableOpacity
             style={[styles.recordingButton, { backgroundColor: colors.primary }]}
@@ -172,7 +173,7 @@ export default function OnlineClassScreen() {
   });
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Online Classes"
         onMenuPress={() => setDrawerVisible(true)}
@@ -334,7 +335,7 @@ export default function OnlineClassScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

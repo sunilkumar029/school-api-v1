@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Exam {
   id: string;
@@ -86,9 +87,9 @@ export default function ScheduleExamScreen() {
     }
 
     // Check for conflicts
-    const conflictingExam = exams.find(exam => 
-      exam.class === newExam.class && 
-      exam.date === newExam.date && 
+    const conflictingExam = exams.find(exam =>
+      exam.class === newExam.class &&
+      exam.date === newExam.date &&
       exam.time === newExam.time
     );
 
@@ -214,7 +215,7 @@ export default function ScheduleExamScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Exam Schedule"
         onMenuPress={() => setDrawerVisible(true)}
@@ -264,7 +265,7 @@ export default function ScheduleExamScreen() {
               key={filter.key}
               style={[
                 styles.filterButton,
-                { 
+                {
                   backgroundColor: filterStatus === filter.key ? colors.primary : colors.background,
                   borderColor: colors.border
                 }
@@ -421,7 +422,7 @@ export default function ScheduleExamScreen() {
           </ScrollView>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

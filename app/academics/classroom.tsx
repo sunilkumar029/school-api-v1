@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Classroom {
   id: string;
@@ -210,7 +211,7 @@ export default function ClassroomScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Classroom Management"
         onMenuPress={() => setDrawerVisible(true)}
@@ -349,7 +350,7 @@ export default function ClassroomScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

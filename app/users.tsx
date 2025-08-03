@@ -13,6 +13,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function UsersScreen() {
   const { colors } = useTheme();
@@ -21,15 +22,15 @@ export default function UsersScreen() {
   const [activeTab, setActiveTab] = useState<'staff' | 'teachers' | 'students' | 'parents' | 'drivers'>('staff');
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <TopBar 
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopBar
         title="Users Management"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}
       />
-      
-      <SideDrawer 
+
+      <SideDrawer
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
@@ -65,7 +66,7 @@ export default function UsersScreen() {
           {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} management will be implemented here
         </Text>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

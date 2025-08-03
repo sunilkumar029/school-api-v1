@@ -35,13 +35,14 @@ export const validateEmail = async (
       },
     );
     console.log("Email validation response:", response.data);
+    console.log("Organization name:", response.data.url);
     return response.data;
   } catch (error) {
     console.error("Email validation error:", error);
     if (axios.isAxiosError(error)) {
       throw new Error(
         error.response?.data?.message ||
-          "Organization not found for this email address",
+        "Organization not found for this email address",
       );
     }
     throw new Error("Network error occurred during email validation");
@@ -59,9 +60,26 @@ export const loginUser = async (
       },
     });
 
-    return response.data; // Return the token and user information
+    if (!response.data) {
+      throw new Error("No data found for this user");
+    }
+
+    if (!response.data.user_id) {
+      throw new Error("Username is invalid");
+    }
+
+    if (!response.data.token) {
+      throw new Error("Incorrect password");
+    }
+
+    return response.data;
   } catch (error) {
     console.error("Login error:", error);
-    throw error; // Rethrow the error to handle it in the calling function
+    if (axios.isAxiosError(error)) {
+      throw new Error(
+        error.response?.data?.message || "An error occurred during login"
+      );
+    }
+    throw new Error("Network error occurred during login");
   }
 };

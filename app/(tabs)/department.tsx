@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Department {
   id: string;
@@ -92,7 +93,7 @@ export default function DepartmentScreen() {
 
   const filteredDepartments = departments.filter(dept => {
     const matchesSearch = dept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         dept.head.toLowerCase().includes(searchQuery.toLowerCase());
+      dept.head.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = selectedFilter === 'all' || dept.type === selectedFilter;
     return matchesSearch && matchesFilter;
   });
@@ -120,8 +121,8 @@ export default function DepartmentScreen() {
   };
 
   const toggleDepartmentStatus = (id: string) => {
-    setDepartments(prev => prev.map(dept => 
-      dept.id === id 
+    setDepartments(prev => prev.map(dept =>
+      dept.id === id
         ? { ...dept, status: dept.status === 'active' ? 'archived' : 'active' }
         : dept
     ));
@@ -213,7 +214,7 @@ export default function DepartmentScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Departments"
         onMenuPress={() => setDrawerVisible(true)}
@@ -289,7 +290,7 @@ export default function DepartmentScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add New Department</Text>
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Department Name"
@@ -297,7 +298,7 @@ export default function DepartmentScreen() {
               value={newDepartment.name}
               onChangeText={(text) => setNewDepartment(prev => ({ ...prev, name: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Department Head"
@@ -305,7 +306,7 @@ export default function DepartmentScreen() {
               value={newDepartment.head}
               onChangeText={(text) => setNewDepartment(prev => ({ ...prev, head: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary, height: 80 }]}
               placeholder="Description"
@@ -356,7 +357,7 @@ export default function DepartmentScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

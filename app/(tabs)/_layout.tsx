@@ -9,6 +9,8 @@ import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -22,6 +24,8 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.tabBar,
           borderTopColor: colors.border,
+          height: 90,
+          paddingTop: 10,
         },
         headerShown: false,
         tabBarButton: HapticTab,
@@ -31,21 +35,36 @@ export default function TabLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 16 }}>🏠</Text>,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="home" size={30} color={color} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ fontSize: 18, color: focused ? colors.primary : colors.textSecondary, marginTop: 4 }}>Home</Text>
+          ),
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
           title: 'Notifications',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 16 }}>🔔</Text>,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="notifications" size={30} color={color} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ fontSize: 18, color: focused ? colors.primary : colors.textSecondary, marginTop: 4 }}>Notifications</Text>
+          ),
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 16 }}>⚙️</Text>,
+          tabBarIcon: ({ color }) => (
+            <MaterialIcons name="settings" size={30} color={color} />
+          ),
+          tabBarLabel: ({ focused }) => (
+            <Text style={{ fontSize: 16, color: focused ? colors.primary : colors.textSecondary, marginTop: 4 }}>Settings</Text>
+          ),
         }}
       />
       {/* All other screens hidden from bottom tabs - accessible via sidebar */}

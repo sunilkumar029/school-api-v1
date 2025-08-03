@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface StudentPerformance {
   id: string;
@@ -75,9 +76,9 @@ export default function StudentPerformanceScreen() {
             {item.rollNumber} • {item.class}
           </Text>
         </View>
-        <View style={[styles.gradeBadge, { 
-          backgroundColor: item.overallGrade === 'A+' ? '#4CAF50' : 
-                          item.overallGrade === 'A' ? '#8BC34A' : '#FF9800' 
+        <View style={[styles.gradeBadge, {
+          backgroundColor: item.overallGrade === 'A+' ? '#4CAF50' :
+            item.overallGrade === 'A' ? '#8BC34A' : '#FF9800'
         }]}>
           <Text style={styles.gradeText}>{item.overallGrade}</Text>
         </View>
@@ -116,7 +117,7 @@ export default function StudentPerformanceScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Student Performance"
         onMenuPress={() => setDrawerVisible(true)}
@@ -173,7 +174,7 @@ export default function StudentPerformanceScreen() {
         style={styles.studentsList}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

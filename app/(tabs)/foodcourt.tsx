@@ -16,6 +16,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface FoodItem {
   id: string;
@@ -179,7 +180,7 @@ export default function FoodCourtScreen() {
   };
 
   const updateOrderStatus = (orderId: string, newStatus: Order['status']) => {
-    setOrders(prev => prev.map(order => 
+    setOrders(prev => prev.map(order =>
       order.id === orderId ? { ...order, status: newStatus } : order
     ));
   };
@@ -271,7 +272,7 @@ export default function FoodCourtScreen() {
         </Text>
         <View style={styles.orderActions}>
           {user?.is_staff && (
-            <TouchableOpacity 
+            <TouchableOpacity
               style={[styles.actionButton, { backgroundColor: colors.primary }]}
               onPress={() => {
                 const statuses: Order['status'][] = ['pending', 'preparing', 'ready', 'served'];
@@ -321,7 +322,7 @@ export default function FoodCourtScreen() {
     <ScrollView style={styles.menuManagement}>
       <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Menu Management</Text>
 
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.actionButton, { backgroundColor: colors.primary }]}
         onPress={() => setAddItemModal(true)}
       >
@@ -358,7 +359,7 @@ export default function FoodCourtScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Food Court"
         onMenuPress={() => setDrawerVisible(true)}
@@ -455,7 +456,7 @@ export default function FoodCourtScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add New Food Item</Text>
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Item Name"
@@ -463,7 +464,7 @@ export default function FoodCourtScreen() {
               value={newItem.name}
               onChangeText={(text) => setNewItem(prev => ({ ...prev, name: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Price"
@@ -472,7 +473,7 @@ export default function FoodCourtScreen() {
               onChangeText={(text) => setNewItem(prev => ({ ...prev, price: text }))}
               keyboardType="numeric"
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary, height: 80 }]}
               placeholder="Description"
@@ -499,7 +500,7 @@ export default function FoodCourtScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

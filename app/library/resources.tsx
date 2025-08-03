@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Resource {
   id: string;
@@ -140,15 +141,15 @@ export default function LibraryResourcesScreen() {
 
   const filteredResources = resources.filter(resource => {
     const matchesSearch = resource.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         resource.author.toLowerCase().includes(searchQuery.toLowerCase());
+      resource.author.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === 'all' || resource.type === filterType;
     const matchesSubject = filterSubject === 'all' || resource.subject === filterSubject;
-    
+
     return matchesSearch && matchesType && matchesSubject;
   });
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Library Resources"
         onMenuPress={() => setDrawerVisible(true)}
@@ -182,7 +183,7 @@ export default function LibraryResourcesScreen() {
                 key={type}
                 style={[
                   styles.filterButton,
-                  { 
+                  {
                     backgroundColor: filterType === type ? colors.primary : 'transparent',
                     borderColor: colors.border
                   }
@@ -208,7 +209,7 @@ export default function LibraryResourcesScreen() {
                 key={subject}
                 style={[
                   styles.filterButton,
-                  { 
+                  {
                     backgroundColor: filterSubject === subject ? colors.primary : 'transparent',
                     borderColor: colors.border
                   }
@@ -234,7 +235,7 @@ export default function LibraryResourcesScreen() {
         style={styles.resourceList}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Event {
   id: string;
@@ -79,7 +80,7 @@ export default function EventsScreen() {
 
   const filteredEvents = events
     .filter(event => event.status === (activeTab === 'create' ? 'upcoming' : activeTab))
-    .filter(event => 
+    .filter(event =>
       event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
@@ -102,7 +103,7 @@ export default function EventsScreen() {
           ))}
         </View>
       </View>
-      
+
       <View style={styles.eventDetails}>
         <Text style={[styles.eventDate, { color: colors.textPrimary }]}>📅 {item.date}</Text>
         <Text style={[styles.eventTime, { color: colors.textSecondary }]}>🕒 {item.time}</Text>
@@ -139,7 +140,7 @@ export default function EventsScreen() {
   const renderCreateEventForm = () => (
     <ScrollView style={styles.createForm}>
       <Text style={[styles.formTitle, { color: colors.textPrimary }]}>Create New Event</Text>
-      
+
       <View style={styles.formGroup}>
         <Text style={[styles.label, { color: colors.textPrimary }]}>Event Title</Text>
         <TextInput
@@ -192,15 +193,15 @@ export default function EventsScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <TopBar 
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopBar
         title="Events"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}
       />
-      
-      <SideDrawer 
+
+      <SideDrawer
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
@@ -279,7 +280,7 @@ export default function EventsScreen() {
           contentContainerStyle={styles.listContent}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

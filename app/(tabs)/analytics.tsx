@@ -12,6 +12,7 @@ import { useTheme, fontSizes } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -51,7 +52,7 @@ export default function AnalyticsScreen() {
 
   const renderBarChart = (data: ChartData[], title: string) => {
     const maxValue = Math.max(...data.map(item => item.value));
-    
+
     return (
       <View style={[styles.chartContainer, { backgroundColor: colors.surface }]}>
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
@@ -83,7 +84,7 @@ export default function AnalyticsScreen() {
 
   const renderPieChart = (data: ChartData[], title: string) => {
     const total = data.reduce((sum, item) => sum + item.value, 0);
-    
+
     return (
       <View style={[styles.chartContainer, { backgroundColor: colors.surface }]}>
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
@@ -115,7 +116,7 @@ export default function AnalyticsScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Analytics"
         onMenuPress={() => setDrawerVisible(true)}
@@ -207,7 +208,7 @@ export default function AnalyticsScreen() {
 
         <View style={styles.bottomSpacing} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

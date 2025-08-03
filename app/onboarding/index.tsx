@@ -96,7 +96,7 @@ export default function OnboardingScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
-      
+
       {/* Skip Button */}
       <TouchableOpacity style={styles.skipButton} onPress={skip}>
         <Text style={styles.skipText}>Skip</Text>
@@ -123,16 +123,16 @@ export default function OnboardingScreen() {
       {/* Bottom Section */}
       <View style={styles.bottomSection}>
         <Paginator />
-        
+
         <View style={styles.buttonContainer}>
           {currentIndex > 0 && (
             <TouchableOpacity style={styles.backButton} onPress={goBack}>
               <Text style={styles.backButtonText}>Back</Text>
             </TouchableOpacity>
           )}
-          
-          <TouchableOpacity 
-            style={[styles.nextButton, currentIndex === 0 && styles.fullWidth]} 
+
+          <TouchableOpacity
+            style={[styles.nextButton, currentIndex === 0 && styles.fullWidth]}
             onPress={goNext}
           >
             <Text style={styles.nextButtonText}>

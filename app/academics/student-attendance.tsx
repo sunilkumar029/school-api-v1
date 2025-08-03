@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface AttendanceRecord {
   id: string;
@@ -46,7 +47,7 @@ export default function StudentAttendanceScreen() {
     { id: '4', name: 'Sarah Davis', rollNumber: 'CS2024004', attendancePercentage: 88 },
   ]);
 
-  const [todayAttendance, setTodayAttendance] = useState<{[key: string]: 'present' | 'absent' | 'late'}>({
+  const [todayAttendance, setTodayAttendance] = useState<{ [key: string]: 'present' | 'absent' | 'late' }>({
     '1': 'present',
     '2': 'present',
     '3': 'absent',
@@ -122,10 +123,10 @@ export default function StudentAttendanceScreen() {
           {item.attendancePercentage}%
         </Text>
         <View style={[styles.attendanceBar, { backgroundColor: colors.border }]}>
-          <View 
+          <View
             style={[
               styles.attendanceProgress,
-              { 
+              {
                 width: `${item.attendancePercentage}%`,
                 backgroundColor: item.attendancePercentage >= 75 ? '#4CAF50' : '#F44336'
               }
@@ -227,7 +228,7 @@ export default function StudentAttendanceScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Student Attendance"
         onMenuPress={() => setDrawerVisible(true)}
@@ -272,7 +273,7 @@ export default function StudentAttendanceScreen() {
       </View>
 
       {activeTab === 'mark' ? renderMarkContent() : renderReportsContent()}
-    </View>
+    </SafeAreaView>
   );
 }
 

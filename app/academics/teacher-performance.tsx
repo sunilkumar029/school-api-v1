@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface TeacherData {
   id: string;
@@ -71,7 +72,7 @@ export default function TeacherPerformanceScreen() {
           <Text style={styles.ratingText}>⭐ {item.rating}</Text>
         </View>
       </View>
-      
+
       <View style={styles.metricsRow}>
         <View style={styles.metric}>
           <Text style={[styles.metricValue, { color: colors.textPrimary }]}>{item.studentsCount}</Text>
@@ -103,7 +104,7 @@ export default function TeacherPerformanceScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Teacher Performance"
         onMenuPress={() => setDrawerVisible(true)}
@@ -160,7 +161,7 @@ export default function TeacherPerformanceScreen() {
         style={styles.teachersList}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

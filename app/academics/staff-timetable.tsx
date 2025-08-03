@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface TimetableSlot {
   time: string;
@@ -162,9 +163,9 @@ export default function StaffTimetableScreen() {
       key={`${day}-${timeIndex}`}
       style={[
         styles.slot,
-        { 
+        {
           backgroundColor: slot.subject ? colors.primary + '20' : colors.surface,
-          borderColor: colors.border 
+          borderColor: colors.border
         }
       ]}
       onPress={() => handleSlotPress(staffIndex, day, timeIndex)}
@@ -216,7 +217,7 @@ export default function StaffTimetableScreen() {
               <View style={[styles.timeCell, { backgroundColor: colors.background }]}>
                 <Text style={[styles.timeText, { color: colors.textSecondary }]}>{time}</Text>
               </View>
-              {days.map(day => 
+              {days.map(day =>
                 renderTimetableSlot(staff.schedule[day][timeIndex], staffIndex, day, timeIndex)
               )}
             </View>
@@ -227,7 +228,7 @@ export default function StaffTimetableScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Staff Timetable"
         onMenuPress={() => setDrawerVisible(true)}
@@ -249,7 +250,7 @@ export default function StaffTimetableScreen() {
           </View>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: colors.primary }]}>
-              {staffTimetables.reduce((total, staff) => 
+              {staffTimetables.reduce((total, staff) =>
                 total + Object.values(staff.schedule).flat().filter(slot => slot.subject).length, 0
               )}
             </Text>
@@ -282,7 +283,7 @@ export default function StaffTimetableScreen() {
           <Text style={styles.editHelpText}>Tap on any slot to edit or clear it</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -13,9 +13,18 @@ export const AuthRedirectorScreen: React.FC = () => {
     const timer = setTimeout(() => {
       checkAuthStatus();
     }, 100);
-
     return () => clearTimeout(timer);
   }, []);
+
+  const checkAuthStatus = () => {
+    if (isAuthenticated) {
+      // User is authenticated, navigate to the main app
+      router.replace("/");
+    } else {
+      // User is not authenticated, navigate to the login screen
+      router.replace("/auth/login");
+    }
+  };
 
   const getRoleText = () => {
     if (!user) return "Loading...";

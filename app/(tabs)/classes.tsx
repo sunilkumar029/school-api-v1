@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Class {
   id: string;
@@ -121,8 +122,8 @@ export default function ClassesScreen() {
   };
 
   const toggleClassStatus = (id: string) => {
-    setClasses(prev => prev.map(cls => 
-      cls.id === id 
+    setClasses(prev => prev.map(cls =>
+      cls.id === id
         ? { ...cls, status: cls.status === 'active' ? 'archived' : 'active' }
         : cls
     ));
@@ -228,7 +229,7 @@ export default function ClassesScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Classes"
         onMenuPress={() => setDrawerVisible(true)}
@@ -311,8 +312,8 @@ export default function ClassesScreen() {
         </View>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: colors.primary }]}>
-            {Math.round((classes.reduce((sum, c) => sum + c.enrolled, 0) / 
-                       classes.reduce((sum, c) => sum + c.capacity, 0)) * 100)}%
+            {Math.round((classes.reduce((sum, c) => sum + c.enrolled, 0) /
+              classes.reduce((sum, c) => sum + c.capacity, 0)) * 100)}%
           </Text>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Occupancy</Text>
         </View>
@@ -349,7 +350,7 @@ export default function ClassesScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add New Class</Text>
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Class Name (e.g., Grade 1)"
@@ -357,7 +358,7 @@ export default function ClassesScreen() {
               value={newClass.name}
               onChangeText={(text) => setNewClass(prev => ({ ...prev, name: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Section (e.g., A, B, C)"
@@ -365,7 +366,7 @@ export default function ClassesScreen() {
               value={newClass.section}
               onChangeText={(text) => setNewClass(prev => ({ ...prev, section: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Class Teacher"
@@ -373,7 +374,7 @@ export default function ClassesScreen() {
               value={newClass.teacher}
               onChangeText={(text) => setNewClass(prev => ({ ...prev, teacher: text }))}
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Capacity"
@@ -382,7 +383,7 @@ export default function ClassesScreen() {
               onChangeText={(text) => setNewClass(prev => ({ ...prev, capacity: text }))}
               keyboardType="numeric"
             />
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Room (Optional)"
@@ -408,7 +409,7 @@ export default function ClassesScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

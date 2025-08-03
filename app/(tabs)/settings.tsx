@@ -45,6 +45,14 @@ export default function SettingsScreen() {
     }
   };
 
+  // const toggleTheme = () => {
+  //   if (isDark) {
+  //     handleThemeChange('light');
+  //   } else {
+  //     handleThemeChange('dark');
+  //   }
+  // };
+
   const handleFontSizeChange = (size: 'small' | 'medium' | 'large') => {
     setFontSize(size);
   };
@@ -82,18 +90,18 @@ export default function SettingsScreen() {
     </View>
   );
 
-  const SettingItem = ({ 
-    title, 
-    subtitle, 
-    onPress, 
-    rightElement 
-  }: { 
-    title: string; 
-    subtitle?: string; 
-    onPress?: () => void; 
+  const SettingItem = ({
+    title,
+    subtitle,
+    onPress,
+    rightElement
+  }: {
+    title: string;
+    subtitle?: string;
+    onPress?: () => void;
     rightElement?: React.ReactNode;
   }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.settingItem, { borderBottomColor: colors.border }]}
       onPress={onPress}
       disabled={!onPress}
@@ -143,7 +151,7 @@ export default function SettingsScreen() {
             }}
             rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
           />
-          
+
           <SettingItem
             title="Font Size"
             subtitle={fontSize.charAt(0).toUpperCase() + fontSize.slice(1)}
@@ -276,7 +284,7 @@ export default function SettingsScreen() {
           />
 
           <TouchableOpacity
-            style={[styles.logoutButton, { backgroundColor: colors.error || '#FF6B6B' }]}
+            style={[styles.logoutButton, { backgroundColor: '#FF6B6B' }]}
             onPress={handleLogout}
           >
             <Text style={styles.logoutText}>Logout</Text>
@@ -294,7 +302,7 @@ export default function SettingsScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Change Password</Text>
-            
+
             <TextInput
               style={[styles.input, { backgroundColor: colors.background, color: colors.textPrimary, borderColor: colors.border }]}
               placeholder="Current Password"

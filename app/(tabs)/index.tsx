@@ -16,6 +16,7 @@ import { OverviewCard } from "@/components/OverviewCard";
 import { QuickActionButton } from "@/components/QuickActionButton";
 import { RecentActivityItem } from "@/components/RecentActivityItem";
 import { EventItem } from "@/components/EventItem";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -23,9 +24,10 @@ export default function HomeScreen() {
   const { colors, fontSize } = useTheme();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
-  // if (!isAuthenticated) {
-  //   return null;
-  // }
+  if (!isAuthenticated) {
+    console.log("Not authenticated");
+    return null;
+  }
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -85,7 +87,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Home"
         onMenuPress={() => setDrawerVisible(true)}
@@ -159,7 +161,7 @@ export default function HomeScreen() {
                 title={item.title}
                 value={item.value}
                 icon={item.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </ScrollView>
@@ -176,7 +178,7 @@ export default function HomeScreen() {
                 key={index}
                 title={action.title}
                 icon={action.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -224,7 +226,7 @@ export default function HomeScreen() {
                 title={event.title}
                 time={event.time}
                 type={event.type}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -264,7 +266,7 @@ export default function HomeScreen() {
 
         <View style={styles.bottomSpacing} />
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -340,6 +342,8 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     marginTop: 12,
     marginHorizontal: -6,
+    justifyContent: "space-between",
+    height: "15%",
   },
   activityContainer: {
     borderRadius: 12,

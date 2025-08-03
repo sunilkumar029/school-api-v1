@@ -63,8 +63,8 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
       // Prepare the login payload
       const payload = {
-        username: email,
         password: password,
+        username: email,
       };
 
       // Attempt to log in

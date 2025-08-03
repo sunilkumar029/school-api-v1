@@ -16,15 +16,15 @@ export const onboardingSlides: OnboardingSlide[] = [
     backgroundColor: "#4A90E2"
   },
   {
-    id: "2", 
+    id: "2",
     title: "Manage Academics Easily",
     subtitle: "Timetables, Exams, Performance, and More",
     image: "📚",
-    backgroundColor: "#50E3C2"
+    backgroundColor: "#4A90E2"
   },
   {
     id: "3",
-    title: "Simplify School Operations", 
+    title: "Simplify School Operations",
     subtitle: "HR, Finance, Library, Hostel, Transport",
     image: "⚙️",
     backgroundColor: "#4A90E2"
@@ -34,6 +34,8 @@ export const onboardingSlides: OnboardingSlide[] = [
     title: "Real-time Updates & Notifications",
     subtitle: "Be notified instantly with smart alerts",
     image: "🔔",
-    backgroundColor: "#50E3C2"
+    backgroundColor: "#4A90E2"
   }
 ];
+
+export default onboardingSlides;

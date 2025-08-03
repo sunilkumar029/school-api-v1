@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface FileItem {
   id: string;
@@ -137,7 +138,7 @@ export default function FileManagementScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="File Management"
         onMenuPress={() => setDrawerVisible(true)}
@@ -211,7 +212,7 @@ export default function FileManagementScreen() {
           <View style={[styles.storageUsed, { backgroundColor: colors.primary }]} />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

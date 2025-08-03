@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Task {
   id: string;
@@ -78,20 +79,20 @@ export default function TaskPerformanceScreen() {
           <Text style={styles.statusText}>{item.status}</Text>
         </View>
       </View>
-      
+
       <View style={styles.progressContainer}>
         <Text style={[styles.progressLabel, { color: colors.textSecondary }]}>
           Completion: {item.completion}%
         </Text>
         <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { 
+              styles.progressFill,
+              {
                 backgroundColor: getStatusColor(item.status),
                 width: `${item.completion}%`
               }
-            ]} 
+            ]}
           />
         </View>
       </View>
@@ -113,7 +114,7 @@ export default function TaskPerformanceScreen() {
   });
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Task Performance"
         onMenuPress={() => setDrawerVisible(true)}
@@ -133,7 +134,7 @@ export default function TaskPerformanceScreen() {
             key={status}
             style={[
               styles.filterButton,
-              { 
+              {
                 backgroundColor: filterStatus === status ? colors.primary : 'transparent',
                 borderColor: colors.border
               }
@@ -157,7 +158,7 @@ export default function TaskPerformanceScreen() {
         style={styles.taskList}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 

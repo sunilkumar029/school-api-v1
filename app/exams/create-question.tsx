@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Question {
   id: string;
@@ -109,7 +110,7 @@ export default function CreateQuestionScreen() {
       Alert.alert('Error', 'Please enter a question');
       return;
     }
-    
+
     if (newQuestion.type === 'mcq' && !newQuestion.correctAnswer) {
       Alert.alert('Error', 'Please select the correct answer');
       return;
@@ -132,32 +133,32 @@ export default function CreateQuestionScreen() {
   const renderQuestionItem = ({ item }: { item: Question }) => (
     <View style={[styles.questionItem, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       <View style={styles.questionHeader}>
-        <View style={[styles.typeBadge, { 
-          backgroundColor: item.type === 'mcq' ? '#2196F3' : 
-                          item.type === 'subjective' ? '#FF9800' : '#4CAF50' 
+        <View style={[styles.typeBadge, {
+          backgroundColor: item.type === 'mcq' ? '#2196F3' :
+            item.type === 'subjective' ? '#FF9800' : '#4CAF50'
         }]}>
           <Text style={styles.typeText}>
             {item.type === 'mcq' ? 'MCQ' : item.type === 'subjective' ? 'SUB' : 'T/F'}
           </Text>
         </View>
-        <View style={[styles.difficultyBadge, { 
-          backgroundColor: item.difficulty === 'easy' ? '#4CAF50' : 
-                          item.difficulty === 'medium' ? '#FF9800' : '#F44336' 
+        <View style={[styles.difficultyBadge, {
+          backgroundColor: item.difficulty === 'easy' ? '#4CAF50' :
+            item.difficulty === 'medium' ? '#FF9800' : '#F44336'
         }]}>
           <Text style={styles.difficultyText}>{item.difficulty.toUpperCase()}</Text>
         </View>
         <Text style={[styles.marks, { color: colors.primary }]}>{item.marks} marks</Text>
       </View>
-      
+
       <Text style={[styles.questionText, { color: colors.textPrimary }]}>
         {item.question}
       </Text>
-      
+
       {item.options && (
         <View style={styles.optionsContainer}>
           {item.options.map((option, index) => (
             <Text key={index} style={[
-              styles.optionText, 
+              styles.optionText,
               { color: option === item.correctAnswer ? colors.primary : colors.textSecondary }
             ]}>
               {String.fromCharCode(65 + index)}. {option}
@@ -166,7 +167,7 @@ export default function CreateQuestionScreen() {
           ))}
         </View>
       )}
-      
+
       <View style={styles.questionFooter}>
         <Text style={[styles.subjectInfo, { color: colors.textSecondary }]}>
           {item.subject} • {item.chapter}
@@ -182,7 +183,7 @@ export default function CreateQuestionScreen() {
     <ScrollView style={styles.content}>
       <View style={[styles.formContainer, { backgroundColor: colors.surface }]}>
         <Text style={[styles.formTitle, { color: colors.textPrimary }]}>Create New Question</Text>
-        
+
         {/* Question Type */}
         <View style={styles.formField}>
           <Text style={[styles.fieldLabel, { color: colors.textPrimary }]}>Question Type</Text>
@@ -194,7 +195,7 @@ export default function CreateQuestionScreen() {
                   styles.typeButton,
                   newQuestion.type === type && { backgroundColor: colors.primary }
                 ]}
-                onPress={() => setNewQuestion({...newQuestion, type: type as any})}
+                onPress={() => setNewQuestion({ ...newQuestion, type: type as any })}
               >
                 <Text style={[
                   styles.typeButtonText,
@@ -221,7 +222,7 @@ export default function CreateQuestionScreen() {
             <TextInput
               style={[styles.textInput, { borderColor: colors.border, color: colors.textPrimary }]}
               value={newQuestion.chapter}
-              onChangeText={(text) => setNewQuestion({...newQuestion, chapter: text})}
+              onChangeText={(text) => setNewQuestion({ ...newQuestion, chapter: text })}
               placeholder="Enter chapter"
               placeholderTextColor={colors.textSecondary}
             />
@@ -240,7 +241,7 @@ export default function CreateQuestionScreen() {
                     styles.difficultyButton,
                     newQuestion.difficulty === difficulty && { backgroundColor: colors.primary }
                   ]}
-                  onPress={() => setNewQuestion({...newQuestion, difficulty: difficulty as any})}
+                  onPress={() => setNewQuestion({ ...newQuestion, difficulty: difficulty as any })}
                 >
                   <Text style={[
                     styles.difficultyButtonText,
@@ -257,7 +258,7 @@ export default function CreateQuestionScreen() {
             <TextInput
               style={[styles.textInput, { borderColor: colors.border, color: colors.textPrimary }]}
               value={newQuestion.marks}
-              onChangeText={(text) => setNewQuestion({...newQuestion, marks: text})}
+              onChangeText={(text) => setNewQuestion({ ...newQuestion, marks: text })}
               keyboardType="numeric"
               placeholder="Marks"
               placeholderTextColor={colors.textSecondary}
@@ -271,7 +272,7 @@ export default function CreateQuestionScreen() {
           <TextInput
             style={[styles.textArea, { borderColor: colors.border, color: colors.textPrimary }]}
             value={newQuestion.question}
-            onChangeText={(text) => setNewQuestion({...newQuestion, question: text})}
+            onChangeText={(text) => setNewQuestion({ ...newQuestion, question: text })}
             placeholder="Enter your question here..."
             placeholderTextColor={colors.textSecondary}
             multiline
@@ -302,7 +303,7 @@ export default function CreateQuestionScreen() {
                     styles.correctButton,
                     newQuestion.correctAnswer === option && { backgroundColor: colors.primary }
                   ]}
-                  onPress={() => setNewQuestion({...newQuestion, correctAnswer: option})}
+                  onPress={() => setNewQuestion({ ...newQuestion, correctAnswer: option })}
                 >
                   <Text style={[
                     styles.correctButtonText,
@@ -326,7 +327,7 @@ export default function CreateQuestionScreen() {
             <TextInput
               style={[styles.textArea, { borderColor: colors.border, color: colors.textPrimary }]}
               value={newQuestion.correctAnswer}
-              onChangeText={(text) => setNewQuestion({...newQuestion, correctAnswer: text})}
+              onChangeText={(text) => setNewQuestion({ ...newQuestion, correctAnswer: text })}
               placeholder="Enter model answer or key points..."
               placeholderTextColor={colors.textSecondary}
               multiline
@@ -371,7 +372,7 @@ export default function CreateQuestionScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Question Bank"
         onMenuPress={() => setDrawerVisible(true)}
@@ -416,7 +417,7 @@ export default function CreateQuestionScreen() {
       </View>
 
       {activeTab === 'create' ? renderCreateContent() : renderBankContent()}
-    </View>
+    </SafeAreaView>
   );
 }
 

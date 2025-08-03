@@ -13,6 +13,7 @@ import { useTheme, fontSizes } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Transaction {
   id: string;
@@ -179,7 +180,7 @@ export default function WalletScreen() {
           </TouchableOpacity>
         ))}
       </View>
-      
+
       <TouchableOpacity
         style={[styles.customRechargeBtn, { backgroundColor: colors.primary }]}
         onPress={() => Alert.alert('Custom Amount', 'Enter custom recharge amount')}
@@ -206,7 +207,7 @@ export default function WalletScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Wallet"
         onMenuPress={() => setDrawerVisible(true)}
@@ -250,7 +251,7 @@ export default function WalletScreen() {
         {activeTab === 'transactions' && renderTransactions()}
         {activeTab === 'recharge' && renderRecharge()}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

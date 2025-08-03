@@ -15,6 +15,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface MoneyRequest {
   id: string;
@@ -116,7 +117,7 @@ export default function MoneyRequestScreen() {
           </View>
         </View>
       </View>
-      
+
       {item.approverNotes && (
         <View style={styles.notesContainer}>
           <Text style={[styles.notesLabel, { color: colors.textSecondary }]}>Notes:</Text>
@@ -127,7 +128,7 @@ export default function MoneyRequestScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Money Requests"
         onMenuPress={() => setDrawerVisible(true)}
@@ -186,7 +187,7 @@ export default function MoneyRequestScreen() {
         <View style={styles.modalOverlay}>
           <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>New Money Request</Text>
-            
+
             <TextInput
               style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
               placeholder="Amount (₹)"
@@ -213,7 +214,7 @@ export default function MoneyRequestScreen() {
                   key={priority}
                   style={[
                     styles.priorityButton,
-                    { 
+                    {
                       backgroundColor: newRequest.priority === priority ? colors.primary : 'transparent',
                       borderColor: colors.border
                     }
@@ -247,7 +248,7 @@ export default function MoneyRequestScreen() {
           </View>
         </View>
       </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 

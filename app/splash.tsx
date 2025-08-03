@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import {
   View,
@@ -6,7 +5,8 @@ import {
   StyleSheet,
   Animated,
   StatusBar,
-  Dimensions
+  Dimensions,
+  Image
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -39,10 +39,11 @@ export default function SplashScreen() {
       setTimeout(async () => {
         try {
           const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-          if (hasSeenOnboarding) {
-            router.replace('/auth/redirector');
+          // const userToken = await AsyncStorage.getItem('userToken'); // Check for user token
+          if (hasSeenOnboarding === 'true') {
+            router.replace('/(tabs)'); // Redirect to home if logged in
           } else {
-            router.replace('/onboarding');
+            router.replace('/onboarding'); // Redirect to onboarding if not
           }
         } catch (error) {
           console.error('Error checking onboarding status:', error);
@@ -56,9 +57,9 @@ export default function SplashScreen() {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#4A90E2" />
-      
-      <Animated.View 
+      <StatusBar barStyle="light-content" backgroundColor="#FFFFFF" />
+
+      <Animated.View
         style={[
           styles.content,
           {
@@ -69,14 +70,18 @@ export default function SplashScreen() {
       >
         {/* Logo/Icon */}
         <View style={styles.logoContainer}>
-          <Text style={styles.logoEmoji}>🎓</Text>
+          <Image
+            source={require('../assets/images/icon.png')}
+            style={styles.logoEmoji}
+            resizeMode="contain"
+          />
           <View style={styles.logoBorder} />
         </View>
-        
+
         {/* App Name */}
         <Text style={styles.appName}>VisionariesAI</Text>
         <Text style={styles.appSubtitle}>School System</Text>
-        
+
         {/* Loading indicator */}
         <View style={styles.loadingContainer}>
           <Animated.View style={[styles.loadingDot, { opacity: fadeAnim }]} />
@@ -97,7 +102,7 @@ export default function SplashScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4A90E2',
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -112,29 +117,26 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   logoEmoji: {
-    fontSize: 100,
-    textAlign: 'center',
+    height: 80,
+    width: 80,
   },
   logoBorder: {
     position: 'absolute',
     width: 120,
     height: 120,
-    borderRadius: 60,
-    borderWidth: 3,
-    borderColor: '#FFFFFF',
     opacity: 0.3,
   },
   appName: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#4A90E2',
     textAlign: 'center',
     marginBottom: 8,
     letterSpacing: 1,
   },
   appSubtitle: {
     fontSize: 18,
-    color: '#FFFFFF',
+    color: '#4A90E2',
     textAlign: 'center',
     opacity: 0.9,
     marginBottom: 60,
@@ -149,7 +151,7 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#4A90E2',
     marginHorizontal: 4,
   },
   footer: {
@@ -158,13 +160,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    color: '#FFFFFF',
+    color: '#4A90E2',
     fontSize: 14,
     opacity: 0.8,
     marginBottom: 4,
   },
   versionText: {
-    color: '#FFFFFF',
+    color: '#4A90E2',
     fontSize: 12,
     opacity: 0.6,
   },

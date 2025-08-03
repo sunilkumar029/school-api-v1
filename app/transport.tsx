@@ -14,6 +14,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface Driver {
   id: string;
@@ -171,7 +172,7 @@ export default function TransportScreen() {
         <Text style={[styles.driverAssigned, { color: colors.textSecondary }]}>
           Driver: {driver?.name || 'Unassigned'}
         </Text>
-        
+
         <View style={styles.stopsContainer}>
           <Text style={[styles.stopsTitle, { color: colors.textPrimary }]}>Stops & Timings:</Text>
           {item.stops.map((stop, index) => (
@@ -217,7 +218,7 @@ export default function TransportScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Transport"
         onMenuPress={() => setDrawerVisible(true)}
@@ -252,7 +253,7 @@ export default function TransportScreen() {
       </View>
 
       {renderContent()}
-    </View>
+    </SafeAreaView>
   );
 }
 

@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface WeatherData {
   temperature: number;
@@ -71,7 +72,7 @@ export default function WeatherScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Weather"
         onMenuPress={() => setDrawerVisible(true)}
@@ -93,21 +94,21 @@ export default function WeatherScreen() {
               <Text style={styles.refreshIcon}>🔄</Text>
             </TouchableOpacity>
           </View>
-          
+
           <View style={styles.currentWeatherMain}>
             <Text style={styles.weatherIcon}>{getWeatherIcon(weather.condition)}</Text>
             <Text style={[styles.temperature, { color: colors.textPrimary }]}>{weather.temperature}°C</Text>
           </View>
-          
+
           <Text style={[styles.condition, { color: colors.textSecondary }]}>{weather.condition}</Text>
-          
+
           <View style={styles.weatherDetails}>
             <View style={styles.detailItem}>
               <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Humidity</Text>
               <Text style={[styles.detailValue, { color: colors.textPrimary }]}>{weather.humidity}%</Text>
             </View>
           </View>
-          
+
           <Text style={[styles.lastUpdated, { color: colors.textSecondary }]}>
             Last updated: {lastUpdated.toLocaleTimeString()}
           </Text>
@@ -129,7 +130,7 @@ export default function WeatherScreen() {
           </Text>
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

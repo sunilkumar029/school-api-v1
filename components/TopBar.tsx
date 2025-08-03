@@ -54,23 +54,25 @@ export const TopBar: React.FC<TopBarProps> = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    paddingTop: 36,
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 24,
     borderBottomWidth: 1,
     elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    position: 'relative',
   },
   menuButton: {
-    padding: 8,
+    padding: 24,
+    position: 'absolute',
+    left: 16,
   },
   menuIcon: {
-    fontSize: 20,
+    fontSize: 28,
     fontWeight: 'bold',
   },
   title: {
@@ -82,6 +84,8 @@ const styles = StyleSheet.create({
   },
   actions: {
     flexDirection: 'row',
+    position: 'absolute',
+    right: 16,
   },
   actionButton: {
     padding: 8,

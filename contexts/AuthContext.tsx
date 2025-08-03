@@ -6,6 +6,7 @@ import React, {
   ReactNode,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 interface User {
   id: string;
@@ -103,6 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setBaseUrlState(null);
       setIsAuthenticated(false);
+      router.push("/auth/login"); // Update this path according to your actual login screen route
     } catch (error) {
       console.error("Error clearing auth data:", error);
     }

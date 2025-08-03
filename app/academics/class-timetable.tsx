@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface TimetableSlot {
   subject?: string;
@@ -121,17 +122,17 @@ export default function ClassTimetableScreen() {
 
   const renderTimetableSlot = (slot: TimetableSlot, day: string, periodIndex: number) => {
     const isBreak = periods[periodIndex] === 'Break';
-    
+
     return (
       <TouchableOpacity
         key={`${day}-${periodIndex}`}
         style={[
           styles.slot,
           {
-            backgroundColor: isBreak 
-              ? colors.border + '50' 
-              : slot.subject 
-                ? colors.primary + '20' 
+            backgroundColor: isBreak
+              ? colors.border + '50'
+              : slot.subject
+                ? colors.primary + '20'
                 : colors.surface,
             borderColor: colors.border
           }
@@ -163,7 +164,7 @@ export default function ClassTimetableScreen() {
   const currentTimetable = classTimetables[selectedClass] || {};
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Class Timetable"
         onMenuPress={() => setDrawerVisible(true)}
@@ -266,7 +267,7 @@ export default function ClassTimetableScreen() {
           <Text style={styles.editHelpText}>Tap on any slot to edit or clear it</Text>
         </View>
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 

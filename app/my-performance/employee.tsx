@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function EmployeePerformanceScreen() {
   const { colors } = useTheme();
@@ -38,7 +39,7 @@ export default function EmployeePerformanceScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="My Performance"
         onMenuPress={() => setDrawerVisible(true)}
@@ -99,7 +100,7 @@ export default function EmployeePerformanceScreen() {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

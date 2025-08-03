@@ -20,7 +20,7 @@ export const OverviewCard: React.FC<OverviewCardProps> = ({
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}
       onPress={onPress}
       activeOpacity={0.7}

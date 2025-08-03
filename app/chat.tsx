@@ -13,6 +13,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 interface ChatItem {
   id: string;
@@ -81,15 +82,15 @@ export default function ChatScreen() {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <TopBar 
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopBar
         title="Chat"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}
       />
-      
-      <SideDrawer 
+
+      <SideDrawer
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
@@ -110,7 +111,7 @@ export default function ChatScreen() {
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
