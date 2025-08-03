@@ -19,10 +19,10 @@ export const AuthRedirectorScreen: React.FC = () => {
   const checkAuthStatus = () => {
     if (isAuthenticated) {
       // User is authenticated, navigate to the main app
-      router.replace("/");
+      router.replace("/(tabs)");
     } else {
-      // User is not authenticated, navigate to the login screen
-      router.replace("/auth/login");
+      // User is not authenticated, navigate to the organization email screen
+      router.replace("/auth/organisation-email");
     }
   };
 

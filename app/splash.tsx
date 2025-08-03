@@ -39,14 +39,23 @@ export default function SplashScreen() {
       setTimeout(async () => {
         try {
           const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
-          // const userToken = await AsyncStorage.getItem('userToken'); // Check for user token
+          const userToken = await AsyncStorage.getItem('auth_token');
+          
           if (hasSeenOnboarding === 'true') {
-            router.replace('/(tabs)'); // Redirect to home if logged in
+            // User has seen onboarding, check if they're logged in
+            if (userToken) {
+              // User is logged in, go to home
+              router.replace('/(tabs)');
+            } else {
+              // User has seen onboarding but not logged in, go to login
+              router.replace('/auth/organisation-email');
+            }
           } else {
-            router.replace('/onboarding'); // Redirect to onboarding if not
+            // User hasn't seen onboarding, show onboarding
+            router.replace('/onboarding');
           }
         } catch (error) {
-          console.error('Error checking onboarding status:', error);
+          console.error('Error checking app state:', error);
           router.replace('/onboarding');
         }
       }, 2500);

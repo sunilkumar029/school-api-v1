@@ -20,12 +20,24 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const router = useRouter();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
   const { colors, fontSize } = useTheme();
   const [drawerVisible, setDrawerVisible] = useState(false);
 
+  // Show loading while auth is being checked
+  if (isLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <View style={styles.loadingContainer}>
+          <Text style={[styles.loadingText, { color: colors.text }]}>Loading...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  // Redirect to splash if not authenticated
   if (!isAuthenticated) {
-    console.log("Not authenticated");
+    router.replace('/splash');
     return null;
   }
 
@@ -273,6 +285,15 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: '500',
   },
   content: {
     flex: 1,

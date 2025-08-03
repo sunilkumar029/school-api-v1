@@ -19,19 +19,14 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <Stack>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
           <Stack.Screen name="splash" options={{ headerShown: false }} />
           <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/organisation-email" options={{ headerShown: false }} />
           <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-          <Stack.Screen
-            name="auth/organisation-email"
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name="auth/redirector"
-            options={{ headerShown: false }}
-          />
+          <Stack.Screen name="auth/redirector" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar style="auto" />

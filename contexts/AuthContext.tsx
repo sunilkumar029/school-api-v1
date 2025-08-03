@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUser(null);
       setBaseUrlState(null);
       setIsAuthenticated(false);
-      router.push("/auth/login"); // Update this path according to your actual login screen route
+      router.replace("/splash"); // Go back to splash to restart the flow
     } catch (error) {
       console.error("Error clearing auth data:", error);
     }
