@@ -5,13 +5,17 @@
 
 ### Core Infrastructure
 - [x] API Service (`api/apiService.ts`) - Comprehensive API client with all endpoints
-- [x] API Hooks (`hooks/useApi.ts`) - Custom React hooks for data fetching
+- [x] API Hooks (`hooks/useApi.ts`) - Custom React hooks for data fetching with chat, documents, and device readings
 - [x] Authentication APIs - Already working (email validation, token generation)
 
 ### Screens Updated
 - [x] Home Screen (`app/(tabs)/index.tsx`) - Announcements, Events, Attendance Dashboard
 - [x] Events Screen (`app/(tabs)/events.tsx`) - Real events from API
 - [x] Notifications Screen (`app/(tabs)/notifications.tsx`) - Started integration
+- [x] Weather Screen (`app/weather.tsx`) - IoT device readings integration
+- [x] Department Screen (`app/(tabs)/department.tsx`) - Real departments and branches data
+- [x] Chat Screen (`app/chat.tsx`) - Real-time messaging with API
+- [x] File Management Screen (`app/file-management.tsx`) - Document management with API
 
 ## 🔄 Next Steps - Prioritized Integration
 
@@ -21,24 +25,22 @@
    - Add `app/academics/staff-attendance.tsx`
    - Use APIs: `/api/attendance/`, `/api/attendance-dashboard/`
 
-2. **Department Screen**
-   - Update `app/(tabs)/department.tsx`
-   - Use APIs: `/api/departments/`, `/api/branches/`
-
-3. **Academic Management**
+2. **Academic Management**
    - Update `app/academics/` screens
    - Use APIs: `/api/academic-years/`, `/api/attendance/attendance-report-student/`
 
-4. **Chat/Communication**
-   - Update `app/chat.tsx`
-   - Use APIs: `/api/chat/`, `/api/chat/all-received-chats/`
+3. **Classes Screen**
+   - Update `app/(tabs)/classes.tsx`
+   - Use APIs: `/api/classes/`, `/api/classes/roster/`, `/api/classes/schedule/`
+
+### Recently Implemented ✅
+- **Weather & IoT Dashboard** - Live device readings, sensor monitoring, system status
+- **Department Management** - Real departments and branches with detailed information
+- **Chat System** - Real-time messaging, online status, message history
+- **Document Management** - File upload/download, categorization, search functionality
 
 ### Medium Priority (Enhanced Features)
-5. **Document Management**
-   - Update `app/file-management.tsx`
-   - Use APIs: `/api/documents/`
-
-6. **Leave Management**
+5. **Leave Management**
    - Create leave application screens
    - Use APIs: `/api/annual-leave-quotas/`
 

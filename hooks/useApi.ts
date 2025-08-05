@@ -184,3 +184,81 @@ export function useBranches(params?: any) {
 
   return { data, loading, error, refetch: fetchData };
 }
+
+export function useChatMessages(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getChatMessages(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch chat messages');
+      console.error('Error fetching chat messages:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useDocuments(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getDocuments(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch documents');
+      console.error('Error fetching documents:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useDeviceReadings(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getDeviceReadings(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch device readings');
+      console.error('Error fetching device readings:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}

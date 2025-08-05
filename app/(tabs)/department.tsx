@@ -1,15 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
-  FlatList,
-  TextInput,
-  Modal,
+  ScrollView,
+  ActivityIndicator,
   Alert,
+  RefreshControl,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,15 +16,27 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDepartments, useBranches } from '@/hooks/useApi';
+import { apiService } from '@/api/apiService';
 
 interface Department {
-  id: string;
+  id: number;
   name: string;
-  type: 'academic' | 'admin' | 'support';
-  head: string;
-  staffCount: number;
-  status: 'active' | 'archived';
-  description: string;
+  department_type: string;
+  description?: string;
+  head_of_department?: string;
+  is_active: boolean;
+  branch?: any;
+  created: string;
+  modified: string;
+}
+
+interface Branch {
+  id: number;
+  name: string;
+  code: string;
+  is_active: boolean;
+  address?: string;
 }
 
 export default function DepartmentScreen() {
@@ -33,190 +44,205 @@ export default function DepartmentScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedTab, setSelectedTab] = useState<'departments' | 'branches'>('departments');
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState<'all' | 'academic' | 'admin' | 'support'>('all');
-  const [addDepartmentModal, setAddDepartmentModal] = useState(false);
-  const [newDepartment, setNewDepartment] = useState({
-    name: '',
-    type: 'academic' as Department['type'],
-    head: '',
-    description: '',
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { 
+    data: departments, 
+    loading: departmentsLoading, 
+    error: departmentsError, 
+    refetch: refetchDepartments 
+  } = useDepartments({ 
+    search: searchQuery,
+    is_active: true,
+    ordering: 'name'
   });
 
-  const [departments, setDepartments] = useState<Department[]>([
-    {
-      id: '1',
-      name: 'Computer Science',
-      type: 'academic',
-      head: 'Dr. Sarah Johnson',
-      staffCount: 12,
-      status: 'active',
-      description: 'Computer Science and Engineering Department',
-    },
-    {
-      id: '2',
-      name: 'Mathematics',
-      type: 'academic',
-      head: 'Prof. Michael Chen',
-      staffCount: 8,
-      status: 'active',
-      description: 'Mathematics and Statistics Department',
-    },
-    {
-      id: '3',
-      name: 'Administration',
-      type: 'admin',
-      head: 'Ms. Jennifer Wilson',
-      staffCount: 15,
-      status: 'active',
-      description: 'Administrative Services Department',
-    },
-    {
-      id: '4',
-      name: 'IT Support',
-      type: 'support',
-      head: 'Mr. David Brown',
-      staffCount: 6,
-      status: 'active',
-      description: 'Information Technology Support',
-    },
-    {
-      id: '5',
-      name: 'Library Services',
-      type: 'support',
-      head: 'Ms. Emily Davis',
-      staffCount: 4,
-      status: 'archived',
-      description: 'Library and Information Services',
-    },
-  ]);
-
-  const filteredDepartments = departments.filter(dept => {
-    const matchesSearch = dept.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      dept.head.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesFilter = selectedFilter === 'all' || dept.type === selectedFilter;
-    return matchesSearch && matchesFilter;
+  const { 
+    data: branches, 
+    loading: branchesLoading, 
+    error: branchesError, 
+    refetch: refetchBranches 
+  } = useBranches({ 
+    search: searchQuery,
+    is_active: true,
+    ordering: 'name'
   });
 
-  const addNewDepartment = () => {
-    if (!newDepartment.name || !newDepartment.head) {
-      Alert.alert('Error', 'Please fill all required fields');
-      return;
-    }
-
-    const department: Department = {
-      id: (departments.length + 1).toString(),
-      name: newDepartment.name,
-      type: newDepartment.type,
-      head: newDepartment.head,
-      staffCount: 0,
-      status: 'active',
-      description: newDepartment.description,
-    };
-
-    setDepartments(prev => [...prev, department]);
-    setNewDepartment({ name: '', type: 'academic', head: '', description: '' });
-    setAddDepartmentModal(false);
-    Alert.alert('Success', 'Department added successfully!');
-  };
-
-  const toggleDepartmentStatus = (id: string) => {
-    setDepartments(prev => prev.map(dept =>
-      dept.id === id
-        ? { ...dept, status: dept.status === 'active' ? 'archived' : 'active' }
-        : dept
-    ));
-  };
-
-  const getTypeColor = (type: Department['type']) => {
-    switch (type) {
-      case 'academic': return '#007AFF';
-      case 'admin': return '#FF9500';
-      case 'support': return '#34C759';
-      default: return colors.textSecondary;
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    try {
+      if (selectedTab === 'departments') {
+        await refetchDepartments();
+      } else {
+        await refetchBranches();
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    } finally {
+      setRefreshing(false);
     }
   };
 
-  const renderDepartment = ({ item }: { item: Department }) => (
-    <View style={[styles.departmentCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <View style={styles.departmentHeader}>
-        <View style={styles.departmentInfo}>
-          <Text style={[styles.departmentName, { color: colors.textPrimary }]}>{item.name}</Text>
-          <View style={[styles.typeBadge, { backgroundColor: getTypeColor(item.type) }]}>
-            <Text style={styles.typeText}>{item.type.toUpperCase()}</Text>
-          </View>
-        </View>
+  const handleDepartmentPress = async (department: Department) => {
+    try {
+      const departmentDetails = await apiService.getDepartment(department.id);
+      Alert.alert(
+        department.name,
+        `Type: ${department.department_type}\n` +
+        `Status: ${department.is_active ? 'Active' : 'Inactive'}\n` +
+        `${department.description || 'No description available'}`,
+        [
+          { text: 'OK', style: 'default' },
+          {
+            text: 'View Details',
+            onPress: () => {
+              // Navigate to department details screen if it exists
+              console.log('Navigate to department details:', department);
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error fetching department details:', error);
+      Alert.alert('Error', 'Failed to load department details');
+    }
+  };
+
+  const handleBranchPress = async (branch: Branch) => {
+    try {
+      const branchDetails = await apiService.getBranch(branch.id);
+      Alert.alert(
+        branch.name,
+        `Code: ${branch.code}\n` +
+        `Status: ${branch.is_active ? 'Active' : 'Inactive'}\n` +
+        `${branch.address || 'No address available'}`,
+        [
+          { text: 'OK', style: 'default' },
+          {
+            text: 'View Details',
+            onPress: () => {
+              console.log('Navigate to branch details:', branch);
+            }
+          }
+        ]
+      );
+    } catch (error) {
+      console.error('Error fetching branch details:', error);
+      Alert.alert('Error', 'Failed to load branch details');
+    }
+  };
+
+  const renderDepartmentCard = (department: Department) => (
+    <TouchableOpacity
+      key={department.id}
+      style={[styles.card, { backgroundColor: colors.surface }]}
+      onPress={() => handleDepartmentPress(department)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+          {department.name}
+        </Text>
         <View style={[
           styles.statusBadge,
-          { backgroundColor: item.status === 'active' ? '#34C759' : '#8E8E93' }
+          { backgroundColor: department.is_active ? '#E8F5E8' : '#FFEBEE' }
         ]}>
-          <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
+          <Text style={[
+            styles.statusText,
+            { color: department.is_active ? '#2E7D32' : '#C62828' }
+          ]}>
+            {department.is_active ? 'Active' : 'Inactive'}
+          </Text>
         </View>
       </View>
 
-      <Text style={[styles.departmentDescription, { color: colors.textSecondary }]}>
-        {item.description}
+      <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]}>
+        {department.department_type}
       </Text>
 
-      <View style={styles.departmentMeta}>
-        <Text style={[styles.headName, { color: colors.textPrimary }]}>
-          Head: {item.head}
+      {department.description && (
+        <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
+          {department.description}
         </Text>
-        <Text style={[styles.staffCount, { color: colors.textSecondary }]}>
-          Staff: {item.staffCount}
-        </Text>
-      </View>
+      )}
 
-      {user?.is_staff && (
-        <View style={styles.departmentActions}>
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.primary }]}
-            onPress={() => Alert.alert('Edit', `Edit ${item.name} department`)}
-          >
-            <Text style={styles.actionButtonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: item.status === 'active' ? '#FF3B30' : '#34C759' }]}
-            onPress={() => toggleDepartmentStatus(item.id)}
-          >
-            <Text style={styles.actionButtonText}>
-              {item.status === 'active' ? 'Archive' : 'Restore'}
-            </Text>
-          </TouchableOpacity>
+      {department.head_of_department && (
+        <View style={styles.cardInfo}>
+          <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>
+            Head of Department:
+          </Text>
+          <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+            {department.head_of_department}
+          </Text>
         </View>
       )}
-    </View>
+
+      <View style={styles.cardFooter}>
+        <Text style={[styles.cardDate, { color: colors.textSecondary }]}>
+          Created: {new Date(department.created).toLocaleDateString()}
+        </Text>
+        <TouchableOpacity style={styles.arrowButton}>
+          <Text style={[styles.arrow, { color: colors.primary }]}>→</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
 
-  const renderFilters = () => (
-    <View style={styles.filtersContainer}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {['all', 'academic', 'admin', 'support'].map((filter) => (
-          <TouchableOpacity
-            key={filter}
-            style={[
-              styles.filterButton,
-              { borderColor: colors.border },
-              selectedFilter === filter && { backgroundColor: colors.primary, borderColor: colors.primary }
-            ]}
-            onPress={() => setSelectedFilter(filter as any)}
-          >
-            <Text style={[
-              styles.filterButtonText,
-              { color: selectedFilter === filter ? '#FFFFFF' : colors.textPrimary }
-            ]}>
-              {filter.charAt(0).toUpperCase() + filter.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-    </View>
+  const renderBranchCard = (branch: Branch) => (
+    <TouchableOpacity
+      key={branch.id}
+      style={[styles.card, { backgroundColor: colors.surface }]}
+      onPress={() => handleBranchPress(branch)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.cardHeader}>
+        <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
+          {branch.name}
+        </Text>
+        <View style={[
+          styles.statusBadge,
+          { backgroundColor: branch.is_active ? '#E8F5E8' : '#FFEBEE' }
+        ]}>
+          <Text style={[
+            styles.statusText,
+            { color: branch.is_active ? '#2E7D32' : '#C62828' }
+          ]}>
+            {branch.is_active ? 'Active' : 'Inactive'}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={[styles.cardSubtitle, { color: colors.textSecondary }]}>
+        Code: {branch.code}
+      </Text>
+
+      {branch.address && (
+        <Text style={[styles.cardDescription, { color: colors.textSecondary }]}>
+          {branch.address}
+        </Text>
+      )}
+
+      <View style={styles.cardFooter}>
+        <Text style={[styles.cardDate, { color: colors.textSecondary }]}>
+          Branch ID: {branch.id}
+        </Text>
+        <TouchableOpacity style={styles.arrowButton}>
+          <Text style={[styles.arrow, { color: colors.primary }]}>→</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
+
+  const isLoading = departmentsLoading || branchesLoading;
+  const error = departmentsError || branchesError;
+  const data = selectedTab === 'departments' ? departments : branches;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Departments"
+        title="Departments & Branches"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}
@@ -227,136 +253,93 @@ export default function DepartmentScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Search and Add */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
-        <TextInput
-          style={[styles.searchInput, { borderColor: colors.border, color: colors.textPrimary }]}
-          placeholder="Search departments..."
-          placeholderTextColor={colors.textSecondary}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-        {user?.is_staff && (
+      <View style={styles.content}>
+        {/* Tab Navigation */}
+        <View style={[styles.tabContainer, { backgroundColor: colors.surface }]}>
           <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
-            onPress={() => setAddDepartmentModal(true)}
+            style={[
+              styles.tab,
+              selectedTab === 'departments' && { backgroundColor: colors.primary }
+            ]}
+            onPress={() => setSelectedTab('departments')}
           >
-            <Text style={styles.addButtonText}>+ Add</Text>
+            <Text style={[
+              styles.tabText,
+              { color: selectedTab === 'departments' ? '#FFFFFF' : colors.textSecondary }
+            ]}>
+              Departments ({departments.length})
+            </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.tab,
+              selectedTab === 'branches' && { backgroundColor: colors.primary }
+            ]}
+            onPress={() => setSelectedTab('branches')}
+          >
+            <Text style={[
+              styles.tabText,
+              { color: selectedTab === 'branches' ? '#FFFFFF' : colors.textSecondary }
+            ]}>
+              Branches ({branches.length})
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Error State */}
+        {error && (
+          <View style={[styles.errorCard, { backgroundColor: '#FFEBEE' }]}>
+            <Text style={[styles.errorText, { color: '#C62828' }]}>
+              {error}
+            </Text>
+            <TouchableOpacity onPress={handleRefresh} style={styles.retryButton}>
+              <Text style={[styles.retryText, { color: colors.primary }]}>Retry</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Loading State */}
+        {isLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+              Loading {selectedTab}...
+            </Text>
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.scrollView}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={handleRefresh}
+                colors={[colors.primary]}
+                tintColor={colors.primary}
+              />
+            }
+          >
+            {data.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                  No {selectedTab} found
+                </Text>
+                <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
+                  <Text style={[styles.refreshText, { color: colors.primary }]}>
+                    Refresh
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <View style={styles.cardContainer}>
+                {selectedTab === 'departments'
+                  ? data.map((dept: Department) => renderDepartmentCard(dept))
+                  : data.map((branch: Branch) => renderBranchCard(branch))
+                }
+              </View>
+            )}
+          </ScrollView>
         )}
       </View>
-
-      {/* Filters */}
-      {renderFilters()}
-
-      {/* Statistics */}
-      <View style={[styles.statsContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>
-            {departments.filter(d => d.status === 'active').length}
-          </Text>
-          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Active</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>
-            {departments.reduce((sum, d) => sum + d.staffCount, 0)}
-          </Text>
-          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Staff</Text>
-        </View>
-        <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: colors.primary }]}>
-            {departments.filter(d => d.type === 'academic').length}
-          </Text>
-          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Academic</Text>
-        </View>
-      </View>
-
-      {/* Departments List */}
-      <FlatList
-        data={filteredDepartments}
-        renderItem={renderDepartment}
-        keyExtractor={(item) => item.id}
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
-      />
-
-      {/* Add Department Modal */}
-      <Modal
-        visible={addDepartmentModal}
-        transparent
-        animationType="slide"
-        onRequestClose={() => setAddDepartmentModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add New Department</Text>
-
-            <TextInput
-              style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
-              placeholder="Department Name"
-              placeholderTextColor={colors.textSecondary}
-              value={newDepartment.name}
-              onChangeText={(text) => setNewDepartment(prev => ({ ...prev, name: text }))}
-            />
-
-            <TextInput
-              style={[styles.input, { borderColor: colors.border, color: colors.textPrimary }]}
-              placeholder="Department Head"
-              placeholderTextColor={colors.textSecondary}
-              value={newDepartment.head}
-              onChangeText={(text) => setNewDepartment(prev => ({ ...prev, head: text }))}
-            />
-
-            <TextInput
-              style={[styles.input, { borderColor: colors.border, color: colors.textPrimary, height: 80 }]}
-              placeholder="Description"
-              placeholderTextColor={colors.textSecondary}
-              value={newDepartment.description}
-              onChangeText={(text) => setNewDepartment(prev => ({ ...prev, description: text }))}
-              multiline
-            />
-
-            <View style={styles.typeSelector}>
-              <Text style={[styles.typeSelectorLabel, { color: colors.textPrimary }]}>Type:</Text>
-              <View style={styles.typeButtons}>
-                {['academic', 'admin', 'support'].map((type) => (
-                  <TouchableOpacity
-                    key={type}
-                    style={[
-                      styles.typeButton,
-                      { borderColor: colors.border },
-                      newDepartment.type === type && { backgroundColor: colors.primary, borderColor: colors.primary }
-                    ]}
-                    onPress={() => setNewDepartment(prev => ({ ...prev, type: type as Department['type'] }))}
-                  >
-                    <Text style={[
-                      styles.typeButtonText,
-                      { color: newDepartment.type === type ? '#FFFFFF' : colors.textPrimary }
-                    ]}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: colors.border }]}
-                onPress={() => setAddDepartmentModal(false)}
-              >
-                <Text style={[styles.modalButtonText, { color: colors.textPrimary }]}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: colors.primary }]}
-                onPress={addNewDepartment}
-              >
-                <Text style={styles.modalButtonText}>Add Department</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
     </SafeAreaView>
   );
 }
@@ -365,103 +348,83 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  searchContainer: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 12,
-  },
-  searchInput: {
+  content: {
     flex: 1,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-  },
-  addButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 8,
-    justifyContent: 'center',
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  filtersContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 16,
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    marginRight: 8,
-  },
-  filterButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  statsContainer: {
-    flexDirection: 'row',
     padding: 16,
-    marginHorizontal: 16,
-    borderRadius: 12,
-    marginBottom: 8,
   },
-  statItem: {
+  tabContainer: {
+    flexDirection: 'row',
+    borderRadius: 8,
+    padding: 4,
+    marginBottom: 16,
+  },
+  tab: {
     flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 6,
     alignItems: 'center',
   },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  tabText: {
+    fontSize: 14,
+    fontWeight: '600',
   },
-  statLabel: {
+  errorCard: {
+    padding: 16,
+    borderRadius: 8,
+    marginBottom: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  errorText: {
+    flex: 1,
     fontSize: 14,
   },
-  listContent: {
-    padding: 16,
+  retryButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
-  departmentCard: {
+  retryText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  cardContainer: {
+    paddingBottom: 20,
+  },
+  card: {
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
-    borderWidth: 1,
-    elevation: 1,
+    elevation: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  departmentHeader: {
+  cardHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 8,
   },
-  departmentInfo: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  departmentName: {
+  cardTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  typeBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  typeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: '600',
+    flex: 1,
+    marginRight: 12,
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -469,105 +432,63 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statusText: {
-    color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
   },
-  departmentDescription: {
+  cardSubtitle: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  cardDescription: {
     fontSize: 14,
     marginBottom: 12,
     lineHeight: 20,
   },
-  departmentMeta: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  cardInfo: {
     marginBottom: 12,
   },
-  headName: {
+  infoLabel: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  infoValue: {
     fontSize: 14,
     fontWeight: '600',
   },
-  staffCount: {
-    fontSize: 14,
-  },
-  departmentActions: {
+  cardFooter: {
     flexDirection: 'row',
-    gap: 8,
-  },
-  actionButton: {
-    flex: 1,
-    paddingVertical: 8,
-    borderRadius: 6,
+    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
+  cardDate: {
+    fontSize: 12,
   },
-  modalOverlay: {
+  arrowButton: {
+    padding: 4,
+  },
+  arrow: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  emptyContainer: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     alignItems: 'center',
+    paddingVertical: 60,
   },
-  modalContent: {
-    width: '90%',
-    padding: 20,
-    borderRadius: 12,
-    maxHeight: '80%',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
+  emptyText: {
+    fontSize: 16,
     marginBottom: 16,
-    fontSize: 16,
   },
-  typeSelector: {
-    marginBottom: 20,
-  },
-  typeSelectorLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  typeButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  typeButton: {
-    flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 6,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  typeButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
-  },
-  modalButton: {
-    flex: 1,
+  refreshButton: {
+    paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
-  modalButtonText: {
-    fontSize: 16,
+  refreshText: {
+    fontSize: 14,
     fontWeight: '600',
-    color: '#FFFFFF',
   },
 });
