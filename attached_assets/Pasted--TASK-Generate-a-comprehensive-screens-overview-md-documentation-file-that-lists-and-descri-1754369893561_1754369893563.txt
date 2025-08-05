@@ -1,0 +1,61 @@
+📄 **TASK**: Generate a comprehensive `screens-overview.md` documentation file that lists and describes all ~45 screens in the **VisionariesAI School System** mobile application.
+
+---
+
+### ✍️ FORMAT:
+
+For each screen, include:
+
+#### 1. **Screen Name** (e.g., “Dashboard”, “Classroom Management”)
+
+#### 2. **Module Category**
+(e.g., Core Module, Academic, Finance, Hostel, Library, Sports, etc.)
+
+#### 3. **Purpose**
+A short paragraph explaining what the screen does from a user’s perspective.
+
+#### 4. **Features and Interactions**
+- Bullet list of interactive elements on the screen (buttons, tabs, actions)
+- State-based behaviors (e.g., loading, success, error)
+- UI features (e.g., charts, lists, tables)
+
+#### 5. **User Flow**
+Describe what happens from the moment the user lands on this screen — what they can do, where they can go next.
+
+#### 6. **Backend Integration**
+- ✅ **APIs integrated** (list all endpoints currently wired up)
+- ❌ **Mock data used** (if still using dummy/local data)
+- 🧩 **Required APIs** (based on available Swagger/OpenAPI documentation for full backend implementation)
+
+---
+
+### 🔄 CURRENT INTEGRATION STATUS
+
+Include a `summary table` at the top of the doc like this:
+
+| Screen | Module | APIs Integrated | APIs Pending | Mock Data |
+|--------|--------|------------------|---------------|------------|
+| Dashboard | Core | Weather ✅ | Metrics ❌ | Metrics ✅ |
+| Academic Year | Academic | ✅ | – | – |
+| Timetable | Academic | ❌ | `/api/period/teacher-timetable/`, `/api/period/` | ✅ |
+
+---
+
+### 🧭 OUR NEXT PHASE: SCREEN-BY-SCREEN INTEGRATION PLAN
+
+Please include this note at the end of the markdown file:
+
+> **Integration Roadmap**:
+> Starting from this point forward, the development team will proceed with a **screen-by-screen backend integration** strategy. The team (guided by ChatGPT) will:
+> - Pick one screen at a time
+> - Review its current functionality
+> - Identify required APIs from the backend schema
+> - Provide detailed integration instructions to Replit Agent
+> 
+> Each API endpoint will be connected and tested per screen before moving to the next one.
+
+---
+
+📁 Save the output as `screens-overview.md`
+
+This will give the team and ChatGPT a complete snapshot of where the project stands, and help accelerate the final backend integration process.
