@@ -14,7 +14,7 @@ class ApiService {
 
   constructor() {
     this.api = axios.create({
-      timeout: 10000,
+      timeout: 30000, // Increased timeout
       headers: {
         'Content-Type': 'application/json',
       },
@@ -23,10 +23,15 @@ class ApiService {
     // Request interceptor to add auth token and base URL
     this.api.interceptors.request.use(async (config) => {
       const token = await AsyncStorage.getItem('auth_token');
-      const baseUrl = await AsyncStorage.getItem('base_url');
+      let baseUrl = await AsyncStorage.getItem('base_url');
       
       if (token) {
         config.headers.Authorization = `Token ${token}`;
+      }
+      
+      // Fallback to demo server if no base URL is set
+      if (!baseUrl) {
+        baseUrl = 'https://demo-sms-backend.herokuapp.com'; // Demo server fallback
       }
       
       if (baseUrl) {

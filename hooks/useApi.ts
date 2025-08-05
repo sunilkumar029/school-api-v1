@@ -262,3 +262,81 @@ export function useDeviceReadings(params?: any) {
 
   return { data, loading, error, refetch: fetchData };
 }
+
+export function useAttendance(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getAttendance(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch attendance data');
+      console.error('Error fetching attendance:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useAmenities(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getAmenities(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch amenities');
+      console.error('Error fetching amenities:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useDesignations(params?: any) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getDesignations(params);
+      setData(response.results || []);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch designations');
+      console.error('Error fetching designations:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [params]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: fetchData };
+}
