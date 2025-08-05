@@ -1,0 +1,63 @@
+App Structure: Setup Files
+
+Create two main files: index.tsx and home.tsx within the app directory.
+index.tsx: This will handle the authentication flow and make decisions based on the user's authentication status.
+home.tsx: This will contain the main user interface for authenticated users.
+Modify index.tsx: Add Authentication Logic
+
+Import necessary modules such as React, useEffect, and the useAuth hook.
+Use useEffect to check the authentication state:
+If users are authenticated, redirect them to the home.tsx page.
+If they are not authenticated and loading is complete, redirect to the splash screen.
+Show a loading message while checking the authentication status.
+Provide the complete code for index.tsx:
+import React, { useEffect } from "react";
+import { useRouter } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
+export default function AppEntry() {
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+  useEffect(() => {
+    const redirectUser = () => {
+      if (!isLoading) {
+        if (isAuthenticated) {
+          router.replace("/home");
+        } else {
+          router.replace("/splash");
+        }
+      }
+    };
+    redirectUser();
+  }, [isAuthenticated, isLoading, router]);
+  return null; // This component doesn't render anything
+}
+Create home.tsx: Main App Interface
+Set up UI components, such as Welcome message, Navigation links, or overview cards.
+Keep this screen accessible only to authenticated users.
+Provide the complete code for home.tsx:
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
+import { useAuth } from "@/contexts/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
+export default function HomeScreen() {
+  const { user } = useAuth();
+  return (
+    <SafeAreaView style={styles.container}>
+      <Text>Welcome, {user?.username || "User"}!</Text>
+      {/* Additional components and content go here */}
+    </SafeAreaView>
+  );
+}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+});
+Update Routing: Ensure Correct Navigation
+
+Ensure that the routing logic accurately moves between the splash screen, index.tsx, and home.tsx.
+Finalize Application Deployment
+
+Set up deployment details and ensure the app is ready to be run on Replit, using expo start.

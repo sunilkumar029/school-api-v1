@@ -27,13 +27,9 @@ export default function HomeScreen() {
   // Show loading while auth is being checked
   if (isLoading) {
     return (
-      <SafeAreaView
-        style={[styles.container, { backgroundColor: colors.background }]}
-      >
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <View style={styles.loadingContainer}>
-          <Text style={[styles.loadingText, { color: colors.text }]}>
-            Loading...
-          </Text>
+          <Text style={[styles.loadingText, { color: colors.text }]}>Loading...</Text>
         </View>
       </SafeAreaView>
     );
@@ -41,7 +37,7 @@ export default function HomeScreen() {
 
   // Redirect to splash if not authenticated
   if (!isAuthenticated) {
-    router.replace("/splash");
+    router.replace('/splash');
     return null;
   }
 
@@ -103,9 +99,7 @@ export default function HomeScreen() {
   ];
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Home"
         onMenuPress={() => setDrawerVisible(true)}
@@ -179,7 +173,7 @@ export default function HomeScreen() {
                 title={item.title}
                 value={item.value}
                 icon={item.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </ScrollView>
@@ -196,7 +190,7 @@ export default function HomeScreen() {
                 key={index}
                 title={action.title}
                 icon={action.icon}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -244,7 +238,7 @@ export default function HomeScreen() {
                 title={event.title}
                 time={event.time}
                 type={event.type}
-                onPress={() => {}}
+                onPress={() => { }}
               />
             ))}
           </View>
@@ -294,12 +288,12 @@ const styles = StyleSheet.create({
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   loadingText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   content: {
     flex: 1,
