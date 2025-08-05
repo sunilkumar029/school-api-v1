@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -7,13 +6,15 @@ import {
   ScrollView,
   TouchableOpacity,
   RefreshControl,
-  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { useAnnouncements } from '@/hooks/useApi';
 
 interface NotificationItem {
   id: string;
@@ -36,52 +37,19 @@ interface ActivityItem {
 
 export default function NotificationsScreen() {
   const { colors } = useTheme();
+  const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'notifications' | 'activities'>('notifications');
   const [notificationFilter, setNotificationFilter] = useState<'all' | 'events' | 'tasks' | 'payments' | 'alerts'>('all');
   const [refreshing, setRefreshing] = useState(false);
 
-  // Mock data
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    {
-      id: '1',
-      type: 'event',
-      title: 'New Event: Science Exhibition',
-      message: 'A new science exhibition has been scheduled for next week.',
-      timestamp: '2024-01-15 10:30',
-      isRead: false,
-      priority: 'high',
-    },
-    {
-      id: '2',
-      type: 'task',
-      title: 'Assignment Due',
-      message: 'Your mathematics assignment is due tomorrow.',
-      timestamp: '2024-01-15 09:15',
-      isRead: false,
-      priority: 'medium',
-    },
-    {
-      id: '3',
-      type: 'payment',
-      title: 'Fee Payment Reminder',
-      message: 'Your semester fee payment is pending.',
-      timestamp: '2024-01-14 16:45',
-      isRead: true,
-      priority: 'high',
-    },
-    {
-      id: '4',
-      type: 'alert',
-      title: 'System Maintenance',
-      message: 'The system will be under maintenance tonight from 11 PM to 2 AM.',
-      timestamp: '2024-01-14 14:20',
-      isRead: true,
-      priority: 'low',
-    },
-  ]);
+  const { data: announcements, loading, error, refetch } = useAnnouncements({
+    ordering: '-created',
+    limit: 50
+  });
 
+  // Mock data for activities, as it's not being replaced in this change.
   const activities: ActivityItem[] = [
     {
       id: '1',
@@ -119,10 +87,7 @@ export default function NotificationsScreen() {
 
   const onRefresh = () => {
     setRefreshing(true);
-    // Simulate API call
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    refetch().finally(() => setRefreshing(false));
   };
 
   const getTypeColor = (type: string) => {
@@ -145,11 +110,9 @@ export default function NotificationsScreen() {
   };
 
   const markAsRead = (id: string) => {
-    setNotifications(prev =>
-      prev.map(notif =>
-        notif.id === id ? { ...notif, isRead: true } : notif
-      )
-    );
+    // In a real scenario, this would call an API to mark as read.
+    // For now, we'll simulate it locally if needed, but API integration is preferred.
+    console.log('Marking as read:', id);
   };
 
   const deleteNotification = (id: string) => {
@@ -162,14 +125,15 @@ export default function NotificationsScreen() {
           text: 'Delete',
           style: 'destructive',
           onPress: () => {
-            setNotifications(prev => prev.filter(notif => notif.id !== id));
+            // In a real scenario, this would call an API to delete the notification.
+            console.log('Deleting notification:', id);
           },
         },
       ]
     );
   };
 
-  const filteredNotifications = notifications.filter(notif => {
+  const filteredNotifications = (announcements || []).filter(notif => {
     if (notificationFilter === 'all') return true;
     if (notificationFilter === 'events') return notif.type === 'event';
     if (notificationFilter === 'tasks') return notif.type === 'task';
@@ -178,7 +142,7 @@ export default function NotificationsScreen() {
     return true;
   });
 
-  const unreadCount = notifications.filter(n => !n.isRead).length;
+  const unreadCount = (announcements || []).filter(n => !n.isRead).length;
 
   const FilterTab = ({ label, value, count }: { label: string; value: string; count?: number }) => (
     <TouchableOpacity
@@ -207,7 +171,7 @@ export default function NotificationsScreen() {
     </TouchableOpacity>
   );
 
-  const NotificationCard = ({ item }: { item: NotificationItem }) => (
+  const NotificationCard = ({ item }: { item: any }) => ( // Changed type to 'any' to accommodate API response structure
     <TouchableOpacity
       style={[
         styles.notificationCard,
@@ -332,39 +296,56 @@ export default function NotificationsScreen() {
 
       {activeTab === 'notifications' ? (
         <View style={styles.content}>
-          {/* Filter Tabs */}
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.filterTabs}
-          >
-            <FilterTab label="All" value="all" count={notifications.length} />
-            <FilterTab label="Events" value="events" count={notifications.filter(n => n.type === 'event').length} />
-            <FilterTab label="Tasks" value="tasks" count={notifications.filter(n => n.type === 'task').length} />
-            <FilterTab label="Payments" value="payments" count={notifications.filter(n => n.type === 'payment').length} />
-            <FilterTab label="Alerts" value="alerts" count={notifications.filter(n => n.type === 'alert').length} />
-          </ScrollView>
+          {loading ? (
+            <View style={styles.centered}>
+              <ActivityIndicator size="large" color={colors.primary} />
+            </View>
+          ) : error ? (
+            <View style={styles.centered}>
+              <Text style={[styles.errorText, { color: colors.error }]}>
+                Error loading notifications
+              </Text>
+              <TouchableOpacity onPress={onRefresh} style={styles.retryButton}>
+                <Text style={styles.retryButtonText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <>
+              {/* Filter Tabs */}
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={styles.filterTabs}
+              >
+                <FilterTab label="All" value="all" count={(announcements || []).length} />
+                <FilterTab label="Events" value="events" count={(announcements || []).filter(n => n.type === 'event').length} />
+                <FilterTab label="Tasks" value="tasks" count={(announcements || []).filter(n => n.type === 'task').length} />
+                <FilterTab label="Payments" value="payments" count={(announcements || []).filter(n => n.type === 'payment').length} />
+                <FilterTab label="Alerts" value="alerts" count={(announcements || []).filter(n => n.type === 'alert').length} />
+              </ScrollView>
 
-          {/* Notifications List */}
-          <ScrollView
-            style={styles.list}
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }
-          >
-            {filteredNotifications.length === 0 ? (
-              <View style={styles.emptyState}>
-                <Text style={styles.emptyIcon}>🔔</Text>
-                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                  No notifications found
-                </Text>
-              </View>
-            ) : (
-              filteredNotifications.map((item) => (
-                <NotificationCard key={item.id} item={item} />
-              ))
-            )}
-          </ScrollView>
+              {/* Notifications List */}
+              <ScrollView
+                style={styles.list}
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+              >
+                {filteredNotifications.length === 0 ? (
+                  <View style={styles.emptyState}>
+                    <Text style={styles.emptyIcon}>🔔</Text>
+                    <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                      No notifications found
+                    </Text>
+                  </View>
+                ) : (
+                  filteredNotifications.map((item) => (
+                    <NotificationCard key={item.id} item={item} />
+                  ))
+                )}
+              </ScrollView>
+            </>
+          )}
         </View>
       ) : (
         <ScrollView
@@ -527,5 +508,26 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 50,
+  },
+  errorText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  retryButton: {
+    backgroundColor: '#6200EE', // Example primary color
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });

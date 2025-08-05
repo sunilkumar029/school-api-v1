@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,12 +18,21 @@ import { QuickActionButton } from "@/components/QuickActionButton";
 import { RecentActivityItem } from "@/components/RecentActivityItem";
 import { EventItem } from "@/components/EventItem";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { apiService } from "@/api/apiService";
 
 export default function HomeScreen() {
   const router = useRouter();
   const { isAuthenticated, user, isLoading } = useAuth();
   const { colors, fontSize } = useTheme();
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [dashboardData, setDashboardData] = useState({
+    announcements: [],
+    events: [],
+    attendanceStats: null,
+    leaveQuotas: [],
+  });
+  const [loadingData, setLoadingData] = useState(true);
 
   // Show loading while auth is being checked
   if (isLoading) {
@@ -52,13 +62,104 @@ export default function HomeScreen() {
     return "Good Evening";
   };
 
-  const overviewData = [
-    { title: "Attendance", value: "96%", icon: "📅" },
-    { title: "Events Today", value: "3 Events", icon: "📌" },
-    { title: "Tasks Due", value: "2 Pending", icon: "📋" },
-    { title: "Leaves Left", value: "4 Days", icon: "🏖" },
-    { title: "Wallet Balance", value: "₹1,250", icon: "💰" },
-  ];
+  const fetchDashboardData = async () => {
+    try {
+      setLoadingData(true);
+      
+      // Fetch multiple data sources in parallel
+      const [announcementsRes, eventsRes, attendanceRes, leaveQuotasRes] = await Promise.allSettled([
+        apiService.getAnnouncements({ limit: 5 }),
+        apiService.getEvents({ limit: 5, ordering: '-start_date' }),
+        apiService.getAttendanceDashboard(),
+        apiService.getAnnualLeaveQuotas({ user: user?.id }),
+      ]);
+
+      const announcements = announcementsRes.status === 'fulfilled' 
+        ? announcementsRes.value.results || []
+        : [];
+      
+      const events = eventsRes.status === 'fulfilled' 
+        ? eventsRes.value.results || []
+        : [];
+        
+      const attendanceStats = attendanceRes.status === 'fulfilled' 
+        ? attendanceRes.value
+        : null;
+        
+      const leaveQuotas = leaveQuotasRes.status === 'fulfilled' 
+        ? leaveQuotasRes.value.results || []
+        : [];
+
+      setDashboardData({
+        announcements,
+        events,
+        attendanceStats,
+        leaveQuotas,
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
+    } finally {
+      setLoadingData(false);
+    }
+  };
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchDashboardData();
+    setRefreshing(false);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchDashboardData();
+    }
+  }, [isAuthenticated, user]);
+
+  const getOverviewData = () => {
+    const todayEvents = dashboardData.events.filter(event => {
+      const eventDate = new Date(event.start_date);
+      const today = new Date();
+      return eventDate.toDateString() === today.toDateString();
+    });
+
+    const totalLeaves = dashboardData.leaveQuotas.reduce((sum, quota) => 
+      sum + (quota.allocated_days || 0), 0
+    );
+    const usedLeaves = dashboardData.leaveQuotas.reduce((sum, quota) => 
+      sum + (quota.used_days || 0), 0
+    );
+    const remainingLeaves = totalLeaves - usedLeaves;
+
+    return [
+      { 
+        title: "Attendance", 
+        value: dashboardData.attendanceStats?.attendance_percentage 
+          ? `${Math.round(dashboardData.attendanceStats.attendance_percentage)}%`
+          : "N/A", 
+        icon: "📅" 
+      },
+      { 
+        title: "Events Today", 
+        value: `${todayEvents.length} Events`, 
+        icon: "📌" 
+      },
+      { 
+        title: "Tasks Due", 
+        value: "2 Pending", // This would need a tasks API
+        icon: "📋" 
+      },
+      { 
+        title: "Leaves Left", 
+        value: `${remainingLeaves > 0 ? remainingLeaves : 0} Days`, 
+        icon: "🏖" 
+      },
+      { 
+        title: "Wallet Balance", 
+        value: "₹1,250", // This would need a wallet/finance API
+        icon: "💰" 
+      },
+    ];
+  };
 
   const quickActions = [
     { title: "Apply Leave", icon: "📝" },
@@ -90,17 +191,26 @@ export default function HomeScreen() {
     },
   ];
 
-  const upcomingEvents = [
-    { title: "Science Fair", time: "10 AM", type: "Campus Event" },
-    { title: "Online Class", time: "2 PM", type: "Zoom Meeting" },
-    { title: "Parent Meeting", time: "4 PM", type: "Conference" },
-  ];
+  const getUpcomingEvents = () => {
+    return dashboardData.events.slice(0, 3).map(event => ({
+      title: event.name || 'Untitled Event',
+      time: new Date(event.start_date).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      }),
+      type: event.applies_to || 'General Event',
+      onPress: () => {
+        // Navigate to event details
+        console.log('Navigate to event:', event.id);
+      }
+    }));
+  };
 
-  const announcements = [
-    "🎓 Mid-term exams starting from January 20th",
-    "📢 New circular regarding holiday schedule",
-    "📅 Republic Day celebration on 26th January",
-  ];
+  const getFormattedAnnouncements = () => {
+    return dashboardData.announcements.slice(0, 3).map(announcement => 
+      `📢 ${announcement.title || announcement.description || 'No title'}`
+    );
+  };
 
   return (
     <SafeAreaView
@@ -118,7 +228,18 @@ export default function HomeScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
+      >
         {/* Greeting Header */}
         <View
           style={[styles.greetingSection, { backgroundColor: colors.surface }]}
@@ -173,7 +294,7 @@ export default function HomeScreen() {
             showsHorizontalScrollIndicator={false}
             style={styles.overviewScroll}
           >
-            {overviewData.map((item, index) => (
+            {getOverviewData().map((item, index) => (
               <OverviewCard
                 key={index}
                 title={item.title}
@@ -238,15 +359,25 @@ export default function HomeScreen() {
             Upcoming Events
           </Text>
           <View style={styles.eventsContainer}>
-            {upcomingEvents.map((event, index) => (
-              <EventItem
-                key={index}
-                title={event.title}
-                time={event.time}
-                type={event.type}
-                onPress={() => {}}
-              />
-            ))}
+            {loadingData ? (
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                Loading events...
+              </Text>
+            ) : getUpcomingEvents().length > 0 ? (
+              getUpcomingEvents().map((event, index) => (
+                <EventItem
+                  key={index}
+                  title={event.title}
+                  time={event.time}
+                  type={event.type}
+                  onPress={event.onPress}
+                />
+              ))
+            ) : (
+              <Text style={[styles.noDataText, { color: colors.textSecondary }]}>
+                No upcoming events
+              </Text>
+            )}
           </View>
         </View>
 
@@ -261,24 +392,34 @@ export default function HomeScreen() {
               { backgroundColor: colors.surface },
             ]}
           >
-            {announcements.map((announcement, index) => (
-              <View
-                key={index}
-                style={[
-                  styles.announcementItem,
-                  { borderBottomColor: colors.border },
-                ]}
-              >
-                <Text
+            {loadingData ? (
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                Loading announcements...
+              </Text>
+            ) : getFormattedAnnouncements().length > 0 ? (
+              getFormattedAnnouncements().map((announcement, index) => (
+                <View
+                  key={index}
                   style={[
-                    styles.announcementText,
-                    { color: colors.textPrimary },
+                    styles.announcementItem,
+                    { borderBottomColor: colors.border },
                   ]}
                 >
-                  {announcement}
-                </Text>
-              </View>
-            ))}
+                  <Text
+                    style={[
+                      styles.announcementText,
+                      { color: colors.textPrimary },
+                    ]}
+                  >
+                    {announcement}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={[styles.noDataText, { color: colors.textSecondary }]}>
+                No announcements available
+              </Text>
+            )}
           </View>
         </View>
 
@@ -404,5 +545,16 @@ const styles = StyleSheet.create({
   },
   bottomSpacing: {
     height: 20,
+  },
+  loadingText: {
+    fontSize: 14,
+    textAlign: 'center',
+    padding: 20,
+  },
+  noDataText: {
+    fontSize: 14,
+    textAlign: 'center',
+    padding: 20,
+    fontStyle: 'italic',
   },
 });

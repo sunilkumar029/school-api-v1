@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View,
@@ -6,15 +5,17 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  FlatList,
   TextInput,
+  RefreshControl,
+  ActivityIndicator,
 } from 'react-native';
-import { useTheme, fontSizes } from '@/contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useEvents } from '@/hooks/useApi';
 
 interface Event {
   id: string;
@@ -31,60 +32,51 @@ interface Event {
 }
 
 export default function EventsScreen() {
-  const { colors, fontSize } = useTheme();
+  const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past' | 'create'>('upcoming');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const events: Event[] = [
-    {
-      id: '1',
-      title: 'Science Fair 2024',
-      date: 'Jan 15, 2024',
-      time: '10:00 AM - 4:00 PM',
-      location: 'Main Auditorium',
-      tags: ['Academic', 'Competition'],
-      attendees: 45,
-      maxAttendees: 100,
-      description: 'Annual science fair showcasing student projects',
-      isRSVPed: true,
-      status: 'upcoming',
-    },
-    {
-      id: '2',
-      title: 'Parent-Teacher Meeting',
-      date: 'Jan 20, 2024',
-      time: '2:00 PM - 5:00 PM',
-      location: 'Classrooms',
-      tags: ['Meeting', 'Academic'],
-      attendees: 120,
-      description: 'Quarterly parent-teacher interactions',
-      isRSVPed: false,
-      status: 'upcoming',
-    },
-    {
-      id: '3',
-      title: 'Sports Day',
-      date: 'Dec 10, 2023',
-      time: '9:00 AM - 3:00 PM',
-      location: 'Sports Ground',
-      tags: ['Sports', 'Competition'],
-      attendees: 200,
-      description: 'Annual sports day event',
-      isRSVPed: true,
-      status: 'past',
-    },
-  ];
+  const { data: events, loading, error, refetch } = useEvents({
+    search: searchQuery,
+    ordering: '-start_date',
+  });
 
-  const filteredEvents = events
-    .filter(event => event.status === (activeTab === 'create' ? 'upcoming' : activeTab))
-    .filter(event =>
-      event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      event.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+  const getEventStatus = (startDate: string, endDate?: string) => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = endDate ? new Date(endDate) : start;
+
+    if (now < start) return 'upcoming';
+    if (now > end) return 'completed';
+    return 'ongoing';
+  };
+
+  const formatEventData = (apiEvents: any[]) => {
+    return apiEvents.map(event => ({
+      id: event.id,
+      title: event.name || 'Untitled Event',
+      date: new Date(event.start_date).toISOString().split('T')[0],
+      time: new Date(event.start_date).toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit'
+      }),
+      location: event.location || 'TBD',
+      category: event.applies_to || 'General',
+      description: event.description || 'No description available',
+      status: getEventStatus(event.start_date, event.end_date),
+    }));
+  };
+
+  const formattedEvents = formatEventData(events);
+
+  const filteredEvents = formattedEvents.filter(event => {
+    const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = activeTab === 'create' ? true : event.status === (activeTab === 'past' ? 'completed' : 'upcoming');
+    return matchesSearch && matchesFilter;
+  });
 
   const handleRSVP = (eventId: string) => {
     // Handle RSVP logic here
@@ -271,14 +263,91 @@ export default function EventsScreen() {
       {activeTab === 'create' ? (
         renderCreateEventForm()
       ) : (
-        <FlatList
-          data={filteredEvents}
-          renderItem={renderEvent}
-          keyExtractor={(item) => item.id}
-          style={styles.eventsList}
+        <ScrollView
+          style={styles.content}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.listContent}
-        />
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={refetch}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        >
+          {/* Events List */}
+          <View style={styles.eventsList}>
+            {loading && !events.length ? (
+              <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color={colors.primary} />
+                <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                  Loading events...
+                </Text>
+              </View>
+            ) : error ? (
+              <View style={styles.errorContainer}>
+                <Text style={[styles.errorText, { color: colors.error || '#FF6B6B' }]}>
+                  {error}
+                </Text>
+                <TouchableOpacity onPress={refetch} style={[styles.retryButton, { backgroundColor: colors.primary }]}>
+                  <Text style={styles.retryButtonText}>Retry</Text>
+                </TouchableOpacity>
+              </View>
+            ) : filteredEvents.length === 0 ? (
+              <View style={styles.emptyContainer}>
+                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                  No events found
+                </Text>
+              </View>
+            ) : (
+              filteredEvents.map((event) => (
+                <View key={event.id} style={[styles.eventCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+                  <View style={styles.eventHeader}>
+                    <Text style={[styles.eventTitle, { color: colors.textPrimary }]}>{event.title}</Text>
+                    <View style={styles.tags}>
+                      {event.tags.map((tag, index) => (
+                        <View key={index} style={[styles.tag, { backgroundColor: colors.primary + '20' }]}>
+                          <Text style={[styles.tagText, { color: colors.primary }]}>{tag}</Text>
+                        </View>
+                      ))}
+                    </View>
+                  </View>
+
+                  <View style={styles.eventDetails}>
+                    <Text style={[styles.eventDate, { color: colors.textPrimary }]}>📅 {event.date}</Text>
+                    <Text style={[styles.eventTime, { color: colors.textSecondary }]}>🕒 {event.time}</Text>
+                    <Text style={[styles.eventLocation, { color: colors.textSecondary }]}>📍 {event.location}</Text>
+                    <Text style={[styles.eventAttendees, { color: colors.textSecondary }]}>
+                      👥 {event.attendees}{event.maxAttendees ? `/${event.maxAttendees}` : ''} attendees
+                    </Text>
+                  </View>
+
+                  <Text style={[styles.eventDescription, { color: colors.textSecondary }]}>
+                    {event.description}
+                  </Text>
+
+                  {activeTab === 'upcoming' && (
+                    <TouchableOpacity
+                      style={[
+                        styles.rsvpButton,
+                        { backgroundColor: event.isRSVPed ? colors.surface : colors.primary },
+                        { borderColor: colors.primary, borderWidth: event.isRSVPed ? 1 : 0 }
+                      ]}
+                      onPress={() => handleRSVP(event.id)}
+                    >
+                      <Text style={[
+                        styles.rsvpButtonText,
+                        { color: item.isRSVPed ? colors.primary : '#FFFFFF' }
+                      ]}>
+                        {event.isRSVPed ? 'RSVP\'d ✓' : 'RSVP'}
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              ))
+            )}
+          </View>
+        </ScrollView>
       )}
     </SafeAreaView>
   );
@@ -437,5 +506,57 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  eventActions: {
+    flexDirection: 'row',
+    marginTop: 8,
+  },
+  actionButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    marginRight: 8,
+  },
+  actionButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
