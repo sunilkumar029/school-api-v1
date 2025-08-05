@@ -1,0 +1,218 @@
+/api/academic-years/:
+    get:
+      operationId: academic_years_list
+      description: A mixin class that provides common functionality for viewsets.
+      parameters:
+      - name: created
+        required: false
+        in: query
+        description: created
+        schema:
+          type: string
+      - name: created_by
+        required: false
+        in: query
+        description: created_by
+        schema:
+          type: string
+      - name: end_date
+        required: false
+        in: query
+        description: end_date
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: modified
+        required: false
+        in: query
+        description: modified
+        schema:
+          type: string
+      - name: modified_by
+        required: false
+        in: query
+        description: modified_by
+        schema:
+          type: string
+      - name: name
+        required: false
+        in: query
+        description: name
+        schema:
+          type: string
+      - name: offset
+        required: false
+        in: query
+        description: The initial index from which to return the results.
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - name: start_date
+        required: false
+        in: query
+        description: start_date
+        schema:
+          type: string
+      tags:
+      - academic-years
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAcademicYearList'
+          description: ''
+    post:
+      operationId: academic_years_create
+      description: A mixin class that provides common functionality for viewsets.
+      tags:
+      - academic-years
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+  /api/academic-years/{id}/:
+    get:
+      operationId: academic_years_retrieve
+      description: A mixin class that provides common functionality for viewsets.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - academic-years
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    put:
+      operationId: academic_years_update
+      description: A mixin class that provides common functionality for viewsets.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - academic-years
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AcademicYear'
+        required: true
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    patch:
+      operationId: academic_years_partial_update
+      description: A mixin class that provides common functionality for viewsets.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - academic-years
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYear'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYear'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAcademicYear'
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcademicYear'
+          description: ''
+    delete:
+      operationId: academic_years_destroy
+      description: A mixin class that provides common functionality for viewsets.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this academic year.
+        required: true
+      tags:
+      - academic-years
+      security:
+      - cookieAuth: []
+      - tokenAuth: []
+      responses:
+        '204':
+          description: No response body
