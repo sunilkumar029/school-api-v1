@@ -60,9 +60,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const storedBaseUrl = await AsyncStorage.getItem("base_url");
 
       if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-        setIsAuthenticated(true);
+        // Verify token is still valid by making a simple API call
+        try {
+          const response = await fetch(`${storedBaseUrl || 'https://vai.dev.sms.visionariesai.com'}/api/academic-years/`, {
+            headers: {
+              'Authorization': `Token ${storedToken}`,
+              'Content-Type': 'application/json',
+            },
+            timeout: 10000,
+          });
+          
+          if (response.ok) {
+            setToken(storedToken);
+            setUser(JSON.parse(storedUser));
+            setIsAuthenticated(true);
+          } else {
+            // Token is invalid, clear stored data
+            await AsyncStorage.multiRemove(["auth_token", "user_data"]);
+            console.log("Token verification failed, clearing stored auth");
+          }
+        } catch (tokenError) {
+          console.log("Token verification error, clearing stored auth:", tokenError);
+          await AsyncStorage.multiRemove(["auth_token", "user_data"]);
+        }
       }
 
       if (storedBaseUrl) {

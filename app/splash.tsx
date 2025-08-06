@@ -40,12 +40,35 @@ export default function SplashScreen() {
         try {
           const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
           const userToken = await AsyncStorage.getItem('auth_token');
+          const baseUrl = await AsyncStorage.getItem('base_url');
           
           if (hasSeenOnboarding === 'true') {
             // User has seen onboarding, check if they're logged in
-            if (userToken) {
-              // User is logged in, go to home
-              router.replace('/(tabs)');
+            if (userToken && baseUrl) {
+              // Verify token is still valid
+              try {
+                const response = await fetch(`${baseUrl}/api/academic-years/`, {
+                  method: 'HEAD', // Just check if endpoint is accessible
+                  headers: {
+                    'Authorization': `Token ${userToken}`,
+                  },
+                  timeout: 10000,
+                });
+                
+                if (response.ok) {
+                  // Token is valid, go to home
+                  router.replace('/(tabs)');
+                } else {
+                  // Token is invalid, clear and go to login
+                  await AsyncStorage.multiRemove(['auth_token', 'user_data']);
+                  router.replace('/auth/organisation-email');
+                }
+              } catch (tokenError) {
+                // Network error or invalid token, go to login
+                console.log('Token verification failed:', tokenError);
+                await AsyncStorage.multiRemove(['auth_token', 'user_data']);
+                router.replace('/auth/organisation-email');
+              }
             } else {
               // User has seen onboarding but not logged in, go to login
               router.replace('/auth/organisation-email');

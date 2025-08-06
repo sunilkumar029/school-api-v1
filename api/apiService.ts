@@ -20,31 +20,45 @@ class ApiService {
     });
 
     // Request interceptor to add auth token and base URL
-    this.api.interceptors.request.use(async (config) => {
-      const token = await AsyncStorage.getItem("auth_token");
-      let baseUrl = await AsyncStorage.getItem("base_url");
+    this.api.interceptors.request.use(
+      async (config) => {
+        const token = await AsyncStorage.getItem("auth_token");
+        let baseUrl = await AsyncStorage.getItem("base_url");
 
-      if (token) {
-        config.headers.Authorization = `Token 35ffe211b31b6c6fa5ae8823f43ecf8c3d032cdc`;
+        if (token) {
+          config.headers.Authorization = `Token ${token}`;
+        }
+
+        // Fallback to demo server if no base URL is set
+        if (!baseUrl) {
+          baseUrl = "https://vai.dev.sms.visionariesai.com"; // Demo server fallback
+        }
+
+        if (baseUrl) {
+          config.baseURL = baseUrl;
+        }
+
+        return config;
+      },
+      (error) => {
+        console.error("Request interceptor error:", error);
+        return Promise.reject(error);
       }
-
-      // Fallback to demo server if no base URL is set
-      if (!baseUrl) {
-        baseUrl = "https://vai.dev.sms.visionariesai.com"; // Demo server fallback
-      }
-
-      if (baseUrl) {
-        config.baseURL = baseUrl;
-      }
-
-      return config;
-    });
+    );
 
     // Response interceptor for error handling
     this.api.interceptors.response.use(
       (response) => response,
-      (error) => {
+      async (error) => {
         console.error("API Error:", error.response?.data || error.message);
+        
+        // Handle authentication errors
+        if (error.response?.status === 401) {
+          // Clear stored auth data
+          await AsyncStorage.multiRemove(["auth_token", "user_data"]);
+          // The app will handle redirecting to login through AuthContext
+        }
+        
         return Promise.reject(error);
       },
     );

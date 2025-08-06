@@ -39,17 +39,20 @@ export function useEvents(params?: any) {
       setLoading(true);
       setError(null);
       const response = await apiService.getEvents(params);
-      console.log("API Response:", response); // Log the response
+      console.log("API Response:", response);
       setData(response.results || []);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error && "response" in err && err.response
-          ? `Error ${(err as any).response.status}: ${
-              (err as any).response.data
-            }`
-          : err instanceof Error
-            ? err.message
-            : "Failed to fetch events";
+    } catch (err: unknown) {
+      let errorMessage = "Failed to fetch events";
+      
+      if (err && typeof err === 'object') {
+        const axiosError = err as any;
+        if (axiosError.response) {
+          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+      
       setError(errorMessage);
       console.error("Error fetching events:", err);
     } finally {
@@ -59,13 +62,13 @@ export function useEvents(params?: any) {
 
   useEffect(() => {
     fetchData();
-  }, [params]);
+  }, [fetchData]);
 
   return { data, loading, error, refetch: fetchData };
 }
 
 export function useAttendanceDashboard() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -75,10 +78,19 @@ export function useAttendanceDashboard() {
       setError(null);
       const response = await apiService.getAttendanceDashboard();
       setData(response);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "Failed to fetch attendance data",
-      );
+    } catch (err: unknown) {
+      let errorMessage = "Failed to fetch attendance data";
+      
+      if (err && typeof err === 'object') {
+        const axiosError = err as any;
+        if (axiosError.response) {
+          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+      
+      setError(errorMessage);
       console.error("Error fetching attendance dashboard:", err);
     } finally {
       setLoading(false);
