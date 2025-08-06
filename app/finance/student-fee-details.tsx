@@ -211,6 +211,7 @@ export default function StudentFeeDetailsScreen() {
               <TouchableOpacity
                 style={[styles.viewButton, { borderColor: colors.primary }]}
                 onPress={() => {
+                  console.log('View Details pressed for fee:', item.fee.id);
                   setSelectedFeeItem(item);
                   setFeeDetailModalVisible(true);
                 }}

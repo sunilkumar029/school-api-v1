@@ -123,7 +123,16 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       title: 'Management',
       items: [
         { title: 'Inventory', icon: '📦', route: '/inventory', roles: ['admin', 'staff'] },
-        { title: 'Stationery', icon: '📝', route: '/inventory/stationery', roles: ['admin', 'staff'] },
+        {
+          title: 'Stationery',
+          href: '/inventory/stationery',
+          icon: '📝',
+        },
+        {
+          title: 'Stationery Fees',
+          href: '/inventory/stationery-fee',
+          icon: '💰',
+        },
         { title: 'Invoice', icon: '📄', route: '/invoice' },
         { title: 'Sports', icon: '⚽', route: '/sports' },
       ]

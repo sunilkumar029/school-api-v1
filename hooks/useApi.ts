@@ -965,6 +965,68 @@ export const useStationary = (params: any = {}) => {
   return { data, loading, error, refetch };
 };
 
+export const useStationaryFee = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStationaryFee(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Stationary fee fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary fee');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useStudentDetails = (id: number) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!id) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStudentDetails(id);
+      setData(response);
+    } catch (err: any) {
+      console.error('Student details fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch student details');
+    } finally {
+      setLoading(false);
+    }
+  }, [id]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
 export const useInventoryTracking = (params: any = {}) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);

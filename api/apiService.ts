@@ -661,6 +661,41 @@ class ApiService {
   async deleteInventoryTracking(id: number): Promise<void> {
     await this.api.delete(`/api/inventory-tracking/${id}/`);
   }
+
+  // Stationery Fee Management
+  async getStationaryFee(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/stationary-fee/", { params });
+    return response.data;
+  }
+
+  async createStationaryFee(data: any): Promise<any> {
+    const response = await this.api.post("/api/stationary-fee/", data);
+    return response.data;
+  }
+
+  async getStationaryFeeById(id: number): Promise<any> {
+    const response = await this.api.get(`/api/stationary-fee/${id}/`);
+    return response.data;
+  }
+
+  async updateStationaryFee(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/stationary-fee/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteStationaryFee(id: number): Promise<void> {
+    await this.api.delete(`/api/stationary-fee/${id}/`);
+  }
+
+  async getStudentDetails(id: number): Promise<any> {
+    const response = await this.api.get(`/api/student-details/${id}/`);
+    return response.data;
+  }
+
+  async updateStudentDetails(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/student-details/${id}/`, data);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
