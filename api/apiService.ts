@@ -472,7 +472,27 @@ class ApiService {
     const response = await this.api.get(`/api/groups/${id}/`);
     return response.data;
   }
-}
+
+  // Timetable/Period Management
+  async getPeriods(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/period/", { params });
+    return response.data;
+  }
+
+  async getTeacherTimetable(params?: any): Promise<any> {
+    const response = await this.api.get("/api/period/teacher-timetable/", { params });
+    return response.data;
+  }
+
+  async getSections(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/sections/", { params });
+    return response.data;
+  }
+
+  async getAllUsers(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/users/get-all-users/", { params });
+    return response.data;
+  }
 
 export const apiService = new ApiService();
 export default apiService;

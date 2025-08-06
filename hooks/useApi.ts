@@ -22,7 +22,7 @@ export function useAnnouncements(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     if (!hasInitialized) {
@@ -59,7 +59,7 @@ export function useEvents(params?: any) {
       setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch events";
-      
+
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
@@ -77,10 +77,10 @@ export function useEvents(params?: any) {
           }
         }
       }
-      
+
       setError(errorMessage);
       console.error("Error fetching events:", err);
-      
+
       // Increment retry count and set blocked state if too many failures
       const newRetryCount = retryCount + 1;
       setRetryCount(newRetryCount);
@@ -90,7 +90,7 @@ export function useEvents(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params), retryCount, isBlocked]);
+  }, [JSON.stringify(params), retryCount, isBlocked]); // Added JSON.stringify for params
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -121,7 +121,7 @@ export function useAttendanceDashboard() {
       setData(response);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch attendance data";
-      
+
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
@@ -130,7 +130,7 @@ export function useAttendanceDashboard() {
           errorMessage = axiosError.message;
         }
       }
-      
+
       setError(errorMessage);
       console.error("Error fetching attendance dashboard:", err);
     } finally {
@@ -193,7 +193,7 @@ export function useAcademicYears(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -221,7 +221,7 @@ export function useDepartments(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Use JSON.stringify to properly compare params object
 
   useEffect(() => {
     fetchData();
@@ -247,7 +247,7 @@ export function useBranches(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -275,7 +275,7 @@ export function useChatMessages(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -303,7 +303,7 @@ export function useDocuments(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -331,7 +331,7 @@ export function useDeviceReadings(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -359,7 +359,7 @@ export function useAttendance(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -387,7 +387,7 @@ export function useAmenities(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -415,7 +415,7 @@ export function useDesignations(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Added JSON.stringify for dependency
 
   useEffect(() => {
     fetchData();
@@ -443,14 +443,14 @@ export function useUsers(params?: any) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Add required branch parameter if missing
       const requestParams = {
         ...params,
         // Add default branch if not provided and API requires it
         ...(params && !params.branch && { branch: 1 })
       };
-      
+
       const response = await apiService.getUsers(requestParams);
       setData(response.results || []);
       setHasInitialized(true);
@@ -458,13 +458,13 @@ export function useUsers(params?: any) {
       setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch users";
-      
+
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
           const status = axiosError.response.status;
           const responseData = axiosError.response.data;
-          
+
           if (status === 400 && typeof responseData === 'string' && responseData.includes('Branch is required')) {
             errorMessage = "Branch selection is required. Please select a branch first.";
           } else {
@@ -474,10 +474,10 @@ export function useUsers(params?: any) {
           errorMessage = axiosError.message;
         }
       }
-      
+
       setError(errorMessage);
       console.error("Error fetching users:", err);
-      
+
       // Increment retry count and set blocked state if too many failures
       const newRetryCount = retryCount + 1;
       setRetryCount(newRetryCount);
@@ -487,7 +487,7 @@ export function useUsers(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params), retryCount, isBlocked]);
+  }, [JSON.stringify(params), retryCount, isBlocked]); // Added JSON.stringify for params
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -531,7 +531,7 @@ export function useGroups(params?: any) {
       setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch groups";
-      
+
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
@@ -540,10 +540,10 @@ export function useGroups(params?: any) {
           errorMessage = axiosError.message;
         }
       }
-      
+
       setError(errorMessage);
       console.error("Error fetching groups:", err);
-      
+
       // Increment retry count and set blocked state if too many failures
       const newRetryCount = retryCount + 1;
       setRetryCount(newRetryCount);
@@ -553,7 +553,7 @@ export function useGroups(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params), retryCount, isBlocked]);
+  }, [JSON.stringify(params), retryCount, isBlocked]); // Added JSON.stringify for params
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -570,3 +570,124 @@ export function useGroups(params?: any) {
 
   return { data, loading, error, refetch: manualRefetch };
 }
+
+// Timetable hooks
+export const usePeriods = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getPeriods(params);
+      setData(response.results || response);
+    } catch (err: any) {
+      console.error('Periods fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch periods');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useTeacherTimetable = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getTeacherTimetable(params);
+      setData(response);
+    } catch (err: any) {
+      console.error('Teacher timetable fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch teacher timetable');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useSections = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getSections(params);
+      setData(response.results || response);
+    } catch (err: any) {
+      console.error('Sections fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch sections');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useAllUsers = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getAllUsers(params);
+      setData(response.results || response);
+    } catch (err: any) {
+      console.error('All users fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch users');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
