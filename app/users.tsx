@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
@@ -17,6 +18,7 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUsers, useBranches, useGroups, useAcademicYears } from "@/hooks/useApi";
 import { Picker } from "@react-native-picker/picker";
+import Modal from "react-native-modal";
 
 interface User {
   id: number;
@@ -34,6 +36,9 @@ interface User {
   };
   created: string;
   is_staff: boolean;
+  phone?: string;
+  date_joined?: string;
+  last_login?: string;
 }
 
 interface Branch {
@@ -59,9 +64,19 @@ export default function UsersScreen() {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
-  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number | null>(null);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [userDetailVisible, setUserDetailVisible] = useState(false);
+
+  // Filter states (temporary until applied)
+  const [tempSelectedBranch, setTempSelectedBranch] = useState<number | null>(null);
+  const [tempSelectedGroup, setTempSelectedGroup] = useState<number | null>(null);
+  const [tempSelectedAcademicYear, setTempSelectedAcademicYear] = useState<number | null>(null);
+
+  // Applied filter states
+  const [appliedBranch, setAppliedBranch] = useState<number | null>(null);
+  const [appliedGroup, setAppliedGroup] = useState<number | null>(null);
+  const [appliedAcademicYear, setAppliedAcademicYear] = useState<number | null>(null);
 
   // Fetch data with proper error handling
   const { 
@@ -85,14 +100,14 @@ export default function UsersScreen() {
     refetch: refetchAcademicYears 
   } = useAcademicYears();
 
-  // Build user params based on selected filters
+  // Build user params based on applied filters
   const userParams = useMemo(() => {
     const params: any = { limit: 50 };
-    if (selectedBranch) params.branch = selectedBranch;
-    if (selectedGroup) params.group = selectedGroup;
-    if (selectedAcademicYear) params.academic_year = selectedAcademicYear;
+    if (appliedBranch) params.branch = appliedBranch;
+    if (appliedGroup) params.group = appliedGroup;
+    if (appliedAcademicYear) params.academic_year = appliedAcademicYear;
     return params;
-  }, [selectedBranch, selectedGroup, selectedAcademicYear]);
+  }, [appliedBranch, appliedGroup, appliedAcademicYear]);
 
   const { 
     data: users, 
@@ -124,93 +139,154 @@ export default function UsersScreen() {
     refetchUsers();
   }, [refetchBranches, refetchGroups, refetchAcademicYears, refetchUsers]);
 
+  const handleApplyFilters = useCallback(() => {
+    setAppliedBranch(tempSelectedBranch);
+    setAppliedGroup(tempSelectedGroup);
+    setAppliedAcademicYear(tempSelectedAcademicYear);
+  }, [tempSelectedBranch, tempSelectedGroup, tempSelectedAcademicYear]);
+
+  const handleClearFilters = useCallback(() => {
+    setTempSelectedBranch(null);
+    setTempSelectedGroup(null);
+    setTempSelectedAcademicYear(null);
+    setAppliedBranch(null);
+    setAppliedGroup(null);
+    setAppliedAcademicYear(null);
+  }, []);
+
+  const hasFiltersChanged = useMemo(() => {
+    return tempSelectedBranch !== appliedBranch ||
+           tempSelectedGroup !== appliedGroup ||
+           tempSelectedAcademicYear !== appliedAcademicYear;
+  }, [tempSelectedBranch, appliedBranch, tempSelectedGroup, appliedGroup, tempSelectedAcademicYear, appliedAcademicYear]);
+
+  const handleUserPress = useCallback((user: User) => {
+    setSelectedUser(user);
+    setUserDetailVisible(true);
+  }, []);
+
   const renderFilterSection = () => (
-    <View style={[styles.filterSection, { backgroundColor: colors.surface }]}>
-      <Text style={[styles.filterTitle, { color: colors.textPrimary }]}>
-        Filters
-      </Text>
-
-      {/* Branch Dropdown */}
-      <View style={styles.filterRow}>
-        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-          Branch:
+    <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
+      <TouchableOpacity
+        style={styles.filterHeader}
+        onPress={() => setFiltersExpanded(!filtersExpanded)}
+      >
+        <Text style={[styles.filterTitle, { color: colors.textPrimary }]}>
+          Filters
         </Text>
-        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
-          <Picker
-            selectedValue={selectedBranch}
-            onValueChange={setSelectedBranch}
-            style={[styles.picker, { color: colors.textPrimary }]}
-            dropdownIconColor={colors.textSecondary}
-          >
-            <Picker.Item label="All Branches" value={null} />
-            {branches?.map((branch: Branch) => (
-              <Picker.Item 
-                key={branch.id} 
-                label={branch.name} 
-                value={branch.id} 
-              />
-            ))}
-          </Picker>
-        </View>
-      </View>
-
-      {/* Group Dropdown */}
-      <View style={styles.filterRow}>
-        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-          Group:
+        <Text style={[styles.filterToggle, { color: colors.primary }]}>
+          {filtersExpanded ? '▲' : '▼'}
         </Text>
-        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
-          <Picker
-            selectedValue={selectedGroup}
-            onValueChange={setSelectedGroup}
-            style={[styles.picker, { color: colors.textPrimary }]}
-            dropdownIconColor={colors.textSecondary}
-          >
-            <Picker.Item label="All Groups" value={null} />
-            {groups?.map((group: Group) => (
-              <Picker.Item 
-                key={group.id} 
-                label={group.name} 
-                value={group.id} 
-              />
-            ))}
-          </Picker>
-        </View>
-      </View>
+      </TouchableOpacity>
 
-      {/* Academic Year Dropdown */}
-      <View style={styles.filterRow}>
-        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-          Academic Year:
-        </Text>
-        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
-          <Picker
-            selectedValue={selectedAcademicYear}
-            onValueChange={setSelectedAcademicYear}
-            style={[styles.picker, { color: colors.textPrimary }]}
-            dropdownIconColor={colors.textSecondary}
-          >
-            <Picker.Item label="All Years" value={null} />
-            {academicYears?.map((year: AcademicYear) => (
-              <Picker.Item 
-                key={year.id} 
-                label={year.year} 
-                value={year.id} 
-              />
-            ))}
-          </Picker>
+      {filtersExpanded && (
+        <View style={styles.filterContent}>
+          {/* Branch Dropdown */}
+          <View style={styles.filterRow}>
+            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+              Branch:
+            </Text>
+            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <Picker
+                selectedValue={tempSelectedBranch}
+                onValueChange={setTempSelectedBranch}
+                style={[styles.picker, { color: colors.textPrimary }]}
+                dropdownIconColor={colors.textSecondary}
+              >
+                <Picker.Item label="All Branches" value={null} />
+                {branches?.map((branch: Branch) => (
+                  <Picker.Item 
+                    key={branch.id} 
+                    label={branch.name} 
+                    value={branch.id} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+          {/* Group Dropdown */}
+          <View style={styles.filterRow}>
+            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+              Group:
+            </Text>
+            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <Picker
+                selectedValue={tempSelectedGroup}
+                onValueChange={setTempSelectedGroup}
+                style={[styles.picker, { color: colors.textPrimary }]}
+                dropdownIconColor={colors.textSecondary}
+              >
+                <Picker.Item label="All Groups" value={null} />
+                {groups?.map((group: Group) => (
+                  <Picker.Item 
+                    key={group.id} 
+                    label={group.name} 
+                    value={group.id} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+          {/* Academic Year Dropdown */}
+          <View style={styles.filterRow}>
+            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+              Academic Year:
+            </Text>
+            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+              <Picker
+                selectedValue={tempSelectedAcademicYear}
+                onValueChange={setTempSelectedAcademicYear}
+                style={[styles.picker, { color: colors.textPrimary }]}
+                dropdownIconColor={colors.textSecondary}
+              >
+                <Picker.Item label="All Years" value={null} />
+                {academicYears?.map((year: AcademicYear) => (
+                  <Picker.Item 
+                    key={year.id} 
+                    label={year.year} 
+                    value={year.id} 
+                  />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+          {/* Filter Action Buttons */}
+          <View style={styles.filterActions}>
+            <TouchableOpacity
+              style={[styles.filterButton, styles.clearButton, { borderColor: colors.border }]}
+              onPress={handleClearFilters}
+            >
+              <Text style={[styles.filterButtonText, { color: colors.textSecondary }]}>
+                Clear
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.filterButton, 
+                styles.applyButton, 
+                { backgroundColor: hasFiltersChanged ? colors.primary : colors.border }
+              ]}
+              onPress={handleApplyFilters}
+              disabled={!hasFiltersChanged}
+            >
+              <Text style={[styles.filterButtonText, { color: hasFiltersChanged ? '#FFFFFF' : colors.textSecondary }]}>
+                Apply Filters
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-      </View>
+      )}
     </View>
   );
 
   const renderUserCard = (user: User) => (
     <TouchableOpacity
       key={user.id}
-      style={[styles.userCard, { backgroundColor: colors.surface }]}
-      onPress={() => {
-        Alert.alert("User Details", `View details for ${user.first_name} ${user.last_name}`);
-      }}
+      style={[styles.userCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+      onPress={() => handleUserPress(user)}
     >
       <View style={styles.userHeader}>
         <View style={styles.userInfo}>
@@ -248,6 +324,143 @@ export default function UsersScreen() {
         </Text>
       </View>
     </TouchableOpacity>
+  );
+
+  const renderUserDetailModal = () => (
+    <Modal
+      isVisible={userDetailVisible}
+      onBackdropPress={() => setUserDetailVisible(false)}
+      style={styles.modal}
+      animationIn="slideInUp"
+      animationOut="slideOutDown"
+      backdropOpacity={0.5}
+    >
+      <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+        <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
+          <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+            User Details
+          </Text>
+          <TouchableOpacity
+            onPress={() => setUserDetailVisible(false)}
+            style={styles.closeButton}
+          >
+            <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>
+              ✕
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={styles.modalBody} showsVerticalScrollIndicator={false}>
+          {selectedUser && (
+            <View style={styles.userDetailContent}>
+              <View style={styles.detailSection}>
+                <Text style={[styles.sectionTitle, { color: colors.primary }]}>
+                  Personal Information
+                </Text>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Name:
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                    {selectedUser.first_name} {selectedUser.last_name}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Email:
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                    {selectedUser.email}
+                  </Text>
+                </View>
+                {selectedUser.phone && (
+                  <View style={styles.detailRow}>
+                    <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                      Phone:
+                    </Text>
+                    <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                      {selectedUser.phone}
+                    </Text>
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.detailSection}>
+                <Text style={[styles.sectionTitle, { color: colors.primary }]}>
+                  Organization Details
+                </Text>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Role:
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                    {selectedUser.is_staff ? 'Staff' : 'Student'}
+                  </Text>
+                </View>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Group:
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                    {selectedUser.group?.name || 'No Group'}
+                  </Text>
+                </View>
+                {selectedUser.branch && (
+                  <View style={styles.detailRow}>
+                    <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                      Branch:
+                    </Text>
+                    <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                      {selectedUser.branch.name}
+                    </Text>
+                  </View>
+                )}
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Status:
+                  </Text>
+                  <View style={[
+                    styles.statusBadge,
+                    { backgroundColor: selectedUser.is_active ? '#E8F5E8' : '#FFEBEE' }
+                  ]}>
+                    <Text style={[
+                      styles.statusText,
+                      { color: selectedUser.is_active ? '#4CAF50' : '#F44336' }
+                    ]}>
+                      {selectedUser.is_active ? 'Active' : 'Inactive'}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+
+              <View style={styles.detailSection}>
+                <Text style={[styles.sectionTitle, { color: colors.primary }]}>
+                  Account Information
+                </Text>
+                <View style={styles.detailRow}>
+                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                    Member Since:
+                  </Text>
+                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                    {selectedUser.created ? new Date(selectedUser.created).toLocaleDateString() : 'N/A'}
+                  </Text>
+                </View>
+                {selectedUser.last_login && (
+                  <View style={styles.detailRow}>
+                    <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>
+                      Last Login:
+                    </Text>
+                    <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
+                      {new Date(selectedUser.last_login).toLocaleDateString()}
+                    </Text>
+                  </View>
+                )}
+              </View>
+            </View>
+          )}
+        </ScrollView>
+      </View>
+    </Modal>
   );
 
   const renderErrorState = () => {
@@ -339,6 +552,9 @@ export default function UsersScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* User Detail Modal */}
+      {renderUserDetailModal()}
     </SafeAreaView>
   );
 }
@@ -357,16 +573,33 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  filterSection: {
-    padding: 16,
+  filterContainer: {
     marginHorizontal: 16,
     borderRadius: 8,
     marginBottom: 8,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  filterHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
   },
   filterTitle: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 12,
+  },
+  filterToggle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  filterContent: {
+    paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   filterRow: {
     flexDirection: "row",
@@ -375,17 +608,39 @@ const styles = StyleSheet.create({
   },
   filterLabel: {
     fontSize: 14,
-    width: 80,
+    width: 100,
     fontWeight: "500",
   },
   pickerContainer: {
     flex: 1,
-    borderRadius: 6,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "#E0E0E0",
+    overflow: "hidden",
   },
   picker: {
-    height: 40,
+    height: 44,
+  },
+  filterActions: {
+    flexDirection: "row",
+    gap: 12,
+    marginTop: 8,
+  },
+  filterButton: {
+    flex: 1,
+    height: 44,
+    borderRadius: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  clearButton: {
+    borderWidth: 1,
+  },
+  applyButton: {
+    // backgroundColor handled dynamically
+  },
+  filterButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
   },
   content: {
     flex: 1,
@@ -441,6 +696,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
+    borderWidth: 1,
     elevation: 2,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
@@ -484,5 +740,64 @@ const styles = StyleSheet.create({
   },
   userRole: {
     fontSize: 14,
+  },
+  modal: {
+    justifyContent: "flex-end",
+    margin: 0,
+  },
+  modalContent: {
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    maxHeight: "80%",
+    minHeight: "50%",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 20,
+    borderBottomWidth: 1,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  closeButtonText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  modalBody: {
+    flex: 1,
+  },
+  userDetailContent: {
+    padding: 20,
+  },
+  detailSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 12,
+  },
+  detailRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 8,
+    flexWrap: "wrap",
+  },
+  detailLabel: {
+    fontSize: 14,
+    fontWeight: "500",
+    flex: 1,
+  },
+  detailValue: {
+    fontSize: 14,
+    flex: 2,
+    textAlign: "right",
   },
 });
