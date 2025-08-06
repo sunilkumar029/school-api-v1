@@ -65,6 +65,7 @@ export default function StudentFeeDetailsScreen() {
   const params = useLocalSearchParams();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending');
+  const [paymentFilter, setPaymentFilter] = useState<'all' | 'paid' | 'pending' | 'upcoming'>('all');
 
   const userId = params.userId as string;
   const academicYear = params.academicYear as string;
@@ -137,9 +138,24 @@ export default function StudentFeeDetailsScreen() {
   };
 
   const renderPendingFees = () => {
-    const pendingFees = feeSummary.filter((item: FeeSummaryItem) => 
-      item.total_amount_to_pay > item.total_paid
-    );
+    let pendingFees = feeSummary.filter((item: FeeSummaryItem) => {
+      const pendingAmount = item.total_amount_to_pay - item.total_paid;
+      const dueDate = new Date(item.fee.due_date);
+      const today = new Date();
+      const thirtyDaysFromNow = new Date();
+      thirtyDaysFromNow.setDate(today.getDate() + 30);
+
+      switch (paymentFilter) {
+        case 'paid':
+          return pendingAmount <= 0;
+        case 'pending':
+          return pendingAmount > 0;
+        case 'upcoming':
+          return pendingAmount > 0 && dueDate <= thirtyDaysFromNow && dueDate >= today;
+        default:
+          return true;
+      }
+    });
 
     if (pendingFees.length === 0) {
       return (
@@ -192,7 +208,8 @@ export default function StudentFeeDetailsScreen() {
                 onPress={() => {
                   Alert.alert(
                     'Fee Details',
-                    `Fee Type: ${item.fee.fee_type.name}\nDescription: ${item.fee.fee_type.description}\nTotal: ${formatCurrency(item.fee.amount)}\nPaid: ${formatCurrency(item.total_paid)}\nPending: ${formatCurrency(pendingAmount)}\nDue Date: ${formatDate(item.fee.due_date)}`
+                    `Fee Type: ${item.fee.fee_type.name}\nDescription: ${item.fee.fee_type.description}\nTotal: ${formatCurrency(item.fee.amount)}\nPaid: ${formatCurrency(item.total_paid)}\nPending: ${formatCurrency(pendingAmount)}\nDue Date: ${formatDate(item.fee.due_date)}`,
+                    [{ text: 'OK', style: 'default' }]
                   );
                 }}
               >
@@ -257,7 +274,8 @@ export default function StudentFeeDetailsScreen() {
                 onPress={() => {
                   Alert.alert(
                     'Payment Details',
-                    `Fee Type: ${payment.feetype}\nAmount: ${formatCurrency(payment.amount)}\nMethod: ${payment.payment_type}\nDate: ${formatDateTime(payment.date)}\nReference: ${payment.payment_reference || 'N/A'}`
+                    `Fee Type: ${payment.feetype}\nAmount: ${formatCurrency(payment.amount)}\nMethod: ${payment.payment_type}\nDate: ${formatDateTime(payment.date)}\nReference: ${payment.payment_reference || 'N/A'}`,
+                    [{ text: 'OK', style: 'default' }]
                   );
                 }}
               >
@@ -316,6 +334,54 @@ export default function StudentFeeDetailsScreen() {
           </View>
         </View>
       )}
+
+      {/* Payment Filter Buttons */}
+      <View style={[styles.filterButtonsContainer, { backgroundColor: colors.surface }]}>
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            { backgroundColor: paymentFilter === 'all' ? colors.primary : colors.background, borderColor: colors.border },
+          ]}
+          onPress={() => setPaymentFilter('all')}
+        >
+          <Text style={[styles.filterChipText, { color: paymentFilter === 'all' ? '#FFFFFF' : colors.textSecondary }]}>
+            All Payments
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            { backgroundColor: paymentFilter === 'paid' ? colors.primary : colors.background, borderColor: colors.border },
+          ]}
+          onPress={() => setPaymentFilter('paid')}
+        >
+          <Text style={[styles.filterChipText, { color: paymentFilter === 'paid' ? '#FFFFFF' : colors.textSecondary }]}>
+            Paid
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            { backgroundColor: paymentFilter === 'pending' ? colors.primary : colors.background, borderColor: colors.border },
+          ]}
+          onPress={() => setPaymentFilter('pending')}
+        >
+          <Text style={[styles.filterChipText, { color: paymentFilter === 'pending' ? '#FFFFFF' : colors.textSecondary }]}>
+            Pending
+          </Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.filterChip,
+            { backgroundColor: paymentFilter === 'upcoming' ? colors.primary : colors.background, borderColor: colors.border },
+          ]}
+          onPress={() => setPaymentFilter('upcoming')}
+        >
+          <Text style={[styles.filterChipText, { color: paymentFilter === 'upcoming' ? '#FFFFFF' : colors.textSecondary }]}>
+            Upcoming Due
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {/* Tabs */}
       <View style={[styles.tabContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
@@ -583,5 +649,21 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  filterButtonsContainer: {
+    flexDirection: 'row',
+    padding: 12,
+    gap: 8,
+    flexWrap: 'wrap',
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+  filterChipText: {
+    fontSize: 12,
+    fontWeight: '600',
   },
 });

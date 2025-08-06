@@ -601,6 +601,12 @@ class ApiService {
     const response = await this.api.get("/api/fee-payments/", { params });
     return response.data;
   }
+
+  // Fee Dashboard Analytics
+  async getFeeDashboardAnalytics(params?: any): Promise<any> {
+    const response = await this.api.get("/api/fee-dashboard/fee-overview-analytics/", { params });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

@@ -873,3 +873,33 @@ export const useFeePayments = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+export const useFeeDashboardAnalytics = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getFeeDashboardAnalytics(params);
+      setData(response);
+    } catch (err: any) {
+      console.error('Fee dashboard analytics fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch fee dashboard analytics');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

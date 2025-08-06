@@ -1,4 +1,3 @@
-
 import React from 'react';
 import {
   View,
@@ -12,6 +11,7 @@ import {
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface DrawerItem {
   title: string;
@@ -79,7 +79,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       title: 'Finance',
       items: [
         { title: 'Money Request', icon: '💰', route: '/finance/money-request' },
-        { title: 'Student Fee', icon: '💳', route: '/finance/student-fee' },
+        { title: 'Student Fee', icon: '💳', route: '/finance/student-fee-list' },
         { title: 'Staff Payroll', icon: '💼', route: '/finance/staff-payroll' },
       ]
     },
@@ -144,7 +144,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         if (item.roles && !item.roles.includes(user?.role || 'student')) {
           return null;
         }
-        
+
         return (
           <TouchableOpacity
             key={index}
@@ -198,7 +198,65 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
           {/* Menu Sections */}
           <ScrollView style={styles.menuContainer}>
-            {drawerSections.map((section, index) => renderSection(section, index))}
+            {drawerSections.map((section, index) => {
+              if (section.title === 'Finance') {
+                return (
+                  <View key={index} style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: colors.primary }]}>
+                      {section.title}
+                    </Text>
+                    {section.items.map((item, itemIndex) => {
+                      if (item.roles && !item.roles.includes(user?.role || 'student')) {
+                        return null;
+                      }
+                      // Special handling for Student Fee and Fee Analytics
+                      if (item.route === '/finance/student-fee-list') {
+                        return (
+                          <TouchableOpacity
+                            key={itemIndex}
+                            style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                            onPress={() => handleItemPress(item.route)}
+                          >
+                            <MaterialIcons name="account-balance-wallet" size={24} color={colors.textSecondary} />
+                            <Text style={[styles.menuItemText, { color: colors.textSecondary }]}>Student Fees</Text>
+                          </TouchableOpacity>
+                        );
+                      } else if (item.route === '/finance/student-fee-analytics') {
+                        return (
+                          <TouchableOpacity
+                            key={itemIndex}
+                            style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                            onPress={() => handleItemPress(item.route)}
+                          >
+                            <MaterialIcons name="analytics" size={24} color={colors.textSecondary} />
+                            <View style={styles.menuItemWithBadge}>
+                              <Text style={[styles.menuItemText, { color: colors.textSecondary }]}>Fee Analytics</Text>
+                              <View style={styles.newBadge}>
+                                <Text style={styles.newBadgeText}>NEW</Text>
+                              </View>
+                            </View>
+                          </TouchableOpacity>
+                        );
+                      }
+                      return (
+                        <TouchableOpacity
+                          key={itemIndex}
+                          style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                          onPress={() => handleItemPress(item.route)}
+                        >
+                          <Text style={styles.menuIcon}>{item.icon}</Text>
+                          <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                            {item.title}
+                          </Text>
+                          <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                  </View>
+                );
+              }
+              return renderSection(section, index);
+            })}
           </ScrollView>
         </SafeAreaView>
         <TouchableOpacity style={styles.backdrop} onPress={onClose} />
@@ -303,5 +361,27 @@ const styles = StyleSheet.create({
   },
   backdrop: {
     flex: 1,
+  },
+  menuItemText: {
+    marginLeft: 16,
+    fontSize: 16,
+  },
+  menuItemWithBadge: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginLeft: 16,
+  },
+  newBadge: {
+    backgroundColor: '#EF4444',
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 8,
+  },
+  newBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
 });
