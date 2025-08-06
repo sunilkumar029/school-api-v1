@@ -607,6 +607,60 @@ class ApiService {
     const response = await this.api.get("/api/fee-dashboard/fee-overview-analytics/", { params });
     return response.data;
   }
+
+  // Stationery Management
+  async getStationaryTypes(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/stationary-types/", { params });
+    return response.data;
+  }
+
+  async createStationaryType(data: any): Promise<any> {
+    const response = await this.api.post("/api/stationary-types/", data);
+    return response.data;
+  }
+
+  async getStationaryType(id: number): Promise<any> {
+    const response = await this.api.get(`/api/stationary-types/${id}/`);
+    return response.data;
+  }
+
+  async updateStationaryType(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/stationary-types/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteStationaryType(id: number): Promise<void> {
+    await this.api.delete(`/api/stationary-types/${id}/`);
+  }
+
+  async getStationary(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/stationary/", { params });
+    return response.data;
+  }
+
+  async createStationary(data: any): Promise<any> {
+    const response = await this.api.post("/api/stationary/", data);
+    return response.data;
+  }
+
+  async getInventoryTracking(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/inventory-tracking/", { params });
+    return response.data;
+  }
+
+  async createInventoryTracking(data: any): Promise<any> {
+    const response = await this.api.post("/api/inventory-tracking/", data);
+    return response.data;
+  }
+
+  async updateInventoryTracking(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/inventory-tracking/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteInventoryTracking(id: number): Promise<void> {
+    await this.api.delete(`/api/inventory-tracking/${id}/`);
+  }
 }
 
 export const apiService = new ApiService();

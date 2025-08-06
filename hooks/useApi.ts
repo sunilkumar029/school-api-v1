@@ -903,3 +903,94 @@ export const useFeeDashboardAnalytics = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+// Stationery Management hooks
+export const useStationaryTypes = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStationaryTypes(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Stationary types fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary types');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useStationary = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStationary(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Stationary fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useInventoryTracking = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getInventoryTracking(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Inventory tracking fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory tracking');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

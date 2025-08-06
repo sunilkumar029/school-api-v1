@@ -9,6 +9,7 @@ import {
   ActivityIndicator,
   RefreshControl,
   Alert,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
@@ -66,6 +67,10 @@ export default function StudentFeeDetailsScreen() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeTab, setActiveTab] = useState<'pending' | 'history'>('pending');
   const [paymentFilter, setPaymentFilter] = useState<'all' | 'paid' | 'pending' | 'upcoming'>('all');
+  const [feeDetailModalVisible, setFeeDetailModalVisible] = useState(false);
+  const [selectedFeeItem, setSelectedFeeItem] = useState<FeeSummaryItem | null>(null);
+  const [paymentDetailModalVisible, setPaymentDetailModalVisible] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<PaymentHistory | null>(null);
 
   const userId = params.userId as string;
   const academicYear = params.academicYear as string;
@@ -206,11 +211,8 @@ export default function StudentFeeDetailsScreen() {
               <TouchableOpacity
                 style={[styles.viewButton, { borderColor: colors.primary }]}
                 onPress={() => {
-                  Alert.alert(
-                    'Fee Details',
-                    `Fee Type: ${item.fee.fee_type.name}\nDescription: ${item.fee.fee_type.description}\nTotal: ${formatCurrency(item.fee.amount)}\nPaid: ${formatCurrency(item.total_paid)}\nPending: ${formatCurrency(pendingAmount)}\nDue Date: ${formatDate(item.fee.due_date)}`,
-                    [{ text: 'OK', style: 'default' }]
-                  );
+                  setSelectedFeeItem(item);
+                  setFeeDetailModalVisible(true);
                 }}
               >
                 <Text style={[styles.viewButtonText, { color: colors.primary }]}>View Details</Text>
@@ -272,11 +274,8 @@ export default function StudentFeeDetailsScreen() {
               <TouchableOpacity
                 style={[styles.actionButton, { borderColor: colors.border }]}
                 onPress={() => {
-                  Alert.alert(
-                    'Payment Details',
-                    `Fee Type: ${payment.feetype}\nAmount: ${formatCurrency(payment.amount)}\nMethod: ${payment.payment_type}\nDate: ${formatDateTime(payment.date)}\nReference: ${payment.payment_reference || 'N/A'}`,
-                    [{ text: 'OK', style: 'default' }]
-                  );
+                  setSelectedPayment(payment);
+                  setPaymentDetailModalVisible(true);
                 }}
               >
                 <Text style={[styles.actionButtonText, { color: colors.textSecondary }]}>View Details</Text>
@@ -446,6 +445,128 @@ export default function StudentFeeDetailsScreen() {
           activeTab === 'pending' ? renderPendingFees() : renderPaymentHistory()
         )}
       </ScrollView>
+
+      {/* Fee Detail Modal */}
+      <Modal
+        visible={feeDetailModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setFeeDetailModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Fee Details</Text>
+              <TouchableOpacity onPress={() => setFeeDetailModalVisible(false)}>
+                <Text style={[styles.closeButton, { color: colors.textPrimary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {selectedFeeItem && (
+              <ScrollView style={styles.modalBody}>
+                <View style={styles.modalSection}>
+                  <Text style={[styles.modalSectionTitle, { color: colors.primary }]}>Fee Information</Text>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Fee Type:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.fee_type.name}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Description:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.fee_type.description}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Standard:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.standard.name}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Academic Year:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.academic_year.name}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.modalSection}>
+                  <Text style={[styles.modalSectionTitle, { color: colors.primary }]}>Payment Summary</Text>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{formatCurrency(selectedFeeItem.fee.amount)}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Amount Paid:</Text>
+                    <Text style={[styles.modalValue, { color: '#10B981' }]}>{formatCurrency(selectedFeeItem.total_paid)}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Pending Amount:</Text>
+                    <Text style={[styles.modalValue, { color: '#EF4444' }]}>{formatCurrency(selectedFeeItem.total_amount_to_pay - selectedFeeItem.total_paid)}</Text>
+                  </View>
+                  {selectedFeeItem.total_concession && (
+                    <View style={styles.modalRow}>
+                      <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Concession:</Text>
+                      <Text style={[styles.modalValue, { color: '#10B981' }]}>{formatCurrency(selectedFeeItem.total_concession)}</Text>
+                    </View>
+                  )}
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Due Date:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{formatDate(selectedFeeItem.fee.due_date)}</Text>
+                  </View>
+                </View>
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </Modal>
+
+      {/* Payment Detail Modal */}
+      <Modal
+        visible={paymentDetailModalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setPaymentDetailModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Payment Details</Text>
+              <TouchableOpacity onPress={() => setPaymentDetailModalVisible(false)}>
+                <Text style={[styles.closeButton, { color: colors.textPrimary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+            
+            {selectedPayment && (
+              <ScrollView style={styles.modalBody}>
+                <View style={styles.modalSection}>
+                  <Text style={[styles.modalSectionTitle, { color: colors.primary }]}>Payment Information</Text>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Fee Type:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedPayment.feetype}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Amount:</Text>
+                    <Text style={[styles.modalValue, { color: '#10B981' }]}>{formatCurrency(selectedPayment.amount)}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Payment Method:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedPayment.payment_type}</Text>
+                  </View>
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Date & Time:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{formatDateTime(selectedPayment.date)}</Text>
+                  </View>
+                  {selectedPayment.payment_reference && (
+                    <View style={styles.modalRow}>
+                      <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Reference:</Text>
+                      <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedPayment.payment_reference}</Text>
+                    </View>
+                  )}
+                  <View style={styles.modalRow}>
+                    <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Standard:</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedPayment.standard}</Text>
+                  </View>
+                </View>
+              </ScrollView>
+            )}
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -665,5 +786,65 @@ const styles = StyleSheet.create({
   filterChipText: {
     fontSize: 12,
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    maxHeight: '80%',
+    borderRadius: 12,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 8,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    padding: 8,
+  },
+  modalBody: {
+    padding: 20,
+  },
+  modalSection: {
+    marginBottom: 20,
+  },
+  modalSectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  modalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  modalLabel: {
+    fontSize: 14,
+    flex: 1,
+  },
+  modalValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1.5,
+    textAlign: 'right',
   },
 });
