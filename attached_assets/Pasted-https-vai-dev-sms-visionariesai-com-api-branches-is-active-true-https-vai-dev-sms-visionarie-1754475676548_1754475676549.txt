@@ -1,0 +1,170 @@
+https: //vai.dev.sms.visionariesai.com/api/branches/?is_active=true
+https: //vai.dev.sms.visionariesai.com/api/academic-years/
+https: //vai.dev.sms.visionariesai.com/api/departments/?inactive=true&name=&branch=1&academic_year=1
+{
+    "meta": {
+        "count": 21,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "created": "2024-12-23T22:19:23.257922+05:30",
+            "name": "Mathematics",
+            "modified_by": {
+                "is_superuser": false,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "timezone": "Asia/Kolkata",
+                "modified_by": 1,
+                "group": 1,
+                "created_by": 1,
+                "first_name": "Narasing",
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "id": 3,
+                "user_permissions": [],
+                "email": "murapakanarasingarao@gmail.com",
+                "is_staff": false,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true
+            },
+            "created_by": {
+                "is_superuser": false,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "timezone": "Asia/Kolkata",
+                "modified_by": 1,
+                "group": 1,
+                "created_by": 1,
+                "first_name": "Narasing",
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "id": 3,
+                "user_permissions": [],
+                "email": "murapakanarasingarao@gmail.com",
+                "is_staff": false,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true
+            },
+            "access_to_all_users": true,
+            "is_active": true,
+            "department_type": "Teaching",
+            "staff_count": 3,
+            "access_to_all_user_ids": [
+                266,
+                177,
+                269,
+                178
+            ],
+            "head_of_the_department": {
+                "id": 266,
+                "first_name": "i",
+                "last_name": "lalith",
+                "email": "lalith@gmai.com",
+                "phone": "+919582332534",
+                "address": {
+                    "city": "srikakulam",
+                    "state": "Andhra Pradesh",
+                    "street": "ippili",
+                    "landmark": "ippili",
+                    "zip_code": "532401"
+                },
+                "gender": "Male",
+                "dob": "2025-07-23",
+                "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/06db9aa4-9709-42ba-b0aa-2b9cc041637a.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHUUNTSK5Z%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T102045Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDoaCmFwLXNvdXRoLTEiRzBFAiEAsTBs%2BgYZpFYikk0dbK8CpzW4diqyloJjAysFdDAMJdcCIBJqe%2BlfgFSUztSkDR7qVKGQRD3wBqJXhRDj72ZinhG0Kr4FCHMQABoMMDIyNDk5MDMxNTY3IgzQPY9n4bXIF%2Fb6x7IqmwVueSoZcRn%2FVaSUDVrKwFJY7UaxLY9vhl0lsjL%2BwkWUaHIE2id%2BlPlbov3Fu%2FMt6Cs8%2Bg5efEYZrDAWc1txP%2B7YQltIj0zaaO4nUxafop7qr6dGD%2FTs6CgXKoRM%2FSSYa66tJKF2D323NBs4ASWGIK3AzULWcs%2FOQi7T%2FXf8Uu%2FDZcblwbnWDNh%2BIWVkFR%2B8pTjO5zHQrS4CkqBgIaJKZuNVo4WB59e1vA3W924QCaS5Z4Djm8fHxvQSI8nEeJd8j8k2p88AJxQi%2BXSw1cWOdkVVJg8dOy6gFEVWaPDz6tAvIO1t19Jrtprpwk1b0t1KBuKcAEJQol5%2ByJ1mRHNFwpyTBwhUOkHorIniLiVGvmNe3Y493TyIb1YCTH9o1pQW5qCdkua1Hx8RyW2cMlYPYR260g%2FTNKsi2Ck%2F8tXbs95CQZ96c%2BX1DgmHiM1b3GbaS%2BQGbGXFGSXIsho9Dl%2F4lNLB5G7oPq%2BYRw9zq3EsHqiSO7K7LMzJYFvP0J8lGsplNlprDj0Jx2ZFekIDCMI6uG9uqHlA9b7p3NOKxNssCmd6D4IEH7CKJTJEITpry1C3GK%2BifD%2Bj4Nd2sDWys14CUP%2FcVbeMzr6kogw%2F91UI9GDV1gW982a05j5cqgK8TkQJUBzeu2ziU38LbBgJFVBDOIj%2FoQMIK0XhK5YmZAwGro7Ye6%2BdcDBVhZxq8xja4v%2B%2BipoNkj%2Fhk1kxHNdFd5HUBKKWxF%2FeNvY%2FJetY7%2Fr0E9sXy2TgdqMJtTNAxjA8MlkZ5yiGzqSKJRGh0Y3APLOav5BzBYYYcJ4rkx0BoXMkXZpUoI3sQRc9aBfR1NgXxzb2yFzcrFLTaKie9arKK86ddYAL8kz3rVD7b1h%2BDd6XuJMsw3TJR6r4KIN0Q6tbMNfLzMQGOrEBwQKGCULuK40XfYMFiRP4Bxz1dwwTzhxy2hdMhSW%2BQVoeMCh6eylUPRk8bRd3OvM5Tswwe0fvXLfdIWXAGgA9tZJdyeV3Q3A6hV%2FyZoR0%2BRwtnfzW%2FX2%2F618P17YwszcwCxrmWmvmdlvoKj%2FEgIm1jeJna%2FXV70p0YRo4KOZ0Ig9zAVlx2b%2BQx6vScn349%2Fy2kgE62hj4QqZrLBPBZWNRpf1KLl72yV7BwiAIRb5RVFpD&X-Amz-Signature=e92ce3027fe72ed76adf11331af7d267cbba0500a99af16459cfb0ff94fe4b98",
+                "designation": "Head of Department",
+                "department": "Mathematics",
+                "branch": "Branch 1",
+                "group": "Head of Department"
+            },
+            "modified": "2025-06-26T23:25:09.898094+05:30",
+            "id": 1,
+            "branch": {
+                "center_point": {
+                    "type": "Point",
+                    "coordinates": [
+                        80.62025214123565,
+                        16.507235006708214
+                    ]
+                },
+                "geo_location": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ],
+                            [
+                                80.6201631673348,
+                                16.50721957673649
+                            ],
+                            [
+                                80.62027846041298,
+                                16.507155671004796
+                            ],
+                            [
+                                80.62033943875502,
+                                16.507248636487958
+                            ],
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ]
+                        ]
+                    ]
+                },
+                "name": "Branch 1",
+                "modified_by": {
+                    "is_superuser": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "timezone": "Asia/Kolkata",
+                    "modified_by": 1,
+                    "group": 1,
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "id": 3,
+                    "user_permissions": [],
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_staff": false,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_active": true
+                },
+                "created_by": {
+                    "is_superuser": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "timezone": "Asia/Kolkata",
+                    "modified_by": 1,
+                    "group": 1,
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "id": 3,
+                    "user_permissions": [],
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_staff": false,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_active": true
+                },
+                "is_active": true,
+                "address": {
+                    "city": "Vijayawada",
+                    "state": "Andhra Pradesh",
+                    "street": "Vijayawada",
+                    "landmark": "Vijayawada 1",
+                    "zip_code": "520001"
+                },
+                "modified": "2025-03-30T12:37:45.638892+05:30",
+                "id": 1,
+                "is_main_branch": false,
+                "created": "2024-12-23T21:38:49.939251+05:30"
+            }
+        },
+    ]
+}
