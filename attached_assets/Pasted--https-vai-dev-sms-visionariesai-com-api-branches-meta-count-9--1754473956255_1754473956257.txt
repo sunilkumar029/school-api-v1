@@ -1,0 +1,2687 @@
+
+https: //vai.dev.sms.visionariesai.com/api/branches/
+{
+    "meta": {
+        "count": 9,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "geo_location": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            82.6121580065892,
+                            17.670557711550188
+                        ],
+                        [
+                            82.61161623307567,
+                            17.670602928384767
+                        ],
+                        [
+                            82.61165590043203,
+                            17.670692759651274
+                        ],
+                        [
+                            82.6121580065892,
+                            17.670557711550188
+                        ]
+                    ]
+                ]
+            },
+            "created": "2025-03-21T13:12:36.510568+05:30",
+            "created_by": {
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "is_superuser": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "modified_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "first_name": "Narasing",
+                "last_name": "M",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "user_permissions": [],
+                "is_staff": false
+            },
+            "address": {
+                "city": "vizag",
+                "state": "Andhra Pradesh",
+                "street": "Main street",
+                "landmark": "Narsipatanam",
+                "zip_code": "741258"
+            },
+            "modified_by": {
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "is_superuser": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "modified_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "first_name": "Narasing",
+                "last_name": "M",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "user_permissions": [],
+                "is_staff": false
+            },
+            "modified": "2025-03-21T13:25:08.268480+05:30",
+            "is_active": true,
+            "is_main_branch": false,
+            "name": "Branch 4",
+            "id": 4,
+            "center_point": {
+                "type": "Point",
+                "coordinates": [
+                    82.61163780494792,
+                    17.67069713532915
+                ]
+            }
+        },
+    ]
+}
+
+        https: //vai.dev.sms.visionariesai.com/api/academic-years/
+{
+    "meta": {
+        "count": 7,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "created": "2024-12-23T22:07:33.918280+05:30",
+            "created_by": {
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "is_superuser": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "modified_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "first_name": "Narasing",
+                "last_name": "M",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "user_permissions": [],
+                "is_staff": false
+            },
+            "modified_by": {
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "is_superuser": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "modified_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_active": true,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "first_name": "Narasing",
+                "last_name": "M",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "user_permissions": [],
+                "is_staff": false
+            },
+            "start_date": "2024-06-01",
+            "modified": "2025-06-01T09:14:26.877453+05:30",
+            "name": "2024-2025",
+            "id": 1,
+            "end_date": "2025-07-30"
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/users/?branch=1 (branch is required for this api to work)
+{
+    "meta": {
+        "count": 151,
+        "next": "http://vai.dev.sms.visionariesai.com/api/users/?branch=1&limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "organisation": null,
+            "id": 192,
+            "first_name": "Swaroop",
+            "last_name": "R",
+            "email": "swaroop@gmail.com",
+            "phone": "+918499846204",
+            "alternate_phone": "+919876598734",
+            "standard": {
+                "id": 16,
+                "name": "5th Standard"
+            },
+            "department": null,
+            "gender": "Male",
+            "blood_group": "A+",
+            "dob": "2025-01-07",
+            "group": 3,
+            "group_name": "Student",
+            "admission_number": 24501,
+            "profile_image": null,
+            "aapar_number": "",
+            "pen_number": "",
+            "student_type": "Regular",
+            "address": {
+                "city": "Gajapathi nagram",
+                "state": "Andhra Pradesh",
+                "street": "Main street",
+                "landmark": "srikakulam",
+                "zip_code": "532429"
+            },
+            "guardians": [
+                {
+                    "id": 159,
+                    "first_name": "Ganga",
+                    "last_name": "D",
+                    "relation": "Mother",
+                    "contact_number": "+918523697410",
+                    "occupation": "Teacher",
+                    "annual_income": 0
+                }
+            ],
+            "education_details": [
+                {
+                    "city": "Narasannapeta",
+                    "end_date": "2025-01-26",
+                    "start_date": "2026-10-02",
+                    "institution": "Siri Public school",
+                    "education_type": "4th Standard"
+                }
+            ],
+            "section_id": 18,
+            "section_name": "A Section",
+            "section_details": {
+                "id": 18,
+                "name": "A Section",
+                "code": null,
+                "standard_id": 16
+            },
+            "employee_id": "",
+            "is_active": true,
+            "student_details": {
+                "id": 79,
+                "is_stationary_given": false
+            }
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/groups/
+{
+    "meta": {
+        "count": 9,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "controlled_groups": [
+                {
+                    "id": 1,
+                    "name": "Organisation Admin"
+                },
+                {
+                    "id": 4,
+                    "name": "IoT User"
+                },
+                {
+                    "id": 7,
+                    "name": "Branch admin"
+                },
+                {
+                    "id": 11,
+                    "name": "Drivers"
+                },
+                {
+                    "id": 3,
+                    "name": "Student"
+                },
+                {
+                    "id": 2,
+                    "name": "Head of Department"
+                },
+                {
+                    "id": 5,
+                    "name": "Teacher"
+                },
+                {
+                    "id": 28,
+                    "name": "testing 2"
+                },
+                {
+                    "id": 27,
+                    "name": "testing Role"
+                }
+            ],
+            "name": "Organisation Admin",
+            "id": 1,
+            "permissions": [
+                {
+                    "codename": "add_group",
+                    "name": "Can add group",
+                    "id": 9,
+                    "content_type": 3,
+                    "type_name": "group",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_group",
+                    "name": "Can change group",
+                    "id": 10,
+                    "content_type": 3,
+                    "type_name": "group",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_group",
+                    "name": "Can delete group",
+                    "id": 11,
+                    "content_type": 3,
+                    "type_name": "group",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_group",
+                    "name": "Can view group",
+                    "id": 12,
+                    "content_type": 3,
+                    "type_name": "group",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_room",
+                    "name": "Can add room",
+                    "id": 501,
+                    "content_type": 124,
+                    "type_name": "room",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_room",
+                    "name": "Can change room",
+                    "id": 502,
+                    "content_type": 124,
+                    "type_name": "room",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_room",
+                    "name": "Can delete room",
+                    "id": 503,
+                    "content_type": 124,
+                    "type_name": "room",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_room",
+                    "name": "Can view room",
+                    "id": 504,
+                    "content_type": 124,
+                    "type_name": "room",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_schedule",
+                    "name": "Can add schedule",
+                    "id": 505,
+                    "content_type": 125,
+                    "type_name": "schedule",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_schedule",
+                    "name": "Can change schedule",
+                    "id": 506,
+                    "content_type": 125,
+                    "type_name": "schedule",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_schedule",
+                    "name": "Can delete schedule",
+                    "id": 507,
+                    "content_type": 125,
+                    "type_name": "schedule",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_schedule",
+                    "name": "Can view schedule",
+                    "id": 508,
+                    "content_type": 125,
+                    "type_name": "schedule",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_expenditure",
+                    "name": "Can add expenditure",
+                    "id": 377,
+                    "content_type": 93,
+                    "type_name": "expenditure",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_expenditure",
+                    "name": "Can change expenditure",
+                    "id": 378,
+                    "content_type": 93,
+                    "type_name": "expenditure",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_expenditure",
+                    "name": "Can delete expenditure",
+                    "id": 379,
+                    "content_type": 93,
+                    "type_name": "expenditure",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_expenditure",
+                    "name": "Can view expenditure",
+                    "id": 380,
+                    "content_type": 93,
+                    "type_name": "expenditure",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_task",
+                    "name": "Can add task",
+                    "id": 405,
+                    "content_type": 100,
+                    "type_name": "task",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_task",
+                    "name": "Can change task",
+                    "id": 406,
+                    "content_type": 100,
+                    "type_name": "task",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_task",
+                    "name": "Can delete task",
+                    "id": 407,
+                    "content_type": 100,
+                    "type_name": "task",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_task",
+                    "name": "Can view task",
+                    "id": 408,
+                    "content_type": 100,
+                    "type_name": "task",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "view_tasksubmission",
+                    "name": "Can view task submission",
+                    "id": 412,
+                    "content_type": 101,
+                    "type_name": "task submission",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_academicyear",
+                    "name": "Can add academic year",
+                    "id": 77,
+                    "content_type": 20,
+                    "type_name": "academic year",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_academicyear",
+                    "name": "Can change academic year",
+                    "id": 78,
+                    "content_type": 20,
+                    "type_name": "academic year",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_academicyear",
+                    "name": "Can delete academic year",
+                    "id": 79,
+                    "content_type": 20,
+                    "type_name": "academic year",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_academicyear",
+                    "name": "Can view academic year",
+                    "id": 80,
+                    "content_type": 20,
+                    "type_name": "academic year",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_amenities",
+                    "name": "Can add amenities",
+                    "id": 205,
+                    "content_type": 50,
+                    "type_name": "amenities",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_amenities",
+                    "name": "Can change amenities",
+                    "id": 206,
+                    "content_type": 50,
+                    "type_name": "amenities",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_amenities",
+                    "name": "Can delete amenities",
+                    "id": 207,
+                    "content_type": 50,
+                    "type_name": "amenities",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_amenities",
+                    "name": "Can view amenities",
+                    "id": 208,
+                    "content_type": 50,
+                    "type_name": "amenities",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_announcement",
+                    "name": "Can add announcement",
+                    "id": 381,
+                    "content_type": 94,
+                    "type_name": "announcement",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_announcement",
+                    "name": "Can change announcement",
+                    "id": 382,
+                    "content_type": 94,
+                    "type_name": "announcement",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_announcement",
+                    "name": "Can delete announcement",
+                    "id": 383,
+                    "content_type": 94,
+                    "type_name": "announcement",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_announcement",
+                    "name": "Can view announcement",
+                    "id": 384,
+                    "content_type": 94,
+                    "type_name": "announcement",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_answer",
+                    "name": "Can add answer",
+                    "id": 177,
+                    "content_type": 43,
+                    "type_name": "answer",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_answer",
+                    "name": "Can change answer",
+                    "id": 178,
+                    "content_type": 43,
+                    "type_name": "answer",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_answer",
+                    "name": "Can delete answer",
+                    "id": 179,
+                    "content_type": 43,
+                    "type_name": "answer",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_answer",
+                    "name": "Can view answer",
+                    "id": 180,
+                    "content_type": 43,
+                    "type_name": "answer",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_attendance",
+                    "name": "Can add attendance",
+                    "id": 285,
+                    "content_type": 70,
+                    "type_name": "attendance",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_attendance",
+                    "name": "Can change attendance",
+                    "id": 286,
+                    "content_type": 70,
+                    "type_name": "attendance",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_attendance",
+                    "name": "Can delete attendance",
+                    "id": 287,
+                    "content_type": 70,
+                    "type_name": "attendance",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_attendance",
+                    "name": "Can view attendance",
+                    "id": 288,
+                    "content_type": 70,
+                    "type_name": "attendance",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_bed",
+                    "name": "Can add bed",
+                    "id": 329,
+                    "content_type": 81,
+                    "type_name": "bed",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_bed",
+                    "name": "Can change bed",
+                    "id": 330,
+                    "content_type": 81,
+                    "type_name": "bed",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_bed",
+                    "name": "Can delete bed",
+                    "id": 331,
+                    "content_type": 81,
+                    "type_name": "bed",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_bed",
+                    "name": "Can view bed",
+                    "id": 332,
+                    "content_type": 81,
+                    "type_name": "bed",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_branch",
+                    "name": "Can add branch",
+                    "id": 49,
+                    "content_type": 13,
+                    "type_name": "branch",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_branch",
+                    "name": "Can change branch",
+                    "id": 50,
+                    "content_type": 13,
+                    "type_name": "branch",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_branch",
+                    "name": "Can delete branch",
+                    "id": 51,
+                    "content_type": 13,
+                    "type_name": "branch",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_branch",
+                    "name": "Can view branch",
+                    "id": 52,
+                    "content_type": 13,
+                    "type_name": "branch",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_department",
+                    "name": "Can add department",
+                    "id": 53,
+                    "content_type": 14,
+                    "type_name": "department",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_department",
+                    "name": "Can change department",
+                    "id": 54,
+                    "content_type": 14,
+                    "type_name": "department",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_department",
+                    "name": "Can delete department",
+                    "id": 55,
+                    "content_type": 14,
+                    "type_name": "department",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_department",
+                    "name": "Can view department",
+                    "id": 56,
+                    "content_type": 14,
+                    "type_name": "department",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_designation",
+                    "name": "Can add designation",
+                    "id": 65,
+                    "content_type": 17,
+                    "type_name": "designation",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_designation",
+                    "name": "Can change designation",
+                    "id": 66,
+                    "content_type": 17,
+                    "type_name": "designation",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_designation",
+                    "name": "Can delete designation",
+                    "id": 67,
+                    "content_type": 17,
+                    "type_name": "designation",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_designation",
+                    "name": "Can view designation",
+                    "id": 68,
+                    "content_type": 17,
+                    "type_name": "designation",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_document",
+                    "name": "Can add document",
+                    "id": 229,
+                    "content_type": 56,
+                    "type_name": "document",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_document",
+                    "name": "Can change document",
+                    "id": 230,
+                    "content_type": 56,
+                    "type_name": "document",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_document",
+                    "name": "Can delete document",
+                    "id": 231,
+                    "content_type": 56,
+                    "type_name": "document",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_document",
+                    "name": "Can view document",
+                    "id": 232,
+                    "content_type": 56,
+                    "type_name": "document",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_driverdetails",
+                    "name": "Can add driver details",
+                    "id": 373,
+                    "content_type": 92,
+                    "type_name": "driver details",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_driverdetails",
+                    "name": "Can change driver details",
+                    "id": 374,
+                    "content_type": 92,
+                    "type_name": "driver details",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_driverdetails",
+                    "name": "Can delete driver details",
+                    "id": 375,
+                    "content_type": 92,
+                    "type_name": "driver details",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_driverdetails",
+                    "name": "Can view driver details",
+                    "id": 376,
+                    "content_type": 92,
+                    "type_name": "driver details",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_event",
+                    "name": "Can add event",
+                    "id": 157,
+                    "content_type": 38,
+                    "type_name": "event",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_event",
+                    "name": "Can change event",
+                    "id": 158,
+                    "content_type": 38,
+                    "type_name": "event",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_event",
+                    "name": "Can delete event",
+                    "id": 159,
+                    "content_type": 38,
+                    "type_name": "event",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_event",
+                    "name": "Can view event",
+                    "id": 160,
+                    "content_type": 38,
+                    "type_name": "event",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_exam",
+                    "name": "Can add exam",
+                    "id": 125,
+                    "content_type": 30,
+                    "type_name": "exam",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_exam",
+                    "name": "Can change exam",
+                    "id": 126,
+                    "content_type": 30,
+                    "type_name": "exam",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_exam",
+                    "name": "Can delete exam",
+                    "id": 127,
+                    "content_type": 30,
+                    "type_name": "exam",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_exam",
+                    "name": "Can view exam",
+                    "id": 128,
+                    "content_type": 30,
+                    "type_name": "exam",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_examanswer",
+                    "name": "Can add exam answer",
+                    "id": 173,
+                    "content_type": 42,
+                    "type_name": "exam answer",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_examanswer",
+                    "name": "Can change exam answer",
+                    "id": 174,
+                    "content_type": 42,
+                    "type_name": "exam answer",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_examanswer",
+                    "name": "Can delete exam answer",
+                    "id": 175,
+                    "content_type": 42,
+                    "type_name": "exam answer",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_examanswer",
+                    "name": "Can view exam answer",
+                    "id": 176,
+                    "content_type": 42,
+                    "type_name": "exam answer",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_examschedule",
+                    "name": "Can add exam schedule",
+                    "id": 129,
+                    "content_type": 31,
+                    "type_name": "exam schedule",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_examschedule",
+                    "name": "Can change exam schedule",
+                    "id": 130,
+                    "content_type": 31,
+                    "type_name": "exam schedule",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_examschedule",
+                    "name": "Can delete exam schedule",
+                    "id": 131,
+                    "content_type": 31,
+                    "type_name": "exam schedule",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_examschedule",
+                    "name": "Can view exam schedule",
+                    "id": 132,
+                    "content_type": 31,
+                    "type_name": "exam schedule",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_fee",
+                    "name": "Can add fee",
+                    "id": 101,
+                    "content_type": 24,
+                    "type_name": "fee",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_fee",
+                    "name": "Can change fee",
+                    "id": 102,
+                    "content_type": 24,
+                    "type_name": "fee",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_fee",
+                    "name": "Can delete fee",
+                    "id": 103,
+                    "content_type": 24,
+                    "type_name": "fee",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_fee",
+                    "name": "Can view fee",
+                    "id": 104,
+                    "content_type": 24,
+                    "type_name": "fee",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_feeconcession",
+                    "name": "Can add fee concession",
+                    "id": 113,
+                    "content_type": 27,
+                    "type_name": "fee concession",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_feeconcession",
+                    "name": "Can change fee concession",
+                    "id": 114,
+                    "content_type": 27,
+                    "type_name": "fee concession",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_feeconcession",
+                    "name": "Can delete fee concession",
+                    "id": 115,
+                    "content_type": 27,
+                    "type_name": "fee concession",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_feeconcession",
+                    "name": "Can view fee concession",
+                    "id": 116,
+                    "content_type": 27,
+                    "type_name": "fee concession",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_feepayment",
+                    "name": "Can add fee payment",
+                    "id": 121,
+                    "content_type": 29,
+                    "type_name": "fee payment",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_feepayment",
+                    "name": "Can change fee payment",
+                    "id": 122,
+                    "content_type": 29,
+                    "type_name": "fee payment",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_feepayment",
+                    "name": "Can delete fee payment",
+                    "id": 123,
+                    "content_type": 29,
+                    "type_name": "fee payment",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_feepayment",
+                    "name": "Can view fee payment",
+                    "id": 124,
+                    "content_type": 29,
+                    "type_name": "fee payment",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_feesummary",
+                    "name": "Can add fee summary",
+                    "id": 169,
+                    "content_type": 41,
+                    "type_name": "fee summary",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_feesummary",
+                    "name": "Can change fee summary",
+                    "id": 170,
+                    "content_type": 41,
+                    "type_name": "fee summary",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_feesummary",
+                    "name": "Can delete fee summary",
+                    "id": 171,
+                    "content_type": 41,
+                    "type_name": "fee summary",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_feesummary",
+                    "name": "Can view fee summary",
+                    "id": 172,
+                    "content_type": 41,
+                    "type_name": "fee summary",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_floor",
+                    "name": "Can add floor",
+                    "id": 213,
+                    "content_type": 52,
+                    "type_name": "floor",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_floor",
+                    "name": "Can change floor",
+                    "id": 214,
+                    "content_type": 52,
+                    "type_name": "floor",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_floor",
+                    "name": "Can delete floor",
+                    "id": 215,
+                    "content_type": 52,
+                    "type_name": "floor",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_floor",
+                    "name": "Can view floor",
+                    "id": 216,
+                    "content_type": 52,
+                    "type_name": "floor",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_role",
+                    "name": "Can Add Role",
+                    "id": 89,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "add_students_to_section",
+                    "name": "Can Add Students to Section",
+                    "id": 95,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "add_students_to_standard",
+                    "name": "Can Add Students to Standard",
+                    "id": 94,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "add_teachers_to_department",
+                    "name": "Can Add Teachers to Department",
+                    "id": 93,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_role",
+                    "name": "Can Change Role",
+                    "id": 91,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_role",
+                    "name": "Can Delete Role",
+                    "id": 92,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "trigger_reset_password_email",
+                    "name": "Can trigger reset password email",
+                    "id": 96,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "trigger"
+                },
+                {
+                    "codename": "view_role",
+                    "name": "Can View Role",
+                    "id": 90,
+                    "content_type": 22,
+                    "type_name": "front end permissions",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_grade",
+                    "name": "Can add grade",
+                    "id": 145,
+                    "content_type": 35,
+                    "type_name": "grade",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_grade",
+                    "name": "Can change grade",
+                    "id": 146,
+                    "content_type": 35,
+                    "type_name": "grade",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_grade",
+                    "name": "Can delete grade",
+                    "id": 147,
+                    "content_type": 35,
+                    "type_name": "grade",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_grade",
+                    "name": "Can view grade",
+                    "id": 148,
+                    "content_type": 35,
+                    "type_name": "grade",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_guardian",
+                    "name": "Can add guardian",
+                    "id": 61,
+                    "content_type": 16,
+                    "type_name": "guardian",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_guardian",
+                    "name": "Can change guardian",
+                    "id": 62,
+                    "content_type": 16,
+                    "type_name": "guardian",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_guardian",
+                    "name": "Can delete guardian",
+                    "id": 63,
+                    "content_type": 16,
+                    "type_name": "guardian",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_guardian",
+                    "name": "Can view guardian",
+                    "id": 64,
+                    "content_type": 16,
+                    "type_name": "guardian",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_hostelblock",
+                    "name": "Can add hostel block",
+                    "id": 337,
+                    "content_type": 83,
+                    "type_name": "hostel block",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_hostelblock",
+                    "name": "Can change hostel block",
+                    "id": 338,
+                    "content_type": 83,
+                    "type_name": "hostel block",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_hostelblock",
+                    "name": "Can delete hostel block",
+                    "id": 339,
+                    "content_type": 83,
+                    "type_name": "hostel block",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_hostelblock",
+                    "name": "Can view hostel block",
+                    "id": 340,
+                    "content_type": 83,
+                    "type_name": "hostel block",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_hostelfloor",
+                    "name": "Can add hostel floor",
+                    "id": 341,
+                    "content_type": 84,
+                    "type_name": "hostel floor",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_hostelfloor",
+                    "name": "Can change hostel floor",
+                    "id": 342,
+                    "content_type": 84,
+                    "type_name": "hostel floor",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_hostelfloor",
+                    "name": "Can delete hostel floor",
+                    "id": 343,
+                    "content_type": 84,
+                    "type_name": "hostel floor",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_hostelfloor",
+                    "name": "Can view hostel floor",
+                    "id": 344,
+                    "content_type": 84,
+                    "type_name": "hostel floor",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_hostelroom",
+                    "name": "Can add hostel room",
+                    "id": 345,
+                    "content_type": 85,
+                    "type_name": "hostel room",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_hostelroom",
+                    "name": "Can change hostel room",
+                    "id": 346,
+                    "content_type": 85,
+                    "type_name": "hostel room",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_hostelroom",
+                    "name": "Can delete hostel room",
+                    "id": 347,
+                    "content_type": 85,
+                    "type_name": "hostel room",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_hostelroom",
+                    "name": "Can view hostel room",
+                    "id": 348,
+                    "content_type": 85,
+                    "type_name": "hostel room",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_inventory",
+                    "name": "Can add inventory",
+                    "id": 241,
+                    "content_type": 59,
+                    "type_name": "inventory",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_inventory",
+                    "name": "Can change inventory",
+                    "id": 242,
+                    "content_type": 59,
+                    "type_name": "inventory",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_inventory",
+                    "name": "Can delete inventory",
+                    "id": 243,
+                    "content_type": 59,
+                    "type_name": "inventory",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_inventory",
+                    "name": "Can view inventory",
+                    "id": 244,
+                    "content_type": 59,
+                    "type_name": "inventory",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_inventorytracking",
+                    "name": "Can add inventory tracking",
+                    "id": 265,
+                    "content_type": 65,
+                    "type_name": "inventory tracking",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_inventorytracking",
+                    "name": "Can change inventory tracking",
+                    "id": 266,
+                    "content_type": 65,
+                    "type_name": "inventory tracking",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_inventorytracking",
+                    "name": "Can delete inventory tracking",
+                    "id": 267,
+                    "content_type": 65,
+                    "type_name": "inventory tracking",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_inventorytracking",
+                    "name": "Can view inventory tracking",
+                    "id": 268,
+                    "content_type": 65,
+                    "type_name": "inventory tracking",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_inventorytype",
+                    "name": "Can add inventory type",
+                    "id": 237,
+                    "content_type": 58,
+                    "type_name": "inventory type",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_inventorytype",
+                    "name": "Can change inventory type",
+                    "id": 238,
+                    "content_type": 58,
+                    "type_name": "inventory type",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_inventorytype",
+                    "name": "Can delete inventory type",
+                    "id": 239,
+                    "content_type": 58,
+                    "type_name": "inventory type",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_inventorytype",
+                    "name": "Can view inventory type",
+                    "id": 240,
+                    "content_type": 58,
+                    "type_name": "inventory type",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_leave",
+                    "name": "Can add leave",
+                    "id": 281,
+                    "content_type": 69,
+                    "type_name": "leave",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_leave",
+                    "name": "Can change leave",
+                    "id": 282,
+                    "content_type": 69,
+                    "type_name": "leave",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_leave",
+                    "name": "Can delete leave",
+                    "id": 283,
+                    "content_type": 69,
+                    "type_name": "leave",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_leave",
+                    "name": "Can view leave",
+                    "id": 284,
+                    "content_type": 69,
+                    "type_name": "leave",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_locker",
+                    "name": "Can add locker",
+                    "id": 349,
+                    "content_type": 86,
+                    "type_name": "locker",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_locker",
+                    "name": "Can change locker",
+                    "id": 350,
+                    "content_type": 86,
+                    "type_name": "locker",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_locker",
+                    "name": "Can delete locker",
+                    "id": 351,
+                    "content_type": 86,
+                    "type_name": "locker",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_locker",
+                    "name": "Can view locker",
+                    "id": 352,
+                    "content_type": 86,
+                    "type_name": "locker",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_mealplan",
+                    "name": "Can add meal plan",
+                    "id": 333,
+                    "content_type": 82,
+                    "type_name": "meal plan",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_mealplan",
+                    "name": "Can change meal plan",
+                    "id": 334,
+                    "content_type": 82,
+                    "type_name": "meal plan",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_mealplan",
+                    "name": "Can delete meal plan",
+                    "id": 335,
+                    "content_type": 82,
+                    "type_name": "meal plan",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_mealplan",
+                    "name": "Can view meal plan",
+                    "id": 336,
+                    "content_type": 82,
+                    "type_name": "meal plan",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_period",
+                    "name": "Can add period",
+                    "id": 273,
+                    "content_type": 67,
+                    "type_name": "period",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_period",
+                    "name": "Can change period",
+                    "id": 274,
+                    "content_type": 67,
+                    "type_name": "period",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_period",
+                    "name": "Can delete period",
+                    "id": 275,
+                    "content_type": 67,
+                    "type_name": "period",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_period",
+                    "name": "Can view period",
+                    "id": 276,
+                    "content_type": 67,
+                    "type_name": "period",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_place",
+                    "name": "Can add place",
+                    "id": 209,
+                    "content_type": 51,
+                    "type_name": "place",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_place",
+                    "name": "Can change place",
+                    "id": 210,
+                    "content_type": 51,
+                    "type_name": "place",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_place",
+                    "name": "Can delete place",
+                    "id": 211,
+                    "content_type": 51,
+                    "type_name": "place",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_place",
+                    "name": "Can view place",
+                    "id": 212,
+                    "content_type": 51,
+                    "type_name": "place",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_product",
+                    "name": "Can add product",
+                    "id": 353,
+                    "content_type": 87,
+                    "type_name": "product",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_product",
+                    "name": "Can change product",
+                    "id": 354,
+                    "content_type": 87,
+                    "type_name": "product",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_product",
+                    "name": "Can delete product",
+                    "id": 355,
+                    "content_type": 87,
+                    "type_name": "product",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_product",
+                    "name": "Can view product",
+                    "id": 356,
+                    "content_type": 87,
+                    "type_name": "product",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_query",
+                    "name": "Can add query",
+                    "id": 289,
+                    "content_type": 71,
+                    "type_name": "query",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_query",
+                    "name": "Can change query",
+                    "id": 290,
+                    "content_type": 71,
+                    "type_name": "query",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_query",
+                    "name": "Can delete query",
+                    "id": 291,
+                    "content_type": 71,
+                    "type_name": "query",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_query",
+                    "name": "Can view query",
+                    "id": 292,
+                    "content_type": 71,
+                    "type_name": "query",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_question",
+                    "name": "Can add question",
+                    "id": 137,
+                    "content_type": 33,
+                    "type_name": "question",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_question",
+                    "name": "Can change question",
+                    "id": 138,
+                    "content_type": 33,
+                    "type_name": "question",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_question",
+                    "name": "Can delete question",
+                    "id": 139,
+                    "content_type": 33,
+                    "type_name": "question",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_question",
+                    "name": "Can view question",
+                    "id": 140,
+                    "content_type": 33,
+                    "type_name": "question",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_questionoption",
+                    "name": "Can add question option",
+                    "id": 141,
+                    "content_type": 34,
+                    "type_name": "question option",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_questionoption",
+                    "name": "Can change question option",
+                    "id": 142,
+                    "content_type": 34,
+                    "type_name": "question option",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_questionoption",
+                    "name": "Can delete question option",
+                    "id": 143,
+                    "content_type": 34,
+                    "type_name": "question option",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_questionoption",
+                    "name": "Can view question option",
+                    "id": 144,
+                    "content_type": 34,
+                    "type_name": "question option",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_quizoption",
+                    "name": "Can add quiz option",
+                    "id": 165,
+                    "content_type": 40,
+                    "type_name": "quiz option",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_quizoption",
+                    "name": "Can change quiz option",
+                    "id": 166,
+                    "content_type": 40,
+                    "type_name": "quiz option",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_quizoption",
+                    "name": "Can delete quiz option",
+                    "id": 167,
+                    "content_type": 40,
+                    "type_name": "quiz option",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_quizoption",
+                    "name": "Can view quiz option",
+                    "id": 168,
+                    "content_type": 40,
+                    "type_name": "quiz option",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_quizquestion",
+                    "name": "Can add quiz question",
+                    "id": 161,
+                    "content_type": 39,
+                    "type_name": "quiz question",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_quizquestion",
+                    "name": "Can change quiz question",
+                    "id": 162,
+                    "content_type": 39,
+                    "type_name": "quiz question",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_quizquestion",
+                    "name": "Can delete quiz question",
+                    "id": 163,
+                    "content_type": 39,
+                    "type_name": "quiz question",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_quizquestion",
+                    "name": "Can view quiz question",
+                    "id": 164,
+                    "content_type": 39,
+                    "type_name": "quiz question",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_releavingdocumentcategory",
+                    "name": "Can add releaving document category",
+                    "id": 389,
+                    "content_type": 96,
+                    "type_name": "releaving document category",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_releavingdocumentcategory",
+                    "name": "Can change releaving document category",
+                    "id": 390,
+                    "content_type": 96,
+                    "type_name": "releaving document category",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_releavingdocumentcategory",
+                    "name": "Can delete releaving document category",
+                    "id": 391,
+                    "content_type": 96,
+                    "type_name": "releaving document category",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_releavingdocumentcategory",
+                    "name": "Can view releaving document category",
+                    "id": 392,
+                    "content_type": 96,
+                    "type_name": "releaving document category",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_releavingdocumentstatus",
+                    "name": "Can add releaving document status",
+                    "id": 385,
+                    "content_type": 95,
+                    "type_name": "releaving document status",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_releavingdocumentstatus",
+                    "name": "Can change releaving document status",
+                    "id": 386,
+                    "content_type": 95,
+                    "type_name": "releaving document status",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_releavingdocumentstatus",
+                    "name": "Can delete releaving document status",
+                    "id": 387,
+                    "content_type": 95,
+                    "type_name": "releaving document status",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_releavingdocumentstatus",
+                    "name": "Can view releaving document status",
+                    "id": 388,
+                    "content_type": 95,
+                    "type_name": "releaving document status",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_room",
+                    "name": "Can add room",
+                    "id": 225,
+                    "content_type": 55,
+                    "type_name": "room",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_room",
+                    "name": "Can change room",
+                    "id": 226,
+                    "content_type": 55,
+                    "type_name": "room",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_room",
+                    "name": "Can delete room",
+                    "id": 227,
+                    "content_type": 55,
+                    "type_name": "room",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_room",
+                    "name": "Can view room",
+                    "id": 228,
+                    "content_type": 55,
+                    "type_name": "room",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_salarycategory",
+                    "name": "Can add salary category",
+                    "id": 465,
+                    "content_type": 115,
+                    "type_name": "salary category",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_salarycategory",
+                    "name": "Can change salary category",
+                    "id": 466,
+                    "content_type": 115,
+                    "type_name": "salary category",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_salarycategory",
+                    "name": "Can delete salary category",
+                    "id": 467,
+                    "content_type": 115,
+                    "type_name": "salary category",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_salarycategory",
+                    "name": "Can view salary category",
+                    "id": 468,
+                    "content_type": 115,
+                    "type_name": "salary category",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_schedule",
+                    "name": "Can add schedule",
+                    "id": 117,
+                    "content_type": 28,
+                    "type_name": "schedule",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_schedule",
+                    "name": "Can change schedule",
+                    "id": 118,
+                    "content_type": 28,
+                    "type_name": "schedule",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_schedule",
+                    "name": "Can delete schedule",
+                    "id": 119,
+                    "content_type": 28,
+                    "type_name": "schedule",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_schedule",
+                    "name": "Can view schedule",
+                    "id": 120,
+                    "content_type": 28,
+                    "type_name": "schedule",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_section",
+                    "name": "Can add section",
+                    "id": 73,
+                    "content_type": 19,
+                    "type_name": "section",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_section",
+                    "name": "Can change section",
+                    "id": 74,
+                    "content_type": 19,
+                    "type_name": "section",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_section",
+                    "name": "Can delete section",
+                    "id": 75,
+                    "content_type": 19,
+                    "type_name": "section",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_section",
+                    "name": "Can view section",
+                    "id": 76,
+                    "content_type": 19,
+                    "type_name": "section",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_staffmonthlysalary",
+                    "name": "Can add staff monthly salary",
+                    "id": 461,
+                    "content_type": 114,
+                    "type_name": "staff monthly salary",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_staffmonthlysalary",
+                    "name": "Can change staff monthly salary",
+                    "id": 462,
+                    "content_type": 114,
+                    "type_name": "staff monthly salary",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_staffmonthlysalary",
+                    "name": "Can delete staff monthly salary",
+                    "id": 463,
+                    "content_type": 114,
+                    "type_name": "staff monthly salary",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_staffmonthlysalary",
+                    "name": "Can view staff monthly salary",
+                    "id": 464,
+                    "content_type": 114,
+                    "type_name": "staff monthly salary",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_staffsalarytemplate",
+                    "name": "Can add staff salary template",
+                    "id": 473,
+                    "content_type": 117,
+                    "type_name": "staff salary template",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_staffsalarytemplate",
+                    "name": "Can change staff salary template",
+                    "id": 474,
+                    "content_type": 117,
+                    "type_name": "staff salary template",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_staffsalarytemplate",
+                    "name": "Can delete staff salary template",
+                    "id": 475,
+                    "content_type": 117,
+                    "type_name": "staff salary template",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_staffsalarytemplate",
+                    "name": "Can view staff salary template",
+                    "id": 476,
+                    "content_type": 117,
+                    "type_name": "staff salary template",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_standard",
+                    "name": "Can add standard",
+                    "id": 69,
+                    "content_type": 18,
+                    "type_name": "standard",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_standard",
+                    "name": "Can change standard",
+                    "id": 70,
+                    "content_type": 18,
+                    "type_name": "standard",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_standard",
+                    "name": "Can delete standard",
+                    "id": 71,
+                    "content_type": 18,
+                    "type_name": "standard",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_standard",
+                    "name": "Can view standard",
+                    "id": 72,
+                    "content_type": 18,
+                    "type_name": "standard",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_stationary",
+                    "name": "Can add stationary",
+                    "id": 245,
+                    "content_type": 60,
+                    "type_name": "stationary",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_stationary",
+                    "name": "Can change stationary",
+                    "id": 246,
+                    "content_type": 60,
+                    "type_name": "stationary",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_stationary",
+                    "name": "Can delete stationary",
+                    "id": 247,
+                    "content_type": 60,
+                    "type_name": "stationary",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_stationary",
+                    "name": "Can view stationary",
+                    "id": 248,
+                    "content_type": 60,
+                    "type_name": "stationary",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_stationarytype",
+                    "name": "Can add stationary type",
+                    "id": 249,
+                    "content_type": 61,
+                    "type_name": "stationary type",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_stationarytype",
+                    "name": "Can change stationary type",
+                    "id": 250,
+                    "content_type": 61,
+                    "type_name": "stationary type",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_stationarytype",
+                    "name": "Can delete stationary type",
+                    "id": 251,
+                    "content_type": 61,
+                    "type_name": "stationary type",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_stationarytype",
+                    "name": "Can view stationary type",
+                    "id": 252,
+                    "content_type": 61,
+                    "type_name": "stationary type",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_studentdetails",
+                    "name": "Can add student details",
+                    "id": 81,
+                    "content_type": 21,
+                    "type_name": "student details",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_studentdetails",
+                    "name": "Can change student details",
+                    "id": 82,
+                    "content_type": 21,
+                    "type_name": "student details",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_studentdetails",
+                    "name": "Can delete student details",
+                    "id": 83,
+                    "content_type": 21,
+                    "type_name": "student details",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_studentdetails",
+                    "name": "Can view student details",
+                    "id": 84,
+                    "content_type": 21,
+                    "type_name": "student details",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_syllabus",
+                    "name": "Can add syllabus",
+                    "id": 149,
+                    "content_type": 36,
+                    "type_name": "syllabus",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_syllabus",
+                    "name": "Can change syllabus",
+                    "id": 150,
+                    "content_type": 36,
+                    "type_name": "syllabus",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_syllabus",
+                    "name": "Can delete syllabus",
+                    "id": 151,
+                    "content_type": 36,
+                    "type_name": "syllabus",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_syllabus",
+                    "name": "Can view syllabus",
+                    "id": 152,
+                    "content_type": 36,
+                    "type_name": "syllabus",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_task",
+                    "name": "Can add task",
+                    "id": 305,
+                    "content_type": 75,
+                    "type_name": "task",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_task",
+                    "name": "Can change task",
+                    "id": 306,
+                    "content_type": 75,
+                    "type_name": "task",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_task",
+                    "name": "Can delete task",
+                    "id": 307,
+                    "content_type": 75,
+                    "type_name": "task",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_task",
+                    "name": "Can view task",
+                    "id": 308,
+                    "content_type": 75,
+                    "type_name": "task",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_teacherattendance",
+                    "name": "Can add teacher attendance",
+                    "id": 301,
+                    "content_type": 74,
+                    "type_name": "teacher attendance",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_teacherattendance",
+                    "name": "Can change teacher attendance",
+                    "id": 302,
+                    "content_type": 74,
+                    "type_name": "teacher attendance",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_teacherattendance",
+                    "name": "Can delete teacher attendance",
+                    "id": 303,
+                    "content_type": 74,
+                    "type_name": "teacher attendance",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_teacherattendance",
+                    "name": "Can view teacher attendance",
+                    "id": 304,
+                    "content_type": 74,
+                    "type_name": "teacher attendance",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_topic",
+                    "name": "Can add topic",
+                    "id": 153,
+                    "content_type": 37,
+                    "type_name": "topic",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_topic",
+                    "name": "Can change topic",
+                    "id": 154,
+                    "content_type": 37,
+                    "type_name": "topic",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_topic",
+                    "name": "Can delete topic",
+                    "id": 155,
+                    "content_type": 37,
+                    "type_name": "topic",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_topic",
+                    "name": "Can view topic",
+                    "id": 156,
+                    "content_type": 37,
+                    "type_name": "topic",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_totalfeesummary",
+                    "name": "Can add total fee summary",
+                    "id": 181,
+                    "content_type": 44,
+                    "type_name": "total fee summary",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_totalfeesummary",
+                    "name": "Can change total fee summary",
+                    "id": 182,
+                    "content_type": 44,
+                    "type_name": "total fee summary",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_totalfeesummary",
+                    "name": "Can delete total fee summary",
+                    "id": 183,
+                    "content_type": 44,
+                    "type_name": "total fee summary",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_totalfeesummary",
+                    "name": "Can view total fee summary",
+                    "id": 184,
+                    "content_type": 44,
+                    "type_name": "total fee summary",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_trip",
+                    "name": "Can add trip",
+                    "id": 365,
+                    "content_type": 90,
+                    "type_name": "trip",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_trip",
+                    "name": "Can change trip",
+                    "id": 366,
+                    "content_type": 90,
+                    "type_name": "trip",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_trip",
+                    "name": "Can delete trip",
+                    "id": 367,
+                    "content_type": 90,
+                    "type_name": "trip",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_trip",
+                    "name": "Can view trip",
+                    "id": 368,
+                    "content_type": 90,
+                    "type_name": "trip",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_trippassenger",
+                    "name": "Can add trip passenger",
+                    "id": 361,
+                    "content_type": 89,
+                    "type_name": "trip passenger",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_trippassenger",
+                    "name": "Can change trip passenger",
+                    "id": 362,
+                    "content_type": 89,
+                    "type_name": "trip passenger",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_trippassenger",
+                    "name": "Can delete trip passenger",
+                    "id": 363,
+                    "content_type": 89,
+                    "type_name": "trip passenger",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_trippassenger",
+                    "name": "Can view trip passenger",
+                    "id": 364,
+                    "content_type": 89,
+                    "type_name": "trip passenger",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_tripstop",
+                    "name": "Can add trip stop",
+                    "id": 477,
+                    "content_type": 118,
+                    "type_name": "trip stop",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_tripstop",
+                    "name": "Can change trip stop",
+                    "id": 478,
+                    "content_type": 118,
+                    "type_name": "trip stop",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_tripstop",
+                    "name": "Can delete trip stop",
+                    "id": 479,
+                    "content_type": 118,
+                    "type_name": "trip stop",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_tripstop",
+                    "name": "Can view trip stop",
+                    "id": 480,
+                    "content_type": 118,
+                    "type_name": "trip stop",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_user",
+                    "name": "Can add user",
+                    "id": 57,
+                    "content_type": 15,
+                    "type_name": "user",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_user",
+                    "name": "Can change user",
+                    "id": 58,
+                    "content_type": 15,
+                    "type_name": "user",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_user",
+                    "name": "Can delete user",
+                    "id": 59,
+                    "content_type": 15,
+                    "type_name": "user",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_user",
+                    "name": "Can view user",
+                    "id": 60,
+                    "content_type": 15,
+                    "type_name": "user",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_userdetails",
+                    "name": "Can add user details",
+                    "id": 109,
+                    "content_type": 26,
+                    "type_name": "user details",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_userdetails",
+                    "name": "Can change user details",
+                    "id": 110,
+                    "content_type": 26,
+                    "type_name": "user details",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_userdetails",
+                    "name": "Can delete user details",
+                    "id": 111,
+                    "content_type": 26,
+                    "type_name": "user details",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_userdetails",
+                    "name": "Can view user details",
+                    "id": 112,
+                    "content_type": 26,
+                    "type_name": "user details",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_userdetailtype",
+                    "name": "Can add user detail type",
+                    "id": 105,
+                    "content_type": 25,
+                    "type_name": "user detail type",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_userdetailtype",
+                    "name": "Can change user detail type",
+                    "id": 106,
+                    "content_type": 25,
+                    "type_name": "user detail type",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_userdetailtype",
+                    "name": "Can delete user detail type",
+                    "id": 107,
+                    "content_type": 25,
+                    "type_name": "user detail type",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_userdetailtype",
+                    "name": "Can view user detail type",
+                    "id": 108,
+                    "content_type": 25,
+                    "type_name": "user detail type",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_usersubscription",
+                    "name": "Can add user subscription",
+                    "id": 261,
+                    "content_type": 64,
+                    "type_name": "user subscription",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_usersubscription",
+                    "name": "Can change user subscription",
+                    "id": 262,
+                    "content_type": 64,
+                    "type_name": "user subscription",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_usersubscription",
+                    "name": "Can delete user subscription",
+                    "id": 263,
+                    "content_type": 64,
+                    "type_name": "user subscription",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_usersubscription",
+                    "name": "Can view user subscription",
+                    "id": 264,
+                    "content_type": 64,
+                    "type_name": "user subscription",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_vehicle",
+                    "name": "Can add vehicle",
+                    "id": 197,
+                    "content_type": 48,
+                    "type_name": "vehicle",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_vehicle",
+                    "name": "Can change vehicle",
+                    "id": 198,
+                    "content_type": 48,
+                    "type_name": "vehicle",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_vehicle",
+                    "name": "Can delete vehicle",
+                    "id": 199,
+                    "content_type": 48,
+                    "type_name": "vehicle",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_vehicle",
+                    "name": "Can view vehicle",
+                    "id": 200,
+                    "content_type": 48,
+                    "type_name": "vehicle",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_vehicledocument",
+                    "name": "Can add vehicle document",
+                    "id": 185,
+                    "content_type": 45,
+                    "type_name": "vehicledocument",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_vehicledocument",
+                    "name": "Can change vehicle document",
+                    "id": 186,
+                    "content_type": 45,
+                    "type_name": "vehicledocument",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_vehicledocument",
+                    "name": "Can delete vehicle document",
+                    "id": 187,
+                    "content_type": 45,
+                    "type_name": "vehicledocument",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_vehicledocument",
+                    "name": "Can view vehicle document",
+                    "id": 188,
+                    "content_type": 45,
+                    "type_name": "vehicledocument",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_vehicletracking",
+                    "name": "Can add vehicle tracking",
+                    "id": 369,
+                    "content_type": 91,
+                    "type_name": "vehicle tracking",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_vehicletracking",
+                    "name": "Can change vehicle tracking",
+                    "id": 370,
+                    "content_type": 91,
+                    "type_name": "vehicle tracking",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_vehicletracking",
+                    "name": "Can delete vehicle tracking",
+                    "id": 371,
+                    "content_type": 91,
+                    "type_name": "vehicle tracking",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_vehicletracking",
+                    "name": "Can view vehicle tracking",
+                    "id": 372,
+                    "content_type": 91,
+                    "type_name": "vehicle tracking",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_vendor",
+                    "name": "Can add vendor",
+                    "id": 193,
+                    "content_type": 47,
+                    "type_name": "vendor",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_vendor",
+                    "name": "Can change vendor",
+                    "id": 194,
+                    "content_type": 47,
+                    "type_name": "vendor",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_vendor",
+                    "name": "Can delete vendor",
+                    "id": 195,
+                    "content_type": 47,
+                    "type_name": "vendor",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_vendor",
+                    "name": "Can view vendor",
+                    "id": 196,
+                    "content_type": 47,
+                    "type_name": "vendor",
+                    "operation_name": "view"
+                },
+                {
+                    "codename": "add_visitor",
+                    "name": "Can add visitor",
+                    "id": 357,
+                    "content_type": 88,
+                    "type_name": "visitor",
+                    "operation_name": "add"
+                },
+                {
+                    "codename": "change_visitor",
+                    "name": "Can change visitor",
+                    "id": 358,
+                    "content_type": 88,
+                    "type_name": "visitor",
+                    "operation_name": "change"
+                },
+                {
+                    "codename": "delete_visitor",
+                    "name": "Can delete visitor",
+                    "id": 359,
+                    "content_type": 88,
+                    "type_name": "visitor",
+                    "operation_name": "delete"
+                },
+                {
+                    "codename": "view_visitor",
+                    "name": "Can view visitor",
+                    "id": 360,
+                    "content_type": 88,
+                    "type_name": "visitor",
+                    "operation_name": "view"
+                }
+            ],
+            "group_type": null
+        },
+    ]
+}
