@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -7,58 +6,51 @@ import {
   ScrollView,
   TouchableOpacity,
   TextInput,
-  FlatList,
   ActivityIndicator,
-  RefreshControl,
   Alert,
-} from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { TopBar } from '@/components/TopBar';
-import { SideDrawer } from '@/components/SideDrawer';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useUsers, useGroups, useBranches, useAcademicYears } from '@/hooks/useApi';
+} from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { TopBar } from "@/components/TopBar";
+import { SideDrawer } from "@/components/SideDrawer";
+import { useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useUsers, useBranches, useGroups, useAcademicYears } from "@/hooks/useApi";
+import { Picker } from "@react-native-picker/picker";
 
 interface User {
   id: number;
   first_name: string;
   last_name: string;
   email: string;
-  phone?: string;
-  group: number;
-  group_name: string;
   is_active: boolean;
-  profile_image?: string;
-  address?: any;
-  standard?: any;
-  department?: any;
-  admission_number?: number;
-  employee_id?: string;
-  student_details?: any;
-  guardians?: any[];
-  section_name?: string;
-  section_details?: any;
-}
-
-interface Group {
-  id: number;
-  name: string;
-  permissions: any[];
+  group: {
+    id: number;
+    name: string;
+  };
+  branch?: {
+    id: number;
+    name: string;
+  };
+  created: string;
+  is_staff: boolean;
 }
 
 interface Branch {
   id: number;
   name: string;
-  is_active: boolean;
-  address?: any;
+  address: any;
+}
+
+interface Group {
+  id: number;
+  name: string;
 }
 
 interface AcademicYear {
   id: number;
-  name: string;
-  start_date: string;
-  end_date: string;
+  year: string;
+  is_active: boolean;
 }
 
 export default function UsersScreen() {
@@ -66,207 +58,226 @@ export default function UsersScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<number | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
-  const [showBranchDropdown, setShowBranchDropdown] = useState(false);
-  const [showGroupDropdown, setShowGroupDropdown] = useState(false);
-  const [showAcademicYearDropdown, setShowAcademicYearDropdown] = useState(false);
 
-  // Fetch branches and academic years without branch filter
+  // Fetch data with proper error handling
   const { 
     data: branches, 
     loading: branchesLoading, 
-    error: branchesError 
-  } = useBranches({ is_active: true });
-
-  const { 
-    data: academicYears, 
-    loading: academicYearsLoading, 
-    error: academicYearsError 
-  } = useAcademicYears();
+    error: branchesError,
+    refetch: refetchBranches 
+  } = useBranches();
 
   const { 
     data: groups, 
     loading: groupsLoading, 
-    error: groupsError 
+    error: groupsError,
+    refetch: refetchGroups 
   } = useGroups();
 
-  // Build users API params based on selected filters
-  const usersParams = useMemo(() => {
-    const params: any = {};
+  const { 
+    data: academicYears, 
+    loading: academicYearsLoading, 
+    error: academicYearsError,
+    refetch: refetchAcademicYears 
+  } = useAcademicYears();
+
+  // Build user params based on selected filters
+  const userParams = useMemo(() => {
+    const params: any = { limit: 50 };
     if (selectedBranch) params.branch = selectedBranch;
     if (selectedGroup) params.group = selectedGroup;
-    if (searchQuery.trim()) params.search = searchQuery.trim();
     if (selectedAcademicYear) params.academic_year = selectedAcademicYear;
     return params;
-  }, [selectedBranch, selectedGroup, searchQuery, selectedAcademicYear]);
+  }, [selectedBranch, selectedGroup, selectedAcademicYear]);
 
   const { 
     data: users, 
     loading: usersLoading, 
-    error: usersError, 
+    error: usersError,
     refetch: refetchUsers 
-  } = useUsers(selectedBranch ? usersParams : null); // Only fetch if branch is selected
+  } = useUsers(userParams);
 
-  // Set default branch and academic year on initial load
-  useEffect(() => {
-    if (branches.length > 0 && !selectedBranch) {
-      setSelectedBranch(branches[0].id);
-    }
-  }, [branches]);
+  // Filter users based on search query
+  const filteredUsers = useMemo(() => {
+    if (!users || !Array.isArray(users)) return [];
 
-  useEffect(() => {
-    if (academicYears.length > 0 && !selectedAcademicYear) {
-      setSelectedAcademicYear(academicYears[0].id);
-    }
-  }, [academicYears]);
+    return users.filter((user: User) => {
+      const searchTerm = searchQuery.toLowerCase();
+      const fullName = `${user.first_name} ${user.last_name}`.toLowerCase();
+      const email = user.email?.toLowerCase() || '';
+      const groupName = user.group?.name?.toLowerCase() || '';
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
-    try {
-      await refetchUsers();
-    } catch (error) {
-      console.error('Error refreshing users:', error);
-    } finally {
-      setRefreshing(false);
-    }
-  };
+      return fullName.includes(searchTerm) || 
+             email.includes(searchTerm) || 
+             groupName.includes(searchTerm);
+    });
+  }, [users, searchQuery]);
 
-  const handleUserPress = (selectedUser: User) => {
-    Alert.alert(
-      `${selectedUser.first_name} ${selectedUser.last_name}`,
-      `Email: ${selectedUser.email}\n` +
-      `Group: ${selectedUser.group_name}\n` +
-      `Status: ${selectedUser.is_active ? 'Active' : 'Inactive'}\n` +
-      `${selectedUser.phone ? `Phone: ${selectedUser.phone}\n` : ''}` +
-      `${selectedUser.admission_number ? `Admission No: ${selectedUser.admission_number}\n` : ''}` +
-      `${selectedUser.employee_id ? `Employee ID: ${selectedUser.employee_id}\n` : ''}`,
-      [
-        { text: 'OK', style: 'default' },
-        {
-          text: 'View Details',
-          onPress: () => {
-            console.log('Navigate to user details:', selectedUser);
-          }
-        }
-      ]
-    );
-  };
+  const handleRefreshAll = useCallback(() => {
+    refetchBranches();
+    refetchGroups();
+    refetchAcademicYears();
+    refetchUsers();
+  }, [refetchBranches, refetchGroups, refetchAcademicYears, refetchUsers]);
 
-  const getSelectedBranchName = () => {
-    const branch = branches.find(b => b.id === selectedBranch);
-    return branch ? branch.name : 'Select Branch';
-  };
+  const renderFilterSection = () => (
+    <View style={[styles.filterSection, { backgroundColor: colors.surface }]}>
+      <Text style={[styles.filterTitle, { color: colors.textPrimary }]}>
+        Filters
+      </Text>
 
-  const getSelectedGroupName = () => {
-    const group = groups.find(g => g.id === selectedGroup);
-    return group ? group.name : 'All Groups';
-  };
+      {/* Branch Dropdown */}
+      <View style={styles.filterRow}>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+          Branch:
+        </Text>
+        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
+          <Picker
+            selectedValue={selectedBranch}
+            onValueChange={setSelectedBranch}
+            style={[styles.picker, { color: colors.textPrimary }]}
+            dropdownIconColor={colors.textSecondary}
+          >
+            <Picker.Item label="All Branches" value={null} />
+            {branches?.map((branch: Branch) => (
+              <Picker.Item 
+                key={branch.id} 
+                label={branch.name} 
+                value={branch.id} 
+              />
+            ))}
+          </Picker>
+        </View>
+      </View>
 
-  const getSelectedAcademicYearName = () => {
-    const year = academicYears.find(ay => ay.id === selectedAcademicYear);
-    return year ? year.name : 'Select Academic Year';
-  };
+      {/* Group Dropdown */}
+      <View style={styles.filterRow}>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+          Group:
+        </Text>
+        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
+          <Picker
+            selectedValue={selectedGroup}
+            onValueChange={setSelectedGroup}
+            style={[styles.picker, { color: colors.textPrimary }]}
+            dropdownIconColor={colors.textSecondary}
+          >
+            <Picker.Item label="All Groups" value={null} />
+            {groups?.map((group: Group) => (
+              <Picker.Item 
+                key={group.id} 
+                label={group.name} 
+                value={group.id} 
+              />
+            ))}
+          </Picker>
+        </View>
+      </View>
 
-  const renderUserCard = ({ item: userData }: { item: User }) => (
+      {/* Academic Year Dropdown */}
+      <View style={styles.filterRow}>
+        <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+          Academic Year:
+        </Text>
+        <View style={[styles.pickerContainer, { backgroundColor: colors.background }]}>
+          <Picker
+            selectedValue={selectedAcademicYear}
+            onValueChange={setSelectedAcademicYear}
+            style={[styles.picker, { color: colors.textPrimary }]}
+            dropdownIconColor={colors.textSecondary}
+          >
+            <Picker.Item label="All Years" value={null} />
+            {academicYears?.map((year: AcademicYear) => (
+              <Picker.Item 
+                key={year.id} 
+                label={year.year} 
+                value={year.id} 
+              />
+            ))}
+          </Picker>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderUserCard = (user: User) => (
     <TouchableOpacity
-      style={[styles.userCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-      onPress={() => handleUserPress(userData)}
-      activeOpacity={0.7}
+      key={user.id}
+      style={[styles.userCard, { backgroundColor: colors.surface }]}
+      onPress={() => {
+        Alert.alert("User Details", `View details for ${user.first_name} ${user.last_name}`);
+      }}
     >
       <View style={styles.userHeader}>
         <View style={styles.userInfo}>
           <Text style={[styles.userName, { color: colors.textPrimary }]}>
-            {userData.first_name} {userData.last_name}
+            {user.first_name} {user.last_name}
           </Text>
           <Text style={[styles.userEmail, { color: colors.textSecondary }]}>
-            {userData.email}
+            {user.email}
           </Text>
-          {userData.phone && (
-            <Text style={[styles.userPhone, { color: colors.textSecondary }]}>
-              📞 {userData.phone}
-            </Text>
-          )}
         </View>
-        <View style={styles.userBadges}>
-          <View style={[
-            styles.groupBadge,
-            { backgroundColor: colors.primary + '20' }
+        <View style={[
+          styles.statusBadge,
+          { backgroundColor: user.is_active ? '#E8F5E8' : '#FFEBEE' }
+        ]}>
+          <Text style={[
+            styles.statusText,
+            { color: user.is_active ? '#4CAF50' : '#F44336' }
           ]}>
-            <Text style={[styles.groupBadgeText, { color: colors.primary }]}>
-              {userData.group_name}
-            </Text>
-          </View>
-          <View style={[
-            styles.statusBadge,
-            { backgroundColor: userData.is_active ? '#E8F5E8' : '#FFEBEE' }
-          ]}>
-            <Text style={[
-              styles.statusText,
-              { color: userData.is_active ? '#2E7D32' : '#C62828' }
-            ]}>
-              {userData.is_active ? 'Active' : 'Inactive'}
-            </Text>
-          </View>
+            {user.is_active ? 'Active' : 'Inactive'}
+          </Text>
         </View>
       </View>
-      
+
       <View style={styles.userDetails}>
-        {userData.admission_number && (
-          <Text style={[styles.userDetail, { color: colors.textSecondary }]}>
-            🎓 Admission: {userData.admission_number}
+        <Text style={[styles.userGroup, { color: colors.textSecondary }]}>
+          👥 {user.group?.name || 'No Group'}
+        </Text>
+        {user.branch && (
+          <Text style={[styles.userBranch, { color: colors.textSecondary }]}>
+            🏢 {user.branch.name}
           </Text>
         )}
-        {userData.employee_id && (
-          <Text style={[styles.userDetail, { color: colors.textSecondary }]}>
-            💼 Employee ID: {userData.employee_id}
-          </Text>
-        )}
-        {userData.section_name && (
-          <Text style={[styles.userDetail, { color: colors.textSecondary }]}>
-            📚 Section: {userData.section_name}
-          </Text>
-        )}
-        {userData.standard?.name && (
-          <Text style={[styles.userDetail, { color: colors.textSecondary }]}>
-            📖 Standard: {userData.standard.name}
-          </Text>
-        )}
+        <Text style={[styles.userRole, { color: colors.textSecondary }]}>
+          👤 {user.is_staff ? 'Staff' : 'Student'}
+        </Text>
       </View>
     </TouchableOpacity>
   );
 
-  const renderDropdownItem = (item: any, onSelect: (id: number) => void, isSelected: boolean) => (
-    <TouchableOpacity
-      key={item.id}
-      style={[
-        styles.dropdownItem,
-        { backgroundColor: isSelected ? colors.primary + '20' : colors.surface }
-      ]}
-      onPress={() => onSelect(item.id)}
-    >
-      <Text style={[
-        styles.dropdownItemText,
-        { color: isSelected ? colors.primary : colors.textPrimary }
-      ]}>
-        {item.name}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderErrorState = () => {
+    const hasAnyError = branchesError || groupsError || academicYearsError || usersError;
+    if (!hasAnyError) return null;
 
-  const isLoading = usersLoading || branchesLoading || groupsLoading || academicYearsLoading;
-  const hasError = usersError || branchesError || groupsError || academicYearsError;
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={[styles.errorText, { color: '#F44336' }]}>
+          {usersError || "Some data failed to load"}
+        </Text>
+        <TouchableOpacity
+          onPress={handleRefreshAll}
+          style={[styles.retryButton, { backgroundColor: colors.primary }]}
+        >
+          <Text style={styles.retryButtonText}>Retry</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const isLoading = branchesLoading || groupsLoading || academicYearsLoading || usersLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Users Management"
+        title="Users"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push('/(tabs)/notifications')}
-        onSettingsPress={() => router.push('/(tabs)/settings')}
+        onNotificationsPress={() => router.push("/(tabs)/notifications")}
+        onSettingsPress={() => router.push("/(tabs)/settings")}
       />
 
       <SideDrawer
@@ -274,212 +285,60 @@ export default function UsersScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Filters Section */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        {/* Branch Dropdown */}
-        <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch *</Text>
-          <TouchableOpacity
-            style={[styles.dropdown, { backgroundColor: colors.background, borderColor: colors.border }]}
-            onPress={() => {
-              setShowBranchDropdown(!showBranchDropdown);
-              setShowGroupDropdown(false);
-              setShowAcademicYearDropdown(false);
-            }}
-          >
-            <Text style={[styles.dropdownText, { color: colors.textPrimary }]}>
-              {getSelectedBranchName()}
-            </Text>
-            <Text style={[styles.dropdownArrow, { color: colors.textSecondary }]}>
-              {showBranchDropdown ? '▲' : '▼'}
-            </Text>
-          </TouchableOpacity>
-          {showBranchDropdown && (
-            <View style={[styles.dropdownList, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <ScrollView style={styles.dropdownScroll} nestedScrollEnabled>
-                {branches.map(branch => 
-                  renderDropdownItem(
-                    branch, 
-                    (id) => {
-                      setSelectedBranch(id);
-                      setShowBranchDropdown(false);
-                    },
-                    selectedBranch === branch.id
-                  )
-                )}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-
-        {/* Academic Year Dropdown */}
-        <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-          <TouchableOpacity
-            style={[styles.dropdown, { backgroundColor: colors.background, borderColor: colors.border }]}
-            onPress={() => {
-              setShowAcademicYearDropdown(!showAcademicYearDropdown);
-              setShowBranchDropdown(false);
-              setShowGroupDropdown(false);
-            }}
-          >
-            <Text style={[styles.dropdownText, { color: colors.textPrimary }]}>
-              {getSelectedAcademicYearName()}
-            </Text>
-            <Text style={[styles.dropdownArrow, { color: colors.textSecondary }]}>
-              {showAcademicYearDropdown ? '▲' : '▼'}
-            </Text>
-          </TouchableOpacity>
-          {showAcademicYearDropdown && (
-            <View style={[styles.dropdownList, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <ScrollView style={styles.dropdownScroll} nestedScrollEnabled>
-                {academicYears.map(year => 
-                  renderDropdownItem(
-                    year, 
-                    (id) => {
-                      setSelectedAcademicYear(id);
-                      setShowAcademicYearDropdown(false);
-                    },
-                    selectedAcademicYear === year.id
-                  )
-                )}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-
-        {/* Group Filter Dropdown */}
-        <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Filter by Group</Text>
-          <TouchableOpacity
-            style={[styles.dropdown, { backgroundColor: colors.background, borderColor: colors.border }]}
-            onPress={() => {
-              setShowGroupDropdown(!showGroupDropdown);
-              setShowBranchDropdown(false);
-              setShowAcademicYearDropdown(false);
-            }}
-          >
-            <Text style={[styles.dropdownText, { color: colors.textPrimary }]}>
-              {getSelectedGroupName()}
-            </Text>
-            <Text style={[styles.dropdownArrow, { color: colors.textSecondary }]}>
-              {showGroupDropdown ? '▲' : '▼'}
-            </Text>
-          </TouchableOpacity>
-          {showGroupDropdown && (
-            <View style={[styles.dropdownList, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-              <ScrollView style={styles.dropdownScroll} nestedScrollEnabled>
-                <TouchableOpacity
-                  style={[
-                    styles.dropdownItem,
-                    { backgroundColor: !selectedGroup ? colors.primary + '20' : colors.surface }
-                  ]}
-                  onPress={() => {
-                    setSelectedGroup(null);
-                    setShowGroupDropdown(false);
-                  }}
-                >
-                  <Text style={[
-                    styles.dropdownItemText,
-                    { color: !selectedGroup ? colors.primary : colors.textPrimary }
-                  ]}>
-                    All Groups
-                  </Text>
-                </TouchableOpacity>
-                {groups.map(group => 
-                  renderDropdownItem(
-                    group, 
-                    (id) => {
-                      setSelectedGroup(id);
-                      setShowGroupDropdown(false);
-                    },
-                    selectedGroup === group.id
-                  )
-                )}
-              </ScrollView>
-            </View>
-          )}
-        </View>
-
-        {/* Search Input */}
-        <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Search Users</Text>
-          <TextInput
-            style={[styles.searchInput, { 
-              backgroundColor: colors.background, 
+      {/* Search Bar */}
+      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
+        <TextInput
+          style={[
+            styles.searchInput,
+            {
+              backgroundColor: colors.background,
               borderColor: colors.border,
-              color: colors.textPrimary 
-            }]}
-            placeholder="Search by name, email, phone..."
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
-        </View>
+              color: colors.textPrimary,
+            },
+          ]}
+          placeholder="Search users by name, email, or group..."
+          placeholderTextColor={colors.textSecondary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
       </View>
 
+      {/* Filters */}
+      {renderFilterSection()}
+
       {/* Content */}
-      <View style={styles.content}>
-        {!selectedBranch ? (
-          <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-              Please select a branch to view users
-            </Text>
-          </View>
-        ) : isLoading ? (
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Error State */}
+        {renderErrorState()}
+
+        {/* Loading State */}
+        {isLoading && (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
               Loading users...
             </Text>
           </View>
-        ) : hasError ? (
-          <View style={styles.errorContainer}>
-            <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
-              Failed to load users. Please check your connection and try again.
-            </Text>
-            <TouchableOpacity
-              onPress={handleRefresh}
-              style={[styles.retryButton, { backgroundColor: colors.primary }]}
-            >
-              <Text style={styles.retryButtonText}>Retry</Text>
-            </TouchableOpacity>
-          </View>
-        ) : (
-          <FlatList
-            data={users}
-            renderItem={renderUserCard}
-            keyExtractor={(item) => item.id.toString()}
-            style={styles.usersList}
-            contentContainerStyle={styles.usersListContent}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={handleRefresh}
-                colors={[colors.primary]}
-                tintColor={colors.primary}
-              />
-            }
-            ListEmptyComponent={() => (
-              <View style={styles.emptyContainer}>
-                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                  {searchQuery || selectedGroup 
-                    ? "No users match your search criteria"
-                    : "No users found in this branch"
-                  }
-                </Text>
-              </View>
-            )}
-            ListHeaderComponent={() => users.length > 0 ? (
-              <View style={styles.resultsHeader}>
-                <Text style={[styles.resultsText, { color: colors.textPrimary }]}>
-                  {users.length} user{users.length !== 1 ? 's' : ''} found
-                </Text>
-              </View>
-            ) : null}
-          />
         )}
-      </View>
+
+        {/* Users List */}
+        {!isLoading && filteredUsers.length === 0 && !usersError && (
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+              {searchQuery ? "No users match your search criteria" : "No users found"}
+            </Text>
+          </View>
+        )}
+
+        {!isLoading && filteredUsers.length > 0 && (
+          <View style={styles.usersList}>
+            <Text style={[styles.resultsCount, { color: colors.textSecondary }]}>
+              {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
+            </Text>
+            {filteredUsers.map(renderUserCard)}
+          </View>
+        )}
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -488,135 +347,122 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  filtersContainer: {
+  searchContainer: {
     padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
   },
-  filterItem: {
+  searchInput: {
+    height: 44,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  filterSection: {
+    padding: 16,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  filterTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
+  },
+  filterRow: {
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 12,
   },
   filterLabel: {
     fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 6,
+    width: 80,
+    fontWeight: "500",
   },
-  dropdown: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    minHeight: 44,
-  },
-  dropdownText: {
-    fontSize: 16,
+  pickerContainer: {
     flex: 1,
-  },
-  dropdownArrow: {
-    fontSize: 12,
-    marginLeft: 8,
-  },
-  dropdownList: {
-    position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
+    borderRadius: 6,
     borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 4,
-    maxHeight: 200,
-    zIndex: 1000,
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
+    borderColor: "#E0E0E0",
   },
-  dropdownScroll: {
-    maxHeight: 200,
-  },
-  dropdownItem: {
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  dropdownItemText: {
-    fontSize: 16,
-  },
-  searchInput: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    fontSize: 16,
-    minHeight: 44,
+  picker: {
+    height: 40,
   },
   content: {
     flex: 1,
   },
-  resultsHeader: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+  errorContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    margin: 16,
   },
-  resultsText: {
-    fontSize: 14,
-    fontWeight: '600',
+  errorText: {
+    fontSize: 16,
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  loadingContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 40,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: "center",
   },
   usersList: {
-    flex: 1,
-  },
-  usersListContent: {
     padding: 16,
+  },
+  resultsCount: {
+    fontSize: 14,
+    marginBottom: 12,
+    fontWeight: "500",
   },
   userCard: {
-    borderRadius: 12,
     padding: 16,
+    borderRadius: 12,
     marginBottom: 12,
-    borderWidth: 1,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
   userHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 12,
   },
   userInfo: {
     flex: 1,
-    marginRight: 12,
   },
   userName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   userEmail: {
     fontSize: 14,
-    marginBottom: 2,
-  },
-  userPhone: {
-    fontSize: 14,
-  },
-  userBadges: {
-    alignItems: 'flex-end',
-  },
-  groupBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginBottom: 4,
-  },
-  groupBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -625,54 +471,18 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   userDetails: {
-    marginTop: 8,
+    gap: 4,
   },
-  userDetail: {
+  userGroup: {
     fontSize: 14,
-    marginBottom: 2,
   },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
+  userBranch: {
+    fontSize: 14,
   },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  retryButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-  },
-  retryButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  emptyText: {
-    fontSize: 16,
-    textAlign: 'center',
+  userRole: {
+    fontSize: 14,
   },
 });

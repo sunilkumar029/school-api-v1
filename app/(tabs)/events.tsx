@@ -102,10 +102,6 @@ export default function EventsScreen() {
 
   const formattedEvents = formatEventData(events || []);
 
-  // console.log("Events Data:", events);
-  // console.log(events.length);
-  console.log(filteredEvents);
-
   const filteredEvents = formattedEvents.filter((event) => {
     const matchesSearch = event.title
       .toLowerCase()

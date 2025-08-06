@@ -38,40 +38,74 @@ export function useEvents(params?: any) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isRetry = false) => {
+    // Circuit breaker: stop trying after 3 failures
+    if (isBlocked && retryCount >= 3) {
+      setError("Too many failed attempts. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
       const response = await apiService.getEvents(params);
       setData(response.results || []);
       setHasInitialized(true);
+      setRetryCount(0); // Reset retry count on success
+      setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch events";
       
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
-          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+          const status = axiosError.response.status;
+          if (status === 502) {
+            errorMessage = "Server temporarily unavailable. Please try again later.";
+          } else {
+            errorMessage = `Error ${status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+          }
         } else if (axiosError.message) {
-          errorMessage = axiosError.message;
+          if (axiosError.message.includes('timeout')) {
+            errorMessage = "Request timed out. Please check your connection and try again.";
+          } else {
+            errorMessage = axiosError.message;
+          }
         }
       }
       
       setError(errorMessage);
       console.error("Error fetching events:", err);
+      
+      // Increment retry count and set blocked state if too many failures
+      const newRetryCount = retryCount + 1;
+      setRetryCount(newRetryCount);
+      if (newRetryCount >= 3) {
+        setIsBlocked(true);
+      }
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]); // Stringify params to avoid object reference issues
+  }, [JSON.stringify(params), retryCount, isBlocked]);
 
   useEffect(() => {
-    if (!hasInitialized) {
+    if (!hasInitialized && !isBlocked) {
       fetchData();
     }
-  }, [fetchData, hasInitialized]);
+  }, [fetchData, hasInitialized, isBlocked]);
 
-  return { data, loading, error, refetch: fetchData };
+  const manualRefetch = useCallback(() => {
+    setIsBlocked(false);
+    setRetryCount(0);
+    setHasInitialized(false);
+    fetchData(true);
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: manualRefetch };
 }
 
 export function useAttendanceDashboard() {
@@ -395,21 +429,47 @@ export function useUsers(params?: any) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isRetry = false) => {
+    // Circuit breaker: stop trying after 3 failures
+    if (isBlocked && retryCount >= 3) {
+      setError("Too many failed attempts. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
-      const response = await apiService.getUsers(params);
+      
+      // Add required branch parameter if missing
+      const requestParams = {
+        ...params,
+        // Add default branch if not provided and API requires it
+        ...(params && !params.branch && { branch: 1 })
+      };
+      
+      const response = await apiService.getUsers(requestParams);
       setData(response.results || []);
       setHasInitialized(true);
+      setRetryCount(0); // Reset retry count on success
+      setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch users";
       
       if (err && typeof err === 'object') {
         const axiosError = err as any;
         if (axiosError.response) {
-          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+          const status = axiosError.response.status;
+          const responseData = axiosError.response.data;
+          
+          if (status === 400 && typeof responseData === 'string' && responseData.includes('Branch is required')) {
+            errorMessage = "Branch selection is required. Please select a branch first.";
+          } else {
+            errorMessage = `Error ${status}: ${responseData?.message || responseData || 'Server Error'}`;
+          }
         } else if (axiosError.message) {
           errorMessage = axiosError.message;
         }
@@ -417,18 +477,32 @@ export function useUsers(params?: any) {
       
       setError(errorMessage);
       console.error("Error fetching users:", err);
+      
+      // Increment retry count and set blocked state if too many failures
+      const newRetryCount = retryCount + 1;
+      setRetryCount(newRetryCount);
+      if (newRetryCount >= 3) {
+        setIsBlocked(true);
+      }
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(params), retryCount, isBlocked]);
 
   useEffect(() => {
-    if (!hasInitialized) {
+    if (!hasInitialized && !isBlocked) {
       fetchData();
     }
-  }, [fetchData, hasInitialized]);
+  }, [fetchData, hasInitialized, isBlocked]);
 
-  return { data, loading, error, refetch: fetchData };
+  const manualRefetch = useCallback(() => {
+    setIsBlocked(false);
+    setRetryCount(0);
+    setHasInitialized(false);
+    fetchData(true);
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: manualRefetch };
 }
 
 export function useGroups(params?: any) {
@@ -436,14 +510,25 @@ export function useGroups(params?: any) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async () => {
+  const fetchData = useCallback(async (isRetry = false) => {
+    // Circuit breaker: stop trying after 3 failures
+    if (isBlocked && retryCount >= 3) {
+      setError("Too many failed attempts. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
       const response = await apiService.getGroups(params);
       setData(response.results || []);
       setHasInitialized(true);
+      setRetryCount(0); // Reset retry count on success
+      setIsBlocked(false);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch groups";
       
@@ -458,16 +543,30 @@ export function useGroups(params?: any) {
       
       setError(errorMessage);
       console.error("Error fetching groups:", err);
+      
+      // Increment retry count and set blocked state if too many failures
+      const newRetryCount = retryCount + 1;
+      setRetryCount(newRetryCount);
+      if (newRetryCount >= 3) {
+        setIsBlocked(true);
+      }
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(params), retryCount, isBlocked]);
 
   useEffect(() => {
-    if (!hasInitialized) {
+    if (!hasInitialized && !isBlocked) {
       fetchData();
     }
-  }, [fetchData, hasInitialized]);
+  }, [fetchData, hasInitialized, isBlocked]);
 
-  return { data, loading, error, refetch: fetchData };
+  const manualRefetch = useCallback(() => {
+    setIsBlocked(false);
+    setRetryCount(0);
+    setHasInitialized(false);
+    fetchData(true);
+  }, [fetchData]);
+
+  return { data, loading, error, refetch: manualRefetch };
 }
