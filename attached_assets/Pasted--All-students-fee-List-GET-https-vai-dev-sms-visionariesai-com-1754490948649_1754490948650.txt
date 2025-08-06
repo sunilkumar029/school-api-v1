@@ -1,0 +1,1387 @@
+
+------------------------------ All students fee List
+
+GET https: //vai.dev.sms.visionariesai.com/api/standards/?branch=1&is_active=true&academic_year=1&standard=undefined
+GET https: //vai.dev.sms.visionariesai.com/api/sections/?branch=1&standard=&omit=created_by
+GET https: //vai.dev.sms.visionariesai.com/api/total-fee-summary/
+{
+    "meta": {
+        "count": 178,
+        "next": "http://vai.dev.sms.visionariesai.com/api/total-fee-summary/?limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "user_id": 258,
+            "user_name": "santhoshi P",
+            "admission_number": 30001,
+            "academic_year": "2024-2025",
+            "academic_year_id": 1,
+            "standard": "11 Standard",
+            "standard_id": 53,
+            "section": "Section B",
+            "section_id": 57,
+            "totalfee": 101000,
+            "pending_fee": 0,
+            "transactions": [
+                {
+                    "payment_date": "2025-06-11T18:27:13.602800+05:30",
+                    "amount": 1000,
+                    "fee_type": "Unit1 exam fees",
+                    "payment_type": "Online",
+                    "payment_reference": "UTR1228828"
+                },
+                {
+                    "payment_date": "2025-06-11T18:41:20.029348+05:30",
+                    "amount": 25000,
+                    "fee_type": "Hostel fee",
+                    "payment_type": "Cash",
+                    "payment_reference": ""
+                },
+                {
+                    "payment_date": "2025-06-11T18:27:32.412822+05:30",
+                    "amount": 20000,
+                    "fee_type": "Hostel fee",
+                    "payment_type": "Cash",
+                    "payment_reference": null
+                },
+                {
+                    "payment_date": "2025-06-11T18:41:19.993228+05:30",
+                    "amount": 25000,
+                    "fee_type": "Tution Fee",
+                    "payment_type": "Cash",
+                    "payment_reference": ""
+                },
+                {
+                    "payment_date": "2025-06-11T18:28:05.183165+05:30",
+                    "amount": 25000,
+                    "fee_type": "Tution Fee",
+                    "payment_type": "Cash",
+                    "payment_reference": null
+                }
+            ],
+            "concessions": [
+                {
+                    "amount": 0,
+                    "fee_type": "Unit1 exam fees"
+                },
+                {
+                    "amount": 5000,
+                    "fee_type": "Hostel fee"
+                }
+            ]
+        },
+    ]
+}
+
+// (VIEW DETAILS OF A PARTICULAR STUDENT APIS)
+GET https: //vai.dev.sms.visionariesai.com/api/fee-summary/?user=192&academic_year=1 
+{
+    "meta": {
+        "count": 654,
+        "next": "http://vai.dev.sms.visionariesai.com/api/fee-summary/?limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "fee": {
+                "amount": 50000,
+                "created_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "modified_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "standard": {
+                    "id": 2,
+                    "academic_year_display": {
+                        "id": 1
+                    },
+                    "access_to_all_user_ids": [],
+                    "student_assigned_count": 16,
+                    "student_total_count": 16,
+                    "section_count": 2,
+                    "stationary": [
+                        {
+                            "id": 2,
+                            "name": "Books",
+                            "price": 1000,
+                            "description": "Books",
+                            "is_active": true,
+                            "quantity": 10,
+                            "stationary_type": {
+                                "id": 2,
+                                "name": "Book",
+                                "description": "Books for students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 2
+                            }
+                        },
+                        {
+                            "id": 1,
+                            "name": "Uniform",
+                            "price": 1450,
+                            "description": "uniform",
+                            "is_active": true,
+                            "quantity": 5,
+                            "stationary_type": {
+                                "id": 1,
+                                "name": "Uniform",
+                                "description": "Uniform for Students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 1
+                            }
+                        },
+                        {
+                            "id": 27,
+                            "name": "1st Standards/textbooks",
+                            "price": 6000,
+                            "description": "books is mandatory",
+                            "is_active": true,
+                            "quantity": 9,
+                            "stationary_type": {
+                                "id": 18,
+                                "name": "text book",
+                                "description": "for students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 2
+                            }
+                        }
+                    ],
+                    "inventory": [],
+                    "sections": [
+                        {
+                            "id": 6,
+                            "name": "A Section",
+                            "standard": 2,
+                            "head_teacher": 7,
+                            "student_count": 11,
+                            "is_active": true
+                        },
+                        {
+                            "id": 7,
+                            "name": "B Section",
+                            "standard": 2,
+                            "head_teacher": 36,
+                            "student_count": 5,
+                            "is_active": true
+                        }
+                    ],
+                    "created_by": {
+                        "id": 3,
+                        "name": "Narasing M"
+                    },
+                    "modified_by": {
+                        "id": 3,
+                        "name": "Narasing M"
+                    },
+                    "access_to_all_users": false,
+                    "created": "2024-12-23T22:48:08.989672+05:30",
+                    "modified": "2025-03-16T22:46:52.893750+05:30",
+                    "is_active": true,
+                    "name": "1st Class",
+                    "branch": 2
+                },
+                "academic_year": {
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "created": "2024-12-23T22:07:33.918280+05:30",
+                    "name": "2024-2025",
+                    "start_date": "2024-06-01",
+                    "modified": "2025-06-01T09:14:26.877453+05:30",
+                    "end_date": "2025-07-30",
+                    "id": 1
+                },
+                "created": "2025-03-16T19:48:04.903711+05:30",
+                "due_date": "2025-04-06",
+                "fee_type": {
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "academic_year": {
+                        "created_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "modified_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "created": "2024-12-23T22:07:33.918280+05:30",
+                        "name": "2024-2025",
+                        "start_date": "2024-06-01",
+                        "modified": "2025-06-01T09:14:26.877453+05:30",
+                        "end_date": "2025-07-30",
+                        "id": 1
+                    },
+                    "is_hostel_fee": false,
+                    "created": "2025-03-16T19:36:33.675345+05:30",
+                    "name": "Hostel fee",
+                    "branch": {
+                        "is_main_branch": false,
+                        "created_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "modified_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "created": "2024-12-23T21:55:16.619340+05:30",
+                        "name": "Branch 2",
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                81.78430958451207,
+                                17.02572833243334
+                            ]
+                        },
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        81.78428774964686,
+                                        17.025776932643865
+                                    ],
+                                    [
+                                        81.78437890284715,
+                                        17.025751670782654
+                                    ],
+                                    [
+                                        81.78436008547669,
+                                        17.025678962760693
+                                    ],
+                                    [
+                                        81.78421118096958,
+                                        17.025720381979767
+                                    ],
+                                    [
+                                        81.78422052679309,
+                                        17.025752183728287
+                                    ],
+                                    [
+                                        81.78427681127204,
+                                        17.025738462819305
+                                    ],
+                                    [
+                                        81.78428774964686,
+                                        17.025776932643865
+                                    ]
+                                ]
+                            ]
+                        },
+                        "modified": "2025-05-26T11:01:31.929879+05:30",
+                        "is_active": true,
+                        "address": {
+                            "city": "Rajahmundry",
+                            "state": "Andhra Pradesh",
+                            "street": "Korukonda",
+                            "landmark": "HPCL Petrol Bunk",
+                            "zip_code": "533102"
+                        },
+                        "id": 2
+                    },
+                    "modified": "2025-03-16T19:36:33.675345+05:30",
+                    "is_active": true,
+                    "description": "for  hostel students",
+                    "id": 15
+                },
+                "modified": "2025-03-20T10:46:07.637665+05:30",
+                "is_active": true,
+                "min_amount": 25000,
+                "id": 41
+            },
+            "user": {
+                "date_of_joining": null,
+                "created_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "email": "neha123@gmail.com",
+                "aapar_number": null,
+                "branch": {
+                    "is_main_branch": false,
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "created": "2024-12-23T21:55:16.619340+05:30",
+                    "name": "Branch 2",
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            81.78430958451207,
+                            17.02572833243334
+                        ]
+                    },
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    81.78428774964686,
+                                    17.025776932643865
+                                ],
+                                [
+                                    81.78437890284715,
+                                    17.025751670782654
+                                ],
+                                [
+                                    81.78436008547669,
+                                    17.025678962760693
+                                ],
+                                [
+                                    81.78421118096958,
+                                    17.025720381979767
+                                ],
+                                [
+                                    81.78422052679309,
+                                    17.025752183728287
+                                ],
+                                [
+                                    81.78427681127204,
+                                    17.025738462819305
+                                ],
+                                [
+                                    81.78428774964686,
+                                    17.025776932643865
+                                ]
+                            ]
+                        ]
+                    },
+                    "modified": "2025-05-26T11:01:31.929879+05:30",
+                    "is_active": true,
+                    "address": {
+                        "city": "Rajahmundry",
+                        "state": "Andhra Pradesh",
+                        "street": "Korukonda",
+                        "landmark": "HPCL Petrol Bunk",
+                        "zip_code": "533102"
+                    },
+                    "id": 2
+                },
+                "last_login": null,
+                "last_name": "V",
+                "first_name": "Neha",
+                "timezone": "Asia/Kolkata",
+                "designation": null,
+                "phone": "+919437892165",
+                "group": {
+                    "group_type": null,
+                    "permissions": [
+                        {
+                            "codename": "view_group",
+                            "name": "Can view group",
+                            "content_type": 3,
+                            "id": 12,
+                            "type_name": "group",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_task",
+                            "name": "Can view task",
+                            "content_type": 100,
+                            "id": 408,
+                            "type_name": "task",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_tasksubmission",
+                            "name": "Can add task submission",
+                            "content_type": 101,
+                            "id": 409,
+                            "type_name": "task submission",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_tasksubmission",
+                            "name": "Can change task submission",
+                            "content_type": 101,
+                            "id": 410,
+                            "type_name": "task submission",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_tasksubmission",
+                            "name": "Can view task submission",
+                            "content_type": 101,
+                            "id": 412,
+                            "type_name": "task submission",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_academicyear",
+                            "name": "Can view academic year",
+                            "content_type": 20,
+                            "id": 80,
+                            "type_name": "academic year",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_announcement",
+                            "name": "Can view announcement",
+                            "content_type": 94,
+                            "id": 384,
+                            "type_name": "announcement",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_branch",
+                            "name": "Can view branch",
+                            "content_type": 13,
+                            "id": 52,
+                            "type_name": "branch",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_fee",
+                            "name": "Can view fee",
+                            "content_type": 24,
+                            "id": 104,
+                            "type_name": "fee",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_feepayment",
+                            "name": "Can view fee payment",
+                            "content_type": 29,
+                            "id": 124,
+                            "type_name": "fee payment",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_feesummary",
+                            "name": "Can view fee summary",
+                            "content_type": 41,
+                            "id": 172,
+                            "type_name": "fee summary",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_releavingdocumentcategory",
+                            "name": "Can view releaving document category",
+                            "content_type": 96,
+                            "id": 392,
+                            "type_name": "releaving document category",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_releavingdocumentstatus",
+                            "name": "Can view releaving document status",
+                            "content_type": 95,
+                            "id": 388,
+                            "type_name": "releaving document status",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_section",
+                            "name": "Can view section",
+                            "content_type": 19,
+                            "id": 76,
+                            "type_name": "section",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_standard",
+                            "name": "Can view standard",
+                            "content_type": 18,
+                            "id": 72,
+                            "type_name": "standard",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_studentdetails",
+                            "name": "Can view student details",
+                            "content_type": 21,
+                            "id": 84,
+                            "type_name": "student details",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_task",
+                            "name": "Can view task",
+                            "content_type": 75,
+                            "id": 308,
+                            "type_name": "task",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_totalfeesummary",
+                            "name": "Can view total fee summary",
+                            "content_type": 44,
+                            "id": 184,
+                            "type_name": "total fee summary",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_user",
+                            "name": "Can view user",
+                            "content_type": 15,
+                            "id": 60,
+                            "type_name": "user",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_usersubscription",
+                            "name": "Can add user subscription",
+                            "content_type": 64,
+                            "id": 261,
+                            "type_name": "user subscription",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_usersubscription",
+                            "name": "Can change user subscription",
+                            "content_type": 64,
+                            "id": 262,
+                            "type_name": "user subscription",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "delete_usersubscription",
+                            "name": "Can delete user subscription",
+                            "content_type": 64,
+                            "id": 263,
+                            "type_name": "user subscription",
+                            "operation_name": "delete"
+                        },
+                        {
+                            "codename": "view_usersubscription",
+                            "name": "Can view user subscription",
+                            "content_type": 64,
+                            "id": 264,
+                            "type_name": "user subscription",
+                            "operation_name": "view"
+                        }
+                    ],
+                    "name": "Student",
+                    "controlled_groups": [],
+                    "id": 3
+                },
+                "student_type": "Regular",
+                "modified": "2024-12-24T22:28:46.765823+05:30",
+                "is_active": true,
+                "guardians": [
+                    {
+                        "annual_income": 0,
+                        "company_name": null,
+                        "created_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "relation": "Mother",
+                        "first_name": "Sujatha",
+                        "modified_by": {
+                            "created_by": 1,
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "user_permissions": [],
+                            "is_staff": false,
+                            "timezone": "Asia/Kolkata",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_superuser": false,
+                            "id": 3
+                        },
+                        "occupation": "Housewife",
+                        "contact_number": "+918086627893",
+                        "created": "2024-12-24T22:28:47.254895+05:30",
+                        "name": "Sujatha V",
+                        "last_name": "V",
+                        "modified": "2024-12-24T22:28:47.254895+05:30",
+                        "is_active": true,
+                        "id": 96
+                    }
+                ],
+                "date_joined": "2024-06-10T00:00:00+05:30",
+                "id": 124,
+                "date_of_releaving": null,
+                "student_details": {
+                    "stationary_fee_paid": false,
+                    "stationary_fee_amount_paid": 0,
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "user": 124,
+                    "given_stationary": [],
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "section": 6,
+                    "academic_year": 1,
+                    "bed": null,
+                    "is_transport_required": false,
+                    "created": "2025-05-15T14:27:10.967891+05:30",
+                    "is_class_representative": false,
+                    "is_stationary_given": false,
+                    "given_stationary_count": {},
+                    "modified": "2025-05-15T14:27:10.967891+05:30",
+                    "is_active": true,
+                    "roll_number": null,
+                    "id": 109
+                },
+                "organisation": "vai",
+                "standard": {
+                    "id": 2,
+                    "academic_year_display": {
+                        "id": 1
+                    },
+                    "access_to_all_user_ids": [],
+                    "student_assigned_count": 16,
+                    "student_total_count": 16,
+                    "section_count": 2,
+                    "stationary": [
+                        {
+                            "id": 2,
+                            "name": "Books",
+                            "price": 1000,
+                            "description": "Books",
+                            "is_active": true,
+                            "quantity": 10,
+                            "stationary_type": {
+                                "id": 2,
+                                "name": "Book",
+                                "description": "Books for students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 2
+                            }
+                        },
+                        {
+                            "id": 1,
+                            "name": "Uniform",
+                            "price": 1450,
+                            "description": "uniform",
+                            "is_active": true,
+                            "quantity": 5,
+                            "stationary_type": {
+                                "id": 1,
+                                "name": "Uniform",
+                                "description": "Uniform for Students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 1
+                            }
+                        },
+                        {
+                            "id": 27,
+                            "name": "1st Standards/textbooks",
+                            "price": 6000,
+                            "description": "books is mandatory",
+                            "is_active": true,
+                            "quantity": 9,
+                            "stationary_type": {
+                                "id": 18,
+                                "name": "text book",
+                                "description": "for students",
+                                "is_active": true,
+                                "academic_year_id": 1,
+                                "branch_id": 2
+                            }
+                        }
+                    ],
+                    "inventory": [],
+                    "sections": [
+                        {
+                            "id": 6,
+                            "name": "A Section",
+                            "standard": 2,
+                            "head_teacher": 7,
+                            "student_count": 11,
+                            "is_active": true
+                        },
+                        {
+                            "id": 7,
+                            "name": "B Section",
+                            "standard": 2,
+                            "head_teacher": 36,
+                            "student_count": 5,
+                            "is_active": true
+                        }
+                    ],
+                    "created_by": {
+                        "id": 3,
+                        "name": "Narasing M"
+                    },
+                    "modified_by": {
+                        "id": 3,
+                        "name": "Narasing M"
+                    },
+                    "access_to_all_users": false,
+                    "created": "2024-12-23T22:48:08.989672+05:30",
+                    "modified": "2025-03-16T22:46:52.893750+05:30",
+                    "is_active": true,
+                    "name": "1st Class",
+                    "branch": 2
+                },
+                "alternate_phone": "+917845698752",
+                "dob": "2019-03-08",
+                "blood_group": "AB-",
+                "education_details": [
+                    {
+                        "city": "vizinagaram",
+                        "end_date": "2024-04-20",
+                        "start_date": "2023-06-12",
+                        "institution": "Bhashyam",
+                        "education_type": "UKG"
+                    }
+                ],
+                "details": [],
+                "my_department_users": [],
+                "pen_number": null,
+                "my_section_id": 6,
+                "admission_number": 25116,
+                "address": {
+                    "city": "vizinagaram",
+                    "state": "Andhra Pradesh",
+                    "street": "Last street",
+                    "landmark": "vizinagaram",
+                    "zip_code": "535001"
+                },
+                "gender": "Female",
+                "profile_image": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/5483ff44-0b45-44e4-8a94-9e5017922ea6.webp?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHT4XWWYHM%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T141743Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjED4aCmFwLXNvdXRoLTEiSDBGAiEA6vSss7%2FA2cH6egva5R21Rx72xrddSLit28%2BmIhjRsrcCIQDF67h5e%2BK%2FsP1FxnLEFuaKW0h7CEWZGjwvTJFQptau0iq%2BBQh3EAAaDDAyMjQ5OTAzMTU2NyIMipRJ3wb9XhC0PoxPKpsFFu4YwihsqSw6SBlT55Okg2o4SZWxlB8QUG6Phag02cuqmN%2BA9KBxwK9Yobb2rVrc1kqsMPuiapam0o2GHkybQs0T2nfBltMD31cSzrVKE2bFFBvyi2i0XWPjoJo9VUsoEy0BeNRS5IG72Xh4TDN5GU6SqMcaDIswIK6mmc%2BdvPax3vgwmwzRvFMlnzy56E%2Ff5zqpZGydYKeOkfzMm0pMDug9pQs6HqyPBqqEgicFNg5lq8wf7Lo3WOBGH5Uo2Y8vzXcyVc5tIZpzSVjQm5eTn5STck5c8DWP%2FCcnv%2FL0fMpgqz6Aw3xWUuJubiraV2dWRBgDn%2B6RXfuulyEHip8ZL0lGcescick7O4qJqspoVpR1%2BJHtfPA9MVCQFgwhk7wIRY0g9t49ksF1cnqWW5MNdrMy5vaDXr03FoRbRPOt3xsbxi%2BldCH9lBorw0XTDbLn8CV7bqsfVWFCjNQ9dCeAZO24Pn0vCg%2BSjgvWn7vxYYtq3qysVB1VbzjeiNgkaOBFeXzLsLKRwYuFJmzDItE5itiH6KuZ4dtzBCt86ALB48N38v7BiO1HQhMequMoepmcs6XrTFCKkNOAtBerZbJbVJhxZrrN5J0vWxVnQ2WOrm1Jv%2FN%2Bmiy1ZKwAHgKL9AZi04IOfu0JHNZzbJncMwBeIvQfn8wBylF0neEB6ETN3ReFx%2FB%2FAKDatyvODuTCG%2BZ9U%2B5Naoeo3Cii2jZnBbNIhVXYEx51Db%2BroJ8KOLnszOfgVSBjMZIby1XRrzGz3DJ19T7wPlPpmvixhlGTho90vXvskLyi5L3bMYKQlYkoyoyP0VRCDlTEFUov15uHAUWHX0KpASD%2BK5X5SXoPyKGwiLy8oLZqvJS8210BOy1Ue%2B%2F5%2FzopmARm8Ui4dzD4uc3EBjqwARIHHpQTte1VCNzzdcpt4QwAadxLYO5y7MtWW7t3WxgxA95TXKpXo1IG7j5t32QyvmOrNKSXeU1RGMV%2BYQnM0Ry1tWNOAZhCO%2Fe5EYNaiAFXzoUG8KHRIg7BBnDMMaf4DjZG4IPlgMiYcwYkE525cB4jz5%2FYMYCSgxcAflBIpBnCzB6moHpeJnpH3sx8BRjoFJ8okNTlJt17fyYeeU4m7p3KoOsevszQdXARV1vDGMV9&X-Amz-Signature=52dd0608ff44e466cddee6bc0f12df7d0ff994dcb2d056880fcd5cf0c2d51cbf",
+                "employee_id": "",
+                "modified_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "section": {
+                    "id": 6,
+                    "name": "A Section"
+                },
+                "created": "2024-12-24T22:28:46.765823+05:30",
+                "department": null,
+                "biometric_data": null,
+                "user_permissions": [],
+                "assigned_standards": []
+            },
+            "total_paid": 0,
+            "academic_year": {
+                "created_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "modified_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "created": "2024-12-23T22:07:33.918280+05:30",
+                "name": "2024-2025",
+                "start_date": "2024-06-01",
+                "modified": "2025-06-01T09:14:26.877453+05:30",
+                "end_date": "2025-07-30",
+                "id": 1
+            },
+            "total_concession": null,
+            "total_fee_amount": 50000,
+            "fee_type": {
+                "created_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "modified_by": {
+                    "created_by": 1,
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "user_permissions": [],
+                    "is_staff": false,
+                    "timezone": "Asia/Kolkata",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_superuser": false,
+                    "id": 3
+                },
+                "academic_year": {
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "created": "2024-12-23T22:07:33.918280+05:30",
+                    "name": "2024-2025",
+                    "start_date": "2024-06-01",
+                    "modified": "2025-06-01T09:14:26.877453+05:30",
+                    "end_date": "2025-07-30",
+                    "id": 1
+                },
+                "is_hostel_fee": false,
+                "created": "2025-03-16T19:36:33.675345+05:30",
+                "name": "Hostel fee",
+                "branch": {
+                    "is_main_branch": false,
+                    "created_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "modified_by": {
+                        "created_by": 1,
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "user_permissions": [],
+                        "is_staff": false,
+                        "timezone": "Asia/Kolkata",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_superuser": false,
+                        "id": 3
+                    },
+                    "created": "2024-12-23T21:55:16.619340+05:30",
+                    "name": "Branch 2",
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            81.78430958451207,
+                            17.02572833243334
+                        ]
+                    },
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    81.78428774964686,
+                                    17.025776932643865
+                                ],
+                                [
+                                    81.78437890284715,
+                                    17.025751670782654
+                                ],
+                                [
+                                    81.78436008547669,
+                                    17.025678962760693
+                                ],
+                                [
+                                    81.78421118096958,
+                                    17.025720381979767
+                                ],
+                                [
+                                    81.78422052679309,
+                                    17.025752183728287
+                                ],
+                                [
+                                    81.78427681127204,
+                                    17.025738462819305
+                                ],
+                                [
+                                    81.78428774964686,
+                                    17.025776932643865
+                                ]
+                            ]
+                        ]
+                    },
+                    "modified": "2025-05-26T11:01:31.929879+05:30",
+                    "is_active": true,
+                    "address": {
+                        "city": "Rajahmundry",
+                        "state": "Andhra Pradesh",
+                        "street": "Korukonda",
+                        "landmark": "HPCL Petrol Bunk",
+                        "zip_code": "533102"
+                    },
+                    "id": 2
+                },
+                "modified": "2025-03-16T19:36:33.675345+05:30",
+                "is_active": true,
+                "description": "for  hostel students",
+                "id": 15
+            },
+            "total_amount_to_pay": 50000,
+            "concession_id": null,
+            "id": null
+        },
+    ]
+}
+GET https: //vai.dev.sms.visionariesai.com/api/fee-payments/?omit=created_by,modified_by,user__created_by,user__modified_by,fee__created_by,fee__modified_by&user=192
+{
+    "meta": {
+        "count": 10,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "user_id": 192,
+            "students_name": "Swaroop R",
+            "identifier": 24501,
+            "standard": "5th Standard",
+            "feetype": "Hostel Fees",
+            "payment_type": "Cash",
+            "amount": 100000,
+            "payment_reference": "",
+            "date": "2025-05-26 20:25:01",
+            "fee_id": 7,
+            "fee": 7
+        },
+    ]
+}
+GET https://vai.dev.sms.visionariesai.com/api/total-fee-summary/?branch=1&limit=1&offset=undefined&academic_year=1&standard=16&user=192
+{
+    "meta": {
+        "count": 1,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "user_id": 192,
+            "user_name": "Swaroop R",
+            "admission_number": 24501,
+            "academic_year": "2024-2025",
+            "academic_year_id": 1,
+            "standard": "5th Standard",
+            "standard_id": 16,
+            "section": "A Section",
+            "section_id": 18,
+            "totalfee": 85000,
+            "pending_fee": -20300,
+            "transactions": [
+                {
+                    "payment_date": "2025-05-26T20:25:01.523042+05:30",
+                    "amount": 100000,
+                    "fee_type": "Hostel Fees",
+                    "payment_type": "Cash",
+                    "payment_reference": ""
+                },
+                {
+                    "payment_date": "2025-05-29T15:56:48.448728+05:30",
+                    "amount": 5000,
+                    "fee_type": "Sports Fee",
+                    "payment_type": "Cash",
+                    "payment_reference": null
+                },
+                {
+                    "payment_date": "2025-05-31T20:27:18.075325+05:30",
+                    "amount": 1,
+                    "fee_type": "Tuition Fee",
+                    "payment_type": "Online",
+                    "payment_reference": "abcd1234efgh1234"
+                },
+                {
+                    "payment_date": "2025-05-31T20:29:05.785798+05:30",
+                    "amount": 9,
+                    "fee_type": "Tuition Fee",
+                    "payment_type": "Online",
+                    "payment_reference": "abcd1234efgh1234"
+                },
+                {
+                    "payment_date": "2025-05-31T20:29:05.802648+05:30",
+                    "amount": 50,
+                    "fee_type": "Exam Fee - 2",
+                    "payment_type": "Online",
+                    "payment_reference": "abcd1234efgh1234"
+                },
+                {
+                    "payment_date": "2025-06-01T00:24:13.717091+05:30",
+                    "amount": 4,
+                    "fee_type": "Tuition Fee",
+                    "payment_type": "Online",
+                    "payment_reference": "Abcd1234"
+                },
+                {
+                    "payment_date": "2025-06-01T00:24:13.741389+05:30",
+                    "amount": 1,
+                    "fee_type": "Exam Fee - 2",
+                    "payment_type": "Online",
+                    "payment_reference": "Abcd1234"
+                },
+                {
+                    "payment_date": "2025-06-01T09:24:39.826701+05:30",
+                    "amount": 1,
+                    "fee_type": "Tuition Fee",
+                    "payment_type": "Cash",
+                    "payment_reference": null
+                },
+                {
+                    "payment_date": "2025-06-10T14:06:52.876256+05:30",
+                    "amount": 84,
+                    "fee_type": "Tuition Fee",
+                    "payment_type": "Cash",
+                    "payment_reference": ""
+                },
+                {
+                    "payment_date": "2025-06-10T14:06:52.904217+05:30",
+                    "amount": 65,
+                    "fee_type": "Exam Fee - 2",
+                    "payment_type": "Cash",
+                    "payment_reference": ""
+                }
+            ],
+            "concessions": [
+                {
+                    "amount": 1,
+                    "fee_type": "Tuition Fee"
+                },
+                {
+                    "amount": 84,
+                    "fee_type": "Exam Fee - 2"
+                }
+            ]
+        }
+    ]
+}

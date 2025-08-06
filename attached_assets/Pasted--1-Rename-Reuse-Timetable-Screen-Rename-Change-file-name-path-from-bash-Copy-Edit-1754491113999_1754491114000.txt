@@ -1,0 +1,115 @@
+🧭 1. Rename & Reuse: Timetable Screen
+🏷️ Rename:
+Change file name/path from:
+
+bash
+Copy
+Edit
+/academics/timetable.tsx
+→ /academics/staff-timetable.tsx
+🔁 Reuse:
+Use staff-timetable's table structure, logic, and UI as the base.
+
+Ensure:
+
+Period table
+
+Department dropdown
+
+Teacher rows
+
+Day selection
+
+Timetable cells interaction (as previously mentioned) are retained.
+
+🌐 2. Global Filter Behavior for All Screens
+Across all relevant pages, implement the following filter structure:
+
+🔍 Common Filters:
+Branch Dropdown → Use /api/branches/
+
+Academic Year Dropdown → Use /api/academic-years/
+
+Search Input (student/staff name)
+
+📦 Layout:
+Use a simple accordion-style "Add Filters" button
+
+On click → expands filter panel
+
+Keep it minimal, non-intrusive for scrolling
+
+Do not group filters unnecessarily (e.g., “All” or “Both” selections) — keep filters separate and clearly labeled.
+
+💡 UX Enhancements:
+Prefetch branches and academic years once
+
+Use useEffect with memoized/stable dependency arrays to avoid infinite loops
+
+💳 3. Students Fee List Page
+📃 Page Features:
+Table/List of Students
+
+Show: Name, Standard, Section, Total Fee, Pending Fee, Paid Fee
+
+Actions: View (navigates to fee detail)
+
+🎛 Filters:
+Common: Branch, Academic Year, Search
+
+Additional:
+
+Standard Dropdown
+
+Section Dropdown (dynamically fetched based on standard/branch)
+
+Fee Range Filter:
+
+Use slider or numeric inputs
+
+Greater than (min)
+
+Less than (max)
+
+👤 4. Specific Student Fee Details Page
+🧾 Sections:
+📌 A. Pending Fees
+List of pending fees with:
+
+Fee type
+
+Amount
+
+Due date
+
+Status
+
+Action:
+
+View: Opens modal or page showing detailed breakdown
+
+📌 B. Payment History
+Table/List:
+
+Date of payment
+
+Paid amount
+
+Payment method
+
+Term / Fee type
+
+Actions:
+
+Download Invoice (PDF)
+
+View Details (full receipt)
+
+implement the new ones, beware of the existing apis 
+
+🧠 Final Notes:
+Avoid duplicating existing API functions — check before creating.
+
+Prevent infinite loops in dropdown fetching (memoize calls / use stable hooks).
+
+Ensure UX is mobile-friendly, maintain proper spacing, accordion-based filters, and optimized scroll.
