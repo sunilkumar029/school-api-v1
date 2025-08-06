@@ -494,5 +494,95 @@ class ApiService {
     return response.data;
   }
 
+  // Fee Management
+  async getFees(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/fees/", { params });
+    return response.data;
+  }
+
+  async createFee(data: any): Promise<any> {
+    const response = await this.api.post("/api/fees/", data);
+    return response.data;
+  }
+
+  async getFee(id: number): Promise<any> {
+    const response = await this.api.get(`/api/fees/${id}/`);
+    return response.data;
+  }
+
+  async updateFee(id: number, data: any): Promise<any> {
+    const response = await this.api.put(`/api/fees/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteFee(id: number): Promise<void> {
+    await this.api.delete(`/api/fees/${id}/`);
+  }
+
+  // Fee Types
+  async getFeeTypes(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/fee-types/", { params });
+    return response.data;
+  }
+
+  async createFeeType(data: any): Promise<any> {
+    const response = await this.api.post("/api/fee-types/", data);
+    return response.data;
+  }
+
+  async getFeeType(id: number): Promise<any> {
+    const response = await this.api.get(`/api/fee-types/${id}/`);
+    return response.data;
+  }
+
+  async updateFeeType(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/fee-types/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteFeeType(id: number): Promise<void> {
+    await this.api.delete(`/api/fee-types/${id}/`);
+  }
+
+  // Standards
+  async getStandards(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/standards/", { params });
+    return response.data;
+  }
+
+  async createStandard(data: any): Promise<any> {
+    const response = await this.api.post("/api/standards/", data);
+    return response.data;
+  }
+
+  async getStandard(id: number): Promise<any> {
+    const response = await this.api.get(`/api/standards/${id}/`);
+    return response.data;
+  }
+
+  async updateStandard(id: number, data: any): Promise<any> {
+    const response = await this.api.put(`/api/standards/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteStandard(id: number): Promise<void> {
+    await this.api.delete(`/api/standards/${id}/`);
+  }
+
+  // Timetable Period Management
+  async createPeriod(data: any): Promise<any> {
+    const response = await this.api.post("/api/period/", data);
+    return response.data;
+  }
+
+  async updatePeriod(id: number, data: any): Promise<any> {
+    const response = await this.api.put(`/api/period/${id}/`, data);
+    return response.data;
+  }
+
+  async deletePeriod(id: number): Promise<void> {
+    await this.api.delete(`/api/period/${id}/`);
+  }
+}
+
 export const apiService = new ApiService();
-// export default apiService;

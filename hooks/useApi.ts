@@ -691,3 +691,94 @@ export const useAllUsers = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+// Fee Management hooks
+export const useFees = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getFees(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Fees fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch fees');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useFeeTypes = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getFeeTypes(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Fee types fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch fee types');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useStandards = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStandards(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Standards fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch standards');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

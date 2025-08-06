@@ -9,6 +9,8 @@ import {
   ActivityIndicator,
   RefreshControl,
   TextInput,
+  Modal,
+  Alert,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
@@ -59,6 +61,23 @@ export default function TimetableScreen() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [activeView, setActiveView] = useState<'teacher' | 'section'>('teacher');
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Modal states for timetable interactions
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCell, setSelectedCell] = useState<{
+    teacherKey?: string;
+    periodNumber: number;
+    day: string;
+    existingData?: TimetableEntry;
+  } | null>(null);
+  const [modalLoading, setModalLoading] = useState(false);
+
+  // Form state for period assignment
+  const [periodForm, setPeriodForm] = useState({
+    department: '',
+    teacher: '',
+    section: '',
+  });
 
   // Filter states
   const [selectedBranch, setSelectedBranch] = useState<number | null>(1); // Default to branch 1
@@ -129,6 +148,109 @@ export default function TimetableScreen() {
   const handleRefreshAll = useCallback(() => {
     refetchTeacherTimetable();
   }, [refetchTeacherTimetable]);
+
+  // Period CRUD operations
+  const showSuccessMessage = (message: string) => {
+    Alert.alert('Success', message);
+  };
+
+  const showErrorMessage = (message: string) => {
+    Alert.alert('Error', message);
+  };
+
+  const handleCellPress = (teacherKey: string, periodNumber: number, day: string, existingData?: TimetableEntry) => {
+    setSelectedCell({ teacherKey, periodNumber, day, existingData });
+    if (existingData) {
+      setPeriodForm({
+        department: existingData.department.name,
+        teacher: `${existingData.teacher.first_name} ${existingData.teacher.last_name}`,
+        section: `${existingData.section.standard.name} ${existingData.section.name}`,
+      });
+    } else {
+      setPeriodForm({ department: '', teacher: '', section: '' });
+    }
+    setModalVisible(true);
+  };
+
+  const handleCreatePeriod = async () => {
+    if (!selectedCell || !periodForm.department || !periodForm.teacher) {
+      showErrorMessage('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      await apiService.createPeriod({
+        teacher_key: selectedCell.teacherKey,
+        period_number: selectedCell.periodNumber,
+        day: selectedCell.day,
+        department: periodForm.department,
+        teacher: periodForm.teacher,
+        section: periodForm.section,
+        branch: selectedBranch,
+      });
+      showSuccessMessage('Period assigned successfully');
+      setModalVisible(false);
+      refetchTeacherTimetable();
+    } catch (error) {
+      showErrorMessage('Failed to assign period');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleUpdatePeriod = async () => {
+    if (!selectedCell?.existingData || !periodForm.department || !periodForm.teacher) {
+      showErrorMessage('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      // Assuming we have an ID for the period entry
+      await apiService.updatePeriod(selectedCell.existingData.teacher.id, {
+        department: periodForm.department,
+        teacher: periodForm.teacher,
+        section: periodForm.section,
+      });
+      showSuccessMessage('Period updated successfully');
+      setModalVisible(false);
+      refetchTeacherTimetable();
+    } catch (error) {
+      showErrorMessage('Failed to update period');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleDeletePeriod = () => {
+    if (!selectedCell?.existingData) return;
+
+    Alert.alert(
+      'Confirm Delete',
+      'Are you sure you want to delete this period assignment?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setModalLoading(true);
+              await apiService.deletePeriod(selectedCell.existingData!.teacher.id);
+              showSuccessMessage('Period deleted successfully');
+              setModalVisible(false);
+              refetchTeacherTimetable();
+            } catch (error) {
+              showErrorMessage('Failed to delete period');
+            } finally {
+              setModalLoading(false);
+            }
+          },
+        },
+      ]
+    );
+  };
 
   // Filter teacher timetable data
   const filteredTeacherData = useMemo(() => {
@@ -390,13 +512,17 @@ export default function TimetableScreen() {
                   const periodData = dayData.find((entry: TimetableEntry) => entry.period_number === periodNum);
                   
                   return (
-                    <View key={periodNum} style={[
-                      styles.periodCell,
-                      { 
-                        backgroundColor: periodData ? colors.primary + '20' : colors.surface,
-                        borderColor: colors.border 
-                      }
-                    ]}>
+                    <TouchableOpacity 
+                      key={periodNum} 
+                      style={[
+                        styles.periodCell,
+                        { 
+                          backgroundColor: periodData ? colors.primary + '20' : colors.surface,
+                          borderColor: colors.border 
+                        }
+                      ]}
+                      onPress={() => handleCellPress(teacherKey, periodNum, selectedDay, periodData)}
+                    >
                       {periodData ? (
                         <View style={styles.periodContent}>
                           <Text style={[styles.subjectText, { color: colors.textPrimary }]} numberOfLines={1}>
@@ -409,7 +535,7 @@ export default function TimetableScreen() {
                       ) : (
                         <Text style={[styles.emptyPeriod, { color: colors.textSecondary }]}>Free</Text>
                       )}
-                    </View>
+                    </TouchableOpacity>
                   );
                 })}
               </View>
@@ -571,6 +697,150 @@ export default function TimetableScreen() {
       >
         {activeView === 'teacher' ? renderTeacherTimetable() : renderSectionTimetable()}
       </ScrollView>
+
+      {/* Timetable Cell Interaction Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                {selectedCell?.existingData ? 'Edit Period' : 'Assign Period'}
+              </Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              <Text style={[styles.periodInfo, { color: colors.textSecondary }]}>
+                {selectedCell?.teacherKey} - Period {selectedCell?.periodNumber} - {selectedCell?.day}
+              </Text>
+
+              {selectedCell?.existingData ? (
+                // Edit existing period
+                <View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Department:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.department.name}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Teacher:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.teacher.first_name} {selectedCell.existingData.teacher.last_name}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Section:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.section.standard.name} {selectedCell.existingData.section.name}
+                    </Text>
+                  </View>
+
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={[styles.editButton, { backgroundColor: colors.primary }]}
+                      onPress={handleUpdatePeriod}
+                      disabled={modalLoading}
+                    >
+                      {modalLoading ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.buttonText}>Edit</Text>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.deleteButton, { backgroundColor: '#EF4444' }]}
+                      onPress={handleDeletePeriod}
+                      disabled={modalLoading}
+                    >
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                // Assign new period
+                <View>
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Department *</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter department"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.department}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, department: value })}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Teacher *</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter teacher name"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.teacher}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, teacher: value })}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Section</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter section"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.section}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, section: value })}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.assignButton, { backgroundColor: colors.primary }]}
+                    onPress={handleCreatePeriod}
+                    disabled={modalLoading}
+                  >
+                    {modalLoading ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Text style={styles.buttonText}>Assign Period</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -780,5 +1050,106 @@ const styles = StyleSheet.create({
   },
   periodSlotContent: {
     padding: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '90%',
+    maxHeight: '70%',
+    borderRadius: 16,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  periodInfo: {
+    fontSize: 14,
+    marginBottom: 16,
+    fontWeight: '600',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+  },
+  editButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  formGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  input: {
+    height: 44,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  assignButton: {
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });

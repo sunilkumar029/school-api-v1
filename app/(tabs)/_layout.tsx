@@ -110,6 +110,12 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="fee-structure"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
