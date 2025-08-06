@@ -1,0 +1,150 @@
+🛠️ 1. Fix ApiService Errors
+Ensure ApiService is not causing:
+
+Infinite loops due to repeated re-instantiations or misconfigured interceptors.
+
+Missing headers or token issues
+
+Apply singleton pattern if needed to avoid multiple instances.
+
+Ensure all API calls:
+
+Set Authorization header correctly
+
+Handle dynamic baseURL from AsyncStorage properly
+
+Have error handling with logs
+
+📘 2. Timetable Cell Interactions
+🧱 Base Structure
+Use the existing timetable page (teacher-based and section-based)
+
+Add interactive cells for each period in the table
+
+🖱️ On Cell Click:
+If cell is occupied:
+
+Show a modal popup with:
+
+Teacher name
+
+Department name
+
+Edit button → opens the form with prefilled values
+
+Delete button → calls DELETE API
+
+If cell is empty:
+
+Show a modal form with:
+
+Dropdown for Department
+
+Dropdown for Teacher (filtered by department)
+
+Submit button to assign teacher to that period (POST API)
+
+🧠 Tips:
+Fetch dropdown data (departments, teachers) on modal open to prevent redundant API calls.
+
+After successful create/update/delete, refresh the timetable.
+
+💸 3. Student Fee Structure Page
+🎯 Page Overview
+This page manages:
+
+Fees by standard
+
+Fee structures
+
+Fee types
+
+🔧 Core Features
+✅ List View:
+Show a table with:
+
+Standard name
+
+Academic year
+
+Fee type
+
+Total amount
+
+Term-wise amount
+
+Due date
+
+Each row should have:
+
+Edit button (prefilled form)
+
+Delete button (with confirmation)
+
+➕ Add Fee Structure:
+Button to add a new fee structure.
+
+Form should include:
+
+Standard (dropdown)
+
+Academic year (dropdown)
+
+Fee type (dropdown)
+
+Amount (number)
+
+Term amount (number)
+
+Due date (date picker)
+
+Validation:
+
+Amounts must be integers
+
+All fields required
+
+🆕 Add Fee Type:
+Option to create new fee type if not listed.
+
+Form fields:
+
+Name
+
+Description
+
+Check for duplicates:
+
+If name exists → show error "Fee type already exists. Please use a different name."
+
+After creation → add it to the fee type dropdown.
+
+📃 Fee Types List View:
+List all fee types with:
+
+Name
+
+Description
+
+Allow:
+
+Edit (name & description)
+
+Delete
+
+🔄 Additional Notes
+Ensure no duplicate API service functions.
+
+All forms should:
+
+Use validation
+
+Provide success/error feedback
+
+Keep UX mobile-friendly:
+
+Use collapsible/accordion layout
+
+Scrollable modals or sheets
+
+Avoid blocking UI during loading or updates

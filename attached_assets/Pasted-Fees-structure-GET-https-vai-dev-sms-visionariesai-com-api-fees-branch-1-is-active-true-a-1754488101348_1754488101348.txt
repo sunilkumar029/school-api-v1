@@ -1,0 +1,613 @@
+Fees structure :
+
+
+GET https: //vai.dev.sms.visionariesai.com/api/fees/?branch=1&is_active=true&academic_year=1&limit=
+{
+    "meta": {
+        "count": 66,
+        "next": "http://vai.dev.sms.visionariesai.com/api/fees/?limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 50,
+            "fee_type": {
+                "branch": {
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ],
+                                [
+                                    80.6201631673348,
+                                    16.50721957673649
+                                ],
+                                [
+                                    80.62027846041298,
+                                    16.507155671004796
+                                ],
+                                [
+                                    80.62033943875502,
+                                    16.507248636487958
+                                ],
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ]
+                            ]
+                        ]
+                    },
+                    "id": 1,
+                    "created": "2024-12-23T21:38:49.939251+05:30",
+                    "is_active": true,
+                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                    "created_by": {
+                        "id": 3,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "timezone": "Asia/Kolkata",
+                        "group": 1,
+                        "is_active": true,
+                        "user_permissions": [],
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_name": "M",
+                        "first_name": "Narasing",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "modified_by": 1,
+                        "is_staff": false
+                    },
+                    "name": "Branch 1",
+                    "address": {
+                        "city": "Vijayawada",
+                        "state": "Andhra Pradesh",
+                        "street": "Vijayawada",
+                        "landmark": "Vijayawada 1",
+                        "zip_code": "520001"
+                    },
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            80.62025214123565,
+                            16.507235006708214
+                        ]
+                    },
+                    "is_main_branch": false,
+                    "modified_by": {
+                        "id": 3,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "timezone": "Asia/Kolkata",
+                        "group": 1,
+                        "is_active": true,
+                        "user_permissions": [],
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_name": "M",
+                        "first_name": "Narasing",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "modified_by": 1,
+                        "is_staff": false
+                    }
+                },
+                "id": 3,
+                "description": "For all students",
+                "created": "2024-12-28T09:34:56.093275+05:30",
+                "academic_year": {
+                    "end_date": "2025-07-30",
+                    "id": 1,
+                    "created": "2024-12-23T22:07:33.918280+05:30",
+                    "modified": "2025-06-01T09:14:26.877453+05:30",
+                    "created_by": {
+                        "id": 3,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "timezone": "Asia/Kolkata",
+                        "group": 1,
+                        "is_active": true,
+                        "user_permissions": [],
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_name": "M",
+                        "first_name": "Narasing",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "modified_by": 1,
+                        "is_staff": false
+                    },
+                    "name": "2024-2025",
+                    "start_date": "2024-06-01",
+                    "modified_by": {
+                        "id": 3,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "timezone": "Asia/Kolkata",
+                        "group": 1,
+                        "is_active": true,
+                        "user_permissions": [],
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "last_name": "M",
+                        "first_name": "Narasing",
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "modified_by": 1,
+                        "is_staff": false
+                    }
+                },
+                "is_active": true,
+                "modified": "2025-01-01T21:15:47.582393+05:30",
+                "created_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                },
+                "name": "Exam Fee",
+                "modified_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                },
+                "is_hostel_fee": false
+            },
+            "standard": {
+                "id": 23,
+                "academic_year_display": {
+                    "id": 1
+                },
+                "access_to_all_user_ids": [],
+                "student_assigned_count": 1,
+                "student_total_count": 2,
+                "section_count": 2,
+                "stationary": [
+                    {
+                        "id": 5,
+                        "name": "Pens",
+                        "price": 10,
+                        "description": "pens for students",
+                        "is_active": true,
+                        "quantity": 7,
+                        "stationary_type": {
+                            "id": 1,
+                            "name": "Uniform",
+                            "description": "Uniform for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "name": "Uniform",
+                        "price": 1450,
+                        "description": "uniform",
+                        "is_active": true,
+                        "quantity": 5,
+                        "stationary_type": {
+                            "id": 1,
+                            "name": "Uniform",
+                            "description": "Uniform for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    },
+                    {
+                        "id": 12,
+                        "name": "10th-College Uniform",
+                        "price": 5000,
+                        "description": "Each person have 2 uniforms",
+                        "is_active": false,
+                        "quantity": 1,
+                        "stationary_type": {
+                            "id": 1,
+                            "name": "Uniform",
+                            "description": "Uniform for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    }
+                ],
+                "inventory": [],
+                "sections": [
+                    {
+                        "id": 12,
+                        "name": "A section",
+                        "standard": 23,
+                        "head_teacher": 178,
+                        "student_count": 1,
+                        "is_active": true
+                    },
+                    {
+                        "id": 59,
+                        "name": "testing for section",
+                        "standard": 23,
+                        "head_teacher": 204,
+                        "student_count": 0,
+                        "is_active": true
+                    }
+                ],
+                "created_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "modified_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "access_to_all_users": false,
+                "created": "2024-12-31T12:32:38.722638+05:30",
+                "modified": "2025-06-28T11:37:19.795736+05:30",
+                "is_active": true,
+                "name": "12th standard",
+                "branch": 1
+            },
+            "created": "2025-06-02T18:56:52.842877+05:30",
+            "academic_year": {
+                "end_date": "2025-07-30",
+                "id": 1,
+                "created": "2024-12-23T22:07:33.918280+05:30",
+                "modified": "2025-06-01T09:14:26.877453+05:30",
+                "created_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                },
+                "name": "2024-2025",
+                "start_date": "2024-06-01",
+                "modified_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                }
+            },
+            "is_active": true,
+            "modified": "2025-06-02T18:56:52.842877+05:30",
+            "created_by": {
+                "id": 3,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "timezone": "Asia/Kolkata",
+                "group": 1,
+                "is_active": true,
+                "user_permissions": [],
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "last_name": "M",
+                "first_name": "Narasing",
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "modified_by": 1,
+                "is_staff": false
+            },
+            "amount": 20000,
+            "min_amount": 20000,
+            "due_date": "2025-06-02",
+            "modified_by": {
+                "id": 3,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "timezone": "Asia/Kolkata",
+                "group": 1,
+                "is_active": true,
+                "user_permissions": [],
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "last_name": "M",
+                "first_name": "Narasing",
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "modified_by": 1,
+                "is_staff": false
+            }
+        },
+    ]
+}
+
+GET https: //vai.dev.sms.visionariesai.com/api/standards/?branch=1&is_active=true&academic_year=1&standard=undefined
+{
+    "meta": {
+        "count": 31,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 22,
+            "academic_year_display": {
+                "id": 1
+            },
+            "access_to_all_user_ids": [],
+            "student_assigned_count": 0,
+            "student_total_count": 2,
+            "section_count": 0,
+            "stationary": [
+                {
+                    "id": 12,
+                    "name": "10th-College Uniform",
+                    "price": 5000,
+                    "description": "Each person have 2 uniforms",
+                    "is_active": false,
+                    "quantity": 1,
+                    "stationary_type": {
+                        "id": 1,
+                        "name": "Uniform",
+                        "description": "Uniform for Students",
+                        "is_active": true,
+                        "academic_year_id": 1,
+                        "branch_id": 1
+                    }
+                }
+            ],
+            "inventory": [],
+            "sections": [],
+            "created_by": {
+                "id": 3,
+                "name": "Narasing M"
+            },
+            "modified_by": {
+                "id": 3,
+                "name": "Narasing M"
+            },
+            "access_to_all_users": false,
+            "created": "2024-12-31T11:05:37.347072+05:30",
+            "modified": "2025-01-06T23:02:47.168926+05:30",
+            "is_active": true,
+            "name": "11th Standard",
+            "branch": 1
+        },
+    ]
+}
+
+GET https: //vai.dev.sms.visionariesai.com/api/fee-types/?omit=created_by,modified_by&branch=1&is_active=true
+{
+    "meta": {
+        "count": 18,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "branch": {
+                "geo_location": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ],
+                            [
+                                80.6201631673348,
+                                16.50721957673649
+                            ],
+                            [
+                                80.62027846041298,
+                                16.507155671004796
+                            ],
+                            [
+                                80.62033943875502,
+                                16.507248636487958
+                            ],
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ]
+                        ]
+                    ]
+                },
+                "id": 1,
+                "created": "2024-12-23T21:38:49.939251+05:30",
+                "is_active": true,
+                "modified": "2025-03-30T12:37:45.638892+05:30",
+                "created_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                },
+                "name": "Branch 1",
+                "address": {
+                    "city": "Vijayawada",
+                    "state": "Andhra Pradesh",
+                    "street": "Vijayawada",
+                    "landmark": "Vijayawada 1",
+                    "zip_code": "520001"
+                },
+                "center_point": {
+                    "type": "Point",
+                    "coordinates": [
+                        80.62025214123565,
+                        16.507235006708214
+                    ]
+                },
+                "is_main_branch": false,
+                "modified_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                }
+            },
+            "id": 3,
+            "description": "For all students",
+            "created": "2024-12-28T09:34:56.093275+05:30",
+            "academic_year": {
+                "end_date": "2025-07-30",
+                "id": 1,
+                "created": "2024-12-23T22:07:33.918280+05:30",
+                "modified": "2025-06-01T09:14:26.877453+05:30",
+                "created_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                },
+                "name": "2024-2025",
+                "start_date": "2024-06-01",
+                "modified_by": {
+                    "id": 3,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "timezone": "Asia/Kolkata",
+                    "group": 1,
+                    "is_active": true,
+                    "user_permissions": [],
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "last_name": "M",
+                    "first_name": "Narasing",
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "modified_by": 1,
+                    "is_staff": false
+                }
+            },
+            "is_active": true,
+            "modified": "2025-01-01T21:15:47.582393+05:30",
+            "name": "Exam Fee",
+            "is_hostel_fee": false
+        },
+    ]
+}
+
+PATCH https: //vai.dev.sms.visionariesai.com/api/fee-types/2 (THIS ONE NEEDS IT'S ID)
+Example Payload {
+    "description": "For all students",
+    "is_active": true,
+    "name": "Exam Fee - 2"
+}
+
+
+POST https: //vai.dev.sms.visionariesai.com/api/fee-types/
+Example Payload {
+    "name": "example - 7",
+    "description": "example - 7",
+    "branch_id": "1",
+    "academic_year_id": "1"
+}
+If already exists response {
+    {
+        "Error": [
+            "The fields name, branch_id, academic_year_id must make a unique set."
+        ]
+    }
+}
+
+POST https: //vai.dev.sms.visionariesai.com/api/fees/?branch=1
+Example Payload {
+    "academic_year_id": "1",
+    "standard_id": "22",
+    "amount": "555",
+    "min_amount": "555",
+    "fee_type_id": "30", //this should be varied 
+    "due_date": "2025-08-06"
+}
+If already exists response {
+    {
+        "__all__": [
+            "Fee Type already exists for the standard."
+        ]
+    }
+}
