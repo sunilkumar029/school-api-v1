@@ -1,0 +1,276 @@
+{
+    "start_date": "2025-07-06T07:58:00+05:30",
+    "is_active": true,
+    "description": "this is teifn",
+    "standards": [],
+    "departments": [],
+    "image": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/07667d3f-887b-445c-b6c2-9cac3e024810.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IH5LFDC7ZK%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T065112Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDYaCmFwLXNvdXRoLTEiRjBEAiAJnNNUb2U7aZpIJY1QJbjEP2PUNSNgbk4nvzzZ%2Bruz4AIgIPtszBWQD8%2FwLhBFeGAlYQpNVs%2FJ6FIoQyg1iH9K5dcqvgUIbxAAGgwwMjI0OTkwMzE1NjciDBxcJJ%2F6eq%2FLhN%2FwuCqbBXJR6JoeE31EE1qxBI53ix4y7DLc%2FxHgEpHWQYxsyBfr5cXy7TBl4V0azfbkqToZR91ky%2BdU7x0AVP5INEnuBFsFJIgQwdXCRWza%2Fl3c2PL48zyv97%2BAkQGk00TjAi45aCNOC65uLxkKq26OkP4Yfxq5yY5wJj0NsLhXskd9DtyBOkfGX5m6FfjzocpDwcz1stfHpP1DlXgtCEYzH%2FpxvLYkkv0nPf0ryc75GGSAll2HKjkKzduJniyjyNmJgBjd78PQxKY8GG1mcQzxt4Zb%2FlQfoo1PKUdjQQC25njeVtkLpppAU8Acl8h%2BIW%2BvPNZAsa%2FebQ9e%2Faje0LWXvGMpQ6Fq0CL7ElFocpyOzAso%2BwY2tDrOlo6XZuxuAOm2gcrvXt63c4VgKnXSWay1%2FOO8p5hsETB3ybSHNULqzmiwsOb%2FCt5sf8GUtIUFmriM3EKvKpU%2BxNTkv4JAuK6zbh0utr%2B%2BrRl0krRT84%2Frd8TZyBP8svjdUKvixATsaenOK3V%2BMijJI4AhVqN8lUSR%2BzAmPij550iizHM4FhMmLbadx1qbGGTQaXcIjuFXtig9w%2Bj50kPkCcOiHniu4V6zNtJXwBGv2uiKNPzIAy%2FBJl4TWVPz%2F49rTuSMVZZ081qtH8GmqV6MHFvfA9sjXyR2POXx4EhHTj2RKwdZNoG1KMfd3afMEY3dBoyBSpEApaUKnVaTil3E0mW3LM8yH0LbrbFtaC9LzXchvEwb2%2F%2BF%2BYPhWvQPZ8gi6kaHWkqbJTK%2FmWN55fY1Be%2BebRPCYpX2oX%2ByTj8ABptjE1CKV0vmogr8sYzSwuKt83ou%2BebZDqx2dx%2FiyTK666u%2FEWHfBx5x6oIzFlxl1VuNTsrBhZs4o8Wtl6Mbzjddd3CznKR6dHEwv9vLxAY6sgGHO32VSfpXLgoNs6THlcMT%2FgW%2BuEcsSrWHaj1SfuGAOlJZ3TGpo1MQYkQqaFGFFYb1ZOfi9%2B73vtyHJwqU%2F0W3wVlhMXKjKkMHRDhv%2FfA8LKydU5v8MfmxLfsKTsOdcIbSzeBZglGq1PTvwhKQ2yD5cD20biXagfTbvXTwuTaSpvOz%2BR0st2r1hcFGYAX8M9FOf3d8q59tDCwi1LFTEdNuutQLgmmyC0vJjUEiLvhO%2Banw&X-Amz-Signature=15933ea7b0451d424a4ae3ac55425c427570e0de624550846064a1f5e28fdc01",
+    "applies_to": "Branches",
+    "created": "2025-07-06T07:59:12.076873+05:30",
+    "created_by": {
+        "id": 3,
+        "timezone": "Asia/Kolkata",
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "first_name": "Narasing",
+        "created_by": 1,
+        "modified_by": 1,
+        "group": 1,
+        "user_permissions": [],
+        "last_name": "M",
+        "date_joined": "2024-12-23T02:50:33+05:30",
+        "created": "2024-12-23T02:50:33.549827+05:30",
+        "email": "murapakanarasingarao@gmail.com",
+        "modified": "2025-08-06T09:58:15.374126+05:30",
+        "last_login": "2025-08-06T09:58:15.367144+05:30"
+    },
+    "branches": [
+        {
+            "id": 1,
+            "center_point": {
+                "type": "Point",
+                "coordinates": [
+                    80.62025214123565,
+                    16.507235006708214
+                ]
+            },
+            "geo_location": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            80.620226241159,
+                            16.507309199025244
+                        ],
+                        [
+                            80.6201631673348,
+                            16.50721957673649
+                        ],
+                        [
+                            80.62027846041298,
+                            16.507155671004796
+                        ],
+                        [
+                            80.62033943875502,
+                            16.507248636487958
+                        ],
+                        [
+                            80.620226241159,
+                            16.507309199025244
+                        ]
+                    ]
+                ]
+            },
+            "is_main_branch": false,
+            "is_active": true,
+            "modified_by": {
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_superuser": false,
+                "is_staff": false,
+                "is_active": true,
+                "first_name": "Narasing",
+                "created_by": 1,
+                "modified_by": 1,
+                "group": 1,
+                "user_permissions": [],
+                "last_name": "M",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "last_login": "2025-08-06T09:58:15.367144+05:30"
+            },
+            "created": "2024-12-23T21:38:49.939251+05:30",
+            "address": {
+                "city": "Vijayawada",
+                "state": "Andhra Pradesh",
+                "street": "Vijayawada",
+                "landmark": "Vijayawada 1",
+                "zip_code": "520001"
+            },
+            "name": "Branch 1",
+            "modified": "2025-03-30T12:37:45.638892+05:30",
+            "created_by": {
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_superuser": false,
+                "is_staff": false,
+                "is_active": true,
+                "first_name": "Narasing",
+                "created_by": 1,
+                "modified_by": 1,
+                "group": 1,
+                "user_permissions": [],
+                "last_name": "M",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "last_login": "2025-08-06T09:58:15.367144+05:30"
+            }
+        },
+        {
+            "id": 2,
+            "center_point": {
+                "type": "Point",
+                "coordinates": [
+                    81.78430958451207,
+                    17.02572833243334
+                ]
+            },
+            "geo_location": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [
+                            81.78428774964686,
+                            17.025776932643865
+                        ],
+                        [
+                            81.78437890284715,
+                            17.025751670782654
+                        ],
+                        [
+                            81.78436008547669,
+                            17.025678962760693
+                        ],
+                        [
+                            81.78421118096958,
+                            17.025720381979767
+                        ],
+                        [
+                            81.78422052679309,
+                            17.025752183728287
+                        ],
+                        [
+                            81.78427681127204,
+                            17.025738462819305
+                        ],
+                        [
+                            81.78428774964686,
+                            17.025776932643865
+                        ]
+                    ]
+                ]
+            },
+            "is_main_branch": false,
+            "is_active": true,
+            "modified_by": {
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_superuser": false,
+                "is_staff": false,
+                "is_active": true,
+                "first_name": "Narasing",
+                "created_by": 1,
+                "modified_by": 1,
+                "group": 1,
+                "user_permissions": [],
+                "last_name": "M",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "last_login": "2025-08-06T09:58:15.367144+05:30"
+            },
+            "created": "2024-12-23T21:55:16.619340+05:30",
+            "address": {
+                "city": "Rajahmundry",
+                "state": "Andhra Pradesh",
+                "street": "Korukonda",
+                "landmark": "HPCL Petrol Bunk",
+                "zip_code": "533102"
+            },
+            "name": "Branch 2",
+            "modified": "2025-05-26T11:01:31.929879+05:30",
+            "created_by": {
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_superuser": false,
+                "is_staff": false,
+                "is_active": true,
+                "first_name": "Narasing",
+                "created_by": 1,
+                "modified_by": 1,
+                "group": 1,
+                "user_permissions": [],
+                "last_name": "M",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "last_login": "2025-08-06T09:58:15.367144+05:30"
+            }
+        }
+    ],
+    "modified": "2025-07-06T07:59:12.076873+05:30",
+    "end_date": "2025-07-09T07:58:00+05:30",
+    "id": 98,
+    "sections": [],
+    "modified_by": {
+        "id": 3,
+        "timezone": "Asia/Kolkata",
+        "is_superuser": false,
+        "is_staff": false,
+        "is_active": true,
+        "first_name": "Narasing",
+        "created_by": 1,
+        "modified_by": 1,
+        "group": 1,
+        "user_permissions": [],
+        "last_name": "M",
+        "date_joined": "2024-12-23T02:50:33+05:30",
+        "created": "2024-12-23T02:50:33.549827+05:30",
+        "email": "murapakanarasingarao@gmail.com",
+        "modified": "2025-08-06T09:58:15.374126+05:30",
+        "last_login": "2025-08-06T09:58:15.367144+05:30"
+    },
+    "academic_year": {
+        "id": 1,
+        "start_date": "2024-06-01",
+        "end_date": "2025-07-30",
+        "modified_by": {
+            "id": 3,
+            "timezone": "Asia/Kolkata",
+            "is_superuser": false,
+            "is_staff": false,
+            "is_active": true,
+            "first_name": "Narasing",
+            "created_by": 1,
+            "modified_by": 1,
+            "group": 1,
+            "user_permissions": [],
+            "last_name": "M",
+            "date_joined": "2024-12-23T02:50:33+05:30",
+            "created": "2024-12-23T02:50:33.549827+05:30",
+            "email": "murapakanarasingarao@gmail.com",
+            "modified": "2025-08-06T09:58:15.374126+05:30",
+            "last_login": "2025-08-06T09:58:15.367144+05:30"
+        },
+        "created": "2024-12-23T22:07:33.918280+05:30",
+        "name": "2024-2025",
+        "modified": "2025-06-01T09:14:26.877453+05:30",
+        "created_by": {
+            "id": 3,
+            "timezone": "Asia/Kolkata",
+            "is_superuser": false,
+            "is_staff": false,
+            "is_active": true,
+            "first_name": "Narasing",
+            "created_by": 1,
+            "modified_by": 1,
+            "group": 1,
+            "user_permissions": [],
+            "last_name": "M",
+            "date_joined": "2024-12-23T02:50:33+05:30",
+            "created": "2024-12-23T02:50:33.549827+05:30",
+            "email": "murapakanarasingarao@gmail.com",
+            "modified": "2025-08-06T09:58:15.374126+05:30",
+            "last_login": "2025-08-06T09:58:15.367144+05:30"
+        }
+    },
+    "users": [],
+    "name": "testing notifications"
+}

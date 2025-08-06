@@ -78,8 +78,6 @@ export default function EventsScreen() {
     }));
   };
 
-  
-
   const formattedEvents = formatEventData(events);
 
   const filteredEvents = formattedEvents.filter((event) => {
