@@ -53,7 +53,7 @@ export default function EventsScreen() {
     limit: 50, // Reduced limit to avoid timeouts
   });
 
-  console.log("Events Data:", events);
+  // console.log("Events Data:", events);
 
   const getEventStatus = (startDate: string, endDate?: string) => {
     const now = new Date();
@@ -104,16 +104,28 @@ export default function EventsScreen() {
 
   const formattedEvents = formatEventData(events || []);
 
+  // console.log(events.length);
+  // console.log(formattedEvents[1]);
+
   const filteredEvents = formattedEvents.filter((event) => {
     const matchesSearch = event.title
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesFilter =
-      activeTab === "create"
-        ? true
-        : event.status === (activeTab === "past" ? "past" : "upcoming");
+
+    let matchesFilter = false;
+
+    if (activeTab === "create") {
+      matchesFilter = true;
+    } else if (activeTab === "past") {
+      matchesFilter = event.status === "past";
+    } else if (activeTab === "upcoming") {
+      matchesFilter = event.status === "upcoming";
+    }
+
     return matchesSearch && matchesFilter;
   });
+
+  console.log(filteredEvents);
 
   const handleRSVP = (eventId: string) => {
     // Handle RSVP logic here
