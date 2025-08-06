@@ -1,0 +1,1332 @@
+------------------------------ All students fee Summary analytics 
+
+GET https://vai.dev.sms.visionariesai.com/api/fee-dashboard/fee-overview-analytics/?branch=1&academic_year=1
+{
+    "total_students": 97,
+    "total_standard_fee": 1735154,
+    "total_students_fee": 15864720,
+    "total_concessions": 332192,
+    "total_payments": 3265337,
+    "total_pending": 12267191,
+    "fee_type_analytics": [
+        {
+            "fee_type": 1,
+            "fee_type_name": "Hostel Fees",
+            "expected": 150000,
+            "collected": 663499,
+            "pending": -513499
+        },
+        {
+            "fee_type": 2,
+            "fee_type_name": "Tuition Fee",
+            "expected": 1039001,
+            "collected": 1709001,
+            "pending": -670000
+        },
+        {
+            "fee_type": 3,
+            "fee_type_name": "Exam Fee - 2",
+            "expected": 119123,
+            "collected": 216319,
+            "pending": -97196
+        },
+        {
+            "fee_type": 4,
+            "fee_type_name": "Sports Fee",
+            "expected": 115250,
+            "collected": 178401,
+            "pending": -63151
+        },
+        {
+            "fee_type": 5,
+            "fee_type_name": "Cultural Activities Fee",
+            "expected": 75000,
+            "collected": 70000,
+            "pending": 5000
+        },
+        {
+            "fee_type": 6,
+            "fee_type_name": "Fest Fee",
+            "expected": 17001,
+            "collected": 47752,
+            "pending": -30751
+        },
+        {
+            "fee_type": 8,
+            "fee_type_name": "cultural activities Fee",
+            "expected": 250,
+            "collected": 653,
+            "pending": -403
+        },
+        {
+            "fee_type": 9,
+            "fee_type_name": "Unit1 Exam Fee",
+            "expected": 200,
+            "collected": 401,
+            "pending": -201
+        },
+        {
+            "fee_type": 10,
+            "fee_type_name": "Unit 2 ExamFee",
+            "expected": 20000,
+            "collected": 95501,
+            "pending": -75501
+        },
+        {
+            "fee_type": 12,
+            "fee_type_name": "Half Year Exam Fee",
+            "expected": 10000,
+            "collected": 20000,
+            "pending": -10000
+        },
+        {
+            "fee_type": 21,
+            "fee_type_name": "SWF",
+            "expected": 40000,
+            "collected": 80000,
+            "pending": -40000
+        },
+        {
+            "fee_type": 22,
+            "fee_type_name": "Record Fee",
+            "expected": 35000,
+            "collected": 52700,
+            "pending": -17700
+        },
+        {
+            "fee_type": 24,
+            "fee_type_name": "Entrance Fee",
+            "expected": 81110,
+            "collected": 115555,
+            "pending": -34445
+        },
+        {
+            "fee_type": 25,
+            "fee_type_name": "Recovery fees",
+            "expected": 31110,
+            "collected": 15555,
+            "pending": 15555
+        },
+        {
+            "fee_type": 29,
+            "fee_type_name": "example - 5",
+            "expected": 555,
+            "collected": 0,
+            "pending": 555
+        },
+        {
+            "fee_type": 30,
+            "fee_type_name": "example - 6",
+            "expected": 555,
+            "collected": 0,
+            "pending": 555
+        },
+        {
+            "fee_type": 31,
+            "fee_type_name": "example - 7",
+            "expected": 999,
+            "collected": 0,
+            "pending": 999
+        }
+    ],
+    "fee_type_list": [
+        25,
+        29,
+        31,
+        4,
+        30,
+        21,
+        3,
+        22,
+        9,
+        10,
+        1,
+        5,
+        2,
+        6,
+        12,
+        8,
+        24
+    ],
+    "time_collections": {
+        "today": {
+            "collected": 0,
+            "expected": 15864720
+        },
+        "yesterday": {
+            "collected": 0
+        },
+        "this_week": {
+            "collected": 0,
+            "expected": 15864720
+        },
+        "last_week": {
+            "collected": 0
+        },
+        "this_month": {
+            "collected": 0,
+            "expected": 15864720
+        },
+        "last_month": {
+            "collected": 12600
+        },
+        "this_year": {
+            "collected": 3023338,
+            "expected": 15864720
+        },
+        "growth": {
+            "daily": 0,
+            "weekly": 0,
+            "monthly": -100.0
+        }
+    },
+    "monthly_collections": [
+        {
+            "month": "Jun",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Jul",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Aug",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Sep",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Oct",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Nov",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "Dec",
+            "collected": 241999,
+            "expected": 15864720
+        },
+        {
+            "month": "Jan",
+            "collected": 1248000,
+            "expected": 15864720
+        },
+        {
+            "month": "Feb",
+            "collected": 133000,
+            "expected": 15864720
+        },
+        {
+            "month": "Mar",
+            "collected": 365000,
+            "expected": 15864720
+        },
+        {
+            "month": "Apr",
+            "collected": 0,
+            "expected": 15864720
+        },
+        {
+            "month": "May",
+            "collected": 249962,
+            "expected": 15864720
+        },
+        {
+            "month": "Jun",
+            "collected": 1014776,
+            "expected": 15864720
+        },
+        {
+            "month": "Jul",
+            "collected": 12600,
+            "expected": 15864720
+        }
+    ],
+    "standard_collections": [
+        {
+            "standard": "1st Standard",
+            "collected": 242309,
+            "expected": 1459219
+        },
+        {
+            "standard": "2nd standard",
+            "collected": 1586000,
+            "expected": 10680000
+        },
+        {
+            "standard": "3rd Standard",
+            "collected": 0,
+            "expected": 0
+        },
+        {
+            "standard": "4th Standards",
+            "collected": 519803,
+            "expected": 1260018
+        },
+        {
+            "standard": "5th Standard",
+            "collected": 155615,
+            "expected": 510000
+        },
+        {
+            "standard": "8th Standard",
+            "collected": 0,
+            "expected": 0
+        },
+        {
+            "standard": "11th Standard",
+            "collected": 0,
+            "expected": 92109
+        },
+        {
+            "standard": "12th standard",
+            "collected": 0,
+            "expected": 140044
+        },
+        {
+            "standard": "13th Standard",
+            "collected": 163000,
+            "expected": 190000
+        },
+        {
+            "standard": "16th Standard",
+            "collected": 496010,
+            "expected": 501110
+        },
+        {
+            "standard": "18th Standard",
+            "collected": 255000,
+            "expected": 332220
+        },
+        {
+            "standard": "19th Standard",
+            "collected": 343000,
+            "expected": 700000
+        },
+        {
+            "standard": "1st",
+            "collected": 0,
+            "expected": 0
+        },
+        {
+            "standard": "testing1",
+            "collected": 0,
+            "expected": 0
+        }
+    ],
+    "student_expected_actual": [
+        {
+            "student_id": 42,
+            "name": "Namasvi K",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 33000,
+            "pending": 43801
+        },
+        {
+            "student_id": 47,
+            "name": "Venkatesh R",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 50,
+            "name": "Sai M",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 48,
+            "name": "Aditya T",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 9800,
+            "pending": 67001
+        },
+        {
+            "student_id": 45,
+            "name": "Akhila D",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 46,
+            "name": "Harshini P",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 49,
+            "name": "Kiran S",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 51,
+            "name": "Hareesha M",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 52,
+            "name": "Advika L",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 53,
+            "name": "Amrutha S",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 54,
+            "name": "Sekhar S",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 10507,
+            "pending": 66294
+        },
+        {
+            "student_id": 55,
+            "name": "Srikanth D",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 56,
+            "name": "Sarath M",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 395000,
+            "pending": 50000
+        },
+        {
+            "student_id": 57,
+            "name": "Amulya K",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 59,
+            "name": "Nellam Raju R",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 44,
+            "name": "Susma Sri P",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 41000,
+            "pending": 35801
+        },
+        {
+            "student_id": 82,
+            "name": "Kumar I",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 58,
+            "name": "Sainath R",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 89,
+            "name": "Jayanth M",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 142000,
+            "pending": 303000
+        },
+        {
+            "student_id": 84,
+            "name": "Mohini K",
+            "standard": "testing1",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 68,
+            "name": "Sai Kalyan K",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 73,
+            "name": "Janvi G",
+            "standard": "testing1",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 65,
+            "name": "Sai jyothi N",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 66,
+            "name": "Lalitha M",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 130000,
+            "pending": 315000
+        },
+        {
+            "student_id": 67,
+            "name": "Bhanu sree B",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 61,
+            "name": "Swaroopa P",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 69,
+            "name": "Yamuna T",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 70,
+            "name": "Punija V",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 71,
+            "name": "Bhargav M",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 72,
+            "name": "Adharsh I",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 85,
+            "name": "Aradhya K",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 83,
+            "name": "Nandini M",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 75,
+            "name": "Alekhya U",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 76,
+            "name": "Vajiha R",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 77,
+            "name": "Kavya R",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 78,
+            "name": "Madhulika O",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 79,
+            "name": "Tanuja I",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 80,
+            "name": "Triveni L",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 86,
+            "name": "Anjali R",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 87,
+            "name": "Anupama J",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 355000,
+            "pending": 90000
+        },
+        {
+            "student_id": 88,
+            "name": "Divya K",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 1000,
+            "pending": 444000
+        },
+        {
+            "student_id": 60,
+            "name": "Santoshi P",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 74,
+            "name": "Nithya U",
+            "standard": "testing1",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 91,
+            "name": "Mouli G",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 92,
+            "name": "Sankar V",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 90,
+            "name": "Balaji S",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 93,
+            "name": "Siva Sankar K",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 118000,
+            "pending": 327000
+        },
+        {
+            "student_id": 220,
+            "name": "Pavitra R",
+            "standard": "19th Standard",
+            "expected": 140000,
+            "paid": 73000,
+            "pending": 67000
+        },
+        {
+            "student_id": 243,
+            "name": "RAM D",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 250,
+            "name": "Ruchir Sumedh",
+            "standard": "12th standard",
+            "expected": 70022,
+            "paid": 0,
+            "pending": 70022
+        },
+        {
+            "student_id": 263,
+            "name": "Sridhar Dev",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 94,
+            "name": "Anitha N",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 221,
+            "name": "Venkatesh R",
+            "standard": "19th Standard",
+            "expected": 140000,
+            "paid": 0,
+            "pending": 140000
+        },
+        {
+            "student_id": 226,
+            "name": "santoshi pothala",
+            "standard": "8th Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 244,
+            "name": "Ramya R",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 264,
+            "name": "Sridhar Dev",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 217,
+            "name": "ANJALi R",
+            "standard": "19th Standard",
+            "expected": 140000,
+            "paid": 140000,
+            "pending": 0
+        },
+        {
+            "student_id": 100,
+            "name": "Nirvana J",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 98,
+            "name": "Vinay M",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 97,
+            "name": "Adhya R",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 95,
+            "name": "Navadeep P",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 96,
+            "name": "Naveen D",
+            "standard": "3rd Standard",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 219,
+            "name": "Gayatri R",
+            "standard": "19th Standard",
+            "expected": 140000,
+            "paid": 130000,
+            "pending": 10000
+        },
+        {
+            "student_id": 245,
+            "name": "Ramya sree R",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 19000,
+            "pending": 0
+        },
+        {
+            "student_id": 252,
+            "name": "First Last",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 265,
+            "name": "Sridhar Dev",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 231,
+            "name": "Rajesh V",
+            "standard": "1st",
+            "expected": 0,
+            "paid": 0,
+            "pending": 0
+        },
+        {
+            "student_id": 246,
+            "name": "Ramya lahari R",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 9000,
+            "pending": 10000
+        },
+        {
+            "student_id": 247,
+            "name": "lahari R",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 0,
+            "pending": 19000
+        },
+        {
+            "student_id": 222,
+            "name": "Venkatesh M",
+            "standard": "19th Standard",
+            "expected": 140000,
+            "paid": 0,
+            "pending": 140000
+        },
+        {
+            "student_id": 270,
+            "name": "abcdeab Srikanth",
+            "standard": "11th Standard",
+            "expected": 92109,
+            "paid": 0,
+            "pending": 92109
+        },
+        {
+            "student_id": 81,
+            "name": "Narsing M",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 99,
+            "name": "Virajitha N",
+            "standard": "2nd standard",
+            "expected": 445000,
+            "paid": 0,
+            "pending": 445000
+        },
+        {
+            "student_id": 4,
+            "name": "Rupa K",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 147501,
+            "pending": -70700
+        },
+        {
+            "student_id": 176,
+            "name": "Madhulika R",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 0,
+            "pending": 140002
+        },
+        {
+            "student_id": 179,
+            "name": "Swathi D",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 72000,
+            "pending": 68002
+        },
+        {
+            "student_id": 180,
+            "name": "Vimala L",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 166999,
+            "pending": -26997
+        },
+        {
+            "student_id": 181,
+            "name": "Vimala L",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 0,
+            "pending": 140002
+        },
+        {
+            "student_id": 185,
+            "name": "Vimala R",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 0,
+            "pending": 140002
+        },
+        {
+            "student_id": 182,
+            "name": "Vimala L",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 0,
+            "pending": 85000
+        },
+        {
+            "student_id": 189,
+            "name": "Swathi R",
+            "standard": "12th standard",
+            "expected": 70022,
+            "paid": 0,
+            "pending": 70022
+        },
+        {
+            "student_id": 184,
+            "name": "Virat R",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 139902,
+            "pending": 100
+        },
+        {
+            "student_id": 186,
+            "name": "Vineeth R",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 139902,
+            "pending": 100
+        },
+        {
+            "student_id": 194,
+            "name": "Harshini K",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 188,
+            "name": "Arvind salagam",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 1000,
+            "pending": 139002
+        },
+        {
+            "student_id": 193,
+            "name": "Venkatesh R",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 501,
+            "pending": 76300
+        },
+        {
+            "student_id": 197,
+            "name": "Krishna K",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 0,
+            "pending": 85000
+        },
+        {
+            "student_id": 192,
+            "name": "Swaroop R",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 105215,
+            "pending": -20215
+        },
+        {
+            "student_id": 218,
+            "name": "anitha M",
+            "standard": "1st Standard",
+            "expected": 76801,
+            "paid": 0,
+            "pending": 76801
+        },
+        {
+            "student_id": 201,
+            "name": "Namasvi K",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 0,
+            "pending": 85000
+        },
+        {
+            "student_id": 187,
+            "name": "Vineetha R",
+            "standard": "4th Standards",
+            "expected": 140002,
+            "paid": 0,
+            "pending": 140002
+        },
+        {
+            "student_id": 202,
+            "name": "Namasvi K",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 0,
+            "pending": 85000
+        },
+        {
+            "student_id": 198,
+            "name": "Krishna K",
+            "standard": "5th Standard",
+            "expected": 85000,
+            "paid": 0,
+            "pending": 85000
+        },
+        {
+            "student_id": 208,
+            "name": "Hareesha M",
+            "standard": "16th Standard",
+            "expected": 501110,
+            "paid": 496010,
+            "pending": 5100
+        },
+        {
+            "student_id": 212,
+            "name": "Vijay R",
+            "standard": "18th Standard",
+            "expected": 166110,
+            "paid": 120000,
+            "pending": 46110
+        },
+        {
+            "student_id": 213,
+            "name": "Vijay laxmi R",
+            "standard": "13th Standard",
+            "expected": 19000,
+            "paid": 135000,
+            "pending": -116000
+        },
+        {
+            "student_id": 214,
+            "name": "Vara laxmi M",
+            "standard": "18th Standard",
+            "expected": 166110,
+            "paid": 135000,
+            "pending": 31110
+        }
+    ],
+    "latest_paid_fees": [
+        {
+            "id": 205,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 100,
+            "payment_date": "2025-07-08T09:48:21.863006Z"
+        },
+        {
+            "id": 204,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 100,
+            "payment_date": "2025-07-08T09:44:37.519372Z"
+        },
+        {
+            "id": 203,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 100,
+            "payment_date": "2025-07-08T09:42:22.439114Z"
+        },
+        {
+            "id": 202,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 500,
+            "payment_date": "2025-07-08T09:38:36.063261Z"
+        },
+        {
+            "id": 201,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 1000,
+            "payment_date": "2025-07-08T09:35:35.046262Z"
+        },
+        {
+            "id": 200,
+            "user_id": 4,
+            "user__first_name": "Rupa",
+            "user__last_name": "K",
+            "user__standard__name": "1st Standard",
+            "amount": 1000,
+            "payment_date": "2025-07-08T09:31:08.381860Z"
+        },
+        {
+            "id": 199,
+            "user_id": 48,
+            "user__first_name": "Aditya",
+            "user__last_name": "T",
+            "user__standard__name": "1st Standard",
+            "amount": 250,
+            "payment_date": "2025-07-04T06:16:30.274102Z"
+        },
+        {
+            "id": 198,
+            "user_id": 48,
+            "user__first_name": "Aditya",
+            "user__last_name": "T",
+            "user__standard__name": "1st Standard",
+            "amount": 9100,
+            "payment_date": "2025-07-04T06:16:30.255319Z"
+        },
+        {
+            "id": 197,
+            "user_id": 48,
+            "user__first_name": "Aditya",
+            "user__last_name": "T",
+            "user__standard__name": "1st Standard",
+            "amount": 200,
+            "payment_date": "2025-07-04T05:46:28.552729Z"
+        },
+        {
+            "id": 196,
+            "user_id": 48,
+            "user__first_name": "Aditya",
+            "user__last_name": "T",
+            "user__standard__name": "1st Standard",
+            "amount": 250,
+            "payment_date": "2025-07-04T05:34:54.331669Z"
+        },
+        {
+            "id": 195,
+            "user_id": 246,
+            "user__first_name": "Ramya lahari",
+            "user__last_name": "R",
+            "user__standard__name": "13th Standard",
+            "amount": 9000,
+            "payment_date": "2025-06-16T11:29:21.583630Z"
+        },
+        {
+            "id": 194,
+            "user_id": 245,
+            "user__first_name": "Ramya sree",
+            "user__last_name": "R",
+            "user__standard__name": "13th Standard",
+            "amount": 10000,
+            "payment_date": "2025-06-16T11:14:02.470602Z"
+        },
+        {
+            "id": 193,
+            "user_id": 245,
+            "user__first_name": "Ramya sree",
+            "user__last_name": "R",
+            "user__standard__name": "13th Standard",
+            "amount": 9000,
+            "payment_date": "2025-06-16T11:14:02.336925Z"
+        },
+        {
+            "id": 184,
+            "user_id": 192,
+            "user__first_name": "Swaroop",
+            "user__last_name": "R",
+            "user__standard__name": "5th Standard",
+            "amount": 65,
+            "payment_date": "2025-06-10T08:36:52.904217Z"
+        },
+        {
+            "id": 183,
+            "user_id": 192,
+            "user__first_name": "Swaroop",
+            "user__last_name": "R",
+            "user__standard__name": "5th Standard",
+            "amount": 84,
+            "payment_date": "2025-06-10T08:36:52.876256Z"
+        },
+        {
+            "id": 182,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 12555,
+            "payment_date": "2025-06-07T13:58:01.023070Z"
+        },
+        {
+            "id": 181,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 15555,
+            "payment_date": "2025-06-07T13:58:01.009907Z"
+        },
+        {
+            "id": 180,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 15000,
+            "payment_date": "2025-06-07T13:58:00.995319Z"
+        },
+        {
+            "id": 179,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 49900,
+            "payment_date": "2025-06-07T13:58:00.982946Z"
+        },
+        {
+            "id": 178,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 400000,
+            "payment_date": "2025-06-07T13:58:00.963987Z"
+        },
+        {
+            "id": 177,
+            "user_id": 208,
+            "user__first_name": "Hareesha",
+            "user__last_name": "M",
+            "user__standard__name": "16th Standard",
+            "amount": 3000,
+            "payment_date": "2025-06-07T13:57:33.166391Z"
+        },
+        {
+            "id": 176,
+            "user_id": 186,
+            "user__first_name": "Vineeth",
+            "user__last_name": "R",
+            "user__standard__name": "4th Standards",
+            "amount": 20000,
+            "payment_date": "2025-06-07T11:55:23.142255Z"
+        },
+        {
+            "id": 175,
+            "user_id": 186,
+            "user__first_name": "Vineeth",
+            "user__last_name": "R",
+            "user__standard__name": "4th Standards",
+            "amount": 20000,
+            "payment_date": "2025-06-07T11:55:23.129375Z"
+        },
+        {
+            "id": 174,
+            "user_id": 186,
+            "user__first_name": "Vineeth",
+            "user__last_name": "R",
+            "user__standard__name": "4th Standards",
+            "amount": 20000,
+            "payment_date": "2025-06-07T11:55:23.116814Z"
+        },
+        {
+            "id": 173,
+            "user_id": 186,
+            "user__first_name": "Vineeth",
+            "user__last_name": "R",
+            "user__standard__name": "4th Standards",
+            "amount": 20001,
+            "payment_date": "2025-06-07T11:55:23.103971Z"
+        }
+    ]
+}

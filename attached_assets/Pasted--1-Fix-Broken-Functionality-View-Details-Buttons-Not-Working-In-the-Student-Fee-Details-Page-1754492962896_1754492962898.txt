@@ -1,0 +1,110 @@
+🎯 1. Fix Broken Functionality
+🔧 View Details Buttons Not Working
+In the Student Fee Details Page:
+
+Fix the "View Details" button action in:
+
+✅ Pending Fees tab
+
+✅ Payment History tab
+
+📌 Fix: Ensure the modal or bottom sheet that shows full fee/payment info is correctly connected with its action, and the data is passed via ID or object.
+
+🧭 2. Update Sidebar Navigation (Drawer)
+🗂 Add New Tabs:
+✅ Student Fee Details (if not already in)
+
+✅ Student Fee Analytics (new page)
+
+🏷️ Add "New" Badge:
+Use a label or badge (e.g., 🆕 or "NEW") next to newly added menu items to highlight them temporarily.
+
+🧮 3. Enhanced Fee Views – Alerts & Categorization
+👁️‍🗨️ View Filters on Student Fee Details Page
+Add 3 buttons/filters above or below the tabs:
+
+✅ View Paid Payments
+
+✅ View Pending Payments
+
+✅ Upcoming Due Payments
+
+Filter payments due in next 30 days
+
+Helps staff proactively alert students
+
+🧠 UX Suggestion: Use tab-style buttons or filter chips to switch between these views without breaking context.
+
+📊 4. Student Fee Analytics Page
+Create a new screen called StudentFeeAnalytics.tsx (or similar) and route it through the sidebar.
+
+🧾 A. Summary Table
+Metric	Value
+Total Students	from /api/students/
+Total Standard Fee	sum from /api/standards/
+Total Student Fee	sum from /api/student-fees/
+Total Concessions	/api/fee-concessions/ (if available)
+Total Payments	/api/payments/
+Total Pending Amount	Calculated
+
+💡 Calculations:
+Total Pending = Total Student Fee - Total Payments - Concessions
+
+📈 B. Graphs & Charts
+1. 📊 Bar Graph: Monthly Fee Collection
+Expected vs Collected per month
+
+X-axis: Months
+
+Y-axis: Amount
+
+Group bars: expected, collected
+
+2. 🥧 Pie Chart: Financial Distribution
+Slices:
+
+Standard Fee
+
+Student Fee
+
+Concessions
+
+Payments
+
+Pending
+
+3. 📝 Latest Paid Fees
+Table/List of latest 10 payments
+
+Show: Student name, amount, fee type, date
+
+4. 📚 Standard-wise Fee Collection
+Table:
+
+Standard
+
+Total Expected
+
+Collected
+
+Pending
+
+5. ⏱️ Time-Based Fee Collection
+Line graph showing fee collection trend over the academic year
+
+create the api links that required beaware of creating existing api's 
+
+💡 Developer Notes:
+Use hooks and pagination/memoization to avoid infinite API loops
+
+Cache branch/academic-year filter context across screens
+
+Use dropdown + accordion filters (like rest of app)
+
+🧠 Final Notes:
+Avoid duplicating existing API functions — check before creating.
+
+Prevent infinite loops in dropdown fetching (memoize calls / use stable hooks).
+
+Ensure UX is mobile-friendly, maintain proper spacing, accordion-based filters, and optimized scroll.
+

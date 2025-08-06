@@ -1,11 +1,15 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
+  ScrollView,
+  ActivityIndicator,
+  RefreshControl,
+  TextInput,
+  Modal,
   Alert,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -14,226 +18,623 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { 
+  useTeacherTimetable, 
+  useBranches, 
+  useAcademicYears, 
+  useDepartments,
+  useSections,
+  useAllUsers,
+  usePeriods
+} from '@/hooks/useApi';
+import { Picker } from '@react-native-picker/picker';
 
-interface TimetableSlot {
-  time: string;
-  subject?: string;
-  class?: string;
-  venue?: string;
+interface TimetableEntry {
+  teacher: {
+    first_name: string;
+    last_name: string;
+    id: number;
+  };
+  section: {
+    name: string;
+    standard: {
+      name: string;
+    };
+  };
+  department: {
+    name: string;
+  };
+  period_number: number;
+  day: string;
 }
 
-interface StaffTimetable {
-  staffName: string;
-  department: string;
-  schedule: { [day: string]: TimetableSlot[] };
+interface TeacherTimetableData {
+  [teacherKey: string]: {
+    [day: string]: TimetableEntry[];
+  };
 }
 
-export default function StaffTimetableScreen() {
+export default function TimetableScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [editMode, setEditMode] = useState(false);
+  const [activeView, setActiveView] = useState<'teacher' | 'section'>('teacher');
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const timeSlots = ['9:00-10:00', '10:00-11:00', '11:00-12:00', '12:00-13:00', '14:00-15:00', '15:00-16:00'];
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // Modal states for timetable interactions
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedCell, setSelectedCell] = useState<{
+    teacherKey?: string;
+    periodNumber: number;
+    day: string;
+    existingData?: TimetableEntry;
+  } | null>(null);
+  const [modalLoading, setModalLoading] = useState(false);
 
-  const [staffTimetables, setStaffTimetables] = useState<StaffTimetable[]>([
-    {
-      staffName: 'Ms. Sarah Johnson',
-      department: 'Mathematics',
-      schedule: {
-        Monday: [
-          { time: '9:00-10:00', subject: 'Algebra', class: '10-A', venue: 'R-101' },
-          { time: '10:00-11:00', subject: 'Geometry', class: '10-B', venue: 'R-102' },
-          { time: '11:00-12:00' },
-          { time: '12:00-13:00', subject: 'Statistics', class: '11-A', venue: 'R-101' },
-          { time: '14:00-15:00', subject: 'Calculus', class: '12-A', venue: 'R-103' },
-          { time: '15:00-16:00' },
-        ],
-        Tuesday: [
-          { time: '9:00-10:00', subject: 'Algebra', class: '10-B', venue: 'R-102' },
-          { time: '10:00-11:00' },
-          { time: '11:00-12:00', subject: 'Geometry', class: '10-A', venue: 'R-101' },
-          { time: '12:00-13:00' },
-          { time: '14:00-15:00', subject: 'Statistics', class: '11-B', venue: 'R-104' },
-          { time: '15:00-16:00', subject: 'Calculus', class: '12-B', venue: 'R-103' },
-        ],
-        Wednesday: [
-          { time: '9:00-10:00' },
-          { time: '10:00-11:00', subject: 'Algebra', class: '10-A', venue: 'R-101' },
-          { time: '11:00-12:00', subject: 'Geometry', class: '10-B', venue: 'R-102' },
-          { time: '12:00-13:00', subject: 'Statistics', class: '11-A', venue: 'R-101' },
-          { time: '14:00-15:00' },
-          { time: '15:00-16:00', subject: 'Calculus', class: '12-A', venue: 'R-103' },
-        ],
-        Thursday: [
-          { time: '9:00-10:00', subject: 'Algebra', class: '10-B', venue: 'R-102' },
-          { time: '10:00-11:00', subject: 'Geometry', class: '10-A', venue: 'R-101' },
-          { time: '11:00-12:00' },
-          { time: '12:00-13:00', subject: 'Statistics', class: '11-B', venue: 'R-104' },
-          { time: '14:00-15:00', subject: 'Calculus', class: '12-B', venue: 'R-103' },
-          { time: '15:00-16:00' },
-        ],
-        Friday: [
-          { time: '9:00-10:00' },
-          { time: '10:00-11:00' },
-          { time: '11:00-12:00', subject: 'Algebra', class: '10-A', venue: 'R-101' },
-          { time: '12:00-13:00', subject: 'Geometry', class: '10-B', venue: 'R-102' },
-          { time: '14:00-15:00', subject: 'Statistics', class: '11-A', venue: 'R-101' },
-          { time: '15:00-16:00', subject: 'Calculus', class: '12-A', venue: 'R-103' },
-        ],
-      },
-    },
-    {
-      staffName: 'Dr. Michael Chen',
-      department: 'Physics',
-      schedule: {
-        Monday: [
-          { time: '9:00-10:00', subject: 'Mechanics', class: '11-A', venue: 'L-201' },
-          { time: '10:00-11:00' },
-          { time: '11:00-12:00', subject: 'Optics', class: '12-A', venue: 'L-202' },
-          { time: '12:00-13:00' },
-          { time: '14:00-15:00', subject: 'Waves', class: '11-B', venue: 'L-201' },
-          { time: '15:00-16:00', subject: 'Electricity', class: '12-B', venue: 'L-203' },
-        ],
-        Tuesday: [
-          { time: '9:00-10:00' },
-          { time: '10:00-11:00', subject: 'Mechanics', class: '11-B', venue: 'L-201' },
-          { time: '11:00-12:00', subject: 'Optics', class: '12-B', venue: 'L-202' },
-          { time: '12:00-13:00', subject: 'Waves', class: '11-A', venue: 'L-201' },
-          { time: '14:00-15:00' },
-          { time: '15:00-16:00', subject: 'Electricity', class: '12-A', venue: 'L-203' },
-        ],
-        Wednesday: [
-          { time: '9:00-10:00', subject: 'Mechanics', class: '11-A', venue: 'L-201' },
-          { time: '10:00-11:00', subject: 'Optics', class: '12-A', venue: 'L-202' },
-          { time: '11:00-12:00' },
-          { time: '12:00-13:00', subject: 'Waves', class: '11-B', venue: 'L-201' },
-          { time: '14:00-15:00', subject: 'Electricity', class: '12-B', venue: 'L-203' },
-          { time: '15:00-16:00' },
-        ],
-        Thursday: [
-          { time: '9:00-10:00' },
-          { time: '10:00-11:00' },
-          { time: '11:00-12:00', subject: 'Mechanics', class: '11-B', venue: 'L-201' },
-          { time: '12:00-13:00', subject: 'Optics', class: '12-B', venue: 'L-202' },
-          { time: '14:00-15:00', subject: 'Waves', class: '11-A', venue: 'L-201' },
-          { time: '15:00-16:00', subject: 'Electricity', class: '12-A', venue: 'L-203' },
-        ],
-        Friday: [
-          { time: '9:00-10:00', subject: 'Mechanics', class: '11-A', venue: 'L-201' },
-          { time: '10:00-11:00', subject: 'Optics', class: '12-A', venue: 'L-202' },
-          { time: '11:00-12:00', subject: 'Waves', class: '11-B', venue: 'L-201' },
-          { time: '12:00-13:00' },
-          { time: '14:00-15:00' },
-          { time: '15:00-16:00', subject: 'Electricity', class: '12-B', venue: 'L-203' },
-        ],
-      },
-    },
-  ]);
+  // Form state for period assignment
+  const [periodForm, setPeriodForm] = useState({
+    department: '',
+    teacher: '',
+    section: '',
+  });
 
-  const handleSlotPress = (staffIndex: number, day: string, timeIndex: number) => {
-    if (!editMode) return;
+  // Filter states
+  const [selectedBranch, setSelectedBranch] = useState<number | null>(1); // Default to branch 1
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('All Departments');
+  const [selectedDay, setSelectedDay] = useState<string>('Monday');
+  const [selectedStandard, setSelectedStandard] = useState<string>('All Standards');
+  const [selectedSection, setSelectedSection] = useState<number | null>(null);
+
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const departments = [
+    'All Departments', 'Computers', 'Telugu', 'Hindi', 'Science2', 
+    'Science', 'Mathematics', 'English', 'Telugu2', 'Chemistry', 'Social'
+  ];
+
+  // Fetch data
+  const { data: branches, loading: branchesLoading } = useBranches({ is_active: true });
+  const { data: academicYears, loading: academicYearsLoading } = useAcademicYears();
+  
+  // Teacher timetable params
+  const teacherTimetableParams = useMemo(() => {
+    const params: any = {};
+    if (selectedBranch) params.branch = selectedBranch;
+    return params;
+  }, [selectedBranch]);
+
+  const { 
+    data: teacherTimetableData, 
+    loading: teacherTimetableLoading, 
+    error: teacherTimetableError,
+    refetch: refetchTeacherTimetable 
+  } = useTeacherTimetable(teacherTimetableParams);
+
+  // Section timetable params
+  const sectionParams = useMemo(() => {
+    const params: any = {};
+    if (selectedBranch) params.branch = selectedBranch;
+    return params;
+  }, [selectedBranch]);
+
+  const { data: sections, loading: sectionsLoading } = useSections(sectionParams);
+
+  // Period params for section view
+  const periodParams = useMemo(() => {
+    const params: any = {};
+    if (selectedBranch) params.section__standard__branch = selectedBranch;
+    if (selectedSection) params.section = selectedSection;
+    if (selectedDay) params.day = selectedDay;
+    return params;
+  }, [selectedBranch, selectedSection, selectedDay]);
+
+  const { data: periods, loading: periodsLoading } = usePeriods(periodParams);
+
+  // Get unique standards from sections
+  const standards = useMemo(() => {
+    if (!sections) return ['All Standards'];
+    const uniqueStandards = [...new Set(sections.map((section: any) => section.standard.name))];
+    return ['All Standards', ...uniqueStandards];
+  }, [sections]);
+
+  // Get sections for selected standard
+  const filteredSections = useMemo(() => {
+    if (!sections) return [];
+    if (selectedStandard === 'All Standards') return sections;
+    return sections.filter((section: any) => section.standard.name === selectedStandard);
+  }, [sections, selectedStandard]);
+
+  const handleRefreshAll = useCallback(() => {
+    refetchTeacherTimetable();
+  }, [refetchTeacherTimetable]);
+
+  // Period CRUD operations
+  const showSuccessMessage = (message: string) => {
+    Alert.alert('Success', message);
+  };
+
+  const showErrorMessage = (message: string) => {
+    Alert.alert('Error', message);
+  };
+
+  const handleCellPress = (teacherKey: string, periodNumber: number, day: string, existingData?: TimetableEntry) => {
+    setSelectedCell({ teacherKey, periodNumber, day, existingData });
+    if (existingData) {
+      setPeriodForm({
+        department: existingData.department.name,
+        teacher: `${existingData.teacher.first_name} ${existingData.teacher.last_name}`,
+        section: `${existingData.section.standard.name} ${existingData.section.name}`,
+      });
+    } else {
+      setPeriodForm({ department: '', teacher: '', section: '' });
+    }
+    setModalVisible(true);
+  };
+
+  const handleCreatePeriod = async () => {
+    if (!selectedCell || !periodForm.department || !periodForm.teacher) {
+      showErrorMessage('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      await apiService.createPeriod({
+        teacher_key: selectedCell.teacherKey,
+        period_number: selectedCell.periodNumber,
+        day: selectedCell.day,
+        department: periodForm.department,
+        teacher: periodForm.teacher,
+        section: periodForm.section,
+        branch: selectedBranch,
+      });
+      showSuccessMessage('Period assigned successfully');
+      setModalVisible(false);
+      refetchTeacherTimetable();
+    } catch (error) {
+      showErrorMessage('Failed to assign period');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleUpdatePeriod = async () => {
+    if (!selectedCell?.existingData || !periodForm.department || !periodForm.teacher) {
+      showErrorMessage('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      setModalLoading(true);
+      // Assuming we have an ID for the period entry
+      await apiService.updatePeriod(selectedCell.existingData.teacher.id, {
+        department: periodForm.department,
+        teacher: periodForm.teacher,
+        section: periodForm.section,
+      });
+      showSuccessMessage('Period updated successfully');
+      setModalVisible(false);
+      refetchTeacherTimetable();
+    } catch (error) {
+      showErrorMessage('Failed to update period');
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const handleDeletePeriod = () => {
+    if (!selectedCell?.existingData) return;
 
     Alert.alert(
-      'Edit Slot',
-      `Edit ${timeSlots[timeIndex]} on ${day} for ${staffTimetables[staffIndex].staffName}`,
+      'Confirm Delete',
+      'Are you sure you want to delete this period assignment?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Clear Slot', onPress: () => clearSlot(staffIndex, day, timeIndex) },
-        { text: 'Edit', onPress: () => editSlot(staffIndex, day, timeIndex) },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              setModalLoading(true);
+              await apiService.deletePeriod(selectedCell.existingData!.teacher.id);
+              showSuccessMessage('Period deleted successfully');
+              setModalVisible(false);
+              refetchTeacherTimetable();
+            } catch (error) {
+              showErrorMessage('Failed to delete period');
+            } finally {
+              setModalLoading(false);
+            }
+          },
+        },
       ]
     );
   };
 
-  const clearSlot = (staffIndex: number, day: string, timeIndex: number) => {
-    const updatedTimetables = [...staffTimetables];
-    updatedTimetables[staffIndex].schedule[day][timeIndex] = { time: timeSlots[timeIndex] };
-    setStaffTimetables(updatedTimetables);
-  };
+  // Filter teacher timetable data
+  const filteredTeacherData = useMemo(() => {
+    if (!teacherTimetableData) return {};
 
-  const editSlot = (staffIndex: number, day: string, timeIndex: number) => {
-    // In a real app, this would open a modal for editing
-    Alert.alert('Edit Slot', 'Slot editing modal would open here');
-  };
+    let filtered = { ...teacherTimetableData };
 
-  const renderTimetableSlot = (slot: TimetableSlot, staffIndex: number, day: string, timeIndex: number) => (
-    <TouchableOpacity
-      key={`${day}-${timeIndex}`}
-      style={[
-        styles.slot,
-        {
-          backgroundColor: slot.subject ? colors.primary + '20' : colors.surface,
-          borderColor: colors.border
+    // Filter by search query
+    if (searchQuery) {
+      const searchLower = searchQuery.toLowerCase();
+      filtered = Object.keys(filtered).reduce((acc, teacherKey) => {
+        if (teacherKey.toLowerCase().includes(searchLower)) {
+          acc[teacherKey] = filtered[teacherKey];
         }
-      ]}
-      onPress={() => handleSlotPress(staffIndex, day, timeIndex)}
-    >
-      {slot.subject ? (
-        <View style={styles.slotContent}>
-          <Text style={[styles.subjectText, { color: colors.textPrimary }]} numberOfLines={1}>
-            {slot.subject}
+        return acc;
+      }, {} as any);
+    }
+
+    // Filter by department
+    if (selectedDepartment !== 'All Departments') {
+      filtered = Object.keys(filtered).reduce((acc, teacherKey) => {
+        const dayData = filtered[teacherKey];
+        if (dayData && dayData[selectedDay] && dayData[selectedDay].length > 0) {
+          const hasDepartment = dayData[selectedDay].some((entry: TimetableEntry) => 
+            entry.department.name.toLowerCase() === selectedDepartment.toLowerCase()
+          );
+          if (hasDepartment) {
+            acc[teacherKey] = dayData;
+          }
+        }
+        return acc;
+      }, {} as any);
+    }
+
+    return filtered;
+  }, [teacherTimetableData, searchQuery, selectedDepartment, selectedDay]);
+
+  const renderTeacherFilters = () => (
+    <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
+      {/* Search Bar */}
+      <TextInput
+        style={[
+          styles.searchInput,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            color: colors.textPrimary,
+          },
+        ]}
+        placeholder="Search teacher name..."
+        placeholderTextColor={colors.textSecondary}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+
+      {/* Filters Row */}
+      <View style={styles.filtersRow}>
+        {/* Department Dropdown */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Department:
           </Text>
-          <Text style={[styles.classText, { color: colors.textSecondary }]} numberOfLines={1}>
-            {slot.class}
-          </Text>
-          <Text style={[styles.venueText, { color: colors.textSecondary }]} numberOfLines={1}>
-            {slot.venue}
-          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedDepartment}
+              onValueChange={setSelectedDepartment}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              {departments.map((dept) => (
+                <Picker.Item key={dept} label={dept} value={dept} />
+              ))}
+            </Picker>
+          </View>
         </View>
-      ) : (
-        <Text style={[styles.emptySlot, { color: colors.textSecondary }]}>Free</Text>
-      )}
-    </TouchableOpacity>
+
+        {/* Day Selector */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Day:
+          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedDay}
+              onValueChange={setSelectedDay}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              {days.map((day) => (
+                <Picker.Item key={day} label={day} value={day} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 
-  const renderStaffTimetable = (staff: StaffTimetable, staffIndex: number) => (
-    <View key={staffIndex} style={[styles.staffSection, { backgroundColor: colors.surface }]}>
-      <View style={styles.staffHeader}>
-        <View>
-          <Text style={[styles.staffName, { color: colors.textPrimary }]}>{staff.staffName}</Text>
-          <Text style={[styles.department, { color: colors.textSecondary }]}>{staff.department}</Text>
+  const renderSectionFilters = () => (
+    <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
+      {/* Common filters */}
+      <View style={styles.filtersRow}>
+        {/* Academic Year */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Academic Year:
+          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              <Picker.Item label="All Years" value={null} />
+              {academicYears?.map((year: any) => (
+                <Picker.Item key={year.id} label={year.year} value={year.id} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        {/* Branch */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Branch:
+          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              {branches?.map((branch: any) => (
+                <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
+              ))}
+            </Picker>
+          </View>
         </View>
       </View>
 
+      {/* Section specific filters */}
+      <View style={styles.filtersRow}>
+        {/* Standard */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Standard:
+          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedStandard}
+              onValueChange={setSelectedStandard}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              {standards.map((standard) => (
+                <Picker.Item key={standard} label={standard} value={standard} />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        {/* Section */}
+        <View style={styles.filterItem}>
+          <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
+            Section:
+          </Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedSection}
+              onValueChange={setSelectedSection}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              dropdownIconColor={colors.textSecondary}
+            >
+              <Picker.Item label="Select Section" value={null} />
+              {filteredSections.map((section: any) => (
+                <Picker.Item 
+                  key={section.id} 
+                  label={`${section.name} (${section.standard.name})`} 
+                  value={section.id} 
+                />
+              ))}
+            </Picker>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+
+  const renderTeacherTimetable = () => {
+    if (teacherTimetableLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading teacher timetable...
+          </Text>
+        </View>
+      );
+    }
+
+    if (teacherTimetableError) {
+      return (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: '#F44336' }]}>
+            {teacherTimetableError}
+          </Text>
+          <TouchableOpacity
+            onPress={handleRefreshAll}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    const teacherKeys = Object.keys(filteredTeacherData);
+
+    if (teacherKeys.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No teachers found for the selected criteria
+          </Text>
+        </View>
+      );
+    }
+
+    return (
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <View style={styles.timetableContainer}>
           {/* Header Row */}
           <View style={styles.headerRow}>
-            <View style={[styles.timeHeader, { backgroundColor: colors.background }]}>
-              <Text style={[styles.headerText, { color: colors.textPrimary }]}>Time</Text>
+            <View style={[styles.teacherNameHeader, { backgroundColor: colors.background }]}>
+              <Text style={[styles.headerText, { color: colors.textPrimary }]}>Teacher</Text>
             </View>
-            {days.map(day => (
-              <View key={day} style={[styles.dayHeader, { backgroundColor: colors.background }]}>
-                <Text style={[styles.headerText, { color: colors.textPrimary }]}>{day.slice(0, 3)}</Text>
+            {[1, 2, 3, 4, 5, 6, 7, 8].map(period => (
+              <View key={period} style={[styles.periodHeader, { backgroundColor: colors.background }]}>
+                <Text style={[styles.headerText, { color: colors.textPrimary }]}>Period {period}</Text>
               </View>
             ))}
           </View>
 
-          {/* Time Rows */}
-          {timeSlots.map((time, timeIndex) => (
-            <View key={time} style={styles.timeRow}>
-              <View style={[styles.timeCell, { backgroundColor: colors.background }]}>
-                <Text style={[styles.timeText, { color: colors.textSecondary }]}>{time}</Text>
+          {/* Teacher Rows */}
+          {teacherKeys.map(teacherKey => {
+            const dayData = filteredTeacherData[teacherKey][selectedDay] || [];
+            
+            return (
+              <View key={teacherKey} style={styles.teacherRow}>
+                <View style={[styles.teacherNameCell, { backgroundColor: colors.surface }]}>
+                  <Text style={[styles.teacherNameText, { color: colors.textPrimary }]} numberOfLines={2}>
+                    {teacherKey}
+                  </Text>
+                </View>
+                
+                {[1, 2, 3, 4, 5, 6, 7, 8].map(periodNum => {
+                  const periodData = dayData.find((entry: TimetableEntry) => entry.period_number === periodNum);
+                  
+                  return (
+                    <TouchableOpacity 
+                      key={periodNum} 
+                      style={[
+                        styles.periodCell,
+                        { 
+                          backgroundColor: periodData ? colors.primary + '20' : colors.surface,
+                          borderColor: colors.border 
+                        }
+                      ]}
+                      onPress={() => handleCellPress(teacherKey, periodNum, selectedDay, periodData)}
+                    >
+                      {periodData ? (
+                        <View style={styles.periodContent}>
+                          <Text style={[styles.subjectText, { color: colors.textPrimary }]} numberOfLines={1}>
+                            {periodData.department.name}
+                          </Text>
+                          <Text style={[styles.sectionText, { color: colors.textSecondary }]} numberOfLines={1}>
+                            {periodData.section.standard.name} {periodData.section.name}
+                          </Text>
+                        </View>
+                      ) : (
+                        <Text style={[styles.emptyPeriod, { color: colors.textSecondary }]}>Free</Text>
+                      )}
+                    </TouchableOpacity>
+                  );
+                })}
               </View>
-              {days.map(day =>
-                renderTimetableSlot(staff.schedule[day][timeIndex], staffIndex, day, timeIndex)
-              )}
-            </View>
-          ))}
+            );
+          })}
         </View>
       </ScrollView>
-    </View>
-  );
+    );
+  };
+
+  const renderSectionTimetable = () => {
+    if (periodsLoading || sectionsLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading section timetable...
+          </Text>
+        </View>
+      );
+    }
+
+    if (!selectedSection) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            Please select a section to view timetable
+          </Text>
+        </View>
+      );
+    }
+
+    if (!periods || periods.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No timetable found for selected section
+          </Text>
+        </View>
+      );
+    }
+
+    // Group periods by period number
+    const groupedPeriods = periods.reduce((acc: any, period: any) => {
+      if (!acc[period.period_number]) {
+        acc[period.period_number] = [];
+      }
+      acc[period.period_number].push(period);
+      return acc;
+    }, {});
+
+    const periodNumbers = Object.keys(groupedPeriods).sort((a, b) => parseInt(a) - parseInt(b));
+
+    return (
+      <View style={styles.sectionTimetableContainer}>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+          Section Timetable - {selectedDay}
+        </Text>
+        
+        {periodNumbers.map(periodNum => {
+          const periodsInSlot = groupedPeriods[periodNum];
+          
+          return (
+            <View key={periodNum} style={[styles.periodSlot, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+              <View style={styles.periodSlotHeader}>
+                <Text style={[styles.periodSlotTitle, { color: colors.primary }]}>
+                  Period {periodNum}
+                </Text>
+              </View>
+              
+              {periodsInSlot.map((period: any, index: number) => (
+                <View key={index} style={styles.periodSlotContent}>
+                  <Text style={[styles.subjectText, { color: colors.textPrimary }]}>
+                    {period.department_name}
+                  </Text>
+                  <Text style={[styles.teacherText, { color: colors.textSecondary }]}>
+                    Teacher: {period.teacher_name}
+                  </Text>
+                  <Text style={[styles.sectionText, { color: colors.textSecondary }]}>
+                    Section: {period.section_name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          );
+        })}
+      </View>
+    );
+  };
+
+  const isLoading = branchesLoading || academicYearsLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Staff Timetable"
+        title="Timetable"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push('/(tabs)/notifications')}
-        onSettingsPress={() => router.push('/(tabs)/settings')}
+        onNotificationsPress={() => router.push("/(tabs)/notifications")}
+        onSettingsPress={() => router.push("/(tabs)/settings")}
       />
 
       <SideDrawer
@@ -241,48 +642,205 @@ export default function StaffTimetableScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Controls */}
-      <View style={[styles.controlsContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: colors.primary }]}>{staffTimetables.length}</Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Staff Members</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: colors.primary }]}>
-              {staffTimetables.reduce((total, staff) =>
-                total + Object.values(staff.schedule).flat().filter(slot => slot.subject).length, 0
-              )}
-            </Text>
-            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Classes</Text>
-          </View>
-        </View>
-
-        {user?.is_staff && (
-          <TouchableOpacity
+      {/* View Toggle */}
+      <View style={[styles.viewToggle, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            activeView === 'teacher' && { borderBottomColor: colors.primary, borderBottomWidth: 2 },
+          ]}
+          onPress={() => setActiveView('teacher')}
+        >
+          <Text
             style={[
-              styles.editButton,
-              { backgroundColor: editMode ? '#FF3B30' : colors.primary }
+              styles.toggleText,
+              { color: activeView === 'teacher' ? colors.primary : colors.textSecondary },
             ]}
-            onPress={() => setEditMode(!editMode)}
           >
-            <Text style={styles.editButtonText}>
-              {editMode ? 'Exit Edit' : 'Edit Mode'}
-            </Text>
-          </TouchableOpacity>
-        )}
+            Teacher-Based View
+          </Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity
+          style={[
+            styles.toggleButton,
+            activeView === 'section' && { borderBottomColor: colors.primary, borderBottomWidth: 2 },
+          ]}
+          onPress={() => setActiveView('section')}
+        >
+          <Text
+            style={[
+              styles.toggleText,
+              { color: activeView === 'section' ? colors.primary : colors.textSecondary },
+            ]}
+          >
+            Section-Based View
+          </Text>
+        </TouchableOpacity>
       </View>
 
-      {/* Timetables */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {staffTimetables.map((staff, index) => renderStaffTimetable(staff, index))}
+      {/* Filters */}
+      {activeView === 'teacher' ? renderTeacherFilters() : renderSectionFilters()}
+
+      {/* Content */}
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={isLoading}
+            onRefresh={handleRefreshAll}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
+      >
+        {activeView === 'teacher' ? renderTeacherTimetable() : renderSectionTimetable()}
       </ScrollView>
 
-      {editMode && (
-        <View style={[styles.editHelp, { backgroundColor: colors.primary }]}>
-          <Text style={styles.editHelpText}>Tap on any slot to edit or clear it</Text>
+      {/* Timetable Cell Interaction Modal */}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                {selectedCell?.existingData ? 'Edit Period' : 'Assign Period'}
+              </Text>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              <Text style={[styles.periodInfo, { color: colors.textSecondary }]}>
+                {selectedCell?.teacherKey} - Period {selectedCell?.periodNumber} - {selectedCell?.day}
+              </Text>
+
+              {selectedCell?.existingData ? (
+                // Edit existing period
+                <View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Department:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.department.name}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Teacher:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.teacher.first_name} {selectedCell.existingData.teacher.last_name}
+                    </Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Section:</Text>
+                    <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
+                      {selectedCell.existingData.section.standard.name} {selectedCell.existingData.section.name}
+                    </Text>
+                  </View>
+
+                  <View style={styles.modalActions}>
+                    <TouchableOpacity
+                      style={[styles.editButton, { backgroundColor: colors.primary }]}
+                      onPress={handleUpdatePeriod}
+                      disabled={modalLoading}
+                    >
+                      {modalLoading ? (
+                        <ActivityIndicator size="small" color="#FFFFFF" />
+                      ) : (
+                        <Text style={styles.buttonText}>Edit</Text>
+                      )}
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.deleteButton, { backgroundColor: '#EF4444' }]}
+                      onPress={handleDeletePeriod}
+                      disabled={modalLoading}
+                    >
+                      <Text style={styles.buttonText}>Delete</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                // Assign new period
+                <View>
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Department *</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter department"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.department}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, department: value })}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Teacher *</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter teacher name"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.teacher}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, teacher: value })}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.label, { color: colors.textPrimary }]}>Section</Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        {
+                          backgroundColor: colors.background,
+                          borderColor: colors.border,
+                          color: colors.textPrimary,
+                        },
+                      ]}
+                      placeholder="Enter section"
+                      placeholderTextColor={colors.textSecondary}
+                      value={periodForm.section}
+                      onChangeText={(value) => setPeriodForm({ ...periodForm, section: value })}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.assignButton, { backgroundColor: colors.primary }]}
+                    onPress={handleCreatePeriod}
+                    disabled={modalLoading}
+                  >
+                    {modalLoading ? (
+                      <ActivityIndicator size="small" color="#FFFFFF" />
+                    ) : (
+                      <Text style={styles.buttonText}>Assign Period</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
         </View>
-      )}
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -291,112 +849,149 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  controlsContainer: {
+  viewToggle: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  toggleText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  filtersContainer: {
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 12,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
-  statsRow: {
-    flexDirection: 'row',
+  searchInput: {
+    height: 44,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
     marginBottom: 12,
   },
-  statItem: {
-    flex: 1,
-    alignItems: 'center',
+  filtersRow: {
+    flexDirection: 'row',
+    gap: 12,
   },
-  statValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
+  filterItem: {
+    flex: 1,
+  },
+  filterLabel: {
+    fontSize: 14,
+    fontWeight: '500',
     marginBottom: 4,
   },
-  statLabel: {
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  editButton: {
-    paddingVertical: 10,
+  pickerContainer: {
     borderRadius: 8,
-    alignItems: 'center',
+    borderWidth: 1,
+    overflow: 'hidden',
   },
-  editButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
+  picker: {
+    height: 44,
   },
   content: {
     flex: 1,
   },
-  staffSection: {
-    margin: 16,
-    borderRadius: 12,
-    padding: 16,
-    elevation: 1,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-  },
-  staffHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  loadingContainer: {
     alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    margin: 16,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
     marginBottom: 16,
   },
-  staffName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 2,
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
   },
-  department: {
-    fontSize: 14,
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 40,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   timetableContainer: {
-    minWidth: 600,
+    minWidth: 800,
+    padding: 16,
   },
   headerRow: {
     flexDirection: 'row',
     marginBottom: 2,
   },
-  timeHeader: {
-    width: 80,
-    height: 40,
+  teacherNameHeader: {
+    width: 150,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
     marginRight: 2,
   },
-  dayHeader: {
-    width: 100,
-    height: 40,
+  periodHeader: {
+    width: 120,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
     marginRight: 2,
   },
   headerText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
   },
-  timeRow: {
+  teacherRow: {
     flexDirection: 'row',
     marginBottom: 2,
   },
-  timeCell: {
-    width: 80,
-    height: 60,
+  teacherNameCell: {
+    width: 150,
+    height: 80,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 4,
     marginRight: 2,
+    padding: 8,
   },
-  timeText: {
-    fontSize: 10,
+  teacherNameText: {
+    fontSize: 12,
+    fontWeight: '600',
     textAlign: 'center',
   },
-  slot: {
-    width: 100,
-    height: 60,
+  periodCell: {
+    width: 120,
+    height: 80,
     borderRadius: 4,
     marginRight: 2,
     borderWidth: 1,
@@ -404,33 +999,157 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 4,
   },
-  slotContent: {
+  periodContent: {
     alignItems: 'center',
   },
   subjectText: {
     fontSize: 10,
     fontWeight: '600',
     textAlign: 'center',
+    marginBottom: 2,
   },
-  classText: {
+  sectionText: {
     fontSize: 9,
     textAlign: 'center',
   },
-  venueText: {
-    fontSize: 8,
+  teacherText: {
+    fontSize: 9,
     textAlign: 'center',
   },
-  emptySlot: {
+  emptyPeriod: {
     fontSize: 10,
     fontStyle: 'italic',
   },
-  editHelp: {
+  sectionTimetableContainer: {
+    padding: 16,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  periodSlot: {
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  periodSlotHeader: {
     padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  periodSlotTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  periodSlotContent: {
+    padding: 12,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  editHelpText: {
+  modalContent: {
+    width: '90%',
+    maxHeight: '70%',
+    borderRadius: 16,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    padding: 8,
+  },
+  closeButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  modalBody: {
+    padding: 20,
+  },
+  periodInfo: {
+    fontSize: 14,
+    marginBottom: 16,
+    fontWeight: '600',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  infoLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  infoValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    flex: 1,
+    textAlign: 'right',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 20,
+  },
+  editButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  deleteButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  formGroup: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+  },
+  input: {
+    height: 44,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  assignButton: {
+    paddingVertical: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  buttonText: {
     color: '#FFFFFF',
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: '600',
   },
 });
