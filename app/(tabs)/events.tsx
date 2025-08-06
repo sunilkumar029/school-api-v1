@@ -40,8 +40,9 @@ export default function EventsScreen() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const { data: events, loading, error, refetch } = useEvents({
-    search: searchQuery,
-    ordering: '-start_date',
+    is_active: true,
+    limit: 400,
+    omit: 'modified_by,branch,academic_year,branches__geo_location,branches__modified_by,branches__created_by,branches__address,branches__center_point,standards__created_by,standards__modified_by,standards__stationary,standards__inventory,standards_sections,standards_created_by,standards__modified_by',
   });
 
   const getEventStatus = (startDate: string, endDate?: string) => {
