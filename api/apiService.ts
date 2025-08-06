@@ -51,14 +51,14 @@ class ApiService {
       (response) => response,
       async (error) => {
         console.error("API Error:", error.response?.data || error.message);
-        
+
         // Handle authentication errors
         if (error.response?.status === 401) {
           // Clear stored auth data
           await AsyncStorage.multiRemove(["auth_token", "user_data"]);
           // The app will handle redirecting to login through AuthContext
         }
-        
+
         return Promise.reject(error);
       },
     );
@@ -582,6 +582,24 @@ class ApiService {
 
   async deletePeriod(id: number): Promise<void> {
     await this.api.delete(`/api/period/${id}/`);
+  }
+
+  // Total Fee Summary
+  async getTotalFeeSummary(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/total-fee-summary/", { params });
+    return response.data;
+  }
+
+  // Fee Summary for specific user
+  async getFeeSummary(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/fee-summary/", { params });
+    return response.data;
+  }
+
+  // Fee Payments
+  async getFeePayments(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/fee-payments/", { params });
+    return response.data;
   }
 }
 

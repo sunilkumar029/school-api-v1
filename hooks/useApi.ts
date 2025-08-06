@@ -782,3 +782,94 @@ export const useStandards = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+// Student Fee Management hooks
+export const useTotalFeeSummary = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getTotalFeeSummary(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Total fee summary fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch total fee summary');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useFeeSummary = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getFeeSummary(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Fee summary fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch fee summary');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useFeePayments = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getFeePayments(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Fee payments fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch fee payments');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
