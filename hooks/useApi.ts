@@ -5,6 +5,7 @@ export function useAnnouncements(params?: any) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -12,6 +13,7 @@ export function useAnnouncements(params?: any) {
       setError(null);
       const response = await apiService.getAnnouncements(params);
       setData(response.results || []);
+      setHasInitialized(true);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to fetch announcements",
@@ -20,11 +22,13 @@ export function useAnnouncements(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!hasInitialized) {
+      fetchData();
+    }
+  }, [fetchData, hasInitialized]);
 
   return { data, loading, error, refetch: fetchData };
 }
@@ -33,14 +37,15 @@ export function useEvents(params?: any) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       const response = await apiService.getEvents(params);
-      console.log("API Response:", response);
       setData(response.results || []);
+      setHasInitialized(true);
     } catch (err: unknown) {
       let errorMessage = "Failed to fetch events";
       
@@ -58,11 +63,13 @@ export function useEvents(params?: any) {
     } finally {
       setLoading(false);
     }
-  }, [params]);
+  }, [JSON.stringify(params)]); // Stringify params to avoid object reference issues
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    if (!hasInitialized) {
+      fetchData();
+    }
+  }, [fetchData, hasInitialized]);
 
   return { data, loading, error, refetch: fetchData };
 }

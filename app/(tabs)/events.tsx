@@ -50,10 +50,8 @@ export default function EventsScreen() {
     refetch,
   } = useEvents({
     is_active: true,
-    limit: 50, // Reduced limit to avoid timeouts
+    limit: 10, // Further reduced limit to avoid timeouts
   });
-
-  // console.log("Events Data:", events);
 
   const getEventStatus = (startDate: string, endDate?: string) => {
     const now = new Date();
