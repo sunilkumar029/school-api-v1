@@ -1,0 +1,90 @@
+✅ Final Development Prompt: Stationery Module (CRUD + Integration)
+🛠️ 1. 📥 Data Source: Use /api/standards/ for Stationery Details
+The API /api/standards/ provides stationery-related fields.
+You need to:
+
+Extract stationery-specific fields from each standard (e.g., stationary_fee, stationary_items, or similar keys).
+
+Display them in a Stationery Page.
+
+🧭 2. 🎛 Common Filters on Top of Page
+Across the Stationery Page, maintain consistent filters like all other modules:
+
+✅ Branch dropdown (from /api/branches/)
+
+✅ Academic Year dropdown (from /api/academic-years/)
+
+✅ Search bar (to search standards or stationery items)
+
+✅ Use an Accordion-style filter button for clean UI.
+
+🧠 Tip: Wrap filter state globally or persist using Context or Redux if shared.
+
+📋 3. 📦 Stationery List Page
+Table/List Layout showing:
+
+Standard	Items	Quantity	Total Fee	Action
+Class 6	Notebooks, Pen	5 each	₹200	View/Edit/Delete
+
+Each row should show:
+
+List of stationery items
+
+Their quantities
+
+Associated fee
+
+🖱️ Actions:
+View → Open modal with full stationery detail
+
+Edit → Inline or modal form (PATCH request)
+
+Delete → Show confirmation then DELETE API
+
+🧾 4. ➕ Add New Stationery Entry
+Form Fields:
+Select Standard (dropdown)
+
+Select Academic Year
+
+Stationery Items (multiselect or dynamic input list)
+
+Quantity per item
+
+Total Fee (optional) – or auto calculate from items
+
+Submit button → Sends POST request
+
+✏️ 5. 🧰 Update Stationery
+Use PATCH method to update any part of an existing stationery detail
+
+On editing, form should be pre-filled with existing data
+
+Option to Add / Remove stationery items dynamically
+
+🧼 6. ❌ Delete Stationery Entry
+Use DELETE endpoint with appropriate ID
+
+Add confirmation dialog to avoid accidental deletions
+
+📡 7. Required API Integrations (from provided schema):
+Make sure you use existing API endpoints and avoid duplicating:
+
+📘 Example API Usage:
+Operation	API Route	Method
+Get standards with stationery	/api/standards/	GET
+Get one standard detail	/api/standards/{id}/	GET
+Update stationery per standard	/api/standards/{id}/	PATCH
+Create stationery record	/api/standards/ (if separate, use new)	POST
+Delete stationery	/api/standards/{id}/	DELETE
+Branches	/api/branches/	GET
+Academic Years	/api/academic-years/	GET
+
+If the stationery has a separate module in the backend (e.g., /api/stationery-items/), check and use those endpoints instead.
+
+🧠 Developer Notes
+Prevent infinite re-fetch loops — add dependencies properly in hooks.
+
+Maintain centralized API service for all requests (apiService.getStationery, apiService.updateStandardStationery, etc.)
+
+Reuse modals and forms from other modules for consistency.
