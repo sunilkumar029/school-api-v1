@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import {
   View,
@@ -28,7 +29,9 @@ interface Event {
   maxAttendees?: number;
   description: string;
   isRSVPed: boolean;
-  status: "upcoming" | "past";
+  status: "upcoming" | "past" | "ongoing";
+  category: string;
+  image?: string;
 }
 
 export default function EventsScreen() {
@@ -48,8 +51,7 @@ export default function EventsScreen() {
     refetch,
   } = useEvents({
     is_active: true,
-    limit: 400,
-    omit: "modified_by,branch,academic_year,branches__geo_location,branches__modified_by,branches__created_by,branches__address,branches__center_point,standards__created_by,standards__modified_by,standards__stationary,standards__inventory,standards_sections,standards_created_by,standards__modified_by",
+    limit: 50, // Reduced limit to avoid timeouts
   });
 
   const getEventStatus = (startDate: string, endDate?: string) => {
@@ -58,29 +60,45 @@ export default function EventsScreen() {
     const end = endDate ? new Date(endDate) : start;
 
     if (now < start) return "upcoming";
-    if (now > end) return "completed";
+    if (now > end) return "past";
     return "ongoing";
   };
 
-  const formatEventData = (apiEvents: any[]) => {
+  const formatEventData = (apiEvents: any[]): Event[] => {
+    if (!Array.isArray(apiEvents)) {
+      return [];
+    }
+
     return apiEvents.map((event) => ({
-      id: event.id,
+      id: event.id?.toString() || Math.random().toString(),
       title: event.name || "Untitled Event",
-      date: new Date(event.start_date).toISOString().split("T")[0],
-      time: new Date(event.start_date).toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-      location: event.location || "TBD",
+      date: event.start_date 
+        ? new Date(event.start_date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          })
+        : "TBD",
+      time: event.start_date
+        ? new Date(event.start_date).toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+        : "TBD",
+      location: event.location || 
+        (event.branches && event.branches.length > 0 ? event.branches[0].name : "TBD"),
       category: event.applies_to || "General",
       description: event.description || "No description available",
       status: getEventStatus(event.start_date, event.end_date),
+      tags: [event.applies_to || "Event"].filter(Boolean),
+      attendees: event.users?.length || 0,
+      maxAttendees: undefined,
+      isRSVPed: false, // This would need to be determined from user data
+      image: event.image,
     }));
   };
 
-  
-
-  const formattedEvents = formatEventData(events);
+  const formattedEvents = formatEventData(events || []);
 
   const filteredEvents = formattedEvents.filter((event) => {
     const matchesSearch = event.title
@@ -89,7 +107,7 @@ export default function EventsScreen() {
     const matchesFilter =
       activeTab === "create"
         ? true
-        : event.status === (activeTab === "past" ? "completed" : "upcoming");
+        : event.status === (activeTab === "past" ? "past" : "upcoming");
     return matchesSearch && matchesFilter;
   });
 
@@ -97,75 +115,6 @@ export default function EventsScreen() {
     // Handle RSVP logic here
     console.log("RSVP for event:", eventId);
   };
-
-  const renderEvent = ({ item }: { item: Event }) => (
-    <View
-      style={[
-        styles.eventCard,
-        { backgroundColor: colors.surface, borderColor: colors.border },
-      ]}
-    >
-      <View style={styles.eventHeader}>
-        <Text style={[styles.eventTitle, { color: colors.textPrimary }]}>
-          {item.title}
-        </Text>
-        <View style={styles.tags}>
-          {item.tags.map((tag, index) => (
-            <View
-              key={index}
-              style={[styles.tag, { backgroundColor: colors.primary + "20" }]}
-            >
-              <Text style={[styles.tagText, { color: colors.primary }]}>
-                {tag}
-              </Text>
-            </View>
-          ))}
-        </View>
-      </View>
-
-      <View style={styles.eventDetails}>
-        <Text style={[styles.eventDate, { color: colors.textPrimary }]}>
-          📅 {item.date}
-        </Text>
-        <Text style={[styles.eventTime, { color: colors.textSecondary }]}>
-          🕒 {item.time}
-        </Text>
-        <Text style={[styles.eventLocation, { color: colors.textSecondary }]}>
-          📍 {item.location}
-        </Text>
-        <Text style={[styles.eventAttendees, { color: colors.textSecondary }]}>
-          👥 {item.attendees}
-          {item.maxAttendees ? `/${item.maxAttendees}` : ""} attendees
-        </Text>
-      </View>
-
-      <Text style={[styles.eventDescription, { color: colors.textSecondary }]}>
-        {item.description}
-      </Text>
-
-      {activeTab === "upcoming" && (
-        <TouchableOpacity
-          style={[
-            styles.rsvpButton,
-            {
-              backgroundColor: item.isRSVPed ? colors.surface : colors.primary,
-            },
-            { borderColor: colors.primary, borderWidth: item.isRSVPed ? 1 : 0 },
-          ]}
-          onPress={() => handleRSVP(item.id)}
-        >
-          <Text
-            style={[
-              styles.rsvpButtonText,
-              { color: item.isRSVPed ? colors.primary : "#FFFFFF" },
-            ]}
-          >
-            {item.isRSVPed ? "RSVP'd ✓" : "RSVP"}
-          </Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
 
   const renderCreateEventForm = () => (
     <ScrollView style={styles.createForm}>
@@ -408,7 +357,7 @@ export default function EventsScreen() {
         >
           {/* Events List */}
           <View style={styles.eventsList}>
-            {loading && !events.length ? (
+            {loading && (!events || events.length === 0) ? (
               <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color={colors.primary} />
                 <Text
@@ -425,7 +374,7 @@ export default function EventsScreen() {
                     { color: colors.error || "#FF6B6B" },
                   ]}
                 >
-                  {error}
+                  Failed to load events. Please check your connection and try again.
                 </Text>
                 <TouchableOpacity
                   onPress={refetch}
@@ -442,117 +391,118 @@ export default function EventsScreen() {
                 <Text
                   style={[styles.emptyText, { color: colors.textSecondary }]}
                 >
-                  No events found
+                  {searchQuery ? "No events match your search" : 
+                   activeTab === "upcoming" ? "No upcoming events" : "No past events"}
                 </Text>
               </View>
             ) : (
-              filteredEvents.map((event) => (
-                <View
-                  key={event.id}
-                  style={[
-                    styles.eventCard,
-                    {
-                      backgroundColor: colors.surface,
-                      borderColor: colors.border,
-                    },
-                  ]}
-                >
-                  <View style={styles.eventHeader}>
-                    <Text
-                      style={[styles.eventTitle, { color: colors.textPrimary }]}
-                    >
-                      {event.title}
-                    </Text>
-                    <View style={styles.tags}>
-                      {event.tags.map((tag, index) => (
-                        <View
-                          key={index}
-                          style={[
-                            styles.tag,
-                            { backgroundColor: colors.primary + "20" },
-                          ]}
-                        >
-                          <Text
-                            style={[styles.tagText, { color: colors.primary }]}
-                          >
-                            {tag}
-                          </Text>
-                        </View>
-                      ))}
-                    </View>
-                  </View>
-
-                  <View style={styles.eventDetails}>
-                    <Text
-                      style={[styles.eventDate, { color: colors.textPrimary }]}
-                    >
-                      📅 {event.date}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.eventTime,
-                        { color: colors.textSecondary },
-                      ]}
-                    >
-                      🕒 {event.time}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.eventLocation,
-                        { color: colors.textSecondary },
-                      ]}
-                    >
-                      📍 {event.location}
-                    </Text>
-                    <Text
-                      style={[
-                        styles.eventAttendees,
-                        { color: colors.textSecondary },
-                      ]}
-                    >
-                      👥 {event.attendees}
-                      {event.maxAttendees ? `/${event.maxAttendees}` : ""}{" "}
-                      attendees
-                    </Text>
-                  </View>
-
-                  <Text
+              <View style={styles.listContent}>
+                {filteredEvents.map((event) => (
+                  <View
+                    key={event.id}
                     style={[
-                      styles.eventDescription,
-                      { color: colors.textSecondary },
+                      styles.eventCard,
+                      {
+                        backgroundColor: colors.surface,
+                        borderColor: colors.border,
+                      },
                     ]}
                   >
-                    {event.description}
-                  </Text>
+                    <View style={styles.eventHeader}>
+                      <Text
+                        style={[styles.eventTitle, { color: colors.textPrimary }]}
+                      >
+                        {event.title}
+                      </Text>
+                      <View style={styles.tags}>
+                        {event.tags.map((tag, index) => (
+                          <View
+                            key={index}
+                            style={[
+                              styles.tag,
+                              { backgroundColor: colors.primary + "20" },
+                            ]}
+                          >
+                            <Text
+                              style={[styles.tagText, { color: colors.primary }]}
+                            >
+                              {tag}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
 
-                  {activeTab === "upcoming" && (
-                    <TouchableOpacity
-                      style={[
-                        styles.rsvpButton,
-                        {
-                          backgroundColor: event.isRSVPed
-                            ? colors.surface
-                            : colors.primary,
-                        },
-                        {
-                          borderColor: colors.primary,
-                          borderWidth: event.isRSVPed ? 1 : 0,
-                        },
-                      ]}
-                      onPress={() => handleRSVP(event.id)}
-                    >
+                    <View style={styles.eventDetails}>
+                      <Text
+                        style={[styles.eventDate, { color: colors.textPrimary }]}
+                      >
+                        📅 {event.date}
+                      </Text>
                       <Text
                         style={[
-                          styles.rsvpButtonText,
-                          { color: item.isRSVPed ? colors.primary : "#FFFFFF" },
+                          styles.eventTime,
+                          { color: colors.textSecondary },
                         ]}
                       >
-                        {event.isRSVPed ? "RSVP'd ✓" : "RSVP"}
+                        🕒 {event.time}
                       </Text>
-                    </TouchableOpacity>
-                  )}
-                </View>
-              ))
+                      <Text
+                        style={[
+                          styles.eventLocation,
+                          { color: colors.textSecondary },
+                        ]}
+                      >
+                        📍 {event.location}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.eventAttendees,
+                          { color: colors.textSecondary },
+                        ]}
+                      >
+                        👥 {event.attendees} attendees
+                      </Text>
+                    </View>
+
+                    <Text
+                      style={[
+                        styles.eventDescription,
+                        { color: colors.textSecondary },
+                      ]}
+                    >
+                      {event.description}
+                    </Text>
+
+                    {activeTab === "upcoming" && (
+                      <TouchableOpacity
+                        style={[
+                          styles.rsvpButton,
+                          {
+                            backgroundColor: event.isRSVPed
+                              ? colors.surface
+                              : colors.primary,
+                          },
+                          {
+                            borderColor: colors.primary,
+                            borderWidth: event.isRSVPed ? 1 : 0,
+                          },
+                        ]}
+                        onPress={() => handleRSVP(event.id)}
+                      >
+                        <Text
+                          style={[
+                            styles.rsvpButtonText,
+                            { color: event.isRSVPed ? colors.primary : "#FFFFFF" },
+                          ]}
+                        >
+                          {event.isRSVPed ? "RSVP'd ✓" : "RSVP"}
+                        </Text>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                ))}
+              </View>
             )}
           </View>
         </ScrollView>
@@ -587,6 +537,9 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     fontWeight: "600",
+  },
+  content: {
+    flex: 1,
   },
   eventsList: {
     flex: 1,
@@ -697,6 +650,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   textArea: {
+    height: 100,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
@@ -713,20 +667,6 @@ const styles = StyleSheet.create({
   createButtonText: {
     color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: "600",
-  },
-  eventActions: {
-    flexDirection: "row",
-    marginTop: 8,
-  },
-  actionButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  actionButtonText: {
-    fontSize: 12,
     fontWeight: "600",
   },
   loadingContainer: {
