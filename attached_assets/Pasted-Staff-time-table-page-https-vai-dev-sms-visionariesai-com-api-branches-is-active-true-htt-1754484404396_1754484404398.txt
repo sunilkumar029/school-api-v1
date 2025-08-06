@@ -1,0 +1,3779 @@
+Staff time table page :-
+
+https: //vai.dev.sms.visionariesai.com/api/branches/?is_active=true
+https: //vai.dev.sms.visionariesai.com/api/academic-years/
+
+https: //vai.dev.sms.visionariesai.com/api/period/teacher-timetable/?branch=1
+{
+    "215 - Swathi I": {
+        "Monday": [
+            {
+                "teacher": {
+                    "dob": "2025-01-02",
+                    "branch": {
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "modified_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "is_active": true,
+                        "is_main_branch": false,
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "name": "Branch 1",
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "created_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "id": 1,
+                        "created": "2024-12-23T21:38:49.939251+05:30"
+                    },
+                    "employee_id": "12348",
+                    "gender": "Female"
+                },
+                "modified_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "department": {
+                    "branch": {
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "modified_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "is_active": true,
+                        "is_main_branch": false,
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "name": "Branch 1",
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "created_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "id": 1,
+                        "created": "2024-12-23T21:38:49.939251+05:30"
+                    },
+                    "access_to_all_users": null,
+                    "modified_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "is_active": true,
+                    "access_to_all_user_ids": [
+                        196,
+                        200,
+                        210,
+                        215
+                    ],
+                    "modified": "2025-01-02T15:57:19.475110+05:30",
+                    "name": "computers",
+                    "department_type": "Teaching",
+                    "created_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "staff_count": 1,
+                    "id": 14,
+                    "created": "2025-01-02T15:52:35.868553+05:30",
+                    "head_of_the_department": {
+                        "id": 196,
+                        "first_name": "Yeswanth",
+                        "last_name": "M",
+                        "email": "yeswanth345@gmail.com",
+                        "phone": "+916303298721",
+                        "address": {
+                            "city": "Mabagam",
+                            "state": "Andhra Pradesh",
+                            "street": "Main street",
+                            "landmark": "Narasannapeta",
+                            "zip_code": "748960"
+                        },
+                        "gender": "Male",
+                        "dob": "2024-12-30",
+                        "profile_picture": null,
+                        "designation": "Senior Teacher",
+                        "department": "computers",
+                        "branch": "Branch 1",
+                        "group": "Head of Department"
+                    }
+                },
+                "modified": "2025-01-23T21:45:36.193293+05:30",
+                "created_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "period_number": 2,
+                "id": 34,
+                "day": "Monday",
+                "created": "2025-01-23T21:45:36.193293+05:30",
+                "section": {
+                    "standard": {
+                        "id": 1,
+                        "academic_year_display": {
+                            "id": 1
+                        },
+                        "access_to_all_user_ids": [],
+                        "student_assigned_count": 16,
+                        "student_total_count": 20,
+                        "section_count": 4,
+                        "stationary": [
+                            {
+                                "id": 5,
+                                "name": "Pens",
+                                "price": 10,
+                                "description": "pens for students",
+                                "is_active": true,
+                                "quantity": 7,
+                                "stationary_type": {
+                                    "id": 1,
+                                    "name": "Uniform",
+                                    "description": "Uniform for Students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 8,
+                                "name": "Book Materials",
+                                "price": 1000,
+                                "description": "book materials for students",
+                                "is_active": true,
+                                "quantity": 8,
+                                "stationary_type": {
+                                    "id": 2,
+                                    "name": "Book",
+                                    "description": "Books for students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 2
+                                }
+                            },
+                            {
+                                "id": 9,
+                                "name": "White books",
+                                "price": 1000,
+                                "description": "for students",
+                                "is_active": true,
+                                "quantity": 8,
+                                "stationary_type": {
+                                    "id": 2,
+                                    "name": "Book",
+                                    "description": "Books for students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 2
+                                }
+                            },
+                            {
+                                "id": 6,
+                                "name": "shoes",
+                                "price": 500,
+                                "description": "shoes for students",
+                                "is_active": true,
+                                "quantity": 10,
+                                "stationary_type": {
+                                    "id": 10,
+                                    "name": "Shoess",
+                                    "description": "Shoes for students",
+                                    "is_active": false,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 10,
+                                "name": "Text Books",
+                                "price": 1000,
+                                "description": "for students",
+                                "is_active": true,
+                                "quantity": 10,
+                                "stationary_type": {
+                                    "id": 2,
+                                    "name": "Book",
+                                    "description": "Books for students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 2
+                                }
+                            },
+                            {
+                                "id": 17,
+                                "name": "1st Standards/Book Materials",
+                                "price": 8000,
+                                "description": "only for students",
+                                "is_active": true,
+                                "quantity": 8,
+                                "stationary_type": {
+                                    "id": 11,
+                                    "name": "Book Material",
+                                    "description": "Book materials",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 1,
+                                "name": "Uniform",
+                                "price": 1450,
+                                "description": "uniform",
+                                "is_active": true,
+                                "quantity": 5,
+                                "stationary_type": {
+                                    "id": 1,
+                                    "name": "Uniform",
+                                    "description": "Uniform for Students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 19,
+                                "name": "1st Standards/Pens",
+                                "price": 3000,
+                                "description": "for students",
+                                "is_active": true,
+                                "quantity": 40,
+                                "stationary_type": {
+                                    "id": 7,
+                                    "name": "Pen",
+                                    "description": "pens for students",
+                                    "is_active": false,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 7,
+                                "name": "Id Card",
+                                "price": 200,
+                                "description": "id card for students",
+                                "is_active": false,
+                                "quantity": 30,
+                                "stationary_type": {
+                                    "id": 9,
+                                    "name": "Id card",
+                                    "description": "id card for students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 3,
+                                "name": "Markers",
+                                "price": 10,
+                                "description": "Markers",
+                                "is_active": true,
+                                "quantity": 10,
+                                "stationary_type": {
+                                    "id": 5,
+                                    "name": "Tie",
+                                    "description": "Tie  for Students",
+                                    "is_active": true,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            }
+                        ],
+                        "inventory": [],
+                        "sections": [
+                            {
+                                "id": 1,
+                                "name": "C Section",
+                                "standard": 1,
+                                "head_teacher": 5,
+                                "student_count": 8,
+                                "is_active": true
+                            },
+                            {
+                                "id": 2,
+                                "name": "B Section",
+                                "standard": 1,
+                                "head_teacher": 5,
+                                "student_count": 8,
+                                "is_active": true
+                            },
+                            {
+                                "id": 48,
+                                "name": "W",
+                                "standard": 1,
+                                "head_teacher": 204,
+                                "student_count": 0,
+                                "is_active": false
+                            },
+                            {
+                                "id": 47,
+                                "name": "testing notification section1",
+                                "standard": 1,
+                                "head_teacher": 8,
+                                "student_count": 0,
+                                "is_active": true
+                            }
+                        ],
+                        "created_by": {
+                            "id": 3,
+                            "name": "Narasing M"
+                        },
+                        "modified_by": {
+                            "id": 3,
+                            "name": "Narasing M"
+                        },
+                        "access_to_all_users": null,
+                        "created": "2024-12-23T22:12:55.388516+05:30",
+                        "modified": "2025-05-14T22:35:10.583359+05:30",
+                        "is_active": true,
+                        "name": "1st Standard",
+                        "branch": 1
+                    },
+                    "head_teacher": {
+                        "dob": "2000-07-13",
+                        "branch": {
+                            "geo_location": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ],
+                                        [
+                                            80.6201631673348,
+                                            16.50721957673649
+                                        ],
+                                        [
+                                            80.62027846041298,
+                                            16.507155671004796
+                                        ],
+                                        [
+                                            80.62033943875502,
+                                            16.507248636487958
+                                        ],
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ]
+                                    ]
+                                ]
+                            },
+                            "modified_by": {
+                                "group": 1,
+                                "modified_by": 1,
+                                "is_active": true,
+                                "first_name": "Narasing",
+                                "is_superuser": false,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_staff": false,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "email": "murapakanarasingarao@gmail.com",
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "id": 3,
+                                "user_permissions": [],
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "last_name": "M"
+                            },
+                            "is_active": true,
+                            "is_main_branch": false,
+                            "modified": "2025-03-30T12:37:45.638892+05:30",
+                            "name": "Branch 1",
+                            "center_point": {
+                                "type": "Point",
+                                "coordinates": [
+                                    80.62025214123565,
+                                    16.507235006708214
+                                ]
+                            },
+                            "created_by": {
+                                "group": 1,
+                                "modified_by": 1,
+                                "is_active": true,
+                                "first_name": "Narasing",
+                                "is_superuser": false,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_staff": false,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "email": "murapakanarasingarao@gmail.com",
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "id": 3,
+                                "user_permissions": [],
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "last_name": "M"
+                            },
+                            "address": {
+                                "city": "Vijayawada",
+                                "state": "Andhra Pradesh",
+                                "street": "Vijayawada",
+                                "landmark": "Vijayawada 1",
+                                "zip_code": "520001"
+                            },
+                            "id": 1,
+                            "created": "2024-12-23T21:38:49.939251+05:30"
+                        },
+                        "employee_id": "19109",
+                        "gender": "Male"
+                    },
+                    "modified_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "is_active": true,
+                    "modified": "2025-03-28T22:26:33.106366+05:30",
+                    "name": "B Section",
+                    "created_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "id": 2,
+                    "created": "2024-12-24T21:33:10.170271+05:30",
+                    "student_count": 8,
+                    "class_representative": {
+                        "id": 46,
+                        "first_name": "Harshini",
+                        "last_name": "P",
+                        "email": "harshini@yopmail.com"
+                    }
+                }
+            },
+            {
+                "teacher": {
+                    "dob": "2025-01-02",
+                    "branch": {
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "modified_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "is_active": true,
+                        "is_main_branch": false,
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "name": "Branch 1",
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "created_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "id": 1,
+                        "created": "2024-12-23T21:38:49.939251+05:30"
+                    },
+                    "employee_id": "12348",
+                    "gender": "Female"
+                },
+                "modified_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "department": {
+                    "branch": {
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "modified_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "is_active": true,
+                        "is_main_branch": false,
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "name": "Branch 1",
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "created_by": {
+                            "group": 1,
+                            "modified_by": 1,
+                            "is_active": true,
+                            "first_name": "Narasing",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_staff": false,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "id": 3,
+                            "user_permissions": [],
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "last_name": "M"
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "id": 1,
+                        "created": "2024-12-23T21:38:49.939251+05:30"
+                    },
+                    "access_to_all_users": null,
+                    "modified_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "is_active": true,
+                    "access_to_all_user_ids": [
+                        196,
+                        200,
+                        210,
+                        215
+                    ],
+                    "modified": "2025-01-02T15:57:19.475110+05:30",
+                    "name": "computers",
+                    "department_type": "Teaching",
+                    "created_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "staff_count": 1,
+                    "id": 14,
+                    "created": "2025-01-02T15:52:35.868553+05:30",
+                    "head_of_the_department": {
+                        "id": 196,
+                        "first_name": "Yeswanth",
+                        "last_name": "M",
+                        "email": "yeswanth345@gmail.com",
+                        "phone": "+916303298721",
+                        "address": {
+                            "city": "Mabagam",
+                            "state": "Andhra Pradesh",
+                            "street": "Main street",
+                            "landmark": "Narasannapeta",
+                            "zip_code": "748960"
+                        },
+                        "gender": "Male",
+                        "dob": "2024-12-30",
+                        "profile_picture": null,
+                        "designation": "Senior Teacher",
+                        "department": "computers",
+                        "branch": "Branch 1",
+                        "group": "Head of Department"
+                    }
+                },
+                "modified": "2025-01-23T22:04:40.787466+05:30",
+                "created_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "period_number": 1,
+                "id": 37,
+                "day": "Monday",
+                "created": "2025-01-23T22:04:40.787466+05:30",
+                "section": {
+                    "standard": {
+                        "id": 30,
+                        "academic_year_display": {
+                            "id": 1
+                        },
+                        "access_to_all_user_ids": [],
+                        "student_assigned_count": 2,
+                        "student_total_count": 2,
+                        "section_count": 2,
+                        "stationary": [
+                            {
+                                "id": 20,
+                                "name": "18th standard/pens",
+                                "price": 1500,
+                                "description": "pens",
+                                "is_active": true,
+                                "quantity": 30,
+                                "stationary_type": {
+                                    "id": 7,
+                                    "name": "Pen",
+                                    "description": "pens for students",
+                                    "is_active": false,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 15,
+                                "name": "18th standard/Book Materials",
+                                "price": 5000,
+                                "description": "Books",
+                                "is_active": true,
+                                "quantity": 50,
+                                "stationary_type": {
+                                    "id": 12,
+                                    "name": "Book Materials",
+                                    "description": "Book Materials",
+                                    "is_active": false,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            },
+                            {
+                                "id": 22,
+                                "name": "18th standad/pens",
+                                "price": 800,
+                                "description": "pens is mandatory",
+                                "is_active": false,
+                                "quantity": 10,
+                                "stationary_type": {
+                                    "id": 7,
+                                    "name": "Pen",
+                                    "description": "pens for students",
+                                    "is_active": false,
+                                    "academic_year_id": 1,
+                                    "branch_id": 1
+                                }
+                            }
+                        ],
+                        "inventory": [],
+                        "sections": [
+                            {
+                                "id": 26,
+                                "name": "A Section",
+                                "standard": 30,
+                                "head_teacher": 5,
+                                "student_count": 1,
+                                "is_active": true
+                            },
+                            {
+                                "id": 27,
+                                "name": "C section",
+                                "standard": 30,
+                                "head_teacher": 204,
+                                "student_count": 1,
+                                "is_active": true
+                            }
+                        ],
+                        "created_by": {
+                            "id": 3,
+                            "name": "Narasing M"
+                        },
+                        "modified_by": {
+                            "id": 3,
+                            "name": "Narasing M"
+                        },
+                        "access_to_all_users": null,
+                        "created": "2025-01-23T16:07:07.477487+05:30",
+                        "modified": "2025-06-28T00:34:15.649413+05:30",
+                        "is_active": true,
+                        "name": "18th Standard",
+                        "branch": 1
+                    },
+                    "head_teacher": {
+                        "dob": "2000-07-13",
+                        "branch": {
+                            "geo_location": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ],
+                                        [
+                                            80.6201631673348,
+                                            16.50721957673649
+                                        ],
+                                        [
+                                            80.62027846041298,
+                                            16.507155671004796
+                                        ],
+                                        [
+                                            80.62033943875502,
+                                            16.507248636487958
+                                        ],
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ]
+                                    ]
+                                ]
+                            },
+                            "modified_by": {
+                                "group": 1,
+                                "modified_by": 1,
+                                "is_active": true,
+                                "first_name": "Narasing",
+                                "is_superuser": false,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_staff": false,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "email": "murapakanarasingarao@gmail.com",
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "id": 3,
+                                "user_permissions": [],
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "last_name": "M"
+                            },
+                            "is_active": true,
+                            "is_main_branch": false,
+                            "modified": "2025-03-30T12:37:45.638892+05:30",
+                            "name": "Branch 1",
+                            "center_point": {
+                                "type": "Point",
+                                "coordinates": [
+                                    80.62025214123565,
+                                    16.507235006708214
+                                ]
+                            },
+                            "created_by": {
+                                "group": 1,
+                                "modified_by": 1,
+                                "is_active": true,
+                                "first_name": "Narasing",
+                                "is_superuser": false,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_staff": false,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "email": "murapakanarasingarao@gmail.com",
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "id": 3,
+                                "user_permissions": [],
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "last_name": "M"
+                            },
+                            "address": {
+                                "city": "Vijayawada",
+                                "state": "Andhra Pradesh",
+                                "street": "Vijayawada",
+                                "landmark": "Vijayawada 1",
+                                "zip_code": "520001"
+                            },
+                            "id": 1,
+                            "created": "2024-12-23T21:38:49.939251+05:30"
+                        },
+                        "employee_id": "19109",
+                        "gender": "Male"
+                    },
+                    "modified_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "is_active": true,
+                    "modified": "2025-01-23T17:09:20.973489+05:30",
+                    "name": "A Section",
+                    "created_by": {
+                        "group": 1,
+                        "modified_by": 1,
+                        "is_active": true,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_staff": false,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "id": 3,
+                        "user_permissions": [],
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "last_name": "M"
+                    },
+                    "id": 26,
+                    "created": "2025-01-23T16:21:29.346698+05:30",
+                    "student_count": 1,
+                    "class_representative": null
+                }
+            }
+        ],
+        "Tuesday": [],
+        "Wednesday": [],
+        "Thursday": [],
+        "Friday": [],
+        "Saturday": [],
+        "Sunday": []
+    },
+}
+
+https: //vai.dev.sms.visionariesai.com/api/sections/?branch=1
+{
+    "meta": {
+        "count": 35,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "head_teacher": {
+                "details": [],
+                "designation": {
+                    "description": "Senior Teacher",
+                    "id": 2,
+                    "created": "2024-12-23T23:35:44.901436+05:30",
+                    "modified_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "modified": "2024-12-23T23:35:44.901436+05:30",
+                    "created_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "name": "Senior Teacher"
+                },
+                "education_details": [
+                    {
+                        "city": "Narasasannapet",
+                        "end_date": "2023-06-07",
+                        "start_date": "2021-06-24",
+                        "institution": "MLR naidu degree colleage",
+                        "education_type": "MBA"
+                    }
+                ],
+                "dob": "1997-12-29",
+                "employee_id": "19103",
+                "student_type": "Regular",
+                "guardians": [
+                    {
+                        "occupation": "Teacher",
+                        "id": 7,
+                        "last_name": "M",
+                        "annual_income": 600000,
+                        "first_name": "Subba raj",
+                        "company_name": "k",
+                        "created": "2024-12-24T00:16:01.051627+05:30",
+                        "modified_by": {
+                            "created_by": 1,
+                            "is_staff": false,
+                            "modified_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "user_permissions": [],
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "first_name": "Narasing",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "id": 3,
+                            "timezone": "Asia/Kolkata",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30"
+                        },
+                        "modified": "2024-12-24T11:06:29.701397+05:30",
+                        "created_by": {
+                            "created_by": 1,
+                            "is_staff": false,
+                            "modified_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "user_permissions": [],
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "first_name": "Narasing",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "id": 3,
+                            "timezone": "Asia/Kolkata",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30"
+                        },
+                        "contact_number": "+916303298720",
+                        "name": "Subba raj M",
+                        "relation": "Father",
+                        "is_active": true
+                    }
+                ],
+                "modified_by": {
+                    "created_by": 1,
+                    "is_staff": false,
+                    "modified_by": 1,
+                    "group": 1,
+                    "last_name": "M",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "first_name": "Narasing",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "id": 3,
+                    "timezone": "Asia/Kolkata",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30"
+                },
+                "date_joined": "2024-12-06T00:00:00+05:30",
+                "alternate_phone": "+919502445112",
+                "phone": "+918179045708",
+                "date_of_releaving": null,
+                "student_details": null,
+                "blood_group": "A-",
+                "pen_number": null,
+                "date_of_joining": null,
+                "address": {
+                    "city": "kotabommali",
+                    "state": "Andhra Pradesh",
+                    "street": "Temple Street",
+                    "landmark": "Kota bommali",
+                    "zip_code": "532195"
+                },
+                "id": 10,
+                "biometric_data": null,
+                "modified": "2024-12-24T11:06:29.546172+05:30",
+                "timezone": "Asia/Kolkata",
+                "organisation": "vai",
+                "assigned_standards": [],
+                "gender": "Female",
+                "branch": {
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ],
+                                [
+                                    80.6201631673348,
+                                    16.50721957673649
+                                ],
+                                [
+                                    80.62027846041298,
+                                    16.507155671004796
+                                ],
+                                [
+                                    80.62033943875502,
+                                    16.507248636487958
+                                ],
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ]
+                            ]
+                        ]
+                    },
+                    "is_main_branch": false,
+                    "id": 1,
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            80.62025214123565,
+                            16.507235006708214
+                        ]
+                    },
+                    "created": "2024-12-23T21:38:49.939251+05:30",
+                    "modified_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                    "created_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "address": {
+                        "city": "Vijayawada",
+                        "state": "Andhra Pradesh",
+                        "street": "Vijayawada",
+                        "landmark": "Vijayawada 1",
+                        "zip_code": "520001"
+                    },
+                    "name": "Branch 1",
+                    "is_active": true
+                },
+                "user_permissions": [],
+                "last_name": "M",
+                "last_login": null,
+                "my_section_id": null,
+                "section": null,
+                "standard": null,
+                "first_name": "Madavi",
+                "email": "madavi@yopmail.com",
+                "department": {
+                    "access_to_all_users": false,
+                    "branch": {
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "is_main_branch": false,
+                        "id": 1,
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "created": "2024-12-23T21:38:49.939251+05:30",
+                        "modified_by": {
+                            "created_by": 1,
+                            "is_staff": false,
+                            "modified_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "user_permissions": [],
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "first_name": "Narasing",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "id": 3,
+                            "timezone": "Asia/Kolkata",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30"
+                        },
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "created_by": {
+                            "created_by": 1,
+                            "is_staff": false,
+                            "modified_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "user_permissions": [],
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "first_name": "Narasing",
+                            "email": "murapakanarasingarao@gmail.com",
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "id": 3,
+                            "timezone": "Asia/Kolkata",
+                            "is_active": true,
+                            "date_joined": "2024-12-23T02:50:33+05:30"
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "name": "Branch 1",
+                        "is_active": true
+                    },
+                    "id": 19,
+                    "head_of_the_department": null,
+                    "access_to_all_user_ids": [
+                        10
+                    ],
+                    "staff_count": 1,
+                    "department_type": "Teaching",
+                    "modified_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "created": "2025-03-16T16:41:58.685264+05:30",
+                    "created_by": {
+                        "created_by": 1,
+                        "is_staff": false,
+                        "modified_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "first_name": "Narasing",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "id": 3,
+                        "timezone": "Asia/Kolkata",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30"
+                    },
+                    "modified": "2025-06-13T17:39:50.566442+05:30",
+                    "name": "Science2",
+                    "is_active": true
+                },
+                "is_active": true,
+                "admission_number": null,
+                "group": {
+                    "permissions": [
+                        {
+                            "codename": "change_academicyear",
+                            "id": 78,
+                            "content_type": 20,
+                            "name": "Can change academic year",
+                            "type_name": "academic year",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_academicyear",
+                            "id": 80,
+                            "content_type": 20,
+                            "name": "Can view academic year",
+                            "type_name": "academic year",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_announcement",
+                            "id": 384,
+                            "content_type": 94,
+                            "name": "Can view announcement",
+                            "type_name": "announcement",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_answer",
+                            "id": 180,
+                            "content_type": 43,
+                            "name": "Can view answer",
+                            "type_name": "answer",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "change_attendance",
+                            "id": 286,
+                            "content_type": 70,
+                            "name": "Can change attendance",
+                            "type_name": "attendance",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_attendance",
+                            "id": 288,
+                            "content_type": 70,
+                            "name": "Can view attendance",
+                            "type_name": "attendance",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_branch",
+                            "id": 52,
+                            "content_type": 13,
+                            "name": "Can view branch",
+                            "type_name": "branch",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_event",
+                            "id": 157,
+                            "content_type": 38,
+                            "name": "Can add event",
+                            "type_name": "event",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_event",
+                            "id": 158,
+                            "content_type": 38,
+                            "name": "Can change event",
+                            "type_name": "event",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "delete_event",
+                            "id": 159,
+                            "content_type": 38,
+                            "name": "Can delete event",
+                            "type_name": "event",
+                            "operation_name": "delete"
+                        },
+                        {
+                            "codename": "view_event",
+                            "id": 160,
+                            "content_type": 38,
+                            "name": "Can view event",
+                            "type_name": "event",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_exam",
+                            "id": 125,
+                            "content_type": 30,
+                            "name": "Can add exam",
+                            "type_name": "exam",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_exam",
+                            "id": 126,
+                            "content_type": 30,
+                            "name": "Can change exam",
+                            "type_name": "exam",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_exam",
+                            "id": 128,
+                            "content_type": 30,
+                            "name": "Can view exam",
+                            "type_name": "exam",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_examanswer",
+                            "id": 173,
+                            "content_type": 42,
+                            "name": "Can add exam answer",
+                            "type_name": "exam answer",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_examanswer",
+                            "id": 174,
+                            "content_type": 42,
+                            "name": "Can change exam answer",
+                            "type_name": "exam answer",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "delete_examanswer",
+                            "id": 175,
+                            "content_type": 42,
+                            "name": "Can delete exam answer",
+                            "type_name": "exam answer",
+                            "operation_name": "delete"
+                        },
+                        {
+                            "codename": "view_examanswer",
+                            "id": 176,
+                            "content_type": 42,
+                            "name": "Can view exam answer",
+                            "type_name": "exam answer",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_examschedule",
+                            "id": 129,
+                            "content_type": 31,
+                            "name": "Can add exam schedule",
+                            "type_name": "exam schedule",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_examschedule",
+                            "id": 130,
+                            "content_type": 31,
+                            "name": "Can change exam schedule",
+                            "type_name": "exam schedule",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_examschedule",
+                            "id": 132,
+                            "content_type": 31,
+                            "name": "Can view exam schedule",
+                            "type_name": "exam schedule",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_leave",
+                            "id": 281,
+                            "content_type": 69,
+                            "name": "Can add leave",
+                            "type_name": "leave",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_leave",
+                            "id": 282,
+                            "content_type": 69,
+                            "name": "Can change leave",
+                            "type_name": "leave",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_leave",
+                            "id": 284,
+                            "content_type": 69,
+                            "name": "Can view leave",
+                            "type_name": "leave",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_period",
+                            "id": 276,
+                            "content_type": 67,
+                            "name": "Can view period",
+                            "type_name": "period",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_query",
+                            "id": 289,
+                            "content_type": 71,
+                            "name": "Can add query",
+                            "type_name": "query",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_query",
+                            "id": 290,
+                            "content_type": 71,
+                            "name": "Can change query",
+                            "type_name": "query",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_query",
+                            "id": 292,
+                            "content_type": 71,
+                            "name": "Can view query",
+                            "type_name": "query",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_syllabus",
+                            "id": 149,
+                            "content_type": 36,
+                            "name": "Can add syllabus",
+                            "type_name": "syllabus",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_syllabus",
+                            "id": 150,
+                            "content_type": 36,
+                            "name": "Can change syllabus",
+                            "type_name": "syllabus",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_syllabus",
+                            "id": 152,
+                            "content_type": 36,
+                            "name": "Can view syllabus",
+                            "type_name": "syllabus",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "change_teacherattendance",
+                            "id": 302,
+                            "content_type": 74,
+                            "name": "Can change teacher attendance",
+                            "type_name": "teacher attendance",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_teacherattendance",
+                            "id": 304,
+                            "content_type": 74,
+                            "name": "Can view teacher attendance",
+                            "type_name": "teacher attendance",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "add_topic",
+                            "id": 153,
+                            "content_type": 37,
+                            "name": "Can add topic",
+                            "type_name": "topic",
+                            "operation_name": "add"
+                        },
+                        {
+                            "codename": "change_topic",
+                            "id": 154,
+                            "content_type": 37,
+                            "name": "Can change topic",
+                            "type_name": "topic",
+                            "operation_name": "change"
+                        },
+                        {
+                            "codename": "view_topic",
+                            "id": 156,
+                            "content_type": 37,
+                            "name": "Can view topic",
+                            "type_name": "topic",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_trip",
+                            "id": 368,
+                            "content_type": 90,
+                            "name": "Can view trip",
+                            "type_name": "trip",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_vehicle",
+                            "id": 200,
+                            "content_type": 48,
+                            "name": "Can view vehicle",
+                            "type_name": "vehicle",
+                            "operation_name": "view"
+                        },
+                        {
+                            "codename": "view_vehicletracking",
+                            "id": 372,
+                            "content_type": 91,
+                            "name": "Can view vehicle tracking",
+                            "type_name": "vehicle tracking",
+                            "operation_name": "view"
+                        }
+                    ],
+                    "group_type": {
+                        "access_to_all_users": false,
+                        "id": 1,
+                        "type": "Teaching"
+                    },
+                    "controlled_groups": [],
+                    "id": 5,
+                    "name": "Teacher"
+                },
+                "aapar_number": null,
+                "profile_image": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/f84e1a14-ab6f-4a14-bb40-487d68a3f518.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHVEM5WRIK%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T121822Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDwaCmFwLXNvdXRoLTEiSDBGAiEA0ovdlTKPgqnMCWQg9nmo0DLb47L8FDJ6IvoqoMqxPoUCIQCEQgvuMVoZD3%2F6Dw4pIZUDYGVUZTUu5uEI5eYCfoZg5iq%2BBQh1EAAaDDAyMjQ5OTAzMTU2NyIMXnL%2FGXC1FD70qe0eKpsFtxTEus7ZVpa13M8swKsNcWTyRWaFmpWUjj7PbwB6gfaPZsAK87HqsT8FVkMFu7IUzfOePwEPBXileafLDljU8aaF0TOLn%2FxmJ67zqJyYgyO1cKWe%2FKg%2BNLwotxrrryeFU%2Btc23F2T2fXyMFz%2FmJH7L0Ge%2BGMkyM1oDCI%2BDW17dqu4%2BCRnYEccCzKt%2BKx8bTF%2B%2Bi8ygp8fQwcKK06TIbcA0v6qrPxXpOOzRMu3CJmmXadgwCYx03PJ6EDOU%2BOAc5wwZyo2hPRIiYm8mhqHDfXX4u0CsH1Oe4jllKPQoO6w6W0MPKPFMxZM9uf2dxPHGDbJ31PzFNe5AL4GFkUJWJnGzXSyX1o9Mqbb%2FBctgto21h6d0tnW2YDE7KLQmzmoV0ugMrjW1inZaDFETepyptJUnAxBPCaucfnGcbMRzjiTkoLa3lzBDIOgJEMKmZbLT1yOBNb21PavpRdpPPiZUyR73swDzqxvtxZ%2BxKpkMt6891TXJfQmgnbgRi%2FolQcpk3RiEiIna%2BPw6n89VeaZEbGQPGrlvh3O5kITv3Ih4juKfk0R6ITF%2FTzh8%2BohXrI4kQA0%2FEh%2BTuRWMj7t%2Fi3GenjzVGFZrrvsBvdaHS6UBzwqD73RJjtyDJYqefkQalpQlamKP0VDSlJo%2FGMCurYcbEyYXb40nSmDwn8fuMQhzVeAxqcuV0r3Lyk1cYBjTgT827%2FjriuRzT%2BxzmYyTSU1AfnPFshjoUOzwp%2BF624c4D7Cz2%2FujOEwozKwm%2ByBee1Nm8TcC0BElbWl8%2FZURAnDtQM5BZnmJ4SKvVfxqdfHJL0l3ScCk%2BZCSPiZ%2FK1O2lg%2FzeGWZ75tHkTkEnNofBr18T2sESZ1ds2LeBWHJcsfZTBbljql%2FUnt2aw6hV%2BDDDjhM3EBjqwARUbpKzlPfySbD4D647uk8JSVhkPgq8DU9Q8R4gz4QNYyLXhbVJ7oCwoOzYLILm43GkBgDuOH1cysbPgc88x1oxK%2FoT1UMyIkOIiEtJpJHXkwU400xOvcrYKploWdzTsr7N3Q5aWliimrVznFSMejcA6drOtxbK7cYrRJm5fK80MWZktSFYs1nu2LFMKS1a7JhBNt8tYQpY2%2BbreCP6fXHeOhtZ0%2FfmOZ5yjvaA9FXvd&X-Amz-Signature=ca12f9ed14d96ce2ba9e7a89c43e540c3250d86a7060f333569824114751ed71",
+                "created": "2024-12-24T00:16:00.602502+05:30",
+                "created_by": {
+                    "created_by": 1,
+                    "is_staff": false,
+                    "modified_by": 1,
+                    "group": 1,
+                    "last_name": "M",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "first_name": "Narasing",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "id": 3,
+                    "timezone": "Asia/Kolkata",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30"
+                },
+                "my_department_users": []
+            },
+            "class_representative": {
+                "id": 83,
+                "first_name": "Nandini",
+                "last_name": "M",
+                "email": "nandini@yopmail.com"
+            },
+            "id": 3,
+            "standard": {
+                "id": 13,
+                "academic_year_display": {
+                    "id": 1
+                },
+                "access_to_all_user_ids": [],
+                "student_assigned_count": 22,
+                "student_total_count": 29,
+                "section_count": 4,
+                "stationary": [
+                    {
+                        "id": 14,
+                        "name": "2nd - uniform",
+                        "price": 2000,
+                        "description": "Each person have 2 uniforms",
+                        "is_active": true,
+                        "quantity": 1,
+                        "stationary_type": {
+                            "id": 1,
+                            "name": "Uniform",
+                            "description": "Uniform for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    },
+                    {
+                        "id": 16,
+                        "name": "2nd Standard/Book Materials",
+                        "price": 70000,
+                        "description": "Books",
+                        "is_active": true,
+                        "quantity": 40,
+                        "stationary_type": {
+                            "id": 11,
+                            "name": "Book Material",
+                            "description": "Book materials",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    },
+                    {
+                        "id": 3,
+                        "name": "Markers",
+                        "price": 10,
+                        "description": "Markers",
+                        "is_active": true,
+                        "quantity": 10,
+                        "stationary_type": {
+                            "id": 5,
+                            "name": "Tie",
+                            "description": "Tie  for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    }
+                ],
+                "inventory": [],
+                "sections": [
+                    {
+                        "id": 3,
+                        "name": "A Section",
+                        "standard": 13,
+                        "head_teacher": 10,
+                        "student_count": 8,
+                        "is_active": true
+                    },
+                    {
+                        "id": 4,
+                        "name": "B Section",
+                        "standard": 13,
+                        "head_teacher": 37,
+                        "student_count": 3,
+                        "is_active": true
+                    },
+                    {
+                        "id": 42,
+                        "name": "D section",
+                        "standard": 13,
+                        "head_teacher": 5,
+                        "student_count": 8,
+                        "is_active": true
+                    },
+                    {
+                        "id": 55,
+                        "name": "test for natioifcation",
+                        "standard": 13,
+                        "head_teacher": 204,
+                        "student_count": 3,
+                        "is_active": true
+                    }
+                ],
+                "created_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "modified_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "access_to_all_users": false,
+                "created": "2024-12-24T11:36:18.561408+05:30",
+                "modified": "2025-06-10T19:15:44.265106+05:30",
+                "is_active": true,
+                "name": "2nd standard",
+                "branch": 1
+            },
+            "student_count": 8,
+            "created": "2024-12-24T21:59:04.902336+05:30",
+            "modified_by": {
+                "created_by": 1,
+                "is_staff": false,
+                "modified_by": 1,
+                "group": 1,
+                "last_name": "M",
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "first_name": "Narasing",
+                "email": "murapakanarasingarao@gmail.com",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_active": true,
+                "date_joined": "2024-12-23T02:50:33+05:30"
+            },
+            "created_by": {
+                "created_by": 1,
+                "is_staff": false,
+                "modified_by": 1,
+                "group": 1,
+                "last_name": "M",
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "first_name": "Narasing",
+                "email": "murapakanarasingarao@gmail.com",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "id": 3,
+                "timezone": "Asia/Kolkata",
+                "is_active": true,
+                "date_joined": "2024-12-23T02:50:33+05:30"
+            },
+            "modified": "2024-12-24T21:59:04.902336+05:30",
+            "name": "A Section",
+            "is_active": true
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/users/get-all-users/?branch=1&is_active=true&group__group_type__type!=Non-Teaching
+{
+    "meta": {
+        "count": 27,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "my_section_id": null,
+            "department": {
+                "created": "2024-12-23T23:42:08.864417+05:30",
+                "department_type": "Teaching",
+                "name": "Telugu",
+                "branch": {
+                    "created": "2024-12-23T21:38:49.939251+05:30",
+                    "is_main_branch": false,
+                    "name": "Branch 1",
+                    "is_active": true,
+                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                    "id": 1,
+                    "modified_by": {
+                        "is_staff": false,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "id": 3,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "group": 1,
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "timezone": "Asia/Kolkata",
+                        "last_name": "M"
+                    },
+                    "address": {
+                        "city": "Vijayawada",
+                        "state": "Andhra Pradesh",
+                        "street": "Vijayawada",
+                        "landmark": "Vijayawada 1",
+                        "zip_code": "520001"
+                    },
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ],
+                                [
+                                    80.6201631673348,
+                                    16.50721957673649
+                                ],
+                                [
+                                    80.62027846041298,
+                                    16.507155671004796
+                                ],
+                                [
+                                    80.62033943875502,
+                                    16.507248636487958
+                                ],
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ]
+                            ]
+                        ]
+                    },
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            80.62025214123565,
+                            16.507235006708214
+                        ]
+                    },
+                    "created_by": {
+                        "is_staff": false,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "id": 3,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "group": 1,
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "timezone": "Asia/Kolkata",
+                        "last_name": "M"
+                    }
+                },
+                "is_active": true,
+                "modified": "2025-01-02T16:02:19.308659+05:30",
+                "id": 8,
+                "head_of_the_department": {
+                    "id": 103,
+                    "first_name": "Yeswanth",
+                    "last_name": "M",
+                    "email": "yeswanthp2008@gmail.com",
+                    "phone": "+917075904701",
+                    "address": {
+                        "city": "Vizag",
+                        "state": "Andhra Pradesh",
+                        "street": "Old ramalaya temple street",
+                        "landmark": "Vizag",
+                        "zip_code": "500020"
+                    },
+                    "gender": "Male",
+                    "dob": "1996-02-01",
+                    "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/ca43cd64-ee19-4dae-933d-922acca219e3.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHVEM5WRIK%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T122023Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDwaCmFwLXNvdXRoLTEiSDBGAiEA0ovdlTKPgqnMCWQg9nmo0DLb47L8FDJ6IvoqoMqxPoUCIQCEQgvuMVoZD3%2F6Dw4pIZUDYGVUZTUu5uEI5eYCfoZg5iq%2BBQh1EAAaDDAyMjQ5OTAzMTU2NyIMXnL%2FGXC1FD70qe0eKpsFtxTEus7ZVpa13M8swKsNcWTyRWaFmpWUjj7PbwB6gfaPZsAK87HqsT8FVkMFu7IUzfOePwEPBXileafLDljU8aaF0TOLn%2FxmJ67zqJyYgyO1cKWe%2FKg%2BNLwotxrrryeFU%2Btc23F2T2fXyMFz%2FmJH7L0Ge%2BGMkyM1oDCI%2BDW17dqu4%2BCRnYEccCzKt%2BKx8bTF%2B%2Bi8ygp8fQwcKK06TIbcA0v6qrPxXpOOzRMu3CJmmXadgwCYx03PJ6EDOU%2BOAc5wwZyo2hPRIiYm8mhqHDfXX4u0CsH1Oe4jllKPQoO6w6W0MPKPFMxZM9uf2dxPHGDbJ31PzFNe5AL4GFkUJWJnGzXSyX1o9Mqbb%2FBctgto21h6d0tnW2YDE7KLQmzmoV0ugMrjW1inZaDFETepyptJUnAxBPCaucfnGcbMRzjiTkoLa3lzBDIOgJEMKmZbLT1yOBNb21PavpRdpPPiZUyR73swDzqxvtxZ%2BxKpkMt6891TXJfQmgnbgRi%2FolQcpk3RiEiIna%2BPw6n89VeaZEbGQPGrlvh3O5kITv3Ih4juKfk0R6ITF%2FTzh8%2BohXrI4kQA0%2FEh%2BTuRWMj7t%2Fi3GenjzVGFZrrvsBvdaHS6UBzwqD73RJjtyDJYqefkQalpQlamKP0VDSlJo%2FGMCurYcbEyYXb40nSmDwn8fuMQhzVeAxqcuV0r3Lyk1cYBjTgT827%2FjriuRzT%2BxzmYyTSU1AfnPFshjoUOzwp%2BF624c4D7Cz2%2FujOEwozKwm%2ByBee1Nm8TcC0BElbWl8%2FZURAnDtQM5BZnmJ4SKvVfxqdfHJL0l3ScCk%2BZCSPiZ%2FK1O2lg%2FzeGWZ75tHkTkEnNofBr18T2sESZ1ds2LeBWHJcsfZTBbljql%2FUnt2aw6hV%2BDDDjhM3EBjqwARUbpKzlPfySbD4D647uk8JSVhkPgq8DU9Q8R4gz4QNYyLXhbVJ7oCwoOzYLILm43GkBgDuOH1cysbPgc88x1oxK%2FoT1UMyIkOIiEtJpJHXkwU400xOvcrYKploWdzTsr7N3Q5aWliimrVznFSMejcA6drOtxbK7cYrRJm5fK80MWZktSFYs1nu2LFMKS1a7JhBNt8tYQpY2%2BbreCP6fXHeOhtZ0%2FfmOZ5yjvaA9FXvd&X-Amz-Signature=222735047ebc917edc7de08a7d0cf4acaf80124ac1ff6e99d3e514500a79a397",
+                    "designation": "Head of Department",
+                    "department": "Telugu",
+                    "branch": "Branch 1",
+                    "group": "Head of Department"
+                },
+                "staff_count": 1,
+                "access_to_all_user_ids": [
+                    103,
+                    204
+                ],
+                "modified_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                },
+                "access_to_all_users": true,
+                "created_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                }
+            },
+            "email": "nimishvan341@gmail.com",
+            "modified": "2025-01-21T10:15:25.762639+05:30",
+            "id": 204,
+            "aapar_number": "",
+            "organisation": "vai",
+            "gender": "Male",
+            "designation": {
+                "description": "Junior Teachers",
+                "created": "2024-12-23T22:24:16.298143+05:30",
+                "name": "Junior teacher",
+                "modified": "2025-07-30T07:40:52.385563+05:30",
+                "id": 1,
+                "modified_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                },
+                "created_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                }
+            },
+            "timezone": "Asia/Kolkata",
+            "my_department_users": [
+                103
+            ],
+            "standard": null,
+            "profile_image": null,
+            "guardians": [
+                {
+                    "company_name": null,
+                    "annual_income": 50000,
+                    "created": "2025-01-21T10:15:26.128015+05:30",
+                    "contact_number": "+919502445112",
+                    "name": "vidya D",
+                    "is_active": true,
+                    "modified": "2025-01-21T10:15:26.128015+05:30",
+                    "id": 167,
+                    "first_name": "vidya",
+                    "occupation": "sales Manager",
+                    "relation": "Mother",
+                    "modified_by": {
+                        "is_staff": false,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "id": 3,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "group": 1,
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "timezone": "Asia/Kolkata",
+                        "last_name": "M"
+                    },
+                    "last_name": "D",
+                    "created_by": {
+                        "is_staff": false,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "email": "murapakanarasingarao@gmail.com",
+                        "user_permissions": [],
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "is_active": true,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "id": 3,
+                        "first_name": "Narasing",
+                        "is_superuser": false,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "group": 1,
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "timezone": "Asia/Kolkata",
+                        "last_name": "M"
+                    }
+                }
+            ],
+            "phone": "+916303298728",
+            "pen_number": "",
+            "branch": {
+                "created": "2024-12-23T21:38:49.939251+05:30",
+                "is_main_branch": false,
+                "name": "Branch 1",
+                "is_active": true,
+                "modified": "2025-03-30T12:37:45.638892+05:30",
+                "id": 1,
+                "modified_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                },
+                "address": {
+                    "city": "Vijayawada",
+                    "state": "Andhra Pradesh",
+                    "street": "Vijayawada",
+                    "landmark": "Vijayawada 1",
+                    "zip_code": "520001"
+                },
+                "geo_location": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ],
+                            [
+                                80.6201631673348,
+                                16.50721957673649
+                            ],
+                            [
+                                80.62027846041298,
+                                16.507155671004796
+                            ],
+                            [
+                                80.62033943875502,
+                                16.507248636487958
+                            ],
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ]
+                        ]
+                    ]
+                },
+                "center_point": {
+                    "type": "Point",
+                    "coordinates": [
+                        80.62025214123565,
+                        16.507235006708214
+                    ]
+                },
+                "created_by": {
+                    "is_staff": false,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "is_active": true,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "id": 3,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "group": 1,
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "timezone": "Asia/Kolkata",
+                    "last_name": "M"
+                }
+            },
+            "date_joined": "2025-01-08T00:00:00+05:30",
+            "group": {
+                "name": "Head of Department",
+                "id": 2,
+                "controlled_groups": [],
+                "permissions": [
+                    {
+                        "content_type": 3,
+                        "name": "Can view group",
+                        "id": 12,
+                        "codename": "view_group",
+                        "type_name": "group",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 125,
+                        "name": "Can add schedule",
+                        "id": 505,
+                        "codename": "add_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 125,
+                        "name": "Can change schedule",
+                        "id": 506,
+                        "codename": "change_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 125,
+                        "name": "Can delete schedule",
+                        "id": 507,
+                        "codename": "delete_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 125,
+                        "name": "Can view schedule",
+                        "id": 508,
+                        "codename": "view_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 93,
+                        "name": "Can view expenditure",
+                        "id": 380,
+                        "codename": "view_expenditure",
+                        "type_name": "expenditure",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 100,
+                        "name": "Can add task",
+                        "id": 405,
+                        "codename": "add_task",
+                        "type_name": "task",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 100,
+                        "name": "Can change task",
+                        "id": 406,
+                        "codename": "change_task",
+                        "type_name": "task",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 100,
+                        "name": "Can view task",
+                        "id": 408,
+                        "codename": "view_task",
+                        "type_name": "task",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 101,
+                        "name": "Can add task submission",
+                        "id": 409,
+                        "codename": "add_tasksubmission",
+                        "type_name": "task submission",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 101,
+                        "name": "Can view task submission",
+                        "id": 412,
+                        "codename": "view_tasksubmission",
+                        "type_name": "task submission",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 20,
+                        "name": "Can view academic year",
+                        "id": 80,
+                        "codename": "view_academicyear",
+                        "type_name": "academic year",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 50,
+                        "name": "Can view amenities",
+                        "id": 208,
+                        "codename": "view_amenities",
+                        "type_name": "amenities",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 94,
+                        "name": "Can add announcement",
+                        "id": 381,
+                        "codename": "add_announcement",
+                        "type_name": "announcement",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 94,
+                        "name": "Can change announcement",
+                        "id": 382,
+                        "codename": "change_announcement",
+                        "type_name": "announcement",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 94,
+                        "name": "Can delete announcement",
+                        "id": 383,
+                        "codename": "delete_announcement",
+                        "type_name": "announcement",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 94,
+                        "name": "Can view announcement",
+                        "id": 384,
+                        "codename": "view_announcement",
+                        "type_name": "announcement",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 43,
+                        "name": "Can view answer",
+                        "id": 180,
+                        "codename": "view_answer",
+                        "type_name": "answer",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 13,
+                        "name": "Can view branch",
+                        "id": 52,
+                        "codename": "view_branch",
+                        "type_name": "branch",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 14,
+                        "name": "Can change department",
+                        "id": 54,
+                        "codename": "change_department",
+                        "type_name": "department",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 14,
+                        "name": "Can delete department",
+                        "id": 55,
+                        "codename": "delete_department",
+                        "type_name": "department",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 14,
+                        "name": "Can view department",
+                        "id": 56,
+                        "codename": "view_department",
+                        "type_name": "department",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 17,
+                        "name": "Can add designation",
+                        "id": 65,
+                        "codename": "add_designation",
+                        "type_name": "designation",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 17,
+                        "name": "Can change designation",
+                        "id": 66,
+                        "codename": "change_designation",
+                        "type_name": "designation",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 17,
+                        "name": "Can delete designation",
+                        "id": 67,
+                        "codename": "delete_designation",
+                        "type_name": "designation",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 17,
+                        "name": "Can view designation",
+                        "id": 68,
+                        "codename": "view_designation",
+                        "type_name": "designation",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 56,
+                        "name": "Can add document",
+                        "id": 229,
+                        "codename": "add_document",
+                        "type_name": "document",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 56,
+                        "name": "Can change document",
+                        "id": 230,
+                        "codename": "change_document",
+                        "type_name": "document",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 56,
+                        "name": "Can delete document",
+                        "id": 231,
+                        "codename": "delete_document",
+                        "type_name": "document",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 56,
+                        "name": "Can view document",
+                        "id": 232,
+                        "codename": "view_document",
+                        "type_name": "document",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 38,
+                        "name": "Can add event",
+                        "id": 157,
+                        "codename": "add_event",
+                        "type_name": "event",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 38,
+                        "name": "Can change event",
+                        "id": 158,
+                        "codename": "change_event",
+                        "type_name": "event",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 38,
+                        "name": "Can delete event",
+                        "id": 159,
+                        "codename": "delete_event",
+                        "type_name": "event",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 38,
+                        "name": "Can view event",
+                        "id": 160,
+                        "codename": "view_event",
+                        "type_name": "event",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 30,
+                        "name": "Can add exam",
+                        "id": 125,
+                        "codename": "add_exam",
+                        "type_name": "exam",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 30,
+                        "name": "Can change exam",
+                        "id": 126,
+                        "codename": "change_exam",
+                        "type_name": "exam",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 30,
+                        "name": "Can delete exam",
+                        "id": 127,
+                        "codename": "delete_exam",
+                        "type_name": "exam",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 30,
+                        "name": "Can view exam",
+                        "id": 128,
+                        "codename": "view_exam",
+                        "type_name": "exam",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 42,
+                        "name": "Can view exam answer",
+                        "id": 176,
+                        "codename": "view_examanswer",
+                        "type_name": "exam answer",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 31,
+                        "name": "Can add exam schedule",
+                        "id": 129,
+                        "codename": "add_examschedule",
+                        "type_name": "exam schedule",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 31,
+                        "name": "Can change exam schedule",
+                        "id": 130,
+                        "codename": "change_examschedule",
+                        "type_name": "exam schedule",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 31,
+                        "name": "Can delete exam schedule",
+                        "id": 131,
+                        "codename": "delete_examschedule",
+                        "type_name": "exam schedule",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 31,
+                        "name": "Can view exam schedule",
+                        "id": 132,
+                        "codename": "view_examschedule",
+                        "type_name": "exam schedule",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 24,
+                        "name": "Can view fee",
+                        "id": 104,
+                        "codename": "view_fee",
+                        "type_name": "fee",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 27,
+                        "name": "Can view fee concession",
+                        "id": 116,
+                        "codename": "view_feeconcession",
+                        "type_name": "fee concession",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 29,
+                        "name": "Can view fee payment",
+                        "id": 124,
+                        "codename": "view_feepayment",
+                        "type_name": "fee payment",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 41,
+                        "name": "Can view fee summary",
+                        "id": 172,
+                        "codename": "view_feesummary",
+                        "type_name": "fee summary",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 52,
+                        "name": "Can view floor",
+                        "id": 216,
+                        "codename": "view_floor",
+                        "type_name": "floor",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can Add Role",
+                        "id": 89,
+                        "codename": "add_role",
+                        "type_name": "front end permissions",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can Add Teachers to Department",
+                        "id": 93,
+                        "codename": "add_teachers_to_department",
+                        "type_name": "front end permissions",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can Change Role",
+                        "id": 91,
+                        "codename": "change_role",
+                        "type_name": "front end permissions",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can Delete Role",
+                        "id": 92,
+                        "codename": "delete_role",
+                        "type_name": "front end permissions",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can trigger reset password email",
+                        "id": 96,
+                        "codename": "trigger_reset_password_email",
+                        "type_name": "front end permissions",
+                        "operation_name": "trigger"
+                    },
+                    {
+                        "content_type": 22,
+                        "name": "Can View Role",
+                        "id": 90,
+                        "codename": "view_role",
+                        "type_name": "front end permissions",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 35,
+                        "name": "Can add grade",
+                        "id": 145,
+                        "codename": "add_grade",
+                        "type_name": "grade",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 35,
+                        "name": "Can change grade",
+                        "id": 146,
+                        "codename": "change_grade",
+                        "type_name": "grade",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 35,
+                        "name": "Can delete grade",
+                        "id": 147,
+                        "codename": "delete_grade",
+                        "type_name": "grade",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 35,
+                        "name": "Can view grade",
+                        "id": 148,
+                        "codename": "view_grade",
+                        "type_name": "grade",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 32,
+                        "name": "Can add grade type",
+                        "id": 133,
+                        "codename": "add_gradetype",
+                        "type_name": "grade type",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 32,
+                        "name": "Can change grade type",
+                        "id": 134,
+                        "codename": "change_gradetype",
+                        "type_name": "grade type",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 32,
+                        "name": "Can delete grade type",
+                        "id": 135,
+                        "codename": "delete_gradetype",
+                        "type_name": "grade type",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 32,
+                        "name": "Can view grade type",
+                        "id": 136,
+                        "codename": "view_gradetype",
+                        "type_name": "grade type",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 16,
+                        "name": "Can view guardian",
+                        "id": 64,
+                        "codename": "view_guardian",
+                        "type_name": "guardian",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 51,
+                        "name": "Can view place",
+                        "id": 212,
+                        "codename": "view_place",
+                        "type_name": "place",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 53,
+                        "name": "Can view place type",
+                        "id": 220,
+                        "codename": "view_placetype",
+                        "type_name": "place type",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 33,
+                        "name": "Can add question",
+                        "id": 137,
+                        "codename": "add_question",
+                        "type_name": "question",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 33,
+                        "name": "Can change question",
+                        "id": 138,
+                        "codename": "change_question",
+                        "type_name": "question",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 33,
+                        "name": "Can delete question",
+                        "id": 139,
+                        "codename": "delete_question",
+                        "type_name": "question",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 33,
+                        "name": "Can view question",
+                        "id": 140,
+                        "codename": "view_question",
+                        "type_name": "question",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 34,
+                        "name": "Can add question option",
+                        "id": 141,
+                        "codename": "add_questionoption",
+                        "type_name": "question option",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 34,
+                        "name": "Can change question option",
+                        "id": 142,
+                        "codename": "change_questionoption",
+                        "type_name": "question option",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 34,
+                        "name": "Can delete question option",
+                        "id": 143,
+                        "codename": "delete_questionoption",
+                        "type_name": "question option",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 34,
+                        "name": "Can view question option",
+                        "id": 144,
+                        "codename": "view_questionoption",
+                        "type_name": "question option",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 40,
+                        "name": "Can add quiz option",
+                        "id": 165,
+                        "codename": "add_quizoption",
+                        "type_name": "quiz option",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 40,
+                        "name": "Can change quiz option",
+                        "id": 166,
+                        "codename": "change_quizoption",
+                        "type_name": "quiz option",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 40,
+                        "name": "Can delete quiz option",
+                        "id": 167,
+                        "codename": "delete_quizoption",
+                        "type_name": "quiz option",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 40,
+                        "name": "Can view quiz option",
+                        "id": 168,
+                        "codename": "view_quizoption",
+                        "type_name": "quiz option",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 39,
+                        "name": "Can add quiz question",
+                        "id": 161,
+                        "codename": "add_quizquestion",
+                        "type_name": "quiz question",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 39,
+                        "name": "Can change quiz question",
+                        "id": 162,
+                        "codename": "change_quizquestion",
+                        "type_name": "quiz question",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 39,
+                        "name": "Can delete quiz question",
+                        "id": 163,
+                        "codename": "delete_quizquestion",
+                        "type_name": "quiz question",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 39,
+                        "name": "Can view quiz question",
+                        "id": 164,
+                        "codename": "view_quizquestion",
+                        "type_name": "quiz question",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 96,
+                        "name": "Can add releaving document category",
+                        "id": 389,
+                        "codename": "add_releavingdocumentcategory",
+                        "type_name": "releaving document category",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 96,
+                        "name": "Can change releaving document category",
+                        "id": 390,
+                        "codename": "change_releavingdocumentcategory",
+                        "type_name": "releaving document category",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 96,
+                        "name": "Can delete releaving document category",
+                        "id": 391,
+                        "codename": "delete_releavingdocumentcategory",
+                        "type_name": "releaving document category",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 96,
+                        "name": "Can view releaving document category",
+                        "id": 392,
+                        "codename": "view_releavingdocumentcategory",
+                        "type_name": "releaving document category",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 95,
+                        "name": "Can add releaving document status",
+                        "id": 385,
+                        "codename": "add_releavingdocumentstatus",
+                        "type_name": "releaving document status",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 95,
+                        "name": "Can change releaving document status",
+                        "id": 386,
+                        "codename": "change_releavingdocumentstatus",
+                        "type_name": "releaving document status",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 95,
+                        "name": "Can delete releaving document status",
+                        "id": 387,
+                        "codename": "delete_releavingdocumentstatus",
+                        "type_name": "releaving document status",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 95,
+                        "name": "Can view releaving document status",
+                        "id": 388,
+                        "codename": "view_releavingdocumentstatus",
+                        "type_name": "releaving document status",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 28,
+                        "name": "Can add schedule",
+                        "id": 117,
+                        "codename": "add_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 28,
+                        "name": "Can change schedule",
+                        "id": 118,
+                        "codename": "change_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 28,
+                        "name": "Can delete schedule",
+                        "id": 119,
+                        "codename": "delete_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 28,
+                        "name": "Can view schedule",
+                        "id": 120,
+                        "codename": "view_schedule",
+                        "type_name": "schedule",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 19,
+                        "name": "Can add section",
+                        "id": 73,
+                        "codename": "add_section",
+                        "type_name": "section",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 19,
+                        "name": "Can change section",
+                        "id": 74,
+                        "codename": "change_section",
+                        "type_name": "section",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 19,
+                        "name": "Can delete section",
+                        "id": 75,
+                        "codename": "delete_section",
+                        "type_name": "section",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 19,
+                        "name": "Can view section",
+                        "id": 76,
+                        "codename": "view_section",
+                        "type_name": "section",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 18,
+                        "name": "Can view standard",
+                        "id": 72,
+                        "codename": "view_standard",
+                        "type_name": "standard",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 21,
+                        "name": "Can add student details",
+                        "id": 81,
+                        "codename": "add_studentdetails",
+                        "type_name": "student details",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 21,
+                        "name": "Can change student details",
+                        "id": 82,
+                        "codename": "change_studentdetails",
+                        "type_name": "student details",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 21,
+                        "name": "Can delete student details",
+                        "id": 83,
+                        "codename": "delete_studentdetails",
+                        "type_name": "student details",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 21,
+                        "name": "Can view student details",
+                        "id": 84,
+                        "codename": "view_studentdetails",
+                        "type_name": "student details",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 36,
+                        "name": "Can add syllabus",
+                        "id": 149,
+                        "codename": "add_syllabus",
+                        "type_name": "syllabus",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 36,
+                        "name": "Can change syllabus",
+                        "id": 150,
+                        "codename": "change_syllabus",
+                        "type_name": "syllabus",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 36,
+                        "name": "Can delete syllabus",
+                        "id": 151,
+                        "codename": "delete_syllabus",
+                        "type_name": "syllabus",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 36,
+                        "name": "Can view syllabus",
+                        "id": 152,
+                        "codename": "view_syllabus",
+                        "type_name": "syllabus",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 75,
+                        "name": "Can add task",
+                        "id": 305,
+                        "codename": "add_task",
+                        "type_name": "task",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 75,
+                        "name": "Can change task",
+                        "id": 306,
+                        "codename": "change_task",
+                        "type_name": "task",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 75,
+                        "name": "Can view task",
+                        "id": 308,
+                        "codename": "view_task",
+                        "type_name": "task",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 37,
+                        "name": "Can add topic",
+                        "id": 153,
+                        "codename": "add_topic",
+                        "type_name": "topic",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 37,
+                        "name": "Can change topic",
+                        "id": 154,
+                        "codename": "change_topic",
+                        "type_name": "topic",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 37,
+                        "name": "Can delete topic",
+                        "id": 155,
+                        "codename": "delete_topic",
+                        "type_name": "topic",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 37,
+                        "name": "Can view topic",
+                        "id": 156,
+                        "codename": "view_topic",
+                        "type_name": "topic",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 44,
+                        "name": "Can add total fee summary",
+                        "id": 181,
+                        "codename": "add_totalfeesummary",
+                        "type_name": "total fee summary",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 44,
+                        "name": "Can change total fee summary",
+                        "id": 182,
+                        "codename": "change_totalfeesummary",
+                        "type_name": "total fee summary",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 44,
+                        "name": "Can delete total fee summary",
+                        "id": 183,
+                        "codename": "delete_totalfeesummary",
+                        "type_name": "total fee summary",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 44,
+                        "name": "Can view total fee summary",
+                        "id": 184,
+                        "codename": "view_totalfeesummary",
+                        "type_name": "total fee summary",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 15,
+                        "name": "Can change user",
+                        "id": 58,
+                        "codename": "change_user",
+                        "type_name": "user",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 15,
+                        "name": "Can view user",
+                        "id": 60,
+                        "codename": "view_user",
+                        "type_name": "user",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 26,
+                        "name": "Can view user details",
+                        "id": 112,
+                        "codename": "view_userdetails",
+                        "type_name": "user details",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 25,
+                        "name": "Can view user detail type",
+                        "id": 108,
+                        "codename": "view_userdetailtype",
+                        "type_name": "user detail type",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 64,
+                        "name": "Can add user subscription",
+                        "id": 261,
+                        "codename": "add_usersubscription",
+                        "type_name": "user subscription",
+                        "operation_name": "add"
+                    },
+                    {
+                        "content_type": 64,
+                        "name": "Can change user subscription",
+                        "id": 262,
+                        "codename": "change_usersubscription",
+                        "type_name": "user subscription",
+                        "operation_name": "change"
+                    },
+                    {
+                        "content_type": 64,
+                        "name": "Can delete user subscription",
+                        "id": 263,
+                        "codename": "delete_usersubscription",
+                        "type_name": "user subscription",
+                        "operation_name": "delete"
+                    },
+                    {
+                        "content_type": 64,
+                        "name": "Can view user subscription",
+                        "id": 264,
+                        "codename": "view_usersubscription",
+                        "type_name": "user subscription",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 48,
+                        "name": "Can view vehicle",
+                        "id": 200,
+                        "codename": "view_vehicle",
+                        "type_name": "vehicle",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 45,
+                        "name": "Can view vehicle document",
+                        "id": 188,
+                        "codename": "view_vehicledocument",
+                        "type_name": "vehicledocument",
+                        "operation_name": "view"
+                    },
+                    {
+                        "content_type": 46,
+                        "name": "Can view vehicle type",
+                        "id": 192,
+                        "codename": "view_vehicletype",
+                        "type_name": "vehicletype",
+                        "operation_name": "view"
+                    }
+                ],
+                "group_type": {
+                    "type": "Both",
+                    "id": 3,
+                    "access_to_all_users": false
+                }
+            },
+            "first_name": "Namashivan",
+            "date_of_releaving": null,
+            "alternate_phone": "+919876598743",
+            "assigned_standards": [],
+            "created": "2025-01-21T10:15:25.762639+05:30",
+            "user_permissions": [],
+            "student_details": null,
+            "is_active": true,
+            "student_type": "Regular",
+            "modified_by": {
+                "is_staff": false,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "is_active": true,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "id": 3,
+                "first_name": "Narasing",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "created_by": 1,
+                "modified_by": 1,
+                "timezone": "Asia/Kolkata",
+                "last_name": "M"
+            },
+            "section": null,
+            "last_name": "K",
+            "education_details": [
+                {
+                    "city": "Srikakulam",
+                    "end_date": "2023-02-01",
+                    "start_date": "2022-02-01",
+                    "institution": "Aditya institute of technology and management",
+                    "education_type": "BTech"
+                }
+            ],
+            "employee_id": "34560",
+            "details": [],
+            "last_login": null,
+            "blood_group": "A+",
+            "biometric_data": null,
+            "date_of_joining": null,
+            "address": {
+                "city": "Mabagam",
+                "state": "Maharashtra",
+                "street": "Main street",
+                "landmark": "Narasannapeta",
+                "zip_code": "748960"
+            },
+            "admission_number": null,
+            "dob": "2014-01-29",
+            "created_by": {
+                "is_staff": false,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "is_active": true,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "id": 3,
+                "first_name": "Narasing",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "group": 1,
+                "created_by": 1,
+                "modified_by": 1,
+                "timezone": "Asia/Kolkata",
+                "last_name": "M"
+            }
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/period/?section__standard__branch=1&section=undefined&day=
+{
+    "meta": {
+        "count": 99,
+        "next": "http://vai.dev.sms.visionariesai.com/api/period/?limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 12,
+            "day": "Monday",
+            "period_number": 517812,
+            "section_id": 1,
+            "section_name": "C Section",
+            "department_id": 11,
+            "department_name": "Science",
+            "teacher_id": 37,
+            "teacher_name": "Santoshi P"
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/departments/?branch=1&is_active=true
+{
+    "meta": {
+        "count": 47,
+        "next": "http://vai.dev.sms.visionariesai.com/api/departments/?limit=40&offset=40",
+        "previous": null
+    },
+    "results": [
+        {
+            "branch": {
+                "geo_location": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                81.78428774964686,
+                                17.025776932643865
+                            ],
+                            [
+                                81.78437890284715,
+                                17.025751670782654
+                            ],
+                            [
+                                81.78436008547669,
+                                17.025678962760693
+                            ],
+                            [
+                                81.78421118096958,
+                                17.025720381979767
+                            ],
+                            [
+                                81.78422052679309,
+                                17.025752183728287
+                            ],
+                            [
+                                81.78427681127204,
+                                17.025738462819305
+                            ],
+                            [
+                                81.78428774964686,
+                                17.025776932643865
+                            ]
+                        ]
+                    ]
+                },
+                "modified_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "is_active": true,
+                "is_main_branch": false,
+                "modified": "2025-05-26T11:01:31.929879+05:30",
+                "name": "Branch 2",
+                "center_point": {
+                    "type": "Point",
+                    "coordinates": [
+                        81.78430958451207,
+                        17.02572833243334
+                    ]
+                },
+                "created_by": {
+                    "group": 1,
+                    "modified_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "is_superuser": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_staff": false,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "id": 3,
+                    "user_permissions": [],
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "last_name": "M"
+                },
+                "address": {
+                    "city": "Rajahmundry",
+                    "state": "Andhra Pradesh",
+                    "street": "Korukonda",
+                    "landmark": "HPCL Petrol Bunk",
+                    "zip_code": "533102"
+                },
+                "id": 2,
+                "created": "2024-12-23T21:55:16.619340+05:30"
+            },
+            "access_to_all_users": true,
+            "modified_by": {
+                "group": 1,
+                "modified_by": 1,
+                "is_active": true,
+                "first_name": "Narasing",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_staff": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "timezone": "Asia/Kolkata",
+                "created_by": 1,
+                "id": 3,
+                "user_permissions": [],
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "last_name": "M"
+            },
+            "is_active": true,
+            "access_to_all_user_ids": [
+                39,
+                241,
+                238,
+                239,
+                158
+            ],
+            "modified": "2024-12-23T23:20:39.373982+05:30",
+            "name": "Telugu",
+            "department_type": "Teaching",
+            "created_by": {
+                "group": 1,
+                "modified_by": 1,
+                "is_active": true,
+                "first_name": "Narasing",
+                "is_superuser": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_staff": false,
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "email": "murapakanarasingarao@gmail.com",
+                "timezone": "Asia/Kolkata",
+                "created_by": 1,
+                "id": 3,
+                "user_permissions": [],
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "last_name": "M"
+            },
+            "staff_count": 2,
+            "id": 2,
+            "created": "2024-12-23T23:20:39.373982+05:30",
+            "head_of_the_department": {
+                "id": 158,
+                "first_name": "Anandi",
+                "last_name": "O",
+                "email": "anandi@yopmail.com",
+                "phone": "+918179946926",
+                "address": {
+                    "city": "Srikakulam",
+                    "state": "Andhra Pradesh",
+                    "street": "Main street",
+                    "landmark": "srikakulam",
+                    "zip_code": "532002"
+                },
+                "gender": "Female",
+                "dob": "1998-07-08",
+                "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/81a82de6-dd36-4aba-92f3-3862778797f8.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHVEM5WRIK%2F20250806%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250806T122350Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEDwaCmFwLXNvdXRoLTEiSDBGAiEA0ovdlTKPgqnMCWQg9nmo0DLb47L8FDJ6IvoqoMqxPoUCIQCEQgvuMVoZD3%2F6Dw4pIZUDYGVUZTUu5uEI5eYCfoZg5iq%2BBQh1EAAaDDAyMjQ5OTAzMTU2NyIMXnL%2FGXC1FD70qe0eKpsFtxTEus7ZVpa13M8swKsNcWTyRWaFmpWUjj7PbwB6gfaPZsAK87HqsT8FVkMFu7IUzfOePwEPBXileafLDljU8aaF0TOLn%2FxmJ67zqJyYgyO1cKWe%2FKg%2BNLwotxrrryeFU%2Btc23F2T2fXyMFz%2FmJH7L0Ge%2BGMkyM1oDCI%2BDW17dqu4%2BCRnYEccCzKt%2BKx8bTF%2B%2Bi8ygp8fQwcKK06TIbcA0v6qrPxXpOOzRMu3CJmmXadgwCYx03PJ6EDOU%2BOAc5wwZyo2hPRIiYm8mhqHDfXX4u0CsH1Oe4jllKPQoO6w6W0MPKPFMxZM9uf2dxPHGDbJ31PzFNe5AL4GFkUJWJnGzXSyX1o9Mqbb%2FBctgto21h6d0tnW2YDE7KLQmzmoV0ugMrjW1inZaDFETepyptJUnAxBPCaucfnGcbMRzjiTkoLa3lzBDIOgJEMKmZbLT1yOBNb21PavpRdpPPiZUyR73swDzqxvtxZ%2BxKpkMt6891TXJfQmgnbgRi%2FolQcpk3RiEiIna%2BPw6n89VeaZEbGQPGrlvh3O5kITv3Ih4juKfk0R6ITF%2FTzh8%2BohXrI4kQA0%2FEh%2BTuRWMj7t%2Fi3GenjzVGFZrrvsBvdaHS6UBzwqD73RJjtyDJYqefkQalpQlamKP0VDSlJo%2FGMCurYcbEyYXb40nSmDwn8fuMQhzVeAxqcuV0r3Lyk1cYBjTgT827%2FjriuRzT%2BxzmYyTSU1AfnPFshjoUOzwp%2BF624c4D7Cz2%2FujOEwozKwm%2ByBee1Nm8TcC0BElbWl8%2FZURAnDtQM5BZnmJ4SKvVfxqdfHJL0l3ScCk%2BZCSPiZ%2FK1O2lg%2FzeGWZ75tHkTkEnNofBr18T2sESZ1ds2LeBWHJcsfZTBbljql%2FUnt2aw6hV%2BDDDjhM3EBjqwARUbpKzlPfySbD4D647uk8JSVhkPgq8DU9Q8R4gz4QNYyLXhbVJ7oCwoOzYLILm43GkBgDuOH1cysbPgc88x1oxK%2FoT1UMyIkOIiEtJpJHXkwU400xOvcrYKploWdzTsr7N3Q5aWliimrVznFSMejcA6drOtxbK7cYrRJm5fK80MWZktSFYs1nu2LFMKS1a7JhBNt8tYQpY2%2BbreCP6fXHeOhtZ0%2FfmOZ5yjvaA9FXvd&X-Amz-Signature=99cbe1f4437d546050d571f019e5e9eda96fc711330fddec6e5f67485c3fbf2b",
+                "designation": "Head of Department",
+                "department": "Telugu",
+                "branch": "Branch 2",
+                "group": "Head of Department"
+            }
+        },
+    ]
+}
+
+https: //vai.dev.sms.visionariesai.com/api/period/?section__standard__branch=1&section=5&day=
+{
+    "meta": {
+        "count": 4,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 17,
+            "day": "Tuesday",
+            "period_number": 909014,
+            "section_id": 5,
+            "section_name": "A Section",
+            "department_id": 9,
+            "department_name": "Hindi",
+            "teacher_id": 39,
+            "teacher_name": "Mounika K"
+        },
+    ]
+}
