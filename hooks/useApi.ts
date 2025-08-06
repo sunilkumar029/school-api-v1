@@ -389,3 +389,85 @@ export function useDesignations(params?: any) {
 
   return { data, loading, error, refetch: fetchData };
 }
+
+export function useUsers(params?: any) {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getUsers(params);
+      setData(response.results || []);
+      setHasInitialized(true);
+    } catch (err: unknown) {
+      let errorMessage = "Failed to fetch users";
+      
+      if (err && typeof err === 'object') {
+        const axiosError = err as any;
+        if (axiosError.response) {
+          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+      
+      setError(errorMessage);
+      console.error("Error fetching users:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    if (!hasInitialized) {
+      fetchData();
+    }
+  }, [fetchData, hasInitialized]);
+
+  return { data, loading, error, refetch: fetchData };
+}
+
+export function useGroups(params?: any) {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [hasInitialized, setHasInitialized] = useState(false);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getGroups(params);
+      setData(response.results || []);
+      setHasInitialized(true);
+    } catch (err: unknown) {
+      let errorMessage = "Failed to fetch groups";
+      
+      if (err && typeof err === 'object') {
+        const axiosError = err as any;
+        if (axiosError.response) {
+          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
+        } else if (axiosError.message) {
+          errorMessage = axiosError.message;
+        }
+      }
+      
+      setError(errorMessage);
+      console.error("Error fetching groups:", err);
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    if (!hasInitialized) {
+      fetchData();
+    }
+  }, [fetchData, hasInitialized]);
+
+  return { data, loading, error, refetch: fetchData };
+}

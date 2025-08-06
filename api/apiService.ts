@@ -431,6 +431,47 @@ class ApiService {
     const response = await this.api.post("/api/answers/", data);
     return response.data;
   }
+
+  // Users
+  async getUsers(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/users/", { params });
+    return response.data;
+  }
+
+  async createUser(data: any): Promise<any> {
+    const response = await this.api.post("/api/users/", data);
+    return response.data;
+  }
+
+  async getUser(id: number): Promise<any> {
+    const response = await this.api.get(`/api/users/${id}/`);
+    return response.data;
+  }
+
+  async updateUser(id: number, data: any): Promise<any> {
+    const response = await this.api.put(`/api/users/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteUser(id: number): Promise<void> {
+    await this.api.delete(`/api/users/${id}/`);
+  }
+
+  // Groups
+  async getGroups(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/groups/", { params });
+    return response.data;
+  }
+
+  async createGroup(data: any): Promise<any> {
+    const response = await this.api.post("/api/groups/", data);
+    return response.data;
+  }
+
+  async getGroup(id: number): Promise<any> {
+    const response = await this.api.get(`/api/groups/${id}/`);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

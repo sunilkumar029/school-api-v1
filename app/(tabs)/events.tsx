@@ -102,8 +102,9 @@ export default function EventsScreen() {
 
   const formattedEvents = formatEventData(events || []);
 
+  // console.log("Events Data:", events);
   // console.log(events.length);
-  // console.log(formattedEvents[1]);
+  console.log(filteredEvents);
 
   const filteredEvents = formattedEvents.filter((event) => {
     const matchesSearch = event.title
@@ -123,7 +124,6 @@ export default function EventsScreen() {
     return matchesSearch && matchesFilter;
   });
 
-  console.log(filteredEvents);
 
   const handleRSVP = (eventId: string) => {
     // Handle RSVP logic here
@@ -638,6 +638,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   rsvpButtonText: {
+    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
   },
