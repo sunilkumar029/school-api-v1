@@ -1,6 +1,5 @@
-
-import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface PaginatedResponse<T> {
   count: number;
@@ -16,28 +15,28 @@ class ApiService {
     this.api = axios.create({
       timeout: 30000, // Increased timeout
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
     // Request interceptor to add auth token and base URL
     this.api.interceptors.request.use(async (config) => {
-      const token = await AsyncStorage.getItem('auth_token');
-      let baseUrl = await AsyncStorage.getItem('base_url');
-      
+      const token = await AsyncStorage.getItem("auth_token");
+      let baseUrl = await AsyncStorage.getItem("base_url");
+
       if (token) {
-        config.headers.Authorization = `Token ${token}`;
+        config.headers.Authorization = `Token 35ffe211b31b6c6fa5ae8823f43ecf8c3d032cdc`;
       }
-      
+
       // Fallback to demo server if no base URL is set
       if (!baseUrl) {
-        baseUrl = 'https://demo-sms-backend.herokuapp.com'; // Demo server fallback
+        baseUrl = "https://vai.dev.sms.visionariesai.com"; // Demo server fallback
       }
-      
+
       if (baseUrl) {
         config.baseURL = baseUrl;
       }
-      
+
       return config;
     });
 
@@ -45,20 +44,20 @@ class ApiService {
     this.api.interceptors.response.use(
       (response) => response,
       (error) => {
-        console.error('API Error:', error.response?.data || error.message);
+        console.error("API Error:", error.response?.data || error.message);
         return Promise.reject(error);
-      }
+      },
     );
   }
 
   // Academic Years
   async getAcademicYears(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/academic-years/', { params });
+    const response = await this.api.get("/api/academic-years/", { params });
     return response.data;
   }
 
   async createAcademicYear(data: any): Promise<any> {
-    const response = await this.api.post('/api/academic-years/', data);
+    const response = await this.api.post("/api/academic-years/", data);
     return response.data;
   }
 
@@ -78,12 +77,12 @@ class ApiService {
 
   // Announcements
   async getAnnouncements(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/announcements/', { params });
+    const response = await this.api.get("/api/announcements/", { params });
     return response.data;
   }
 
   async createAnnouncement(data: any): Promise<any> {
-    const response = await this.api.post('/api/announcements/', data);
+    const response = await this.api.post("/api/announcements/", data);
     return response.data;
   }
 
@@ -103,38 +102,42 @@ class ApiService {
 
   // Attendance
   async getAttendance(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/attendance/', { params });
+    const response = await this.api.get("/api/attendance/", { params });
     return response.data;
   }
 
   async createAttendance(data: any): Promise<any> {
-    const response = await this.api.post('/api/attendance/', data);
+    const response = await this.api.post("/api/attendance/", data);
     return response.data;
   }
 
   async getAttendanceReport(): Promise<any> {
-    const response = await this.api.get('/api/attendance/attendance-report-student/');
+    const response = await this.api.get(
+      "/api/attendance/attendance-report-student/",
+    );
     return response.data;
   }
 
   async getAttendanceDashboard(): Promise<any> {
-    const response = await this.api.get('/api/attendance-dashboard/dashboard/');
+    const response = await this.api.get("/api/attendance-dashboard/dashboard/");
     return response.data;
   }
 
   async getUserAttendanceDashboard(userId: string): Promise<any> {
-    const response = await this.api.get(`/api/attendance-dashboard/${userId}/user-dashboard/`);
+    const response = await this.api.get(
+      `/api/attendance-dashboard/${userId}/user-dashboard/`,
+    );
     return response.data;
   }
 
   // Events
   async getEvents(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/events/', { params });
+    const response = await this.api.get("/api/events/", { params });
     return response.data;
   }
 
   async createEvent(data: any): Promise<any> {
-    const response = await this.api.post('/api/events/', data);
+    const response = await this.api.post("/api/events/", data);
     return response.data;
   }
 
@@ -154,12 +157,12 @@ class ApiService {
 
   // Branches
   async getBranches(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/branches/', { params });
+    const response = await this.api.get("/api/branches/", { params });
     return response.data;
   }
 
   async createBranch(data: any): Promise<any> {
-    const response = await this.api.post('/api/branches/', data);
+    const response = await this.api.post("/api/branches/", data);
     return response.data;
   }
 
@@ -170,12 +173,12 @@ class ApiService {
 
   // Departments
   async getDepartments(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/departments/', { params });
+    const response = await this.api.get("/api/departments/", { params });
     return response.data;
   }
 
   async createDepartment(data: any): Promise<any> {
-    const response = await this.api.post('/api/departments/', data);
+    const response = await this.api.post("/api/departments/", data);
     return response.data;
   }
 
@@ -186,27 +189,27 @@ class ApiService {
 
   // Chat
   async getChatMessages(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/chat/', { params });
+    const response = await this.api.get("/api/chat/", { params });
     return response.data;
   }
 
   async sendChatMessage(data: any): Promise<any> {
-    const response = await this.api.post('/api/chat/', data);
+    const response = await this.api.post("/api/chat/", data);
     return response.data;
   }
 
   async getAllReceivedChats(): Promise<any> {
-    const response = await this.api.get('/api/chat/all-received-chats/');
+    const response = await this.api.get("/api/chat/all-received-chats/");
     return response.data;
   }
 
   async getChatWith(): Promise<any> {
-    const response = await this.api.get('/api/chat/chat_with/');
+    const response = await this.api.get("/api/chat/chat_with/");
     return response.data;
   }
 
   async markAsRead(data: any): Promise<any> {
-    const response = await this.api.post('/api/chat/mark_as_read/', data);
+    const response = await this.api.post("/api/chat/mark_as_read/", data);
     return response.data;
   }
 
@@ -217,12 +220,12 @@ class ApiService {
 
   // Documents
   async getDocuments(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/documents/', { params });
+    const response = await this.api.get("/api/documents/", { params });
     return response.data;
   }
 
   async createDocument(data: any): Promise<any> {
-    const response = await this.api.post('/api/documents/', data);
+    const response = await this.api.post("/api/documents/", data);
     return response.data;
   }
 
@@ -233,162 +236,185 @@ class ApiService {
 
   // Amenities
   async getAmenities(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/amenities/', { params });
+    const response = await this.api.get("/api/amenities/", { params });
     return response.data;
   }
 
   async createAmenity(data: any): Promise<any> {
-    const response = await this.api.post('/api/amenities/', data);
+    const response = await this.api.post("/api/amenities/", data);
     return response.data;
   }
 
   async getAmenitiesTypes(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/amenities-types/', { params });
+    const response = await this.api.get("/api/amenities-types/", { params });
     return response.data;
   }
 
   // Annual Leave Quotas
   async getAnnualLeaveQuotas(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/annual-leave-quotas/', { params });
+    const response = await this.api.get("/api/annual-leave-quotas/", {
+      params,
+    });
     return response.data;
   }
 
   async createAnnualLeaveQuota(data: any): Promise<any> {
-    const response = await this.api.post('/api/annual-leave-quotas/', data);
+    const response = await this.api.post("/api/annual-leave-quotas/", data);
     return response.data;
   }
 
   // Biometric
   async getBiometricData(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/biometric/', { params });
+    const response = await this.api.get("/api/biometric/", { params });
     return response.data;
   }
 
   async uploadBiometricData(data: any): Promise<any> {
-    const response = await this.api.post('/api/biometric/upload-biometric-data/', data);
+    const response = await this.api.post(
+      "/api/biometric/upload-biometric-data/",
+      data,
+    );
     return response.data;
   }
 
   async updateBiometricData(data: any): Promise<any> {
-    const response = await this.api.patch('/api/biometric/update-biometric-data/', data);
+    const response = await this.api.patch(
+      "/api/biometric/update-biometric-data/",
+      data,
+    );
     return response.data;
   }
 
   async deleteBiometricData(data: any): Promise<any> {
-    const response = await this.api.post('/api/biometric/delete-biometric-data/', data);
+    const response = await this.api.post(
+      "/api/biometric/delete-biometric-data/",
+      data,
+    );
     return response.data;
   }
 
   // Devices
   async getDevices(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/devices/', { params });
+    const response = await this.api.get("/api/devices/", { params });
     return response.data;
   }
 
   async getAllDevices(): Promise<any> {
-    const response = await this.api.get('/api/devices/all-devices/');
+    const response = await this.api.get("/api/devices/all-devices/");
     return response.data;
   }
 
   async getDeviceReadings(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/device-readings/', { params });
+    const response = await this.api.get("/api/device-readings/", { params });
     return response.data;
   }
 
   async getLiveDeviceReadings(): Promise<any> {
-    const response = await this.api.get('/api/device-readings/live-device-readings/');
+    const response = await this.api.get(
+      "/api/device-readings/live-device-readings/",
+    );
     return response.data;
   }
 
   async getAllDeviceReadings(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/all-device-readings/', { params });
+    const response = await this.api.get("/api/all-device-readings/", {
+      params,
+    });
     return response.data;
   }
 
   // EMS (Energy Management System)
   async getEmsRooms(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/ems-rooms/', { params });
+    const response = await this.api.get("/api/ems-rooms/", { params });
     return response.data;
   }
 
   async getRoomData(): Promise<any> {
-    const response = await this.api.get('/api/ems-rooms/get-room-data/');
+    const response = await this.api.get("/api/ems-rooms/get-room-data/");
     return response.data;
   }
 
   async getEmsSchedules(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/ems-schedules/', { params });
+    const response = await this.api.get("/api/ems-schedules/", { params });
     return response.data;
   }
 
   async createEmsSchedule(data: any): Promise<any> {
-    const response = await this.api.post('/api/ems-schedules/', data);
+    const response = await this.api.post("/api/ems-schedules/", data);
     return response.data;
   }
 
   async controlNow(data: any): Promise<any> {
-    const response = await this.api.post('/api/ems-schedules/control-now/', data);
+    const response = await this.api.post(
+      "/api/ems-schedules/control-now/",
+      data,
+    );
     return response.data;
   }
 
   // Bulk Operations
   async bulkCreateAttendance(data: any): Promise<any> {
-    const response = await this.api.post('/api/bulk-attendance/bulk-create/', data);
+    const response = await this.api.post(
+      "/api/bulk-attendance/bulk-create/",
+      data,
+    );
     return response.data;
   }
 
   // Availability
   async getAvailablePeriods(): Promise<any> {
-    const response = await this.api.get('/api/availability/available-periods/');
+    const response = await this.api.get("/api/availability/available-periods/");
     return response.data;
   }
 
   async getAvailableTeachers(): Promise<any> {
-    const response = await this.api.get('/api/availability/available-teachers/');
+    const response = await this.api.get(
+      "/api/availability/available-teachers/",
+    );
     return response.data;
   }
 
   // Designations
   async getDesignations(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/designations/', { params });
+    const response = await this.api.get("/api/designations/", { params });
     return response.data;
   }
 
   async createDesignation(data: any): Promise<any> {
-    const response = await this.api.post('/api/designations/', data);
+    const response = await this.api.post("/api/designations/", data);
     return response.data;
   }
 
   // Device Registry & Thresholds
   async getDeviceRegistry(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/device-registry/', { params });
+    const response = await this.api.get("/api/device-registry/", { params });
     return response.data;
   }
 
   async getDeviceThresholds(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/device-thresholds/', { params });
+    const response = await this.api.get("/api/device-thresholds/", { params });
     return response.data;
   }
 
   async checkAlerts(): Promise<any> {
-    const response = await this.api.get('/api/device-thresholds/check-alerts/');
+    const response = await this.api.get("/api/device-thresholds/check-alerts/");
     return response.data;
   }
 
   // Domains
   async getDomains(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/domains/', { params });
+    const response = await this.api.get("/api/domains/", { params });
     return response.data;
   }
 
   // Answers (for exams/quizzes)
   async getAnswers(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get('/api/answers/', { params });
+    const response = await this.api.get("/api/answers/", { params });
     return response.data;
   }
 
   async createAnswer(data: any): Promise<any> {
-    const response = await this.api.post('/api/answers/', data);
+    const response = await this.api.post("/api/answers/", data);
     return response.data;
   }
 }

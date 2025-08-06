@@ -1,9 +1,8 @@
-
-import { useState, useEffect, useCallback } from 'react';
-import { apiService } from '@/api/apiService';
+import { useState, useEffect, useCallback } from "react";
+import { apiService } from "@/api/apiService";
 
 export function useAnnouncements(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -14,8 +13,10 @@ export function useAnnouncements(params?: any) {
       const response = await apiService.getAnnouncements(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch announcements');
-      console.error('Error fetching announcements:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch announcements",
+      );
+      console.error("Error fetching announcements:", err);
     } finally {
       setLoading(false);
     }
@@ -29,7 +30,7 @@ export function useAnnouncements(params?: any) {
 }
 
 export function useEvents(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,10 +39,19 @@ export function useEvents(params?: any) {
       setLoading(true);
       setError(null);
       const response = await apiService.getEvents(params);
+      console.log("API Response:", response); // Log the response
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch events');
-      console.error('Error fetching events:', err);
+      const errorMessage =
+        err instanceof Error && "response" in err && err.response
+          ? `Error ${(err as any).response.status}: ${
+              (err as any).response.data
+            }`
+          : err instanceof Error
+            ? err.message
+            : "Failed to fetch events";
+      setError(errorMessage);
+      console.error("Error fetching events:", err);
     } finally {
       setLoading(false);
     }
@@ -49,13 +59,13 @@ export function useEvents(params?: any) {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [params]);
 
   return { data, loading, error, refetch: fetchData };
 }
 
 export function useAttendanceDashboard() {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,8 +76,10 @@ export function useAttendanceDashboard() {
       const response = await apiService.getAttendanceDashboard();
       setData(response);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch attendance data');
-      console.error('Error fetching attendance dashboard:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch attendance data",
+      );
+      console.error("Error fetching attendance dashboard:", err);
     } finally {
       setLoading(false);
     }
@@ -93,8 +105,10 @@ export function useLeaveQuotas(userId?: number) {
       const response = await apiService.getAnnualLeaveQuotas(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch leave quotas');
-      console.error('Error fetching leave quotas:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch leave quotas",
+      );
+      console.error("Error fetching leave quotas:", err);
     } finally {
       setLoading(false);
     }
@@ -119,8 +133,10 @@ export function useAcademicYears(params?: any) {
       const response = await apiService.getAcademicYears(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch academic years');
-      console.error('Error fetching academic years:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch academic years",
+      );
+      console.error("Error fetching academic years:", err);
     } finally {
       setLoading(false);
     }
@@ -145,8 +161,10 @@ export function useDepartments(params?: any) {
       const response = await apiService.getDepartments(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch departments');
-      console.error('Error fetching departments:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch departments",
+      );
+      console.error("Error fetching departments:", err);
     } finally {
       setLoading(false);
     }
@@ -171,8 +189,8 @@ export function useBranches(params?: any) {
       const response = await apiService.getBranches(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch branches');
-      console.error('Error fetching branches:', err);
+      setError(err instanceof Error ? err.message : "Failed to fetch branches");
+      console.error("Error fetching branches:", err);
     } finally {
       setLoading(false);
     }
@@ -197,8 +215,10 @@ export function useChatMessages(params?: any) {
       const response = await apiService.getChatMessages(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch chat messages');
-      console.error('Error fetching chat messages:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch chat messages",
+      );
+      console.error("Error fetching chat messages:", err);
     } finally {
       setLoading(false);
     }
@@ -223,8 +243,10 @@ export function useDocuments(params?: any) {
       const response = await apiService.getDocuments(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch documents');
-      console.error('Error fetching documents:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch documents",
+      );
+      console.error("Error fetching documents:", err);
     } finally {
       setLoading(false);
     }
@@ -249,8 +271,10 @@ export function useDeviceReadings(params?: any) {
       const response = await apiService.getDeviceReadings(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch device readings');
-      console.error('Error fetching device readings:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch device readings",
+      );
+      console.error("Error fetching device readings:", err);
     } finally {
       setLoading(false);
     }
@@ -275,8 +299,10 @@ export function useAttendance(params?: any) {
       const response = await apiService.getAttendance(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch attendance data');
-      console.error('Error fetching attendance:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch attendance data",
+      );
+      console.error("Error fetching attendance:", err);
     } finally {
       setLoading(false);
     }
@@ -301,8 +327,10 @@ export function useAmenities(params?: any) {
       const response = await apiService.getAmenities(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch amenities');
-      console.error('Error fetching amenities:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch amenities",
+      );
+      console.error("Error fetching amenities:", err);
     } finally {
       setLoading(false);
     }
@@ -327,8 +355,10 @@ export function useDesignations(params?: any) {
       const response = await apiService.getDesignations(params);
       setData(response.results || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch designations');
-      console.error('Error fetching designations:', err);
+      setError(
+        err instanceof Error ? err.message : "Failed to fetch designations",
+      );
+      console.error("Error fetching designations:", err);
     } finally {
       setLoading(false);
     }
