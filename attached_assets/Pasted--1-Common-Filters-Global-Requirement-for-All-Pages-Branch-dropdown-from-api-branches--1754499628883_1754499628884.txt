@@ -1,0 +1,96 @@
+✅ 1. Common Filters (Global Requirement for All Pages)
+✅ Branch dropdown (from /api/branches/)
+
+✅ Academic Year dropdown (from /api/academic-years/)
+
+✅ Search bar (search students or items)
+
+✅ All filters should be in an accordion-style collapsible section labeled "Filters"
+
+✅ Clicking “Apply Filters” should fetch and render data
+
+❗Avoid grouping dropdowns, keep clean and minimal
+
+🔄 Prevent infinite fetch loops in dropdowns:
+
+Memoize API calls using useMemo or useRef
+
+Avoid reloading on every render
+
+🧰 2. Stationery Type Management Page (CRUD)
+This page allows admin to manage types of stationery items.
+
+Features:
+View list of stationery types with name, description
+
+Add new stationery type (Name + Description)
+
+Edit existing stationery type
+
+Delete stationery type (with confirmation)
+
+🧠 If stationery types are part of /standards/ or other shared schemas, reuse existing APIs and components — do not duplicate.
+
+🏪 3. Inventory Screen Enhancements
+Fix:
+🐛 The current Add/Edit Stationery button in inventory/stationary is conflicting — separate these clearly.
+
+“➕ Add New” should open a blank form
+
+“✏️ Edit” should open a pre-filled form
+
+Use conditional modal rendering or separate modals to prevent overlap
+
+CRUD Actions:
+Feature	Description
+Add Item	Add new inventory stationery item
+Edit Item	Edit selected item and quantity
+Delete Item	Remove item from inventory
+View Details	Full detail page or modal of a specific item
+
+🧾 4. Stationery Fee Details Page (Student-based)
+This screen displays which students have taken stationery, what items they took, and any pending amounts.
+
+Page Layout:
+Top Filters (Accordion-style):
+
+Branch (required)
+
+Academic Year (required)
+
+Standard
+
+Section
+
+Student Search
+
+Table View:
+
+Student Name	Standard	Section	Items Taken	Total Amount	Pending Amount	View Details
+John Doe	Class 6	A	4 items	₹250	₹100	👁️ View
+
+View Details Modal:
+Stationery items list (name, qty, unit price)
+
+Total and pending
+
+Optionally, mark as paid or download invoice
+
+📌 Final Notes (for Devs)
+⚠️ Avoid API duplication:
+
+Reuse services in apiService.ts
+
+If a stationery-type or inventory API exists, use it instead of creating a new one.
+
+✅ Prevent infinite re-fetching:
+
+Use memoization (useMemo, useCallback) or effect guards
+
+📱 Ensure mobile responsiveness:
+
+Accordion filters to save space
+
+Smooth scroll and good spacing between table rows/cards
+
+🧑‍🎓 Link each student’s record to their stationery usage and payment with student_id or user_id
