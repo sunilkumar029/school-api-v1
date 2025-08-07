@@ -8,6 +8,15 @@ interface PaginatedResponse<T> {
   results: T[];
 }
 
+// Define a generic ApiResponse type for consistency
+type ApiResponse<T> = T;
+
+// Define a generic ApiError type for consistency
+interface ApiError {
+  message: string;
+  // Add other potential error fields here
+}
+
 class ApiService {
   private api: AxiosInstance;
 
@@ -801,6 +810,42 @@ class ApiService {
   // Rooms for assignment
   async getRooms(params?: any): Promise<PaginatedResponse<any>> {
     const response = await this.api.get("/api/stationary-types/", { params });
+    return response.data;
+  }
+
+  // Exam Timetable
+  async getExamTimetable(params: {
+    branch?: number;
+    academicYear?: number;
+    class_standard?: number;
+    section?: string;
+    exam_type?: string;
+  }): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/exam-timetable/", { params });
+    return response.data;
+  }
+
+  // Student Marks Table
+  async getStudentMarksTable(params: {
+    branch?: number;
+    academicYear?: number;
+    standard?: number;
+    section?: string;
+    exam_type?: string;
+  }): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/student-marks/", { params });
+    return response.data;
+  }
+
+  // Student Marks Analytics / Dashboard
+  async getStudentMarksAnalytics(params: {
+    branch?: number;
+    academicYear?: number;
+    standard?: number;
+    section?: string;
+    exam_type?: string;
+  }): Promise<any> {
+    const response = await this.api.get("/api/student-marks/analytics/", { params });
     return response.data;
   }
 }

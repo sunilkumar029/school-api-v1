@@ -1330,3 +1330,28 @@ export const useRooms = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+export const useInventory = (params?: Record<string, any>) => {
+  return useApi<any[]>('/inventory/', params);
+};
+
+// Exam-related hooks
+export const useExams = (params?: Record<string, any>) => {
+  return useApi<any[]>('/exams/', params);
+};
+
+export const useExamTypes = () => {
+  return useApi<any[]>('/exam-types/');
+};
+
+export const useStudentExamMarks = (params?: Record<string, any>) => {
+  return useApi<any[]>('/student-exam-marks/', params);
+};
+
+export const useStudentExamMarksAnalytics = (params?: Record<string, any>) => {
+  return useApi<any>('/student-exam-marks/exam-analytics/', params);
+};
+
+export const useExamScheduleDetails = (scheduleId: number) => {
+  return useApi<any>(`/exam-schedules/${scheduleId}/get-question-paper/`);
+};

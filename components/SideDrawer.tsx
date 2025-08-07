@@ -61,11 +61,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         { title: 'Student Attendance', icon: '✅', route: '/academics/student-attendance' },
       ]
     },
+    // Exams section
     {
       title: 'Exams',
       items: [
-        { title: 'Create Question', icon: '❓', route: '/exams/create-question' },
-        { title: 'Schedule Exam', icon: '📋', route: '/exams/schedule-exam' },
+        { title: 'Create Question', route: '/exams/create-question' },
+        { title: 'Schedule Exam', route: '/exams/schedule-exam' },
+        { title: 'Exam Timetable', route: '/exams/student-exam-timetable' },
+        { title: 'Student Marks', route: '/exams/student-marks-table' },
+        { title: 'Marks Analytics', route: '/exams/student-marks-analytics' },
       ]
     },
     {
