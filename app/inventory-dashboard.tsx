@@ -26,9 +26,16 @@ import {
 
 const { width: screenWidth } = Dimensions.get('window');
 
-// Utility function for random colors
-const getRandomColor = (): string => {
-  const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F'];
+// Utility function for random colors - moved before usage
+const getRandomColor = (str?: string): string => {
+  const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
+  if (str) {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
   return colors[Math.floor(Math.random() * colors.length)];
 };
 
@@ -152,14 +159,7 @@ export default function InventoryDashboardScreen() {
     };
   }, [inventoryItems]);
 
-  const getRandomColor = (str: string) => {
-    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = str.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return colors[Math.abs(hash) % colors.length];
-  };
+  
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {

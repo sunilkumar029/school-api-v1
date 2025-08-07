@@ -69,12 +69,12 @@ export default function DashboardScreen() {
 
   const { data: tasks, loading: tasksLoading, refetch: refetchTasks } = useTasks({
     ...apiParams,
-    status: 'pending',
+    limit: 5,
   });
 
   const { data: leaveRequests, loading: leaveLoading, refetch: refetchLeave } = useLeaveRequests({
     ...apiParams,
-    status: 'pending',
+    limit: 5,
   });
 
   const { data: inventoryDashboard, loading: inventoryLoading, refetch: refetchInventory } = useInventoryDashboard(apiParams);

@@ -36,6 +36,9 @@ class ApiService {
 
         if (token) {
           config.headers.Authorization = `Token ${token}`;
+        } else {
+          // For development, skip auth for some endpoints or provide a default token
+          console.warn("No auth token found. Some API calls may fail.");
         }
 
         // Fallback to demo server if no base URL is set

@@ -65,23 +65,28 @@ export const GlobalFiltersProvider: React.FC<GlobalFiltersProviderProps> = ({
           "global_selected_academic_year",
         );
 
-        if (savedBranch) {
+        if (savedBranch && branches.some(b => b.id === parseInt(savedBranch))) {
           setSelectedBranchState(parseInt(savedBranch));
         } else if (branches.length > 0) {
           setSelectedBranchState(branches[0].id);
+          await AsyncStorage.setItem("global_selected_branch", branches[0].id.toString());
         }
 
-        if (savedYear) {
+        if (savedYear && academicYears.some(y => y.id === parseInt(savedYear))) {
           setSelectedAcademicYearState(parseInt(savedYear));
         } else if (academicYears.length > 0) {
           setSelectedAcademicYearState(academicYears[0].id);
+          await AsyncStorage.setItem("global_selected_academic_year", academicYears[0].id.toString());
         }
       } catch (error) {
         console.error("Error loading saved filters:", error);
         // Set defaults if loading fails
-        if (branches.length > 0) setSelectedBranchState(branches[0].id);
-        if (academicYears.length > 0)
+        if (branches.length > 0) {
+          setSelectedBranchState(branches[0].id);
+        }
+        if (academicYears.length > 0) {
           setSelectedAcademicYearState(academicYears[0].id);
+        }
       }
     };
 

@@ -130,14 +130,14 @@ export default function NotificationsScreen() {
         {
           backgroundColor: colors.surface,
           borderColor: colors.border,
-          borderLeftColor: getNotificationColor(notification.notification_type),
+          borderLeftColor: getNotificationColor(notification.notification_type || 'default'),
         },
       ]}
     >
       <View style={styles.notificationHeader}>
         <View style={styles.notificationIconContainer}>
           <Text style={styles.notificationIcon}>
-            {getNotificationIcon(notification.notification_type)}
+            {getNotificationIcon(notification.notification_type || 'default')}
           </Text>
         </View>
         <View style={styles.notificationContent}>
@@ -146,7 +146,7 @@ export default function NotificationsScreen() {
               style={[styles.notificationTitle, { color: colors.textPrimary }]}
               numberOfLines={1}
             >
-              {notification.title || 'Untitled'}
+              {notification.title?.toString() || 'Untitled'}
             </Text>
             <Text style={[styles.notificationTime, { color: colors.textSecondary }]}>
               {formatDate(notification.created)}
@@ -156,16 +156,16 @@ export default function NotificationsScreen() {
             style={[styles.notificationMessage, { color: colors.textSecondary }]}
             numberOfLines={2}
           >
-            {notification.description || 'No description available'}
+            {notification.description?.toString() || 'No description available'}
           </Text>
           <View style={styles.notificationMeta}>
             <Text style={[styles.notificationMetaText, { color: colors.textSecondary }]}>
-              {notification.notification_type}
+              {notification.notification_type || 'Unknown'}
               {notification.notification_sub_type && ` • ${notification.notification_sub_type}`}
             </Text>
             {notification.created_by && (
               <Text style={[styles.notificationMetaText, { color: colors.textSecondary }]}>
-                By: {`${notification.created_by.first_name || ''} ${notification.created_by.last_name || ''}`.trim() || notification.created_by.email}
+                By: {`${notification.created_by.first_name || ''} ${notification.created_by.last_name || ''}`.trim() || notification.created_by.email || 'Unknown'}
               </Text>
             )}
           </View>
