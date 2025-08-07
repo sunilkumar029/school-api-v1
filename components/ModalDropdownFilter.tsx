@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,8 @@ import {
   ActivityIndicator,
   Dimensions,
   SafeAreaView,
-} from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext';
+} from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface DropdownItem {
   id: number;
@@ -42,13 +42,15 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedItem = items.find(item => item.id === selectedValue);
+  const selectedItem = items.find((item) => item.id === selectedValue);
   const displayText = selectedItem ? selectedItem.name : placeholder;
 
   return (
     <View style={compact ? styles.compactContainer : styles.container}>
       {!compact && (
-        <Text style={[styles.label, { color: colors.textPrimary }]}>{label}</Text>
+        <Text style={[styles.label, { color: colors.textPrimary }]}>
+          {label}
+        </Text>
       )}
 
       <TouchableOpacity
@@ -64,7 +66,7 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
         onPress={() => setModalVisible(true)}
         disabled={loading}
         accessibilityRole="button"
-        accessibilityLabel={`Select ${label}: ${selectedItem?.name || 'No selection'}`}
+        accessibilityLabel={`Select ${label}: ${selectedItem?.name || "No selection"}`}
         accessibilityHint={`Opens a list to choose ${label}`}
       >
         <Text
@@ -75,7 +77,9 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
           ]}
           numberOfLines={1}
         >
-          {compact && displayText.length > 12 ? displayText.slice(0, 12) + '...' : displayText}
+          {compact && displayText.length > 12
+            ? displayText.slice(0, 12) + "..."
+            : displayText}
         </Text>
         <Text style={[styles.arrow, { color: colors.textSecondary }]}>▼</Text>
       </TouchableOpacity>
@@ -86,7 +90,12 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}>
+        <View
+          style={[
+            styles.modalOverlay,
+            { backgroundColor: colors.modalOverlay },
+          ]}
+        >
           <SafeAreaView style={styles.modalSafeArea}>
             <View
               style={[
@@ -96,7 +105,9 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
               ]}
             >
               <View style={styles.modalHeader}>
-                <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                <Text
+                  style={[styles.modalTitle, { color: colors.textPrimary }]}
+                >
                   Select {label}
                 </Text>
                 <TouchableOpacity
@@ -113,68 +124,79 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                 </TouchableOpacity>
               </View>
 
-            <ScrollView style={styles.modalBody}>
-              {loading ? (
-                <ActivityIndicator
-                  size="large"
-                  color={colors.primary}
-                  style={styles.loading}
-                />
-              ) : items.length === 0 ? (
-                <View style={styles.emptyStateContainer}>
-                  <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>No items available</Text>
-                </View>
-              ) : (
-                items.map((item) => (
-                  <TouchableOpacity
-                    key={item.id}
-                    style={[
-                      styles.modalItem,
-                      {
-                        backgroundColor:
-                          selectedValue === item.id
-                            ? colors.primary + '20'
-                            : 'transparent',
-                        borderBottomColor: colors.border,
-                      },
-                    ]}
-                    onPress={() => {
-                      onValueChange(item.id);
-                      setModalVisible(false);
-                    }}
-                    accessibilityRole="menuitem"
-                    accessibilityLabel={item.name}
-                    accessibilityState={{ selected: selectedValue === item.id }}
-                  >
+              <ScrollView style={styles.modalBody}>
+                {loading ? (
+                  <ActivityIndicator
+                    size="large"
+                    color={colors.primary}
+                    style={styles.loading}
+                  />
+                ) : items.length === 0 ? (
+                  <View style={styles.emptyStateContainer}>
                     <Text
                       style={[
-                        styles.modalItemText,
-                        {
-                          color:
-                            selectedValue === item.id
-                              ? colors.primary
-                              : colors.textPrimary,
-                          fontWeight:
-                            selectedValue === item.id ? 'bold' : 'normal',
-                        },
+                        styles.emptyStateText,
+                        { color: colors.textSecondary },
                       ]}
                     >
-                      {item.name}
+                      No items available
                     </Text>
-                    {selectedValue === item.id && (
-                      <Text style={[styles.checkmark, { color: colors.primary }]}>
-                        ✓
+                  </View>
+                ) : (
+                  items.map((item) => (
+                    <TouchableOpacity
+                      key={item.id}
+                      style={[
+                        styles.modalItem,
+                        {
+                          backgroundColor:
+                            selectedValue === item.id
+                              ? colors.primary + "20"
+                              : "transparent",
+                          borderBottomColor: colors.border,
+                        },
+                      ]}
+                      onPress={() => {
+                        onValueChange(item.id);
+                        setModalVisible(false);
+                      }}
+                      accessibilityRole="menuitem"
+                      accessibilityLabel={item.name}
+                      accessibilityState={{
+                        selected: selectedValue === item.id,
+                      }}
+                    >
+                      <Text
+                        style={[
+                          styles.modalItemText,
+                          {
+                            color:
+                              selectedValue === item.id
+                                ? colors.primary
+                                : colors.textPrimary,
+                            fontWeight:
+                              selectedValue === item.id ? "bold" : "normal",
+                          },
+                        ]}
+                      >
+                        {item.name}
                       </Text>
-                    )}
-                  </TouchableOpacity>
-                ))
-              )}
-            </ScrollView>
-          </View>
+                      {selectedValue === item.id && (
+                        <Text
+                          style={[styles.checkmark, { color: colors.primary }]}
+                        >
+                          ✓
+                        </Text>
+                      )}
+                    </TouchableOpacity>
+                  ))
+                )}
+              </ScrollView>
+            </View>
           </SafeAreaView>
         </View>
       </Modal>
-    </>
+    </View>
   );
 };
 
@@ -187,13 +209,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 8,
   },
   dropdownButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 12,
     paddingVertical: 10,
     borderWidth: 1,
@@ -201,7 +223,7 @@ const styles = StyleSheet.create({
     minHeight: 44,
     minWidth: 120,
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.05,
     shadowRadius: 2,
@@ -212,11 +234,11 @@ const styles = StyleSheet.create({
     minWidth: 80,
   },
   fullWidth: {
-    width: '100%',
+    width: "100%",
   },
   buttonText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     flex: 1,
     marginRight: 8, // Add some space for the arrow
   },
@@ -225,48 +247,48 @@ const styles = StyleSheet.create({
   },
   arrow: {
     fontSize: 10,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalOverlay: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalSafeArea: {
     flex: 1,
-    width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    width: '80%',
-    maxHeight: '70%',
+    width: "80%",
+    maxHeight: "70%",
     borderRadius: 12,
     elevation: 8,
-    overflow: 'hidden', // To ensure border radius is applied to children
+    overflow: "hidden", // To ensure border radius is applied to children
   },
   compactModal: {
-    width: '90%',
-    maxHeight: '80%',
+    width: "90%",
+    maxHeight: "80%",
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB', // Consider using theme colors here
+    borderBottomColor: "#E5E7EB", // Consider using theme colors here
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeButton: {
     padding: 4,
   },
   closeButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalBody: {
     flexGrow: 1, // Allow scroll view to take available space
@@ -274,9 +296,9 @@ const styles = StyleSheet.create({
     paddingBottom: 16, // Add padding at the bottom of the scrollable content
   },
   modalItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     paddingVertical: 16,
     paddingHorizontal: 16,
     borderBottomWidth: 1,
@@ -287,19 +309,19 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   loading: {
     paddingVertical: 20,
   },
   emptyStateContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingVertical: 40,
   },
   emptyStateText: {
     fontSize: 16,
-    fontStyle: 'italic',
+    fontStyle: "italic",
   },
 });

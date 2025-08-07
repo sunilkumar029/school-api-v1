@@ -1,7 +1,7 @@
-
-import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext';
+import React, { Component, ErrorInfo, ReactNode } from "react";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { ThemeProvider } from "@react-navigation/native";
 
 interface Props {
   children?: ReactNode;
@@ -23,7 +23,7 @@ class ErrorBoundaryClass extends Component<Props & { colors: any }, State> {
   }
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
   }
 
   private handleRetry = () => {
@@ -37,19 +37,47 @@ class ErrorBoundaryClass extends Component<Props & { colors: any }, State> {
       }
 
       return (
-        <View style={[styles.container, { backgroundColor: this.props.colors.background }]}>
-          <View style={[styles.errorContainer, { backgroundColor: this.props.colors.surface }]}>
-            <Text style={[styles.errorTitle, { color: this.props.colors.textPrimary }]}>
+        <View
+          style={[
+            styles.container,
+            { backgroundColor: this.props.colors.background },
+          ]}
+        >
+          <View
+            style={[
+              styles.errorContainer,
+              { backgroundColor: this.props.colors.surface },
+            ]}
+          >
+            <Text
+              style={[
+                styles.errorTitle,
+                { color: this.props.colors.textPrimary },
+              ]}
+            >
               Something went wrong
             </Text>
-            <Text style={[styles.errorMessage, { color: this.props.colors.textSecondary }]}>
+            <Text
+              style={[
+                styles.errorMessage,
+                { color: this.props.colors.textSecondary },
+              ]}
+            >
               We're sorry, but something unexpected happened. Please try again.
             </Text>
             <TouchableOpacity
-              style={[styles.retryButton, { backgroundColor: this.props.colors.primary }]}
+              style={[
+                styles.retryButton,
+                { backgroundColor: this.props.colors.primary },
+              ]}
               onPress={this.handleRetry}
             >
-              <Text style={[styles.retryButtonText, { color: this.props.colors.surface }]}>
+              <Text
+                style={[
+                  styles.retryButtonText,
+                  { color: this.props.colors.surface },
+                ]}
+              >
                 Try Again
               </Text>
             </TouchableOpacity>
@@ -65,40 +93,42 @@ class ErrorBoundaryClass extends Component<Props & { colors: any }, State> {
 export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
   const { colors } = useTheme();
   return (
-    <ErrorBoundaryClass colors={colors} fallback={fallback}>
-      {children}
-    </ErrorBoundaryClass>
+    <ThemeProvider>
+      <ErrorBoundaryClass colors={colors} fallback={fallback}>
+        {children}
+      </ErrorBoundaryClass>
+    </ThemeProvider>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 20,
   },
   errorContainer: {
     padding: 24,
     borderRadius: 12,
-    alignItems: 'center',
+    alignItems: "center",
     maxWidth: 320,
     elevation: 4,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
   errorTitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 12,
-    textAlign: 'center',
+    textAlign: "center",
   },
   errorMessage: {
     fontSize: 14,
     lineHeight: 20,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: 24,
   },
   retryButton: {
@@ -108,6 +138,6 @@ const styles = StyleSheet.create({
   },
   retryButtonText: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });

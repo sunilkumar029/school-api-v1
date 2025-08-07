@@ -41,81 +41,92 @@ export function useEvents(params?: any) {
   const [retryCount, setRetryCount] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async (isRetry = false) => {
-    // Circuit breaker: stop trying after 3 failures
-    if (isBlocked && retryCount >= 3) {
-      setError("Too many failed attempts. Please try again later.");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      setError(null);
-
-      // Clean up params to avoid API errors
-      const cleanParams = { ...params };
-
-      // Remove problematic parameters that might cause 500 errors
-      if (cleanParams && typeof cleanParams === 'object') {
-        // Only include valid parameters
-        const validParams: any = {};
-        if (cleanParams.branch) validParams.branch = cleanParams.branch;
-        if (cleanParams.academic_year) validParams.academic_year = cleanParams.academic_year;
-        if (cleanParams.limit) validParams.limit = cleanParams.limit;
-        if (cleanParams.ordering) validParams.ordering = cleanParams.ordering;
-
-        const response = await apiService.getEvents(validParams);
-        setData(response.results || []);
-      } else {
-        const response = await apiService.getEvents();
-        setData(response.results || []);
+  const fetchData = useCallback(
+    async (isRetry = false) => {
+      // Circuit breaker: stop trying after 3 failures
+      if (isBlocked && retryCount >= 3) {
+        setError("Too many failed attempts. Please try again later.");
+        setLoading(false);
+        return;
       }
 
-      setHasInitialized(true);
-      setRetryCount(0); // Reset retry count on success
-      setIsBlocked(false);
-    } catch (err: unknown) {
-      let errorMessage = "Failed to fetch events";
+      try {
+        setLoading(true);
+        setError(null);
 
-      if (err && typeof err === 'object') {
-        const axiosError = err as any;
-        if (axiosError.response) {
-          const status = axiosError.response.status;
-          if (status === 500) {
-            errorMessage = "Server error. Events API may be experiencing issues.";
-          } else if (status === 502) {
-            errorMessage = "Server temporarily unavailable. Please try again later.";
-          } else {
-            errorMessage = `Error ${status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
-          }
-        } else if (axiosError.message) {
-          if (axiosError.message.includes('timeout')) {
-            errorMessage = "Request timed out. Please check your connection and try again.";
-          } else {
-            errorMessage = axiosError.message;
+        // Clean up params to avoid API errors
+        const cleanParams = { ...params };
+
+        // Remove problematic parameters that might cause 500 errors
+        if (cleanParams && typeof cleanParams === "object") {
+          // Only include valid parameters
+          const validParams: any = {};
+          if (cleanParams.branch) validParams.branch = cleanParams.branch;
+          if (cleanParams.academic_year)
+            validParams.academic_year = cleanParams.academic_year;
+          if (cleanParams.limit) validParams.limit = cleanParams.limit;
+          if (cleanParams.ordering) validParams.ordering = cleanParams.ordering;
+
+          const response = await apiService.getEvents(validParams);
+          setData(response.results || []);
+        } else {
+          const response = await apiService.getEvents();
+          setData(response.results || []);
+        }
+
+        setHasInitialized(true);
+        setRetryCount(0); // Reset retry count on success
+        setIsBlocked(false);
+      } catch (err: unknown) {
+        let errorMessage = "Failed to fetch events";
+
+        if (err && typeof err === "object") {
+          const axiosError = err as any;
+          if (axiosError.response) {
+            const status = axiosError.response.status;
+            if (status === 500) {
+              errorMessage =
+                "Server error. Events API may be experiencing issues.";
+            } else if (status === 502) {
+              errorMessage =
+                "Server temporarily unavailable. Please try again later.";
+            } else {
+              errorMessage = `Error ${status}: ${axiosError.response.data?.message || axiosError.response.data || "Server Error"}`;
+            }
+          } else if (axiosError.message) {
+            if (axiosError.message.includes("timeout")) {
+              errorMessage =
+                "Request timed out. Please check your connection and try again.";
+            } else {
+              errorMessage = axiosError.message;
+            }
           }
         }
-      }
 
-      setError(errorMessage);
-      console.error("Error fetching events:", err);
+        setError(errorMessage);
+        console.error("Error fetching events:", err);
 
-      // Don't retry on 500 errors to avoid spam
-      if (err && typeof err === 'object' && (err as any).response?.status === 500) {
-        setIsBlocked(true);
-      } else {
-        // Increment retry count and set blocked state if too many failures
-        const newRetryCount = retryCount + 1;
-        setRetryCount(newRetryCount);
-        if (newRetryCount >= 3) {
+        // Don't retry on 500 errors to avoid spam
+        if (
+          err &&
+          typeof err === "object" &&
+          (err as any).response?.status === 500
+        ) {
           setIsBlocked(true);
+        } else {
+          // Increment retry count and set blocked state if too many failures
+          const newRetryCount = retryCount + 1;
+          setRetryCount(newRetryCount);
+          if (newRetryCount >= 3) {
+            setIsBlocked(true);
+          }
         }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(params), retryCount, isBlocked]);
+    },
+    [JSON.stringify(params), retryCount, isBlocked],
+  );
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -157,8 +168,12 @@ export function useStudentMarksAnalytics(params?: {
       const response = await apiService.getStudentMarksAnalytics(params || {});
       setData(response);
     } catch (err: any) {
-      console.error('Student marks analytics fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks analytics');
+      console.error("Student marks analytics fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch student marks analytics",
+      );
     } finally {
       setLoading(false);
     }
@@ -199,8 +214,12 @@ export function useStudentMarksTable(params?: {
       const response = await apiService.getStudentMarksTable(params || {});
       setData(response);
     } catch (err: any) {
-      console.error('Student marks table fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks table');
+      console.error("Student marks table fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch student marks table",
+      );
     } finally {
       setLoading(false);
     }
@@ -240,8 +259,12 @@ export function useLeaveQuotas(params?: {
       const response = await apiService.getLeaveQuotas(params || {});
       setData(response);
     } catch (err: any) {
-      console.error('Leave quotas fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch leave quotas');
+      console.error("Leave quotas fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch leave quotas",
+      );
     } finally {
       setLoading(false);
     }
@@ -271,8 +294,12 @@ export function useAttendanceDashboard() {
       const response = await apiService.getAttendanceDashboard();
       setData(response);
     } catch (err: any) {
-      console.error('Attendance dashboard fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch attendance dashboard');
+      console.error("Attendance dashboard fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch attendance dashboard",
+      );
     } finally {
       setLoading(false);
     }
@@ -576,62 +603,70 @@ export function useUsers(params?: any) {
   const [retryCount, setRetryCount] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async (isRetry = false) => {
-    // Circuit breaker: stop trying after 3 failures
-    if (isBlocked && retryCount >= 3) {
-      setError("Too many failed attempts. Please try again later.");
-      setLoading(false);
-      return;
-    }
+  const fetchData = useCallback(
+    async (isRetry = false) => {
+      // Circuit breaker: stop trying after 3 failures
+      if (isBlocked && retryCount >= 3) {
+        setError("Too many failed attempts. Please try again later.");
+        setLoading(false);
+        return;
+      }
 
-    try {
-      setLoading(true);
-      setError(null);
+      try {
+        setLoading(true);
+        setError(null);
 
-      // Add required branch parameter if missing
-      const requestParams = {
-        ...params,
-        // Add default branch if not provided and API requires it
-        ...(params && !params.branch && { branch: 1 })
-      };
+        // Add required branch parameter if missing
+        const requestParams = {
+          ...params,
+          // Add default branch if not provided and API requires it
+          ...(params && !params.branch && { branch: 1 }),
+        };
 
-      const response = await apiService.getUsers(requestParams);
-      setData(response.results || []);
-      setHasInitialized(true);
-      setRetryCount(0); // Reset retry count on success
-      setIsBlocked(false);
-    } catch (err: unknown) {
-      let errorMessage = "Failed to fetch users";
+        const response = await apiService.getUsers(requestParams);
+        setData(response.results || []);
+        setHasInitialized(true);
+        setRetryCount(0); // Reset retry count on success
+        setIsBlocked(false);
+      } catch (err: unknown) {
+        let errorMessage = "Failed to fetch users";
 
-      if (err && typeof err === 'object') {
-        const axiosError = err as any;
-        if (axiosError.response) {
-          const status = axiosError.response.status;
-          const responseData = axiosError.response.data;
+        if (err && typeof err === "object") {
+          const axiosError = err as any;
+          if (axiosError.response) {
+            const status = axiosError.response.status;
+            const responseData = axiosError.response.data;
 
-          if (status === 400 && typeof responseData === 'string' && responseData.includes('Branch is required')) {
-            errorMessage = "Branch selection is required. Please select a branch first.";
-          } else {
-            errorMessage = `Error ${status}: ${responseData?.message || responseData || 'Server Error'}`;
+            if (
+              status === 400 &&
+              typeof responseData === "string" &&
+              responseData.includes("Branch is required")
+            ) {
+              errorMessage =
+                "Branch selection is required. Please select a branch first.";
+            } else {
+              errorMessage = `Error ${status}: ${responseData?.message || responseData || "Server Error"}`;
+            }
+          } else if (axiosError.message) {
+            errorMessage = axiosError.message;
           }
-        } else if (axiosError.message) {
-          errorMessage = axiosError.message;
         }
-      }
 
-      setError(errorMessage);
-      console.error("Error fetching users:", err);
+        setError(errorMessage);
+        console.error("Error fetching users:", err);
 
-      // Increment retry count and set blocked state if too many failures
-      const newRetryCount = retryCount + 1;
-      setRetryCount(newRetryCount);
-      if (newRetryCount >= 3) {
-        setIsBlocked(true);
+        // Increment retry count and set blocked state if too many failures
+        const newRetryCount = retryCount + 1;
+        setRetryCount(newRetryCount);
+        if (newRetryCount >= 3) {
+          setIsBlocked(true);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(params), retryCount, isBlocked]); // Added JSON.stringify for params
+    },
+    [JSON.stringify(params), retryCount, isBlocked],
+  ); // Added JSON.stringify for params
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -657,47 +692,50 @@ export function useGroups(params?: any) {
   const [retryCount, setRetryCount] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
 
-  const fetchData = useCallback(async (isRetry = false) => {
-    // Circuit breaker: stop trying after 3 failures
-    if (isBlocked && retryCount >= 3) {
-      setError("Too many failed attempts. Please try again later.");
-      setLoading(false);
-      return;
-    }
+  const fetchData = useCallback(
+    async (isRetry = false) => {
+      // Circuit breaker: stop trying after 3 failures
+      if (isBlocked && retryCount >= 3) {
+        setError("Too many failed attempts. Please try again later.");
+        setLoading(false);
+        return;
+      }
 
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await apiService.getGroups(params);
-      setData(response.results || []);
-      setHasInitialized(true);
-      setRetryCount(0); // Reset retry count on success
-      setIsBlocked(false);
-    } catch (err: unknown) {
-      let errorMessage = "Failed to fetch groups";
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await apiService.getGroups(params);
+        setData(response.results || []);
+        setHasInitialized(true);
+        setRetryCount(0); // Reset retry count on success
+        setIsBlocked(false);
+      } catch (err: unknown) {
+        let errorMessage = "Failed to fetch groups";
 
-      if (err && typeof err === 'object') {
-        const axiosError = err as any;
-        if (axiosError.response) {
-          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
-        } else if (axiosError.message) {
-          errorMessage = axiosError.message;
+        if (err && typeof err === "object") {
+          const axiosError = err as any;
+          if (axiosError.response) {
+            errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || "Server Error"}`;
+          } else if (axiosError.message) {
+            errorMessage = axiosError.message;
+          }
         }
-      }
 
-      setError(errorMessage);
-      console.error("Error fetching groups:", err);
+        setError(errorMessage);
+        console.error("Error fetching groups:", err);
 
-      // Increment retry count and set blocked state if too many failures
-      const newRetryCount = retryCount + 1;
-      setRetryCount(newRetryCount);
-      if (newRetryCount >= 3) {
-        setIsBlocked(true);
+        // Increment retry count and set blocked state if too many failures
+        const newRetryCount = retryCount + 1;
+        setRetryCount(newRetryCount);
+        if (newRetryCount >= 3) {
+          setIsBlocked(true);
+        }
+      } finally {
+        setLoading(false);
       }
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(params), retryCount, isBlocked]); // Added JSON.stringify for params
+    },
+    [JSON.stringify(params), retryCount, isBlocked],
+  ); // Added JSON.stringify for params
 
   useEffect(() => {
     if (!hasInitialized && !isBlocked) {
@@ -728,8 +766,10 @@ export const usePeriods = (params: any = {}) => {
       const response = await apiService.getPeriods(params);
       setData(response.results || response);
     } catch (err: any) {
-      console.error('Periods fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch periods');
+      console.error("Periods fetch error:", err);
+      setError(
+        err.response?.data?.message || err.message || "Failed to fetch periods",
+      );
     } finally {
       setLoading(false);
     }
@@ -758,8 +798,12 @@ export const useTeacherTimetable = (params: any = {}) => {
       const response = await apiService.getTeacherTimetable(params);
       setData(response);
     } catch (err: any) {
-      console.error('Teacher timetable fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch teacher timetable');
+      console.error("Teacher timetable fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch teacher timetable",
+      );
     } finally {
       setLoading(false);
     }
@@ -788,8 +832,12 @@ export const useSections = (params: any = {}) => {
       const response = await apiService.getSections(params);
       setData(response.results || response);
     } catch (err: any) {
-      console.error('Sections fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch sections');
+      console.error("Sections fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch sections",
+      );
     } finally {
       setLoading(false);
     }
@@ -818,8 +866,10 @@ export const useAllUsers = (params: any = {}) => {
       const response = await apiService.getAllUsers(params);
       setData(response.results || response);
     } catch (err: any) {
-      console.error('All users fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch users');
+      console.error("All users fetch error:", err);
+      setError(
+        err.response?.data?.message || err.message || "Failed to fetch users",
+      );
     } finally {
       setLoading(false);
     }
@@ -849,8 +899,10 @@ export const useFees = (params: any = {}) => {
       const response = await apiService.getFees(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Fees fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch fees');
+      console.error("Fees fetch error:", err);
+      setError(
+        err.response?.data?.message || err.message || "Failed to fetch fees",
+      );
     } finally {
       setLoading(false);
     }
@@ -879,8 +931,12 @@ export const useFeeTypes = (params: any = {}) => {
       const response = await apiService.getFeeTypes(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Fee types fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch fee types');
+      console.error("Fee types fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch fee types",
+      );
     } finally {
       setLoading(false);
     }
@@ -909,8 +965,12 @@ export const useStandards = (params: any = {}) => {
       const response = await apiService.getStandards(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Standards fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch standards');
+      console.error("Standards fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch standards",
+      );
     } finally {
       setLoading(false);
     }
@@ -940,8 +1000,12 @@ export const useTotalFeeSummary = (params: any = {}) => {
       const response = await apiService.getTotalFeeSummary(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Total fee summary fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch total fee summary');
+      console.error("Total fee summary fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch total fee summary",
+      );
     } finally {
       setLoading(false);
     }
@@ -970,8 +1034,12 @@ export const useFeeSummary = (params: any = {}) => {
       const response = await apiService.getFeeSummary(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Fee summary fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch fee summary');
+      console.error("Fee summary fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch fee summary",
+      );
     } finally {
       setLoading(false);
     }
@@ -1000,8 +1068,12 @@ export const useFeePayments = (params: any = {}) => {
       const response = await apiService.getFeePayments(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Fee payments fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch fee payments');
+      console.error("Fee payments fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch fee payments",
+      );
     } finally {
       setLoading(false);
     }
@@ -1030,8 +1102,12 @@ export const useFeeDashboardAnalytics = (params: any = {}) => {
       const response = await apiService.getFeeDashboardAnalytics(params);
       setData(response);
     } catch (err: any) {
-      console.error('Fee dashboard analytics fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch fee dashboard analytics');
+      console.error("Fee dashboard analytics fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch fee dashboard analytics",
+      );
     } finally {
       setLoading(false);
     }
@@ -1061,8 +1137,12 @@ export const useStationaryTypes = (params: any = {}) => {
       const response = await apiService.getStationaryTypes(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Stationary types fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary types');
+      console.error("Stationary types fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch stationary types",
+      );
     } finally {
       setLoading(false);
     }
@@ -1091,8 +1171,12 @@ export const useStationary = (params: any = {}) => {
       const response = await apiService.getStationary(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Stationary fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary');
+      console.error("Stationary fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch stationary",
+      );
     } finally {
       setLoading(false);
     }
@@ -1121,8 +1205,12 @@ export const useStationaryFee = (params: any = {}) => {
       const response = await apiService.getStationaryFee(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Stationary fee fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch stationary fee');
+      console.error("Stationary fee fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch stationary fee",
+      );
     } finally {
       setLoading(false);
     }
@@ -1153,8 +1241,12 @@ export const useStudentDetails = (id: number) => {
       const response = await apiService.getStudentDetails(id);
       setData(response);
     } catch (err: any) {
-      console.error('Student details fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch student details');
+      console.error("Student details fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch student details",
+      );
     } finally {
       setLoading(false);
     }
@@ -1183,8 +1275,12 @@ export const useInventoryTracking = (params: any = {}) => {
       const response = await apiService.getInventoryTracking(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Inventory tracking fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory tracking');
+      console.error("Inventory tracking fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch inventory tracking",
+      );
     } finally {
       setLoading(false);
     }
@@ -1214,8 +1310,12 @@ export const useSalaryTemplatesGrouped = (params: any = {}) => {
       const response = await apiService.getSalaryTemplatesGrouped(params);
       setData(response || []);
     } catch (err: any) {
-      console.error('Salary templates fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch salary templates');
+      console.error("Salary templates fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch salary templates",
+      );
     } finally {
       setLoading(false);
     }
@@ -1244,8 +1344,12 @@ export const useSalaryCategories = (params: any = {}) => {
       const response = await apiService.getSalaryCategories(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Salary categories fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch salary categories');
+      console.error("Salary categories fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch salary categories",
+      );
     } finally {
       setLoading(false);
     }
@@ -1274,8 +1378,10 @@ export const useAllUsersExceptStudents = (params: any = {}) => {
       const response = await apiService.getAllUsersExceptStudents(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Users fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch users');
+      console.error("Users fetch error:", err);
+      setError(
+        err.response?.data?.message || err.message || "Failed to fetch users",
+      );
     } finally {
       setLoading(false);
     }
@@ -1305,8 +1411,12 @@ export const useExpenditure = (params: any = {}) => {
       const response = await apiService.getExpenditure(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Expenditure fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch expenditure');
+      console.error("Expenditure fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch expenditure",
+      );
     } finally {
       setLoading(false);
     }
@@ -1333,11 +1443,18 @@ export const useExpenditureSummary = (branch: number, academicYear: number) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiService.getExpenditureSummary(branch, academicYear);
+      const response = await apiService.getExpenditureSummary(
+        branch,
+        academicYear,
+      );
       setData(response);
     } catch (err: any) {
-      console.error('Expenditure summary fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch expenditure summary');
+      console.error("Expenditure summary fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch expenditure summary",
+      );
     } finally {
       setLoading(false);
     }
@@ -1367,8 +1484,12 @@ export const useInventoryList = (params: any = {}) => {
       const response = await apiService.getInventoryList(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Inventory list fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory list');
+      console.error("Inventory list fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch inventory list",
+      );
     } finally {
       setLoading(false);
     }
@@ -1397,8 +1518,12 @@ export const useInventoryTypes = (params: any = {}) => {
       const response = await apiService.getInventoryTypes(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Inventory types fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory types');
+      console.error("Inventory types fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch inventory types",
+      );
     } finally {
       setLoading(false);
     }
@@ -1427,8 +1552,12 @@ export const useInventoryDashboard = (params: any = {}) => {
       const response = await apiService.getInventoryDashboard(params);
       setData(response);
     } catch (err: any) {
-      console.error('Inventory dashboard fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory dashboard');
+      console.error("Inventory dashboard fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch inventory dashboard",
+      );
     } finally {
       setLoading(false);
     }
@@ -1457,8 +1586,10 @@ export const useRooms = (params: any = {}) => {
       const response = await apiService.getHostelRooms(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Rooms fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch rooms');
+      console.error("Rooms fetch error:", err);
+      setError(
+        err.response?.data?.message || err.message || "Failed to fetch rooms",
+      );
     } finally {
       setLoading(false);
     }
@@ -1488,8 +1619,12 @@ export const useHostelVisitors = (params: any = {}) => {
       const response = await apiService.getHostelVisitors(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Hostel visitors fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch visitors');
+      console.error("Hostel visitors fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch visitors",
+      );
     } finally {
       setLoading(false);
     }
@@ -1519,8 +1654,12 @@ export const useHostelMealPlans = (params: any = {}) => {
       const response = await apiService.getHostelMealPlans(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Hostel meal plans fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch meal plans');
+      console.error("Hostel meal plans fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch meal plans",
+      );
     } finally {
       setLoading(false);
     }
@@ -1550,8 +1689,12 @@ export const useHostelProducts = (params: any = {}) => {
       const response = await apiService.getHostelProducts(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Hostel products fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch products');
+      console.error("Hostel products fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch products",
+      );
     } finally {
       setLoading(false);
     }
@@ -1569,7 +1712,7 @@ export const useHostelProducts = (params: any = {}) => {
 };
 
 export const useInventory = (params?: Record<string, any>) => {
-  return useApi<any[]>('/inventory/', params);
+  return useApi<any[]>("/inventory/", params);
 };
 
 // Generic useApi hook
@@ -1601,14 +1744,20 @@ const useApi = <T>(
         attempts++;
         if (isMounted) {
           if (attempts < retryCount) {
-            console.warn(`API call to ${endpoint} failed, retrying (${attempts}/${retryCount})...`);
+            console.warn(
+              `API call to ${endpoint} failed, retrying (${attempts}/${retryCount})...`,
+            );
             setTimeout(() => {
               if (isMounted) {
                 attemptFetch();
               }
             }, retryDelay * attempts);
           } else {
-            setError(err.response?.data?.message || err.message || `Failed to fetch ${endpoint}`);
+            setError(
+              err.response?.data?.message ||
+                err.message ||
+                `Failed to fetch ${endpoint}`,
+            );
             setRetryAttempt(attempts);
             console.error(`API Error after retries for ${endpoint}:`, err);
           }
@@ -1641,19 +1790,19 @@ const useApi = <T>(
 
 // Exam-related hooks
 export const useExams = (params?: Record<string, any>) => {
-  return useApi<any[]>('/api/exams/', params);
+  return useApi<any[]>("/api/exams/", params);
 };
 
 export const useExamTypes = () => {
-  return useApi<any[]>('/api/exam-types/');
+  return useApi<any[]>("/api/exam-types/");
 };
 
 export const useStudentExamMarks = (params?: Record<string, any>) => {
-  return useApi<any[]>('/api/student-exam-marks/', params);
+  return useApi<any[]>("/api/student-exam-marks/", params);
 };
 
 export const useStudentExamMarksAnalytics = (params?: Record<string, any>) => {
-  return useApi<any>('/api/student-exam-marks/exam-analytics/', params);
+  return useApi<any>("/api/student-exam-marks/exam-analytics/", params);
 };
 
 export const useExamScheduleDetails = (scheduleId: number) => {
@@ -1681,14 +1830,15 @@ export const useTasks = (params?: Record<string, any>) => {
 
       // Clean up params - remove invalid status values
       const cleanParams = { ...params };
-      if (cleanParams && typeof cleanParams === 'object') {
+      if (cleanParams && typeof cleanParams === "object") {
         // Remove problematic parameters
         delete cleanParams.status; // Remove until we know valid values
 
         // Only include valid branch and academic_year if they exist
         const validParams: any = {};
         if (cleanParams.branch) validParams.branch = cleanParams.branch;
-        if (cleanParams.academic_year) validParams.academic_year = cleanParams.academic_year;
+        if (cleanParams.academic_year)
+          validParams.academic_year = cleanParams.academic_year;
         if (cleanParams.limit) validParams.limit = cleanParams.limit;
 
         const response = await apiService.getTasks(validParams);
@@ -1700,21 +1850,22 @@ export const useTasks = (params?: Record<string, any>) => {
         setRetryCount(0);
       }
     } catch (err: any) {
-      console.error('Tasks fetch error:', err);
+      console.error("Tasks fetch error:", err);
 
-      let errorMessage = 'Failed to fetch tasks';
+      let errorMessage = "Failed to fetch tasks";
       if (err.response?.status === 500) {
-        errorMessage = 'Server error. Tasks API may be experiencing issues.';
+        errorMessage = "Server error. Tasks API may be experiencing issues.";
       } else if (err.response?.status === 401) {
-        errorMessage = 'Authentication required. Please log in again.';
-      } else if (err.message?.includes('timeout')) {
-        errorMessage = 'Request timed out. Please check your connection.';
+        errorMessage = "Authentication required. Please log in again.";
+      } else if (err.message?.includes("timeout")) {
+        errorMessage = "Request timed out. Please check your connection.";
       } else {
-        errorMessage = err.response?.data?.message || err.message || errorMessage;
+        errorMessage =
+          err.response?.data?.message || err.message || errorMessage;
       }
 
       setError(errorMessage);
-      setRetryCount(prev => prev + 1);
+      setRetryCount((prev) => prev + 1);
     } finally {
       setLoading(false);
     }
@@ -1744,8 +1895,12 @@ export const useTaskSubmissions = (params?: Record<string, any>) => {
       const response = await apiService.getTaskSubmissions(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Task submissions fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch task submissions');
+      console.error("Task submissions fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch task submissions",
+      );
     } finally {
       setLoading(false);
     }
@@ -1776,27 +1931,31 @@ export const useSalaryTemplates = (params?: Record<string, any>) => {
       const mockData = [
         {
           id: 1,
-          name: 'Elementary Teacher Template',
-          description: 'Standard salary template for elementary teachers',
-          department: { id: 1, name: 'Elementary Education' },
+          name: "Elementary Teacher Template",
+          description: "Standard salary template for elementary teachers",
+          department: { id: 1, name: "Elementary Education" },
           base_salary: 45000,
           allowances: [
-            { id: 1, name: 'Teaching Allowance', amount: 5000, type: 'fixed' },
-            { id: 2, name: 'Transport Allowance', amount: 2000, type: 'fixed' }
+            { id: 1, name: "Teaching Allowance", amount: 5000, type: "fixed" },
+            { id: 2, name: "Transport Allowance", amount: 2000, type: "fixed" },
           ],
           deductions: [
-            { id: 1, name: 'Tax', amount: 10, type: 'percentage' },
-            { id: 2, name: 'Insurance', amount: 500, type: 'fixed' }
+            { id: 1, name: "Tax", amount: 10, type: "percentage" },
+            { id: 2, name: "Insurance", amount: 500, type: "fixed" },
           ],
           is_active: true,
-          created_date: '2024-01-15',
-          modified_date: '2024-12-15'
-        }
+          created_date: "2024-01-15",
+          modified_date: "2024-12-15",
+        },
       ];
       setData(mockData);
     } catch (err: any) {
-      console.error('Salary templates fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch salary templates');
+      console.error("Salary templates fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch salary templates",
+      );
     } finally {
       setLoading(false);
     }
@@ -1827,24 +1986,28 @@ export const useSchoolExpenditure = (params?: Record<string, any>) => {
       const mockData = [
         {
           id: 1,
-          category: { id: 1, name: 'Infrastructure' },
-          description: 'Classroom renovation and maintenance',
+          category: { id: 1, name: "Infrastructure" },
+          description: "Classroom renovation and maintenance",
           amount: 15000,
-          expense_date: '2024-12-10',
-          status: 'approved',
-          approved_by: { id: 1, name: 'John Admin' },
-          approved_date: '2024-12-11',
-          payment_method: 'Bank Transfer',
-          reference_number: 'EXP-2024-001',
-          receipts: ['receipt1.pdf'],
-          branch: { id: 1, name: 'Main Campus' },
-          created_date: '2024-12-10'
-        }
+          expense_date: "2024-12-10",
+          status: "approved",
+          approved_by: { id: 1, name: "John Admin" },
+          approved_date: "2024-12-11",
+          payment_method: "Bank Transfer",
+          reference_number: "EXP-2024-001",
+          receipts: ["receipt1.pdf"],
+          branch: { id: 1, name: "Main Campus" },
+          created_date: "2024-12-10",
+        },
       ];
       setData(mockData);
     } catch (err: any) {
-      console.error('School expenditure fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch school expenditure');
+      console.error("School expenditure fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch school expenditure",
+      );
     } finally {
       setLoading(false);
     }
@@ -1873,16 +2036,20 @@ export const useExpenseCategories = () => {
       setError(null);
       // Mock data for now - replace with actual API call
       const mockData = [
-        { id: 1, name: 'Infrastructure' },
-        { id: 2, name: 'Equipment' },
-        { id: 3, name: 'Supplies' },
-        { id: 4, name: 'Utilities' },
-        { id: 5, name: 'Staff Training' }
+        { id: 1, name: "Infrastructure" },
+        { id: 2, name: "Equipment" },
+        { id: 3, name: "Supplies" },
+        { id: 4, name: "Utilities" },
+        { id: 5, name: "Staff Training" },
       ];
       setData(mockData);
     } catch (err: any) {
-      console.error('Expense categories fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch expense categories');
+      console.error("Expense categories fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch expense categories",
+      );
     } finally {
       setLoading(false);
     }
@@ -1900,83 +2067,83 @@ export const useExpenseCategories = () => {
 };
 
 // Student Marks Analytics hook
-export const useStudentMarksAnalytics = (params?: Record<string, any>) => {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+// export const useStudentMarksAnalytics = (params?: Record<string, any>) => {
+//   const [data, setData] = useState<any>(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
 
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      // Mock data for now - replace with actual API call
-      const mockData = {
-        subject_wise: [
-          {
-            subject: 'Mathematics',
-            average_marks: 78.5,
-            highest_marks: 98,
-            lowest_marks: 45,
-            pass_percentage: 85.2,
-            students_count: 120
-          },
-          {
-            subject: 'English',
-            average_marks: 82.1,
-            highest_marks: 95,
-            lowest_marks: 52,
-            pass_percentage: 89.7,
-            students_count: 120
-          }
-        ],
-        class_wise: [
-          {
-            class_name: 'Class 10A',
-            average_marks: 80.3,
-            total_students: 30,
-            passed_students: 27,
-            failed_students: 3
-          },
-          {
-            class_name: 'Class 10B',
-            average_marks: 75.8,
-            total_students: 28,
-            passed_students: 24,
-            failed_students: 4
-          }
-        ],
-        overall_stats: {
-          total_students: 120,
-          overall_average: 78.9,
-          overall_pass_percentage: 87.5,
-          grade_distribution: [
-            { grade: 'A', count: 25, percentage: 20.8 },
-            { grade: 'B', count: 35, percentage: 29.2 },
-            { grade: 'C', count: 30, percentage: 25.0 },
-            { grade: 'D', count: 15, percentage: 12.5 },
-            { grade: 'F', count: 15, percentage: 12.5 }
-          ]
-        }
-      };
-      setData(mockData);
-    } catch (err: any) {
-      console.error('Student marks analytics fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks analytics');
-    } finally {
-      setLoading(false);
-    }
-  }, [JSON.stringify(params)]);
+//   const fetchData = useCallback(async () => {
+//     try {
+//       setLoading(true);
+//       setError(null);
+//       // Mock data for now - replace with actual API call
+//       const mockData = {
+//         subject_wise: [
+//           {
+//             subject: 'Mathematics',
+//             average_marks: 78.5,
+//             highest_marks: 98,
+//             lowest_marks: 45,
+//             pass_percentage: 85.2,
+//             students_count: 120
+//           },
+//           {
+//             subject: 'English',
+//             average_marks: 82.1,
+//             highest_marks: 95,
+//             lowest_marks: 52,
+//             pass_percentage: 89.7,
+//             students_count: 120
+//           }
+//         ],
+//         class_wise: [
+//           {
+//             class_name: 'Class 10A',
+//             average_marks: 80.3,
+//             total_students: 30,
+//             passed_students: 27,
+//             failed_students: 3
+//           },
+//           {
+//             class_name: 'Class 10B',
+//             average_marks: 75.8,
+//             total_students: 28,
+//             passed_students: 24,
+//             failed_students: 4
+//           }
+//         ],
+//         overall_stats: {
+//           total_students: 120,
+//           overall_average: 78.9,
+//           overall_pass_percentage: 87.5,
+//           grade_distribution: [
+//             { grade: 'A', count: 25, percentage: 20.8 },
+//             { grade: 'B', count: 35, percentage: 29.2 },
+//             { grade: 'C', count: 30, percentage: 25.0 },
+//             { grade: 'D', count: 15, percentage: 12.5 },
+//             { grade: 'F', count: 15, percentage: 12.5 }
+//           ]
+//         }
+//       };
+//       setData(mockData);
+//     } catch (err: any) {
+//       console.error('Student marks analytics fetch error:', err);
+//       setError(err.response?.data?.message || err.message || 'Failed to fetch student marks analytics');
+//     } finally {
+//       setLoading(false);
+//     }
+//   }, [JSON.stringify(params)]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+//   useEffect(() => {
+//     fetchData();
+//   }, [fetchData]);
 
-  const refetch = useCallback(() => {
-    fetchData();
-  }, [fetchData]);
+//   const refetch = useCallback(() => {
+//     fetchData();
+//   }, [fetchData]);
 
-  return { data, loading, error, refetch };
-};
+//   return { data, loading, error, refetch };
+// };
 
 // Leave Management hooks
 export const useLeaveRequests = (params?: Record<string, any>) => {
@@ -1991,15 +2158,19 @@ export const useLeaveRequests = (params?: Record<string, any>) => {
 
       // Clean up params - remove invalid status values
       const cleanParams = { ...params };
-      if (cleanParams.status === 'pending') {
+      if (cleanParams.status === "pending") {
         delete cleanParams.status; // Remove invalid status
       }
 
       const response = await apiService.getLeaveRequests(cleanParams);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Leave requests fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch leave requests');
+      console.error("Leave requests fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch leave requests",
+      );
     } finally {
       setLoading(false);
     }
@@ -2028,8 +2199,12 @@ export const useLeaveQuotasList = (params?: Record<string, any>) => {
       const response = await apiService.getLeaveQuotas(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Leave quotas fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch leave quotas');
+      console.error("Leave quotas fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch leave quotas",
+      );
     } finally {
       setLoading(false);
     }
@@ -2058,8 +2233,12 @@ export const useHolidays = (params?: Record<string, any>) => {
       const response = await apiService.getHolidays(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Holidays fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch holidays');
+      console.error("Holidays fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch holidays",
+      );
     } finally {
       setLoading(false);
     }
@@ -2089,8 +2268,12 @@ export const useNotifications = (params?: Record<string, any>) => {
       const response = await apiService.getNotifications(params);
       setData(response.results || []);
     } catch (err: any) {
-      console.error('Notifications fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch notifications');
+      console.error("Notifications fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch notifications",
+      );
     } finally {
       setLoading(false);
     }
@@ -2119,8 +2302,12 @@ export const useNotificationTypes = () => {
       const response = await apiService.getNotificationTypes();
       setData(response || {});
     } catch (err: any) {
-      console.error('Notification types fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch notification types');
+      console.error("Notification types fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to fetch notification types",
+      );
     } finally {
       setLoading(false);
     }

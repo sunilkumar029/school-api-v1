@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/contexts/ThemeContext";
 import { GlobalFiltersProvider } from "@/contexts/GlobalFiltersContext";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { ErrorBoundary } from "@/components/ErrorBoundary"; // Assuming ErrorBoundary is in components/ErrorBoundary.tsx
+import { useEffect } from "react";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -22,7 +23,6 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-
   if (!loaded) {
     return null; // Or a loading component
   }
@@ -35,10 +35,22 @@ export default function RootLayout() {
             <Stack screenOptions={{ headerShown: false }}>
               <Stack.Screen name="index" options={{ headerShown: false }} />
               <Stack.Screen name="splash" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
-              <Stack.Screen name="auth/organisation-email" options={{ headerShown: false }} />
-              <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-              <Stack.Screen name="auth/redirector" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="onboarding/index"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/organisation-email"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/login"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
+                name="auth/redirector"
+                options={{ headerShown: false }}
+              />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen name="+not-found" />
             </Stack>
