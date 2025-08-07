@@ -1,117 +1,226 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator,
+  Image,
   RefreshControl,
-  Dimensions,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useAuth } from '@/contexts/AuthContext';
-import { TopBar } from '@/components/TopBar';
-import { SideDrawer } from '@/components/SideDrawer';
-import {
-  useAttendanceDashboard,
-  useBranches,
-  useAcademicYears,
-  useFeeDashboardAnalytics,
-  useEvents,
-  useAnnouncements,
-} from '@/hooks/useApi';
+} from "react-native";
+import { useRouter } from "expo-router";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTheme, fontSizes } from "@/contexts/ThemeContext";
+import { TopBar } from "@/components/TopBar";
+import { SideDrawer } from "@/components/SideDrawer";
+import { OverviewCard } from "@/components/OverviewCard";
+import { QuickActionButton } from "@/components/QuickActionButton";
+import { RecentActivityItem } from "@/components/RecentActivityItem";
+import { EventItem } from "@/components/EventItem";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { apiService } from "@/api/apiService";
 
-const { width: screenWidth } = Dimensions.get('window');
-
-interface QuickAction {
-  title: string;
-  icon: string;
-  route: string;
-  color: string;
-  roles?: string[];
-}
-
-export default function DashboardScreen() {
-  const { colors } = useTheme();
-  const { user } = useAuth();
+export default function HomeScreen() {
   const router = useRouter();
+  const { isAuthenticated, user, isLoading } = useAuth();
+  const { colors, fontSize } = useTheme();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [refreshing, setRefreshing] = useState(false);
-
-  // Fetch data
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears();
-  const { data: attendanceData, loading: attendanceLoading } = useAttendanceDashboard();
-  const { data: feeAnalytics, loading: feeLoading } = useFeeDashboardAnalytics({
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear,
+  const [dashboardData, setDashboardData] = useState({
+    announcements: [],
+    events: [],
+    attendanceStats: null,
+    leaveQuotas: [],
   });
-  const { data: events } = useEvents({ is_active: true, limit: 5 });
-  const { data: announcements } = useAnnouncements({ is_active: true, limit: 3 });
+  const [loadingData, setLoadingData] = useState(true);
 
-  const quickActions: QuickAction[] = [
-    { title: 'Attendance', icon: '📊', route: '/attendance-dashboard', color: '#4CAF50' },
-    { title: 'Events', icon: '📅', route: '/(tabs)/events', color: '#2196F3' },
-    { title: 'Finance', icon: '💰', route: '/finance/student-fee-list', color: '#FF9800' },
-    { title: 'Transport', icon: '🚌', route: '/transport', color: '#9C27B0' },
-    { title: 'Chat', icon: '💬', route: '/chat', color: '#E91E63' },
-    { title: 'Tasks', icon: '✅', route: '/tasks/task-list', color: '#00BCD4' },
-    { title: 'Leave', icon: '🏖️', route: '/leave/leave-requests', color: '#FF5722' },
-    { title: 'Hostel', icon: '🏨', route: '/hostel/hostel-rooms', color: '#795548' },
-  ];
+  // Show loading while auth is being checked
+  if (isLoading) {
+    return (
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: colors.background }]}
+      >
+        <View style={styles.loadingContainer}>
+          <Text style={[styles.loadingText, { color: colors.text }]}>
+            Loading...
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
 
-  const handleRefresh = async () => {
-    setRefreshing(true);
+  // Redirect to splash if not authenticated
+  if (!isAuthenticated) {
+    router.replace("/splash");
+    return null;
+  }
+
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good Morning";
+    if (hour < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
+
+  const fetchDashboardData = async () => {
     try {
-      // Trigger refetch of all data
-      await Promise.all([
-        // Add refetch calls here when available
+      setLoadingData(true);
+      
+      // Fetch multiple data sources in parallel
+      const [announcementsRes, eventsRes, attendanceRes, leaveQuotasRes] = await Promise.allSettled([
+        apiService.getAnnouncements({ limit: 5 }),
+        apiService.getEvents({ limit: 5, ordering: '-start_date' }),
+        apiService.getAttendanceDashboard(),
+        apiService.getAnnualLeaveQuotas({ user: user?.id }),
       ]);
+
+      const announcements = announcementsRes.status === 'fulfilled' 
+        ? announcementsRes.value.results || []
+        : [];
+      
+      const events = eventsRes.status === 'fulfilled' 
+        ? eventsRes.value.results || []
+        : [];
+        
+      const attendanceStats = attendanceRes.status === 'fulfilled' 
+        ? attendanceRes.value
+        : null;
+        
+      const leaveQuotas = leaveQuotasRes.status === 'fulfilled' 
+        ? leaveQuotasRes.value.results || []
+        : [];
+
+      setDashboardData({
+        announcements,
+        events,
+        attendanceStats,
+        leaveQuotas,
+      });
+    } catch (error) {
+      console.error('Error fetching dashboard data:', error);
     } finally {
-      setRefreshing(false);
+      setLoadingData(false);
     }
   };
 
-  const renderStatCard = (title: string, value: string | number, subtitle: string, color: string) => (
-    <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
-      <Text style={[styles.statTitle, { color: colors.textSecondary }]}>{title}</Text>
-      <Text style={[styles.statValue, { color }]}>{value}</Text>
-      <Text style={[styles.statSubtitle, { color: colors.textSecondary }]}>{subtitle}</Text>
-    </View>
-  );
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await fetchDashboardData();
+    setRefreshing(false);
+  };
 
-  const renderQuickAction = (action: QuickAction) => {
-    if (action.roles && !action.roles.includes(user?.role || 'student')) {
-      return null;
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      fetchDashboardData();
     }
+  }, [isAuthenticated, user]);
 
-    return (
-      <TouchableOpacity
-        key={action.title}
-        style={[styles.quickActionCard, { backgroundColor: colors.surface }]}
-        onPress={() => router.push(action.route as any)}
-      >
-        <View style={[styles.quickActionIcon, { backgroundColor: action.color + '20' }]}>
-          <Text style={[styles.quickActionEmoji, { color: action.color }]}>{action.icon}</Text>
-        </View>
-        <Text style={[styles.quickActionTitle, { color: colors.textPrimary }]}>{action.title}</Text>
-      </TouchableOpacity>
+  const getOverviewData = () => {
+    const todayEvents = dashboardData.events.filter(event => {
+      const eventDate = new Date(event.start_date);
+      const today = new Date();
+      return eventDate.toDateString() === today.toDateString();
+    });
+
+    const totalLeaves = dashboardData.leaveQuotas.reduce((sum, quota) => 
+      sum + (quota.allocated_days || 0), 0
+    );
+    const usedLeaves = dashboardData.leaveQuotas.reduce((sum, quota) => 
+      sum + (quota.used_days || 0), 0
+    );
+    const remainingLeaves = totalLeaves - usedLeaves;
+
+    return [
+      { 
+        title: "Attendance", 
+        value: dashboardData.attendanceStats?.attendance_percentage 
+          ? `${Math.round(dashboardData.attendanceStats.attendance_percentage)}%`
+          : "N/A", 
+        icon: "📅" 
+      },
+      { 
+        title: "Events Today", 
+        value: `${todayEvents.length} Events`, 
+        icon: "📌" 
+      },
+      { 
+        title: "Tasks Due", 
+        value: "2 Pending", // This would need a tasks API
+        icon: "📋" 
+      },
+      { 
+        title: "Leaves Left", 
+        value: `${remainingLeaves > 0 ? remainingLeaves : 0} Days`, 
+        icon: "🏖" 
+      },
+      { 
+        title: "Wallet Balance", 
+        value: "₹1,250", // This would need a wallet/finance API
+        icon: "💰" 
+      },
+    ];
+  };
+
+  const quickActions = [
+    { title: "Apply Leave", icon: "📝" },
+    { title: "View Timetable", icon: "🕒" },
+    { title: "Mark Attendance", icon: "✅" },
+    { title: "Chat", icon: "💬" },
+    { title: "Online Class", icon: "🎥" },
+    { title: "Raise Request", icon: "📢" },
+  ];
+
+  const recentActivities = [
+    {
+      icon: "✅",
+      title: "Leave request approved",
+      description: "Your leave for Dec 25-26 approved",
+      time: "2h ago",
+    },
+    {
+      icon: "📢",
+      title: "Event added",
+      description: "Science Fair on January 15th",
+      time: "5h ago",
+    },
+    {
+      icon: "🕒",
+      title: "Timesheet filled",
+      description: "Weekly timesheet submitted",
+      time: "1d ago",
+    },
+  ];
+
+  const getUpcomingEvents = () => {
+    return dashboardData.events.slice(0, 3).map(event => ({
+      title: event.name || 'Untitled Event',
+      time: new Date(event.start_date).toLocaleTimeString('en-US', { 
+        hour: '2-digit', 
+        minute: '2-digit' 
+      }),
+      type: event.applies_to || 'General Event',
+      onPress: () => {
+        // Navigate to event details
+        console.log('Navigate to event:', event.id);
+      }
+    }));
+  };
+
+  const getFormattedAnnouncements = () => {
+    return dashboardData.announcements.slice(0, 3).map(announcement => 
+      `📢 ${announcement.title || announcement.description || 'No title'}`
     );
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <TopBar
-        title="Dashboard"
+        title="Home"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push('/(tabs)/notifications')}
-        onSettingsPress={() => router.push('/(tabs)/settings')}
+        onNotificationsPress={() => router.push("/(tabs)/notifications")}
+        onSettingsPress={() => router.push("/(tabs)/settings")}
       />
 
       <SideDrawer
@@ -119,126 +228,202 @@ export default function DashboardScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      <ScrollView
-        style={styles.content}
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={handleRefresh}
+            onRefresh={onRefresh}
             colors={[colors.primary]}
             tintColor={colors.primary}
           />
         }
       >
-        {/* Welcome Section */}
-        <View style={[styles.welcomeSection, { backgroundColor: colors.surface }]}>
-          <Text style={[styles.welcomeText, { color: colors.textPrimary }]}>
-            Welcome back, {user?.username || user?.email?.split('@')[0] || 'User'}!
-          </Text>
-          <Text style={[styles.welcomeSubtext, { color: colors.textSecondary }]}>
-            {new Date().toLocaleDateString('en-US', {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            })}
-          </Text>
-        </View>
-
-        {/* Stats Overview */}
-        <View style={styles.statsSection}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Overview</Text>
-          <View style={styles.statsGrid}>
-            {renderStatCard(
-              'Students',
-              attendanceData?.total_students || '0',
-              'Total enrolled',
-              '#4CAF50'
-            )}
-            {renderStatCard(
-              'Attendance',
-              attendanceData?.attendance_percentage ? `${attendanceData.attendance_percentage.toFixed(1)}%` : '0%',
-              'Today',
-              '#2196F3'
-            )}
-            {renderStatCard(
-              'Fees Collected',
-              feeAnalytics?.total_collected ? `₹${(feeAnalytics.total_collected / 100000).toFixed(1)}L` : '₹0',
-              'This month',
-              '#FF9800'
-            )}
-            {renderStatCard(
-              'Events',
-              events?.results?.length || 0,
-              'Upcoming',
-              '#9C27B0'
-            )}
+        {/* Greeting Header */}
+        <View
+          style={[styles.greetingSection, { backgroundColor: colors.surface }]}
+        >
+          <View style={styles.greetingContent}>
+            <View style={styles.avatarContainer}>
+              <View
+                style={[styles.avatar, { backgroundColor: colors.primary }]}
+              >
+                <Text style={styles.avatarText}>
+                  {user?.username?.charAt(0).toUpperCase() ||
+                    user?.email?.charAt(0).toUpperCase() ||
+                    "U"}
+                </Text>
+              </View>
+            </View>
+            <View style={styles.greetingText}>
+              <Text
+                style={[
+                  styles.greeting,
+                  {
+                    color: colors.textPrimary,
+                    fontSize: fontSizes[fontSize] + 4,
+                  },
+                ]}
+              >
+                {getGreeting()},{" "}
+                {user?.username || user?.email?.split("@")[0] || "User"}! 👋
+              </Text>
+              <Text
+                style={[
+                  styles.roleText,
+                  {
+                    color: colors.textSecondary,
+                    fontSize: fontSizes[fontSize],
+                  },
+                ]}
+              >
+                Student • Visionaries International
+              </Text>
+            </View>
           </View>
         </View>
 
+        {/* Overview Cards */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Overview
+          </Text>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.overviewScroll}
+          >
+            {getOverviewData().map((item, index) => (
+              <OverviewCard
+                key={index}
+                title={item.title}
+                value={item.value}
+                icon={item.icon}
+                onPress={() => {}}
+              />
+            ))}
+          </ScrollView>
+        </View>
+
         {/* Quick Actions */}
-        <View style={styles.quickActionsSection}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Quick Actions</Text>
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Quick Actions
+          </Text>
           <View style={styles.quickActionsGrid}>
-            {quickActions.map(renderQuickAction)}
+            {quickActions.map((action, index) => (
+              <QuickActionButton
+                key={index}
+                title={action.title}
+                icon={action.icon}
+                onPress={() => {}}
+              />
+            ))}
           </View>
         </View>
 
         {/* Recent Activity */}
-        <View style={styles.activitySection}>
-          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Recent Activity</Text>
-          
-          {/* Recent Events */}
-          {events?.results && events.results.length > 0 && (
-            <View style={[styles.activityCard, { backgroundColor: colors.surface }]}>
-              <Text style={[styles.activityCardTitle, { color: colors.textPrimary }]}>Upcoming Events</Text>
-              {events.results.slice(0, 3).map((event: any) => (
-                <TouchableOpacity
-                  key={event.id}
-                  style={styles.activityItem}
-                  onPress={() => router.push('/(tabs)/events')}
-                >
-                  <Text style={[styles.activityItemTitle, { color: colors.textPrimary }]}>
-                    {event.name}
-                  </Text>
-                  <Text style={[styles.activityItemDate, { color: colors.textSecondary }]}>
-                    {new Date(event.start_date).toLocaleDateString()}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
-
-          {/* Recent Announcements */}
-          {announcements?.results && announcements.results.length > 0 && (
-            <View style={[styles.activityCard, { backgroundColor: colors.surface }]}>
-              <Text style={[styles.activityCardTitle, { color: colors.textPrimary }]}>Latest Announcements</Text>
-              {announcements.results.slice(0, 3).map((announcement: any) => (
-                <TouchableOpacity
-                  key={announcement.id}
-                  style={styles.activityItem}
-                  onPress={() => router.push('/(tabs)/notifications')}
-                >
-                  <Text style={[styles.activityItemTitle, { color: colors.textPrimary }]}>
-                    {announcement.title}
-                  </Text>
-                  <Text style={[styles.activityItemContent, { color: colors.textSecondary }]} numberOfLines={2}>
-                    {announcement.content}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          )}
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+              Recent Activity
+            </Text>
+            <TouchableOpacity>
+              <Text style={[styles.viewAllText, { color: colors.primary }]}>
+                View All
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={[
+              styles.activityContainer,
+              { backgroundColor: colors.surface },
+            ]}
+          >
+            {recentActivities.map((activity, index) => (
+              <RecentActivityItem
+                key={index}
+                icon={activity.icon}
+                title={activity.title}
+                description={activity.description}
+                time={activity.time}
+              />
+            ))}
+          </View>
         </View>
 
-        {(attendanceLoading || feeLoading) && (
-          <View style={styles.loadingSection}>
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-              Loading dashboard data...
-            </Text>
+        {/* Upcoming Events */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Upcoming Events
+          </Text>
+          <View style={styles.eventsContainer}>
+            {loadingData ? (
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                Loading events...
+              </Text>
+            ) : getUpcomingEvents().length > 0 ? (
+              getUpcomingEvents().map((event, index) => (
+                <EventItem
+                  key={index}
+                  title={event.title}
+                  time={event.time}
+                  type={event.type}
+                  onPress={event.onPress}
+                />
+              ))
+            ) : (
+              <Text style={[styles.noDataText, { color: colors.textSecondary }]}>
+                No upcoming events
+              </Text>
+            )}
           </View>
-        )}
+        </View>
+
+        {/* Announcements */}
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+            Announcements
+          </Text>
+          <View
+            style={[
+              styles.announcementsContainer,
+              { backgroundColor: colors.surface },
+            ]}
+          >
+            {loadingData ? (
+              <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+                Loading announcements...
+              </Text>
+            ) : getFormattedAnnouncements().length > 0 ? (
+              getFormattedAnnouncements().map((announcement, index) => (
+                <View
+                  key={index}
+                  style={[
+                    styles.announcementItem,
+                    { borderBottomColor: colors.border },
+                  ]}
+                >
+                  <Text
+                    style={[
+                      styles.announcementText,
+                      { color: colors.textPrimary },
+                    ]}
+                  >
+                    {announcement}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={[styles.noDataText, { color: colors.textSecondary }]}>
+                No announcements available
+              </Text>
+            )}
+          </View>
+        </View>
+
+        <View style={styles.bottomSpacing} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -248,145 +433,128 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
   content: {
     flex: 1,
   },
-  welcomeSection: {
-    padding: 20,
+  greetingSection: {
     margin: 16,
     borderRadius: 12,
     elevation: 2,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
   },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  welcomeSubtext: {
-    fontSize: 16,
-  },
-  statsSection: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  statCard: {
-    width: '48%',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  statTitle: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statSubtitle: {
-    fontSize: 12,
-  },
-  quickActionsSection: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-  },
-  quickActionCard: {
-    width: '23%',
-    aspectRatio: 1,
-    padding: 12,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  quickActionIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-  },
-  quickActionEmoji: {
-    fontSize: 20,
-  },
-  quickActionTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  activitySection: {
-    marginHorizontal: 16,
-    marginBottom: 24,
-  },
-  activityCard: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  activityCardTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  activityItem: {
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  activityItemTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  activityItemDate: {
-    fontSize: 12,
-  },
-  activityItemContent: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
-  loadingSection: {
-    alignItems: 'center',
+  greetingContent: {
+    flexDirection: "row",
+    alignItems: "center",
     padding: 20,
   },
-  loadingText: {
-    marginTop: 8,
+  avatarContainer: {
+    marginRight: 16,
+  },
+  avatar: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  avatarText: {
+    color: "#FFFFFF",
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  greetingText: {
+    flex: 1,
+  },
+  greeting: {
+    fontWeight: "bold",
+    marginBottom: 4,
+  },
+  roleText: {
+    fontWeight: "500",
+  },
+  section: {
+    marginHorizontal: 16,
+    marginBottom: 24,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  viewAllText: {
     fontSize: 14,
+    fontWeight: "600",
+  },
+  overviewScroll: {
+    marginTop: 12,
+  },
+  quickActionsGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    marginTop: 12,
+    marginHorizontal: -6,
+    justifyContent: "space-between",
+    height: "15%",
+  },
+  activityContainer: {
+    borderRadius: 12,
+    padding: 16,
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  eventsContainer: {
+    marginTop: 12,
+  },
+  announcementsContainer: {
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 12,
+    elevation: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+  },
+  announcementItem: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  announcementText: {
+    fontSize: 14,
+    lineHeight: 20,
+  },
+  bottomSpacing: {
+    height: 20,
+  },
+  loadingText: {
+    fontSize: 14,
+    textAlign: 'center',
+    padding: 20,
+  },
+  noDataText: {
+    fontSize: 14,
+    textAlign: 'center',
+    padding: 20,
+    fontStyle: 'italic',
   },
 });

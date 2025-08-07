@@ -19,8 +19,8 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useLeaveQuotas,
+import { 
+  useLeaveQuotasList,
   useBranches,
   useAcademicYears,
   useDepartments
@@ -29,13 +29,13 @@ import { apiService } from '@/api/apiService';
 
 interface LeaveQuota {
   id: number;
-  department: {
-    id: number;
-    name: string;
-  };
   leave_type: string;
   total_quota: number;
   affects_salary: boolean;
+  department?: {
+    id: number;
+    name: string;
+  };
   branch: {
     id: number;
     name: string;
@@ -53,62 +53,48 @@ export default function LeaveQuotaScreen() {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedBranch, setSelectedBranch] = useState<number>(1);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedDepartment, setSelectedDepartment] = useState<number | undefined>();
-  const [selectedLeaveType, setSelectedLeaveType] = useState<string>('');
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingQuota, setEditingQuota] = useState<LeaveQuota | null>(null);
 
   // Form State
   const [quotaForm, setQuotaForm] = useState({
-    department: '',
-    leave_type: 'Sick Leave',
+    leave_type: '',
     total_quota: '',
     affects_salary: false,
+    department: null as number | null,
   });
 
   // Fetch data
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
-  const { data: departments } = useDepartments({ 
-    branch: selectedBranch,
-    is_active: true 
-  });
+  const { data: departments } = useDepartments({ branch: selectedBranch });
 
-  const quotaParams = useMemo(() => ({
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear,
-    ...(selectedDepartment && { department: selectedDepartment }),
-    ...(selectedLeaveType && { leave_type: selectedLeaveType }),
-  }), [selectedBranch, selectedAcademicYear, selectedDepartment, selectedLeaveType]);
+  const quotaParams = useMemo(() => {
+    const params: any = {
+      branch: selectedBranch,
+      academic_year: selectedAcademicYear,
+    };
+    if (selectedDepartment) params.department = selectedDepartment;
+    return params;
+  }, [selectedBranch, selectedAcademicYear, selectedDepartment]);
 
-  const {
-    data: quotas,
-    loading: quotasLoading,
-    error: quotasError,
-    refetch: refetchQuotas
-  } = useLeaveQuotas(quotaParams);
-
-  const leaveTypes = [
-    'Sick Leave',
-    'Casual Leave',
-    'Annual Leave',
-    'Maternity Leave',
-    'Paternity Leave',
-    'Emergency Leave',
-    'Study Leave',
-    'Sabbatical Leave'
-  ];
+  const { 
+    data: quotas, 
+    loading: quotasLoading, 
+    error: quotasError, 
+    refetch: refetchQuotas 
+  } = useLeaveQuotasList(quotaParams);
 
   const handleCreateQuota = async () => {
     try {
-      if (!quotaForm.department || !quotaForm.total_quota) {
+      if (!quotaForm.leave_type || !quotaForm.total_quota) {
         Alert.alert('Error', 'Please fill all required fields');
         return;
       }
 
       const quotaData = {
         ...quotaForm,
-        department: parseInt(quotaForm.department),
         total_quota: parseInt(quotaForm.total_quota),
         branch: selectedBranch,
         academic_year: selectedAcademicYear,
@@ -133,10 +119,10 @@ export default function LeaveQuotaScreen() {
   const handleEditQuota = (quota: LeaveQuota) => {
     setEditingQuota(quota);
     setQuotaForm({
-      department: quota.department.id.toString(),
       leave_type: quota.leave_type,
       total_quota: quota.total_quota.toString(),
       affects_salary: quota.affects_salary,
+      department: quota.department?.id || null,
     });
     setModalVisible(true);
   };
@@ -166,51 +152,27 @@ export default function LeaveQuotaScreen() {
 
   const resetForm = () => {
     setQuotaForm({
-      department: '',
-      leave_type: 'Sick Leave',
+      leave_type: '',
       total_quota: '',
       affects_salary: false,
+      department: null,
     });
     setEditingQuota(null);
   };
 
   const renderQuotaItem = ({ item }: { item: LeaveQuota }) => (
-    <View style={[
-      styles.quotaCard,
-      {
-        backgroundColor: colors.surface,
-        borderColor: colors.border,
-      }
-    ]}>
+    <View style={[styles.quotaCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       <View style={styles.quotaHeader}>
         <View style={styles.quotaInfo}>
-          <Text style={[styles.quotaType, { color: colors.textPrimary }]}>
+          <Text style={[styles.leaveType, { color: colors.textPrimary }]}>
             {item.leave_type}
           </Text>
-          <Text style={[styles.quotaDepartment, { color: colors.textSecondary }]}>
-            {item.department.name}
-          </Text>
-        </View>
-
-        <View style={styles.quotaDetails}>
-          <Text style={[styles.quotaAmount, { color: colors.primary }]}>
-            {item.total_quota} days
-          </Text>
-          <View style={[
-            styles.salaryBadge,
-            { backgroundColor: item.affects_salary ? '#FF6B6B20' : '#4CAF5020' }
-          ]}>
-            <Text style={[
-              styles.salaryText,
-              { color: item.affects_salary ? '#FF6B6B' : '#4CAF50' }
-            ]}>
-              {item.affects_salary ? 'Affects Salary' : 'No Salary Impact'}
+          {item.department && (
+            <Text style={[styles.department, { color: colors.textSecondary }]}>
+              {item.department.name}
             </Text>
-          </View>
+          )}
         </View>
-      </View>
-
-      {user?.is_staff && (
         <View style={styles.quotaActions}>
           <TouchableOpacity
             style={[styles.editButton, { backgroundColor: colors.primary }]}
@@ -225,7 +187,27 @@ export default function LeaveQuotaScreen() {
             <Text style={styles.deleteButtonText}>Delete</Text>
           </TouchableOpacity>
         </View>
-      )}
+      </View>
+
+      <View style={styles.quotaDetails}>
+        <View style={styles.quotaItem}>
+          <Text style={[styles.quotaLabel, { color: colors.textSecondary }]}>Total Quota:</Text>
+          <Text style={[styles.quotaValue, { color: colors.textPrimary }]}>
+            {item.total_quota} days
+          </Text>
+        </View>
+        <View style={styles.quotaItem}>
+          <Text style={[styles.quotaLabel, { color: colors.textSecondary }]}>Affects Salary:</Text>
+          <View style={[
+            styles.salaryBadge,
+            { backgroundColor: item.affects_salary ? '#FF9800' : '#4CAF50' }
+          ]}>
+            <Text style={styles.salaryBadgeText}>
+              {item.affects_salary ? 'Yes' : 'No'}
+            </Text>
+          </View>
+        </View>
+      </View>
     </View>
   );
 
@@ -240,7 +222,7 @@ export default function LeaveQuotaScreen() {
         <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              {editingQuota ? 'Edit Leave Quota' : 'Add Leave Quota'}
+              {editingQuota ? 'Edit Leave Quota' : 'Create Leave Quota'}
             </Text>
             <TouchableOpacity
               onPress={() => {
@@ -255,59 +237,14 @@ export default function LeaveQuotaScreen() {
 
           <ScrollView style={styles.modalBody}>
             <View style={styles.formGroup}>
-              <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Department *</Text>
-              <View style={styles.dropdownContainer}>
-                {departments?.map((dept) => (
-                  <TouchableOpacity
-                    key={dept.id}
-                    style={[
-                      styles.dropdownItem,
-                      {
-                        backgroundColor: quotaForm.department === dept.id.toString() ? colors.primary + '20' : colors.background,
-                        borderColor: colors.border
-                      }
-                    ]}
-                    onPress={() => setQuotaForm(prev => ({ ...prev, department: dept.id.toString() }))}
-                  >
-                    <Text style={[
-                      styles.dropdownText,
-                      { 
-                        color: quotaForm.department === dept.id.toString() ? colors.primary : colors.textPrimary 
-                      }
-                    ]}>
-                      {dept.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.formGroup}>
               <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Leave Type *</Text>
-              <View style={styles.dropdownContainer}>
-                {leaveTypes.map((type) => (
-                  <TouchableOpacity
-                    key={type}
-                    style={[
-                      styles.dropdownItem,
-                      {
-                        backgroundColor: quotaForm.leave_type === type ? colors.primary + '20' : colors.background,
-                        borderColor: colors.border
-                      }
-                    ]}
-                    onPress={() => setQuotaForm(prev => ({ ...prev, leave_type: type }))}
-                  >
-                    <Text style={[
-                      styles.dropdownText,
-                      { 
-                        color: quotaForm.leave_type === type ? colors.primary : colors.textPrimary 
-                      }
-                    ]}>
-                      {type}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <TextInput
+                style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                placeholder="Enter leave type (e.g., Casual, Sick, Annual)"
+                placeholderTextColor={colors.textSecondary}
+                value={quotaForm.leave_type}
+                onChangeText={(text) => setQuotaForm(prev => ({...prev, leave_type: text}))}
+              />
             </View>
 
             <View style={styles.formGroup}>
@@ -323,15 +260,27 @@ export default function LeaveQuotaScreen() {
             </View>
 
             <View style={styles.formGroup}>
+              <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Department (Optional)</Text>
+              <TouchableOpacity style={[styles.formInput, { borderColor: colors.border }]}>
+                <Text style={[styles.formInputText, { color: colors.textPrimary }]}>
+                  {quotaForm.department ? 
+                    departments?.find(d => d.id === quotaForm.department)?.name : 
+                    'Select Department (All if none selected)'
+                  }
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.formGroup}>
               <TouchableOpacity
                 style={styles.checkboxContainer}
                 onPress={() => setQuotaForm(prev => ({...prev, affects_salary: !prev.affects_salary}))}
               >
                 <View style={[
                   styles.checkbox,
-                  {
+                  { 
                     backgroundColor: quotaForm.affects_salary ? colors.primary : 'transparent',
-                    borderColor: colors.border
+                    borderColor: colors.border 
                   }
                 ]}>
                   {quotaForm.affects_salary && (
@@ -339,7 +288,7 @@ export default function LeaveQuotaScreen() {
                   )}
                 </View>
                 <Text style={[styles.checkboxLabel, { color: colors.textPrimary }]}>
-                  Affects Salary
+                  Affects Salary (deduct pay for exceeding quota)
                 </Text>
               </TouchableOpacity>
             </View>
@@ -349,7 +298,7 @@ export default function LeaveQuotaScreen() {
               onPress={handleCreateQuota}
             >
               <Text style={styles.submitButtonText}>
-                {editingQuota ? 'Update Quota' : 'Add Quota'}
+                {editingQuota ? 'Update Quota' : 'Create Quota'}
               </Text>
             </TouchableOpacity>
           </ScrollView>
@@ -372,36 +321,34 @@ export default function LeaveQuotaScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Filters */}
+      {/* Compact Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
               {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
             </Text>
           </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
+          
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
               {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
             </Text>
           </TouchableOpacity>
 
-          {departments && departments.length > 0 && (
-            <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-              <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-                {selectedDepartment ? departments.find(d => d.id === selectedDepartment)?.name : 'All Departments'}
-              </Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedDepartment ? departments?.find(d => d.id === selectedDepartment)?.name : 'All Dept'}
+            </Text>
+          </TouchableOpacity>
         </ScrollView>
 
         {user?.is_staff && (
           <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
+            style={[styles.createButton, { backgroundColor: colors.primary }]}
             onPress={() => setModalVisible(true)}
           >
-            <Text style={styles.addButtonText}>+ Add Quota</Text>
+            <Text style={styles.createButtonText}>+ Create</Text>
           </TouchableOpacity>
         )}
       </View>
@@ -467,30 +414,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 8,
     paddingHorizontal: 16,
+    maxHeight: 50,
   },
   filtersContent: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
   },
-  filterButton: {
+  compactFilterButton: {
     borderWidth: 1,
     borderRadius: 6,
     paddingHorizontal: 10,
     paddingVertical: 6,
     minWidth: 70,
   },
-  filterText: {
+  compactFilterText: {
     fontSize: 12,
     textAlign: 'center',
     fontWeight: '500',
   },
-  addButton: {
+  createButton: {
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 6,
   },
-  addButtonText: {
+  createButtonText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
@@ -552,30 +500,13 @@ const styles = StyleSheet.create({
   quotaInfo: {
     flex: 1,
   },
-  quotaType: {
+  leaveType: {
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  quotaDepartment: {
+  department: {
     fontSize: 14,
-  },
-  quotaDetails: {
-    alignItems: 'flex-end',
-  },
-  quotaAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  salaryBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  salaryText: {
-    fontSize: 10,
-    fontWeight: 'bold',
   },
   quotaActions: {
     flexDirection: 'row',
@@ -585,8 +516,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
-    flex: 1,
-    alignItems: 'center',
   },
   editButtonText: {
     color: '#FFFFFF',
@@ -597,13 +526,37 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 6,
-    flex: 1,
-    alignItems: 'center',
   },
   deleteButtonText: {
     color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
+  },
+  quotaDetails: {
+    gap: 8,
+  },
+  quotaItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  quotaLabel: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  quotaValue: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  salaryBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  salaryBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   emptyContainer: {
     flex: 1,
@@ -649,7 +602,6 @@ const styles = StyleSheet.create({
   },
   modalBody: {
     padding: 20,
-    maxHeight: 400,
   },
   formGroup: {
     marginBottom: 16,
@@ -665,31 +617,23 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
+    justifyContent: 'center',
   },
-  dropdownContainer: {
-    maxHeight: 120,
-  },
-  dropdownItem: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 6,
-    marginBottom: 4,
-  },
-  dropdownText: {
-    fontSize: 14,
+  formInputText: {
+    fontSize: 16,
   },
   checkboxContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
   },
   checkbox: {
     width: 20,
     height: 20,
-    borderRadius: 4,
     borderWidth: 1,
+    borderRadius: 4,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
   },
   checkmark: {
     color: '#FFFFFF',
@@ -698,6 +642,7 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
+    flex: 1,
   },
   submitButton: {
     paddingVertical: 16,
