@@ -1,216 +1,178 @@
-
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, Alert, RefreshControl } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { apiService } from '@/api/apiService';
-import { useBranches, useAcademicYears } from '@/hooks/useApi';
-
-interface Visitor {
-  id: number;
-  name: string;
-  phone: string;
-  relation: string;
-  visited_date: string;
-  vacated_date?: string;
-  check_in_time: string;
-  check_out_time?: string;
-  alternative_phone?: string;
-  profile_pic?: string;
-  reasons: string;
-  student: {
-    id: number;
-    first_name: string;
-    last_name: string;
-    email: string;
-    employee_id: string;
-  };
-  allowed_by: {
-    id: number;
-    first_name: string;
-    last_name: string;
-  };
-}
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useHostelVisitors } from '@/hooks/useApi';
 
 export default function HostelVisitorsScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [visitors, setVisitors] = useState<Visitor[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [statusFilter, setStatusFilter] = useState<'All' | 'Active' | 'Inactive'>('All');
-  const [selectedVisitor, setSelectedVisitor] = useState<Visitor | null>(null);
-  const [visitorModalVisible, setVisitorModalVisible] = useState(false);
+  const [selectedVisitorType, setSelectedVisitorType] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [dateFilter, setDateFilter] = useState<string>('today');
 
-  const { data: branches } = useBranches();
-  const { data: academicYears } = useAcademicYears();
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
 
-  const fetchVisitors = async () => {
-    try {
-      setLoading(true);
-      const response = await apiService.api.get('/api/hostel-visitors/');
-      setVisitors(response.data.results || []);
-    } catch (error) {
-      console.error('Error fetching visitors:', error);
-      Alert.alert('Error', 'Failed to fetch visitors');
-    } finally {
-      setLoading(false);
+  // Fetch visitors with filters
+  const visitorsParams = useMemo(() => ({
+    branch: selectedBranch,
+    ...(selectedVisitorType && { visitor_type: selectedVisitorType }),
+    ...(selectedStatus && { status: selectedStatus }),
+    ...(dateFilter !== 'all' && { date_filter: dateFilter }),
+  }), [selectedBranch, selectedVisitorType, selectedStatus, dateFilter]);
+
+  const {
+    data: visitors = [],
+    loading: visitorsLoading,
+    error: visitorsError,
+    refetch: refetchVisitors
+  } = useHostelVisitors(visitorsParams);
+
+  const visitorTypeOptions = [
+    { id: null, name: 'All Types' },
+    { id: 'parent', name: 'Parent' },
+    { id: 'guardian', name: 'Guardian' },
+    { id: 'relative', name: 'Relative' },
+    { id: 'friend', name: 'Friend' },
+    { id: 'official', name: 'Official' }
+  ];
+
+  const statusOptions = [
+    { id: null, name: 'All Status' },
+    { id: 'checked_in', name: 'Checked In' },
+    { id: 'checked_out', name: 'Checked Out' },
+    { id: 'pending', name: 'Pending Approval' }
+  ];
+
+  const dateFilterOptions = [
+    { id: 'today', name: 'Today' },
+    { id: 'this_week', name: 'This Week' },
+    { id: 'this_month', name: 'This Month' },
+    { id: 'all', name: 'All Time' }
+  ];
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'checked_in': return '#10B981';
+      case 'checked_out': return '#6B7280';
+      case 'pending': return '#F59E0B';
+      default: return '#8B5CF6';
     }
   };
 
-  const checkOutVisitor = async (visitorId: number) => {
-    try {
-      await apiService.api.post(`/api/hostel-visitors/${visitorId}/check_out/`);
-      Alert.alert('Success', 'Visitor checked out successfully');
-      fetchVisitors();
-    } catch (error) {
-      console.error('Error checking out visitor:', error);
-      Alert.alert('Error', 'Failed to check out visitor');
+  const handleVisitorAction = (visitor: any) => {
+    if (visitor.status === 'checked_in') {
+      Alert.alert(
+        'Check Out Visitor',
+        `Check out ${visitor.name}?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Check Out', onPress: () => console.log('Check out visitor:', visitor.id) }
+        ]
+      );
+    } else if (visitor.status === 'pending') {
+      Alert.alert(
+        'Approve Visit',
+        `Approve visit request for ${visitor.name}?`,
+        [
+          { text: 'Deny', style: 'destructive', onPress: () => console.log('Deny visitor:', visitor.id) },
+          { text: 'Approve', onPress: () => console.log('Approve visitor:', visitor.id) }
+        ]
+      );
     }
   };
 
-  useEffect(() => {
-    fetchVisitors();
-  }, [selectedBranch, selectedAcademicYear]);
-
-  const filteredVisitors = visitors.filter(visitor => {
-    const matchesSearch = 
-      visitor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      visitor.student.first_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      visitor.student.last_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      visitor.phone.includes(searchQuery);
-
-    const isActive = !visitor.check_out_time;
-    const matchesStatus = 
-      statusFilter === 'All' ||
-      (statusFilter === 'Active' && isActive) ||
-      (statusFilter === 'Inactive' && !isActive);
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const handleVisitorPress = (visitor: Visitor) => {
-    setSelectedVisitor(visitor);
-    setVisitorModalVisible(true);
-  };
-
-  const handleCheckOut = (visitor: Visitor) => {
-    Alert.alert(
-      'Check Out Visitor',
-      `Are you sure you want to check out ${visitor.name}?`,
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Check Out', onPress: () => checkOutVisitor(visitor.id) }
-      ]
-    );
-  };
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const formatTime = (timeString: string) => {
-    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
-
-  const renderVisitor = (visitor: Visitor) => {
-    const isActive = !visitor.check_out_time;
-    
-    return (
-      <TouchableOpacity
-        key={visitor.id}
-        style={[styles.visitorCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-        onPress={() => handleVisitorPress(visitor)}
-      >
-        <View style={styles.visitorHeader}>
-          <View style={styles.visitorInfo}>
-            <Text style={[styles.visitorName, { color: colors.textPrimary }]}>
-              {visitor.name}
+  const renderVisitorCard = (visitor: any) => (
+    <View
+      key={visitor.id}
+      style={[
+        styles.visitorCard,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderLeftColor: getStatusColor(visitor.status)
+        }
+      ]}
+    >
+      <View style={styles.visitorHeader}>
+        <View style={styles.visitorInfo}>
+          <Text style={[styles.visitorName, { color: colors.textPrimary }]}>
+            {visitor.name}
+          </Text>
+          <Text style={[styles.visitorType, { color: colors.textSecondary }]}>
+            {visitor.visitor_type} • {visitor.phone}
+          </Text>
+          {visitor.student && (
+            <Text style={[styles.studentInfo, { color: colors.textSecondary }]}>
+              Visiting: {visitor.student.name}
             </Text>
-            <Text style={[styles.visitorPhone, { color: colors.textSecondary }]}>
-              {visitor.phone}
-            </Text>
-            <Text style={[styles.visitorRelation, { color: colors.textSecondary }]}>
-              {visitor.relation}
-            </Text>
-          </View>
-          <View style={[
-            styles.statusBadge,
-            { backgroundColor: isActive ? '#F59E0B' : '#10B981' }
-          ]}>
-            <Text style={styles.statusText}>
-              {isActive ? 'In' : 'Out'}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.visitDetails}>
-          <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Visiting:</Text>
-            <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-              {visitor.student.first_name} {visitor.student.last_name}
-            </Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Student ID:</Text>
-            <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-              {visitor.student.employee_id}
-            </Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Date:</Text>
-            <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-              {formatDate(visitor.visited_date)}
-            </Text>
-          </View>
-          <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Check-in:</Text>
-            <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-              {formatTime(visitor.check_in_time)}
-            </Text>
-          </View>
-          {visitor.check_out_time && (
-            <View style={styles.detailRow}>
-              <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Check-out:</Text>
-              <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-                {formatTime(visitor.check_out_time)}
-              </Text>
-            </View>
           )}
-          <View style={styles.detailRow}>
-            <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Purpose:</Text>
-            <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-              {visitor.reasons}
-            </Text>
-          </View>
         </View>
 
-        {isActive && (
-          <TouchableOpacity
-            style={[styles.checkOutButton, { backgroundColor: colors.primary }]}
-            onPress={() => handleCheckOut(visitor)}
-          >
-            <Text style={styles.checkOutButtonText}>Check Out</Text>
-          </TouchableOpacity>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(visitor.status) }]}>
+          <Text style={styles.statusText}>
+            {visitor.status.replace('_', ' ').toUpperCase()}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.visitDetails}>
+        <Text style={[styles.visitTime, { color: colors.textPrimary }]}>
+          🕒 Check In: {new Date(visitor.check_in_time).toLocaleString()}
+        </Text>
+        {visitor.check_out_time && (
+          <Text style={[styles.visitTime, { color: colors.textSecondary }]}>
+            🚪 Check Out: {new Date(visitor.check_out_time).toLocaleString()}
+          </Text>
         )}
-      </TouchableOpacity>
-    );
-  };
+        {visitor.purpose && (
+          <Text style={[styles.purpose, { color: colors.textSecondary }]}>
+            Purpose: {visitor.purpose}
+          </Text>
+        )}
+      </View>
+
+      {(visitor.status === 'checked_in' || visitor.status === 'pending') && (
+        <TouchableOpacity
+          style={[
+            styles.actionButton,
+            {
+              backgroundColor: visitor.status === 'pending' ? colors.primary : '#6B7280'
+            }
+          ]}
+          onPress={() => handleVisitorAction(visitor)}
+        >
+          <Text style={styles.actionButtonText}>
+            {visitor.status === 'pending' ? 'Approve/Deny' : 'Check Out'}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
+  );
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -227,254 +189,107 @@ export default function HostelVisitorsScreen() {
       />
 
       {/* Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        {/* Search */}
-        <TextInput
-          style={[
-            styles.searchInput,
-            { 
-              backgroundColor: colors.background, 
-              borderColor: colors.border, 
-              color: colors.textPrimary 
-            }
-          ]}
-          placeholder="Search visitors..."
-          placeholderTextColor={colors.textSecondary}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
 
-        {/* Branch Filter */}
-        <View style={styles.filterRow}>
-          <View style={styles.filterItem}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Branch</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {branches?.map((branch: any) => (
-                <TouchableOpacity
-                  key={branch.id}
-                  style={[
-                    styles.filterButton,
-                    { borderColor: colors.border },
-                    selectedBranch === branch.id && { backgroundColor: colors.primary }
-                  ]}
-                  onPress={() => setSelectedBranch(branch.id)}
-                >
-                  <Text style={[
-                    styles.filterButtonText,
-                    { color: selectedBranch === branch.id ? '#FFFFFF' : colors.textPrimary }
-                  ]}>
-                    {branch.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
 
-        {/* Academic Year Filter */}
-        <View style={styles.filterRow}>
-          <View style={styles.filterItem}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Academic Year</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {academicYears?.map((year: any) => (
-                <TouchableOpacity
-                  key={year.id}
-                  style={[
-                    styles.filterButton,
-                    { borderColor: colors.border },
-                    selectedAcademicYear === year.id && { backgroundColor: colors.primary }
-                  ]}
-                  onPress={() => setSelectedAcademicYear(year.id)}
-                >
-                  <Text style={[
-                    styles.filterButtonText,
-                    { color: selectedAcademicYear === year.id ? '#FFFFFF' : colors.textPrimary }
-                  ]}>
-                    {year.year_range}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
 
-        {/* Status Filter */}
-        <View style={styles.filterRow}>
-          <View style={styles.filterItem}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Status</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {['All', 'Active', 'Inactive'].map((status) => (
-                <TouchableOpacity
-                  key={status}
-                  style={[
-                    styles.filterButton,
-                    { borderColor: colors.border },
-                    statusFilter === status && { backgroundColor: colors.primary }
-                  ]}
-                  onPress={() => setStatusFilter(status as any)}
-                >
-                  <Text style={[
-                    styles.filterButtonText,
-                    { color: statusFilter === status ? '#FFFFFF' : colors.textPrimary }
-                  ]}>
-                    {status}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+            <ModalDropdownFilter
+              label="Visitor Type"
+              items={visitorTypeOptions}
+              selectedValue={selectedVisitorType}
+              onValueChange={setSelectedVisitorType}
+              compact={true}
+            />
+
+            <ModalDropdownFilter
+              label="Status"
+              items={statusOptions}
+              selectedValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+              compact={true}
+            />
+
+            <ModalDropdownFilter
+              label="Date"
+              items={dateFilterOptions}
+              selectedValue={dateFilter}
+              onValueChange={setDateFilter}
+              compact={true}
+            />
           </View>
-        </View>
+        </ScrollView>
       </View>
 
-      {/* Visitors List */}
-      <ScrollView 
-        style={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchVisitors} />
-        }
-      >
-        {filteredVisitors.length > 0 ? (
-          filteredVisitors.map(renderVisitor)
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
-              {searchQuery ? 'No visitors match your search' : 'No visitors found'}
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-
-      {/* Visitor Details Modal */}
-      <Modal
-        visible={visitorModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setVisitorModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-                Visitor Details
-              </Text>
-              <TouchableOpacity
-                onPress={() => setVisitorModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            {selectedVisitor && (
-              <ScrollView style={styles.modalBody}>
-                <View style={styles.visitorProfile}>
-                  <Text style={[styles.profileName, { color: colors.textPrimary }]}>
-                    {selectedVisitor.name}
-                  </Text>
-                  <Text style={[styles.profilePhone, { color: colors.textSecondary }]}>
-                    {selectedVisitor.phone}
-                  </Text>
-                  {selectedVisitor.alternative_phone && (
-                    <Text style={[styles.profilePhone, { color: colors.textSecondary }]}>
-                      Alt: {selectedVisitor.alternative_phone}
-                    </Text>
-                  )}
-                </View>
-
-                <View style={styles.detailsSection}>
-                  <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-                    Visit Information
-                  </Text>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Visiting Student:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {selectedVisitor.student.first_name} {selectedVisitor.student.last_name}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Student ID:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {selectedVisitor.student.employee_id}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Relation:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {selectedVisitor.relation}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Purpose:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {selectedVisitor.reasons}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Visit Date:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {formatDate(selectedVisitor.visited_date)}
-                    </Text>
-                  </View>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Check-in Time:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {formatTime(selectedVisitor.check_in_time)}
-                    </Text>
-                  </View>
-                  {selectedVisitor.check_out_time && (
-                    <View style={styles.detailItem}>
-                      <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                        Check-out Time:
-                      </Text>
-                      <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                        {formatTime(selectedVisitor.check_out_time)}
-                      </Text>
-                    </View>
-                  )}
-                </View>
-
-                <View style={styles.detailsSection}>
-                  <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
-                    Authorization
-                  </Text>
-                  <View style={styles.detailItem}>
-                    <Text style={[styles.detailItemLabel, { color: colors.textSecondary }]}>
-                      Allowed By:
-                    </Text>
-                    <Text style={[styles.detailItemValue, { color: colors.textPrimary }]}>
-                      {selectedVisitor.allowed_by.first_name} {selectedVisitor.allowed_by.last_name}
-                    </Text>
-                  </View>
-                </View>
-
-                {!selectedVisitor.check_out_time && (
-                  <TouchableOpacity
-                    style={[styles.modalCheckOutButton, { backgroundColor: colors.primary }]}
-                    onPress={() => {
-                      setVisitorModalVisible(false);
-                      handleCheckOut(selectedVisitor);
-                    }}
-                  >
-                    <Text style={styles.modalCheckOutButtonText}>Check Out Visitor</Text>
-                  </TouchableOpacity>
-                )}
-              </ScrollView>
-            )}
-          </View>
+      {/* Content */}
+      {visitorsLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading visitors...
+          </Text>
         </View>
-      </Modal>
+      ) : visitorsError ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
+            Failed to load visitors. Please try again.
+          </Text>
+          <TouchableOpacity
+            onPress={refetchVisitors}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={visitorsLoading}
+              onRefresh={refetchVisitors}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        >
+          {visitors.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                No visitors found for the selected criteria
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.visitorsList}>
+              {visitors.map(renderVisitorCard)}
+            </View>
+          )}
+        </ScrollView>
+      )}
+
+      {/* Add Visitor Button */}
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor: colors.primary }]}
+        onPress={() => router.push('/hostel/add-visitor')}
+      >
+        <Text style={styles.addButtonText}>+ Add Visitor</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -484,195 +299,148 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    padding: 12,
+    paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  searchInput: {
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginBottom: 12,
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
     fontSize: 14,
-  },
-  filterRow: {
-    marginBottom: 8,
-  },
-  filterItem: {
-    flex: 1,
-  },
-  filterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  filterButtonText: {
-    fontSize: 12,
     fontWeight: '600',
   },
   content: {
     flex: 1,
+  },
+  visitorsList: {
     padding: 16,
   },
   visitorCard: {
     padding: 16,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     borderWidth: 1,
+    borderLeftWidth: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   visitorHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     marginBottom: 12,
   },
   visitorInfo: {
     flex: 1,
   },
   visitorName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
-  visitorPhone: {
+  visitorType: {
     fontSize: 14,
-    marginTop: 2,
+    marginBottom: 4,
   },
-  visitorRelation: {
+  studentInfo: {
     fontSize: 12,
-    marginTop: 2,
   },
   statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {
     color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 10,
+    fontWeight: 'bold',
   },
   visitDetails: {
-    gap: 6,
-    marginBottom: 12,
+    marginBottom: 16,
   },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  detailLabel: {
+  visitTime: {
     fontSize: 14,
-    flex: 1,
+    marginBottom: 4,
   },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-    textAlign: 'right',
+  purpose: {
+    fontSize: 12,
+    marginTop: 8,
   },
-  checkOutButton: {
+  actionButton: {
     paddingVertical: 10,
     borderRadius: 8,
     alignItems: 'center',
   },
-  checkOutButtonText: {
+  actionButtonText: {
     color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
   },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
+  addButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 25,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  emptyStateText: {
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorText: {
     fontSize: 16,
     textAlign: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 16,
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  closeButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalBody: {
-    maxHeight: 500,
-  },
-  visitorProfile: {
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  profileName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  profilePhone: {
-    fontSize: 14,
-    marginBottom: 2,
-  },
-  detailsSection: {
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 8,
-  },
-  detailItemLabel: {
-    fontSize: 14,
-    flex: 1,
-  },
-  detailItemValue: {
-    fontSize: 14,
-    fontWeight: '600',
-    flex: 1,
-    textAlign: 'right',
-  },
-  modalCheckOutButton: {
-    paddingVertical: 12,
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 16,
   },
-  modalCheckOutButtonText: {
+  retryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

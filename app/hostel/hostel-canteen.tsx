@@ -1,181 +1,179 @@
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, Alert, RefreshControl } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { apiService } from '@/api/apiService';
-
-interface MealPlan {
-  id: number;
-  day: string;
-  breakfast: string;
-  lunch: string;
-  dinner: string;
-}
-
-interface EditMealData {
-  day: string;
-  breakfast: string;
-  lunch: string;
-  dinner: string;
-}
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useHostelMealPlans } from '@/hooks/useApi';
 
 export default function HostelCanteenScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [mealPlans, setMealPlans] = useState<MealPlan[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const [selectedMeal, setSelectedMeal] = useState<MealPlan | null>(null);
-  const [editData, setEditData] = useState<EditMealData>({
-    day: '',
-    breakfast: '',
-    lunch: '',
-    dinner: ''
-  });
+  const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>('today');
 
-  const daysOrder = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
 
-  const fetchMealPlans = async () => {
-    try {
-      setLoading(true);
-      const response = await apiService.api.get('/api/hostel-mealplans/');
-      const sortedMeals = (response.data.results || []).sort((a: MealPlan, b: MealPlan) => {
-        return daysOrder.indexOf(a.day) - daysOrder.indexOf(b.day);
-      });
-      setMealPlans(sortedMeals);
-    } catch (error) {
-      console.error('Error fetching meal plans:', error);
-      Alert.alert('Error', 'Failed to fetch meal plans');
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Fetch meal plans with filters
+  const mealPlansParams = useMemo(() => ({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
+    ...(selectedMealType && { meal_type: selectedMealType }),
+    ...(selectedDate !== 'all' && { date: selectedDate }),
+  }), [selectedBranch, selectedAcademicYear, selectedMealType, selectedDate]);
 
-  const updateMealPlan = async () => {
-    if (!selectedMeal) return;
+  const {
+    data: mealPlans = [],
+    loading: mealPlansLoading,
+    error: mealPlansError,
+    refetch: refetchMealPlans
+  } = useHostelMealPlans(mealPlansParams);
 
-    try {
-      await apiService.api.patch(`/api/hostel-mealplans/${selectedMeal.id}/`, editData);
-      Alert.alert('Success', 'Meal plan updated successfully');
-      setEditModalVisible(false);
-      fetchMealPlans();
-    } catch (error) {
-      console.error('Error updating meal plan:', error);
-      Alert.alert('Error', 'Failed to update meal plan');
-    }
-  };
+  const mealTypeOptions = [
+    { id: null, name: 'All Meals' },
+    { id: 'breakfast', name: 'Breakfast' },
+    { id: 'lunch', name: 'Lunch' },
+    { id: 'snacks', name: 'Snacks' },
+    { id: 'dinner', name: 'Dinner' }
+  ];
 
-  const createMealPlan = async () => {
-    try {
-      await apiService.api.post('/api/hostel-mealplans/', editData);
-      Alert.alert('Success', 'Meal plan created successfully');
-      setEditModalVisible(false);
-      fetchMealPlans();
-    } catch (error) {
-      console.error('Error creating meal plan:', error);
-      Alert.alert('Error', 'Failed to create meal plan');
-    }
-  };
+  const dateOptions = [
+    { id: 'today', name: 'Today' },
+    { id: 'tomorrow', name: 'Tomorrow' },
+    { id: 'this_week', name: 'This Week' },
+    { id: 'all', name: 'All' }
+  ];
 
-  useEffect(() => {
-    fetchMealPlans();
-  }, []);
-
-  const handleEditMeal = (meal: MealPlan) => {
-    setSelectedMeal(meal);
-    setEditData({
-      day: meal.day,
-      breakfast: meal.breakfast,
-      lunch: meal.lunch,
-      dinner: meal.dinner
-    });
-    setEditModalVisible(true);
-  };
-
-  const handleAddMeal = () => {
-    setSelectedMeal(null);
-    setEditData({
-      day: '',
-      breakfast: '',
-      lunch: '',
-      dinner: ''
-    });
-    setEditModalVisible(true);
-  };
-
-  const handleSaveMeal = () => {
-    if (!editData.day || !editData.breakfast || !editData.lunch || !editData.dinner) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-
-    if (selectedMeal) {
-      updateMealPlan();
-    } else {
-      createMealPlan();
-    }
-  };
-
-  const getMealEmoji = (mealType: string) => {
-    switch (mealType) {
+  const getMealTypeIcon = (mealType: string) => {
+    switch (mealType?.toLowerCase()) {
       case 'breakfast': return '🌅';
       case 'lunch': return '🌞';
+      case 'snacks': return '🍪';
       case 'dinner': return '🌙';
       default: return '🍽️';
     }
   };
 
-  const renderMealCard = (meal: MealPlan) => (
-    <View key={meal.id} style={[styles.mealCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <View style={styles.dayHeader}>
-        <Text style={[styles.dayTitle, { color: colors.textPrimary }]}>
-          {meal.day}
-        </Text>
-        {user?.is_staff && (
-          <TouchableOpacity
-            style={[styles.editButton, { backgroundColor: colors.primary }]}
-            onPress={() => handleEditMeal(meal)}
-          >
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
+  const getMealTypeColor = (mealType: string) => {
+    switch (mealType?.toLowerCase()) {
+      case 'breakfast': return '#F59E0B';
+      case 'lunch': return '#10B981';
+      case 'snacks': return '#8B5CF6';
+      case 'dinner': return '#3B82F6';
+      default: return '#6B7280';
+    }
+  };
+
+  const renderMealPlanCard = (mealPlan: any) => (
+    <View
+      key={mealPlan.id}
+      style={[
+        styles.mealCard,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderLeftColor: getMealTypeColor(mealPlan.meal_type)
+        }
+      ]}
+    >
+      <View style={styles.mealHeader}>
+        <View style={styles.mealInfo}>
+          <Text style={styles.mealIcon}>
+            {getMealTypeIcon(mealPlan.meal_type)}
+          </Text>
+          <View style={styles.mealDetails}>
+            <Text style={[styles.mealType, { color: colors.textPrimary }]}>
+              {mealPlan.meal_type?.toUpperCase()}
+            </Text>
+            <Text style={[styles.mealDate, { color: colors.textSecondary }]}>
+              {new Date(mealPlan.date).toLocaleDateString()}
+            </Text>
+            <Text style={[styles.mealTime, { color: colors.textSecondary }]}>
+              {mealPlan.start_time} - {mealPlan.end_time}
+            </Text>
+          </View>
+        </View>
+        
+        {mealPlan.price && (
+          <View style={[styles.priceBadge, { backgroundColor: colors.primary + '20' }]}>
+            <Text style={[styles.priceText, { color: colors.primary }]}>
+              ₹{mealPlan.price}
+            </Text>
+          </View>
         )}
       </View>
 
-      <View style={styles.mealsContainer}>
-        <View style={styles.mealItem}>
-          <Text style={[styles.mealTitle, { color: colors.textPrimary }]}>
-            {getMealEmoji('breakfast')} Breakfast
+      {mealPlan.menu_items && mealPlan.menu_items.length > 0 && (
+        <View style={styles.menuSection}>
+          <Text style={[styles.menuLabel, { color: colors.textPrimary }]}>
+            Menu Items:
           </Text>
-          <Text style={[styles.mealText, { color: colors.textSecondary }]}>
-            {meal.breakfast}
-          </Text>
+          <View style={styles.menuItems}>
+            {mealPlan.menu_items.map((item: any, index: number) => (
+              <View
+                key={index}
+                style={[styles.menuItem, { backgroundColor: colors.background }]}
+              >
+                <Text style={[styles.itemName, { color: colors.textPrimary }]}>
+                  {item.name}
+                </Text>
+                {item.description && (
+                  <Text style={[styles.itemDescription, { color: colors.textSecondary }]}>
+                    {item.description}
+                  </Text>
+                )}
+                {item.dietary_info && (
+                  <View style={styles.dietaryTags}>
+                    {item.dietary_info.map((tag: string, tagIndex: number) => (
+                      <View
+                        key={tagIndex}
+                        style={[styles.dietaryTag, { backgroundColor: colors.primary + '20' }]}
+                      >
+                        <Text style={[styles.dietaryText, { color: colors.primary }]}>
+                          {tag}
+                        </Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </View>
+            ))}
+          </View>
         </View>
+      )}
 
-        <View style={styles.mealItem}>
-          <Text style={[styles.mealTitle, { color: colors.textPrimary }]}>
-            {getMealEmoji('lunch')} Lunch
+      {mealPlan.special_notes && (
+        <View style={styles.notesSection}>
+          <Text style={[styles.notesLabel, { color: colors.textSecondary }]}>
+            Special Notes:
           </Text>
-          <Text style={[styles.mealText, { color: colors.textSecondary }]}>
-            {meal.lunch}
-          </Text>
-        </View>
-
-        <View style={styles.mealItem}>
-          <Text style={[styles.mealTitle, { color: colors.textPrimary }]}>
-            {getMealEmoji('dinner')} Dinner
-          </Text>
-          <Text style={[styles.mealText, { color: colors.textSecondary }]}>
-            {meal.dinner}
+          <Text style={[styles.notesText, { color: colors.textPrimary }]}>
+            {mealPlan.special_notes}
           </Text>
         </View>
-      </View>
+      )}
     </View>
   );
 
@@ -193,186 +191,92 @@ export default function HostelCanteenScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.surface }]}>
-        <Text style={[styles.headerTitle, { color: colors.textPrimary }]}>
-          Weekly Meal Schedule
-        </Text>
-        {user?.is_staff && (
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
-            onPress={handleAddMeal}
-          >
-            <Text style={styles.addButtonText}>+ Add Meal</Text>
-          </TouchableOpacity>
-        )}
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Meal Type"
+              items={mealTypeOptions}
+              selectedValue={selectedMealType}
+              onValueChange={setSelectedMealType}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Date"
+              items={dateOptions}
+              selectedValue={selectedDate}
+              onValueChange={setSelectedDate}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
       </View>
 
-      {/* Meal Plans */}
-      <ScrollView 
-        style={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchMealPlans} />
-        }
-      >
-        {mealPlans.length > 0 ? (
-          mealPlans.map(renderMealCard)
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
-              No meal plans available
-            </Text>
-            {user?.is_staff && (
-              <TouchableOpacity
-                style={[styles.addFirstButton, { backgroundColor: colors.primary }]}
-                onPress={handleAddMeal}
-              >
-                <Text style={styles.addFirstButtonText}>Add First Meal Plan</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-        )}
-      </ScrollView>
-
-      {/* Edit Meal Modal */}
-      <Modal
-        visible={editModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setEditModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-                {selectedMeal ? 'Edit Meal Plan' : 'Add Meal Plan'}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setEditModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.modalBody}>
-              <View style={styles.formGroup}>
-                <Text style={[styles.label, { color: colors.textPrimary }]}>Day</Text>
-                {selectedMeal ? (
-                  <View style={[styles.disabledInput, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                    <Text style={[styles.disabledText, { color: colors.textSecondary }]}>
-                      {editData.day}
-                    </Text>
-                  </View>
-                ) : (
-                  <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.daySelector}>
-                    {daysOrder.map((day) => (
-                      <TouchableOpacity
-                        key={day}
-                        style={[
-                          styles.dayOption,
-                          { borderColor: colors.border },
-                          editData.day === day && { backgroundColor: colors.primary }
-                        ]}
-                        onPress={() => setEditData({ ...editData, day })}
-                      >
-                        <Text style={[
-                          styles.dayOptionText,
-                          { color: editData.day === day ? '#FFFFFF' : colors.textPrimary }
-                        ]}>
-                          {day}
-                        </Text>
-                      </TouchableOpacity>
-                    ))}
-                  </ScrollView>
-                )}
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={[styles.label, { color: colors.textPrimary }]}>
-                  {getMealEmoji('breakfast')} Breakfast
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { 
-                      backgroundColor: colors.background, 
-                      borderColor: colors.border, 
-                      color: colors.textPrimary 
-                    }
-                  ]}
-                  placeholder="Enter breakfast menu"
-                  placeholderTextColor={colors.textSecondary}
-                  value={editData.breakfast}
-                  onChangeText={(text) => setEditData({ ...editData, breakfast: text })}
-                  multiline
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={[styles.label, { color: colors.textPrimary }]}>
-                  {getMealEmoji('lunch')} Lunch
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { 
-                      backgroundColor: colors.background, 
-                      borderColor: colors.border, 
-                      color: colors.textPrimary 
-                    }
-                  ]}
-                  placeholder="Enter lunch menu"
-                  placeholderTextColor={colors.textSecondary}
-                  value={editData.lunch}
-                  onChangeText={(text) => setEditData({ ...editData, lunch: text })}
-                  multiline
-                />
-              </View>
-
-              <View style={styles.formGroup}>
-                <Text style={[styles.label, { color: colors.textPrimary }]}>
-                  {getMealEmoji('dinner')} Dinner
-                </Text>
-                <TextInput
-                  style={[
-                    styles.input,
-                    { 
-                      backgroundColor: colors.background, 
-                      borderColor: colors.border, 
-                      color: colors.textPrimary 
-                    }
-                  ]}
-                  placeholder="Enter dinner menu"
-                  placeholderTextColor={colors.textSecondary}
-                  value={editData.dinner}
-                  onChangeText={(text) => setEditData({ ...editData, dinner: text })}
-                  multiline
-                />
-              </View>
-
-              <View style={styles.modalActions}>
-                <TouchableOpacity
-                  style={[styles.cancelButton, { borderColor: colors.border }]}
-                  onPress={() => setEditModalVisible(false)}
-                >
-                  <Text style={[styles.cancelButtonText, { color: colors.textPrimary }]}>
-                    Cancel
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.saveButton, { backgroundColor: colors.primary }]}
-                  onPress={handleSaveMeal}
-                >
-                  <Text style={styles.saveButtonText}>
-                    {selectedMeal ? 'Update' : 'Create'}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          </View>
+      {/* Content */}
+      {mealPlansLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading meal plans...
+          </Text>
         </View>
-      </Modal>
+      ) : mealPlansError ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
+            Failed to load meal plans. Please try again.
+          </Text>
+          <TouchableOpacity
+            onPress={refetchMealPlans}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={mealPlansLoading}
+              onRefresh={refetchMealPlans}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        >
+          {mealPlans.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                No meal plans found for the selected criteria
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.mealsList}>
+              {mealPlans.map(renderMealPlanCard)}
+            </View>
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -381,29 +285,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 16,
+  filtersContainer: {
+    paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  addButton: {
+  filtersScroll: {
     paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 8,
   },
-  addButtonText: {
-    color: '#FFFFFF',
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
     fontSize: 14,
     fontWeight: '600',
   },
   content: {
     flex: 1,
+  },
+  mealsList: {
     padding: 16,
   },
   mealCard: {
@@ -411,161 +312,143 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     marginBottom: 16,
     borderWidth: 1,
+    borderLeftWidth: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
-  dayHeader: {
+  mealHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 16,
   },
-  dayTitle: {
+  mealInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  mealIcon: {
+    fontSize: 32,
+    marginRight: 12,
+  },
+  mealDetails: {
+    flex: 1,
+  },
+  mealType: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 4,
   },
-  editButton: {
+  mealDate: {
+    fontSize: 14,
+    marginBottom: 2,
+  },
+  mealTime: {
+    fontSize: 12,
+  },
+  priceBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 6,
+    borderRadius: 16,
   },
-  editButtonText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  mealsContainer: {
-    gap: 12,
-  },
-  mealItem: {
-    marginBottom: 4,
-  },
-  mealTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  mealText: {
-    fontSize: 14,
-    lineHeight: 18,
-  },
-  emptyState: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-  },
-  emptyStateText: {
+  priceText: {
     fontSize: 16,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  addFirstButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  addFirstButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  closeButtonText: {
-    fontSize: 18,
     fontWeight: 'bold',
   },
-  modalBody: {
-    maxHeight: 500,
-  },
-  formGroup: {
+  menuSection: {
     marginBottom: 16,
   },
-  label: {
-    fontSize: 14,
+  menuLabel: {
+    fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
   },
-  input: {
-    borderWidth: 1,
-    borderRadius: 8,
+  menuItems: {
+    gap: 8,
+  },
+  menuItem: {
     padding: 12,
-    fontSize: 14,
-    minHeight: 60,
-    textAlignVertical: 'top',
-  },
-  disabledInput: {
-    borderWidth: 1,
     borderRadius: 8,
-    padding: 12,
-    minHeight: 44,
-    justifyContent: 'center',
   },
-  disabledText: {
+  itemName: {
     fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
   },
-  daySelector: {
-    flexDirection: 'row',
-  },
-  dayOption: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderRadius: 8,
-    marginRight: 8,
-  },
-  dayOptionText: {
+  itemDescription: {
     fontSize: 12,
-    fontWeight: '600',
+    marginBottom: 6,
   },
-  modalActions: {
+  dietaryTags: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 12,
-    marginTop: 20,
+    flexWrap: 'wrap',
+    gap: 4,
   },
-  cancelButton: {
+  dietaryTag: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 10,
+  },
+  dietaryText: {
+    fontSize: 10,
+    fontWeight: '500',
+  },
+  notesSection: {
+    marginTop: 8,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  notesLabel: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  notesText: {
+    fontSize: 14,
+    fontStyle: 'italic',
+  },
+  loadingContainer: {
     flex: 1,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderRadius: 8,
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 32,
   },
-  cancelButtonText: {
+  loadingText: {
+    marginTop: 12,
     fontSize: 16,
-    fontWeight: '600',
   },
-  saveButton: {
+  errorContainer: {
     flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
+    justifyContent: 'center',
     alignItems: 'center',
+    padding: 32,
   },
-  saveButtonText: {
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

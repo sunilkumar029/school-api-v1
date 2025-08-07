@@ -1,46 +1,39 @@
 
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Modal, Alert, RefreshControl } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { apiService } from '@/api/apiService';
-import { useBranches, useAcademicYears } from '@/hooks/useApi';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useRooms, useInventoryTypes } from '@/hooks/useApi';
 
-interface Room {
+interface HostelRoom {
   id: number;
-  name: string;
-  number: string;
-  floor: {
+  room_number: string;
+  floor: number;
+  capacity: number;
+  occupied: number;
+  available: number;
+  room_type: string;
+  amenities: string[];
+  status: 'Available' | 'Full' | 'Maintenance' | 'Reserved';
+  branch: {
     id: number;
     name: string;
   };
-  block_number: number;
-  block_name: string;
-  room_type: string;
-  total_beds: number;
-  available_beds: number;
-  beds_count: number;
-  is_occupied: boolean;
-}
-
-interface Bed {
-  id: number;
-  room_name: string;
-  name: string;
-  is_occupied: boolean;
-  room: number;
-}
-
-interface Student {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
-  employee_id: string;
 }
 
 export default function HostelRoomsScreen() {
@@ -48,143 +41,153 @@ export default function HostelRoomsScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
-  const [roomModalVisible, setRoomModalVisible] = useState(false);
-  const [beds, setBeds] = useState<Bed[]>([]);
-  const [students, setStudents] = useState<Student[]>([]);
-  const [bedModalVisible, setBedModalVisible] = useState(false);
-  const [selectedBed, setSelectedBed] = useState<Bed | null>(null);
+  const [selectedRoomType, setSelectedRoomType] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedFloor, setSelectedFloor] = useState<number | null>(null);
 
-  const { data: branches } = useBranches();
-  const { data: academicYears } = useAcademicYears();
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
 
-  const fetchRooms = async () => {
-    try {
-      setLoading(true);
-      const response = await apiService.api.get('/api/hostel-rooms/');
-      setRooms(response.data.results || []);
-    } catch (error) {
-      console.error('Error fetching rooms:', error);
-      Alert.alert('Error', 'Failed to fetch rooms');
-    } finally {
-      setLoading(false);
+  // Fetch rooms with filters
+  const roomsParams = useMemo(() => ({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
+    ...(selectedRoomType && { room_type: selectedRoomType }),
+    ...(selectedStatus && { status: selectedStatus }),
+    ...(selectedFloor && { floor: selectedFloor }),
+  }), [selectedBranch, selectedAcademicYear, selectedRoomType, selectedStatus, selectedFloor]);
+
+  const {
+    data: rooms = [],
+    loading: roomsLoading,
+    error: roomsError,
+    refetch: refetchRooms
+  } = useRooms(roomsParams);
+
+  const { data: roomTypes = [] } = useInventoryTypes({ type: 'room_type' });
+
+  // Derived data
+  const roomTypeOptions = [
+    { id: null, name: 'All Room Types' },
+    ...roomTypes.map((type: any) => ({ id: type.name, name: type.name }))
+  ];
+
+  const statusOptions = [
+    { id: null, name: 'All Statuses' },
+    { id: 'Available', name: 'Available' },
+    { id: 'Full', name: 'Full' },
+    { id: 'Maintenance', name: 'Maintenance' },
+    { id: 'Reserved', name: 'Reserved' }
+  ];
+
+  const floorOptions = useMemo(() => {
+    const floors = [...new Set(rooms.map((room: any) => room.floor).filter(Boolean))];
+    return [
+      { id: null, name: 'All Floors' },
+      ...floors.map(floor => ({ id: floor, name: `Floor ${floor}` }))
+    ];
+  }, [rooms]);
+
+  const getStatusColor = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case 'available': return '#10B981';
+      case 'full': return '#EF4444';
+      case 'maintenance': return '#F59E0B';
+      case 'reserved': return '#8B5CF6';
+      default: return '#6B7280';
     }
   };
 
-  const fetchBeds = async (roomId: number) => {
-    try {
-      const response = await apiService.api.get(`/api/hostel-beds/?room=${roomId}`);
-      setBeds(response.data.results || []);
-    } catch (error) {
-      console.error('Error fetching beds:', error);
-      Alert.alert('Error', 'Failed to fetch beds');
-    }
-  };
-
-  const fetchStudents = async () => {
-    try {
-      const response = await apiService.api.get(`/api/users/?branch=${selectedBranch}&student_type=Hostel`);
-      setStudents(response.data.results || []);
-    } catch (error) {
-      console.error('Error fetching students:', error);
-    }
-  };
-
-  const assignBed = async (bedId: number, studentId: number) => {
-    try {
-      await apiService.api.post(`/api/hostel-beds/${bedId}/assign_student/`, {
-        student_id: studentId
-      });
-      Alert.alert('Success', 'Bed assigned successfully');
-      setBedModalVisible(false);
-      if (selectedRoom) {
-        fetchBeds(selectedRoom.id);
-      }
-      fetchRooms();
-    } catch (error) {
-      console.error('Error assigning bed:', error);
-      Alert.alert('Error', 'Failed to assign bed');
-    }
-  };
-
-  useEffect(() => {
-    fetchRooms();
-    fetchStudents();
-  }, [selectedBranch, selectedAcademicYear]);
-
-  const handleRoomPress = (room: Room) => {
-    setSelectedRoom(room);
-    fetchBeds(room.id);
-    setRoomModalVisible(true);
-  };
-
-  const handleBedPress = (bed: Bed) => {
-    if (!bed.is_occupied) {
-      setSelectedBed(bed);
-      setBedModalVisible(true);
-    }
-  };
-
-  const getStatusColor = (room: Room) => {
-    if (room.available_beds === 0) return '#EF4444';
-    if (room.available_beds <= room.total_beds * 0.3) return '#F59E0B';
-    return '#10B981';
-  };
-
-  const renderRoom = (room: Room) => (
-    <TouchableOpacity
+  const renderRoomCard = (room: any) => (
+    <View
       key={room.id}
-      style={[styles.roomCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-      onPress={() => handleRoomPress(room)}
+      style={[
+        styles.roomCard,
+        {
+          backgroundColor: colors.surface,
+          borderColor: colors.border,
+          borderLeftColor: getStatusColor(room.status)
+        }
+      ]}
     >
       <View style={styles.roomHeader}>
-        <View>
-          <Text style={[styles.roomNumber, { color: colors.textPrimary }]}>
-            Room {room.number}
-          </Text>
-          <Text style={[styles.roomName, { color: colors.textSecondary }]}>
-            {room.name}
-          </Text>
-        </View>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(room) }]}>
-          <Text style={styles.statusText}>
-            {room.available_beds}/{room.total_beds}
-          </Text>
+        <Text style={[styles.roomNumber, { color: colors.textPrimary }]}>
+          Room {room.room_number}
+        </Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(room.status) }]}>
+          <Text style={styles.statusText}>{room.status}</Text>
         </View>
       </View>
-      
+
       <View style={styles.roomDetails}>
-        <View style={styles.detailRow}>
-          <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Block:</Text>
-          <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-            {room.block_name} - {room.block_number}
+        <Text style={[styles.roomType, { color: colors.textSecondary }]}>
+          {room.room_type} • Floor {room.floor}
+        </Text>
+        
+        <View style={styles.capacityInfo}>
+          <Text style={[styles.capacityText, { color: colors.textPrimary }]}>
+            Capacity: {room.capacity}
+          </Text>
+          <Text style={[styles.occupancyText, { color: colors.textSecondary }]}>
+            Occupied: {room.occupied} | Available: {room.available}
           </Text>
         </View>
-        <View style={styles.detailRow}>
-          <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Floor:</Text>
-          <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-            {room.floor.name}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Type:</Text>
-          <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-            {room.room_type}
-          </Text>
-        </View>
-        <View style={styles.detailRow}>
-          <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Status:</Text>
-          <Text style={[styles.detailValue, { color: getStatusColor(room) }]}>
-            {room.available_beds === 0 ? 'Full' : room.available_beds === room.total_beds ? 'Available' : 'Partially Occupied'}
-          </Text>
-        </View>
+
+        {room.amenities && room.amenities.length > 0 && (
+          <View style={styles.amenitiesContainer}>
+            <Text style={[styles.amenitiesLabel, { color: colors.textSecondary }]}>
+              Amenities:
+            </Text>
+            <View style={styles.amenitiesList}>
+              {room.amenities.slice(0, 3).map((amenity: string, index: number) => (
+                <View key={index} style={[styles.amenityTag, { backgroundColor: colors.primary + '20' }]}>
+                  <Text style={[styles.amenityText, { color: colors.primary }]}>
+                    {amenity}
+                  </Text>
+                </View>
+              ))}
+              {room.amenities.length > 3 && (
+                <Text style={[styles.moreAmenities, { color: colors.textSecondary }]}>
+                  +{room.amenities.length - 3} more
+                </Text>
+              )}
+            </View>
+          </View>
+        )}
       </View>
-    </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.actionButton, { backgroundColor: colors.primary }]}
+        onPress={() => handleRoomAction(room)}
+      >
+        <Text style={styles.actionButtonText}>
+          {room.status === 'Available' ? 'Allocate' : 'View Details'}
+        </Text>
+      </TouchableOpacity>
+    </View>
   );
+
+  const handleRoomAction = (room: any) => {
+    if (room.status === 'Available') {
+      Alert.alert(
+        'Room Allocation',
+        `Allocate Room ${room.room_number}?`,
+        [
+          { text: 'Cancel', style: 'cancel' },
+          { text: 'Allocate', onPress: () => console.log('Allocate room:', room.id) }
+        ]
+      );
+    } else {
+      // Navigate to room details
+      console.log('View room details:', room.id);
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -200,169 +203,100 @@ export default function HostelRoomsScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.filterRow}>
-          <View style={styles.filterItem}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Branch</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {branches?.map((branch: any) => (
-                <TouchableOpacity
-                  key={branch.id}
-                  style={[
-                    styles.filterButton,
-                    { borderColor: colors.border },
-                    selectedBranch === branch.id && { backgroundColor: colors.primary }
-                  ]}
-                  onPress={() => setSelectedBranch(branch.id)}
-                >
-                  <Text style={[
-                    styles.filterButtonText,
-                    { color: selectedBranch === branch.id ? '#FFFFFF' : colors.textPrimary }
-                  ]}>
-                    {branch.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Room Type"
+              items={roomTypeOptions}
+              selectedValue={selectedRoomType}
+              onValueChange={setSelectedRoomType}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Status"
+              items={statusOptions}
+              selectedValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Floor"
+              items={floorOptions}
+              selectedValue={selectedFloor}
+              onValueChange={setSelectedFloor}
+              compact={true}
+            />
           </View>
-        </View>
-
-        <View style={styles.filterRow}>
-          <View style={styles.filterItem}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Academic Year</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {academicYears?.map((year: any) => (
-                <TouchableOpacity
-                  key={year.id}
-                  style={[
-                    styles.filterButton,
-                    { borderColor: colors.border },
-                    selectedAcademicYear === year.id && { backgroundColor: colors.primary }
-                  ]}
-                  onPress={() => setSelectedAcademicYear(year.id)}
-                >
-                  <Text style={[
-                    styles.filterButtonText,
-                    { color: selectedAcademicYear === year.id ? '#FFFFFF' : colors.textPrimary }
-                  ]}>
-                    {year.year_range}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
-        </View>
+        </ScrollView>
       </View>
 
-      {/* Rooms List */}
-      <ScrollView 
-        style={styles.content}
-        refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={fetchRooms} />
-        }
-      >
-        {rooms.map(renderRoom)}
-      </ScrollView>
-
-      {/* Room Details Modal */}
-      <Modal
-        visible={roomModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setRoomModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-                Room {selectedRoom?.number} - {selectedRoom?.name}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setRoomModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.bedsContainer}>
-              <Text style={[styles.bedsTitle, { color: colors.textPrimary }]}>Beds ({beds.length})</Text>
-              {beds.map((bed) => (
-                <TouchableOpacity
-                  key={bed.id}
-                  style={[
-                    styles.bedCard,
-                    { 
-                      backgroundColor: colors.background, 
-                      borderColor: bed.is_occupied ? '#EF4444' : '#10B981' 
-                    }
-                  ]}
-                  onPress={() => handleBedPress(bed)}
-                  disabled={bed.is_occupied}
-                >
-                  <Text style={[styles.bedName, { color: colors.textPrimary }]}>
-                    Bed {bed.name}
-                  </Text>
-                  <Text style={[
-                    styles.bedStatus,
-                    { color: bed.is_occupied ? '#EF4444' : '#10B981' }
-                  ]}>
-                    {bed.is_occupied ? 'Occupied' : 'Available'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+      {/* Content */}
+      {roomsLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading rooms...
+          </Text>
         </View>
-      </Modal>
-
-      {/* Bed Assignment Modal */}
-      <Modal
-        visible={bedModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setBedModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-                Assign Bed {selectedBed?.name}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setBedModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.textSecondary }]}>✕</Text>
-              </TouchableOpacity>
-            </View>
-
-            <ScrollView style={styles.studentsContainer}>
-              <Text style={[styles.studentsTitle, { color: colors.textPrimary }]}>
-                Select Student
-              </Text>
-              {students.map((student) => (
-                <TouchableOpacity
-                  key={student.id}
-                  style={[styles.studentCard, { backgroundColor: colors.background, borderColor: colors.border }]}
-                  onPress={() => selectedBed && assignBed(selectedBed.id, student.id)}
-                >
-                  <Text style={[styles.studentName, { color: colors.textPrimary }]}>
-                    {student.first_name} {student.last_name}
-                  </Text>
-                  <Text style={[styles.studentEmail, { color: colors.textSecondary }]}>
-                    {student.email}
-                  </Text>
-                  <Text style={[styles.studentId, { color: colors.textSecondary }]}>
-                    ID: {student.employee_id}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-          </View>
+      ) : roomsError ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
+            Failed to load rooms. Please try again.
+          </Text>
+          <TouchableOpacity
+            onPress={refetchRooms}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      ) : (
+        <ScrollView
+          style={styles.content}
+          refreshControl={
+            <RefreshControl
+              refreshing={roomsLoading}
+              onRefresh={refetchRooms}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        >
+          {rooms.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                No rooms found for the selected criteria
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.roomsList}>
+              {rooms.map(renderRoomCard)}
+            </View>
+          )}
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 }
@@ -372,40 +306,38 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    padding: 12,
+    paddingVertical: 12,
     borderBottomWidth: 1,
   },
-  filterRow: {
-    marginBottom: 8,
+  filtersScroll: {
+    paddingHorizontal: 16,
   },
-  filterItem: {
-    flex: 1,
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
-  filterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 6,
-  },
-  filterButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderWidth: 1,
-    borderRadius: 16,
-    marginRight: 8,
-  },
-  filterButtonText: {
-    fontSize: 12,
+  filtersLabel: {
+    fontSize: 14,
     fontWeight: '600',
   },
   content: {
     flex: 1,
+  },
+  roomsList: {
     padding: 16,
   },
   roomCard: {
     padding: 16,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     borderWidth: 1,
+    borderLeftWidth: 4,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   roomHeader: {
     flexDirection: 'row',
@@ -417,113 +349,109 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  roomName: {
-    fontSize: 14,
-    marginTop: 2,
-  },
   statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 12,
   },
   statusText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: 'bold',
   },
   roomDetails: {
-    gap: 6,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  detailLabel: {
-    fontSize: 14,
-  },
-  detailValue: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
     marginBottom: 16,
   },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  closeButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  bedsContainer: {
-    maxHeight: 400,
-  },
-  bedsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  bedCard: {
-    padding: 12,
-    borderRadius: 8,
+  roomType: {
+    fontSize: 14,
     marginBottom: 8,
-    borderWidth: 2,
+  },
+  capacityInfo: {
+    marginBottom: 8,
+  },
+  capacityText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  occupancyText: {
+    fontSize: 12,
+  },
+  amenitiesContainer: {
+    marginTop: 8,
+  },
+  amenitiesLabel: {
+    fontSize: 12,
+    marginBottom: 4,
+  },
+  amenitiesList: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    gap: 6,
     alignItems: 'center',
   },
-  bedName: {
-    fontSize: 14,
-    fontWeight: '600',
+  amenityTag: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
-  bedStatus: {
-    fontSize: 12,
-    fontWeight: '600',
+  amenityText: {
+    fontSize: 10,
+    fontWeight: '500',
   },
-  studentsContainer: {
-    maxHeight: 400,
+  moreAmenities: {
+    fontSize: 10,
+    fontStyle: 'italic',
   },
-  studentsTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 12,
-  },
-  studentCard: {
-    padding: 12,
+  actionButton: {
+    paddingVertical: 10,
     borderRadius: 8,
-    marginBottom: 8,
-    borderWidth: 1,
+    alignItems: 'center',
   },
-  studentName: {
+  actionButtonText: {
+    color: '#FFFFFF',
     fontSize: 14,
     fontWeight: '600',
   },
-  studentEmail: {
-    fontSize: 12,
-    marginTop: 2,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
   },
-  studentId: {
-    fontSize: 12,
-    marginTop: 2,
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
