@@ -1657,3 +1657,64 @@ export const useHolidays = (params?: Record<string, any>) => {
 
   return { data, loading, error, refetch };
 };
+
+// Notifications hooks
+export const useNotifications = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getNotifications(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Notifications fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch notifications');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useNotificationTypes = () => {
+  const [data, setData] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getNotificationTypes();
+      setData(response || {});
+    } catch (err: any) {
+      console.error('Notification types fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch notification types');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

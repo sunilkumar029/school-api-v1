@@ -1031,6 +1031,27 @@ class ApiService {
     return response.data;
   }
 
+  // Notifications Management
+  async getNotifications(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/notifications/", { params });
+    return response.data;
+  }
+
+  async getNotificationTypes(): Promise<any> {
+    const response = await this.api.get("/api/notifications/notification-types/");
+    return response.data;
+  }
+
+  async getNotification(id: number): Promise<any> {
+    const response = await this.api.get(`/api/notifications/${id}/`);
+    return response.data;
+  }
+
+  async markNotificationAsRead(id: number): Promise<any> {
+    const response = await this.api.patch(`/api/notifications/${id}/`, { is_read: true });
+    return response.data;
+  }
+
   // Transport Management
   async getVehicles(params?: any): Promise<PaginatedResponse<any>> {
     const response = await this.api.get("/api/vehicles/", { params });

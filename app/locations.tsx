@@ -31,6 +31,20 @@ interface Branch {
   };
 }
 
+const formatAddress = (address: any): string => {
+  if (typeof address === 'string') return address;
+  if (!address || typeof address !== 'object') return 'Address not available';
+  
+  const parts = [];
+  if (address.street) parts.push(address.street);
+  if (address.landmark) parts.push(address.landmark);
+  if (address.city) parts.push(address.city);
+  if (address.zip_code) parts.push(`- ${address.zip_code}`);
+  if (address.state) parts.push(address.state);
+  
+  return parts.join(', ') || 'Address not available';
+};
+
 export default function LocationsScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
@@ -72,7 +86,9 @@ export default function LocationsScreen() {
         <View style={styles.addressContainer}>
           <Text style={[styles.addressLabel, { color: colors.textSecondary }]}>Address:</Text>
           <Text style={[styles.addressText, { color: colors.textPrimary }]}>
-            {typeof branch.address === 'string' ? branch.address : JSON.stringify(branch.address)}
+            {typeof branch.address === 'string' 
+              ? branch.address 
+              : formatAddress(branch.address)}
           </Text>
         </View>
       )}
