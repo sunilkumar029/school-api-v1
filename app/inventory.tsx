@@ -19,12 +19,11 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { Picker } from '@react-native-picker/picker';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { 
   useInventoryList, 
   useInventoryTypes, 
-  useBranches, 
-  useAcademicYears,
   useRooms,
   useInventoryTracking
 } from '@/hooks/useApi';
@@ -56,16 +55,23 @@ export default function InventoryScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [assignModalVisible, setAssignModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
   
-  // Filter states
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedInventoryType, setSelectedInventoryType] = useState<string>('all');
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
+  // Local filter states
+  const [selectedInventoryType, setSelectedInventoryType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   
   // Form states
@@ -99,11 +105,9 @@ export default function InventoryScreen() {
     branch: selectedBranch,
   }), [selectedBranch]);
 
-  const { data: inventoryItems, loading: itemsLoading, refetch: refetchItems } = useInventoryList(inventoryParams);
-  const { data: inventoryTypes, loading: typesLoading, refetch: refetchTypes } = useInventoryTypes(typesParams);
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears({ is_active: true });
-  const { data: rooms } = useRooms({ is_active: true });
+  const { data: inventoryItems = [], loading: itemsLoading, refetch: refetchItems } = useInventoryList(inventoryParams);
+  const { data: inventoryTypes = [], loading: typesLoading, refetch: refetchTypes } = useInventoryTypes(typesParams);
+  const { data: rooms = [] } = useRooms({ is_active: true });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -130,12 +134,25 @@ export default function InventoryScreen() {
     return item.quantity - issuedQuantity;
   };
 
+  // Filter options
+  const inventoryTypeOptions = useMemo(() => [
+    { label: 'All Types', value: null },
+    { label: 'Stationary', value: 'stationary' },
+    { label: 'Inventory', value: 'inventory' },
+  ], []);
+
+  const statusOptions = [
+    { label: 'Available', value: 'Available' },
+    { label: 'Not Available', value: 'Not-Available' },
+    { label: 'Damaged', value: 'Damaged' },
+  ];
+
   const filteredItems = useMemo(() => {
     return inventoryItems.filter((item: InventoryItem) => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           item.description?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesType = selectedInventoryType === 'all' ||
+      const matchesType = !selectedInventoryType ||
                          (selectedInventoryType === 'stationary' && item.is_stationary) ||
                          (selectedInventoryType === 'inventory' && !item.is_stationary);
       
@@ -286,13 +303,13 @@ export default function InventoryScreen() {
       <View key={item.id} style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <View style={styles.itemHeader}>
           <View style={styles.itemTitleContainer}>
-            <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name}</Text>
+            <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name || 'Unnamed Item'}</Text>
             <Text style={[styles.itemType, { color: colors.textSecondary }]}>
-              {item.inventory_type?.name} • {item.is_stationary ? 'Stationary' : 'Inventory'}
+              {item.inventory_type?.name || 'Unknown Type'} • {item.is_stationary ? 'Stationary' : 'Inventory'}
             </Text>
           </View>
           <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
-            <Text style={styles.statusText}>{item.status}</Text>
+            <Text style={styles.statusText}>{item.status || 'Unknown'}</Text>
           </View>
         </View>
         
@@ -301,13 +318,13 @@ export default function InventoryScreen() {
         )}
         
         <Text style={[styles.itemDescription, { color: colors.textSecondary }]}>
-          {item.description}
+          {item.description || 'No description available'}
         </Text>
         
         <View style={styles.itemDetails}>
           <View style={styles.quantityContainer}>
             <Text style={[styles.quantityLabel, { color: colors.textSecondary }]}>Total Quantity:</Text>
-            <Text style={[styles.quantityValue, { color: colors.textPrimary }]}>{item.quantity}</Text>
+            <Text style={[styles.quantityValue, { color: colors.textPrimary }]}>{item.quantity || 0}</Text>
           </View>
           <View style={styles.quantityContainer}>
             <Text style={[styles.quantityLabel, { color: colors.textSecondary }]}>Available:</Text>
@@ -316,7 +333,7 @@ export default function InventoryScreen() {
             </Text>
           </View>
           <Text style={[styles.itemPrice, { color: colors.primary }]}>
-            {formatCurrency(item.price)}
+            {formatCurrency(item.price || 0)}
           </Text>
         </View>
 
@@ -326,7 +343,7 @@ export default function InventoryScreen() {
             {item.inventory_tracking.map((track, index) => (
               <View key={index} style={styles.trackingItem}>
                 <Text style={[styles.trackingText, { color: colors.textSecondary }]}>
-                  {track.room?.name || 'Unassigned'} - Qty: {track.quantity} - {track.status}
+                  {track.room?.name || 'Unassigned'} - Qty: {track.quantity || 0} - {track.status || 'Unknown'}
                 </Text>
               </View>
             ))}
@@ -339,13 +356,13 @@ export default function InventoryScreen() {
             onPress={() => {
               setSelectedItem(item);
               setFormData({
-                name: item.name,
-                description: item.description,
-                quantity: item.quantity.toString(),
-                price: item.price.toString(),
-                inventory_type_id: item.inventory_type?.id.toString() || '',
-                is_stationary: item.is_stationary,
-                status: item.status,
+                name: item.name || '',
+                description: item.description || '',
+                quantity: (item.quantity || 0).toString(),
+                price: (item.price || 0).toString(),
+                inventory_type_id: item.inventory_type?.id?.toString() || '',
+                is_stationary: item.is_stationary || false,
+                status: item.status || 'Available',
                 remarks: item.remarks || '',
               });
               setEditModalVisible(true);
@@ -377,92 +394,20 @@ export default function InventoryScreen() {
     );
   };
 
-  const renderFiltersModal = () => (
+  const renderFormModal = (isEdit = false) => (
     <Modal
-      visible={filtersVisible}
+      visible={isEdit ? editModalVisible : addModalVisible}
       transparent={true}
       animationType="slide"
-      onRequestClose={() => setFiltersVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.filtersModal, { backgroundColor: colors.surface }]}>
-          <View style={styles.filtersHeader}>
-            <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>Filters</Text>
-            <TouchableOpacity onPress={() => setFiltersVisible(false)}>
-              <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.filtersContent}>
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedBranch}
-                  onValueChange={setSelectedBranch}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {branches?.map((branch: any) => (
-                    <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedAcademicYear}
-                  onValueChange={setSelectedAcademicYear}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {academicYears?.map((year: any) => (
-                    <Picker.Item key={year.id} label={year.name} value={year.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Inventory Type</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedInventoryType}
-                  onValueChange={setSelectedInventoryType}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="All Types" value="all" />
-                  <Picker.Item label="Stationary" value="stationary" />
-                  <Picker.Item label="Inventory" value="inventory" />
-                </Picker>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.applyButton, { backgroundColor: colors.primary }]}
-              onPress={() => setFiltersVisible(false)}
-            >
-              <Text style={styles.applyButtonText}>Apply Filters</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-
-  const renderAddModal = () => (
-    <Modal
-      visible={addModalVisible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={() => setAddModalVisible(false)}
+      onRequestClose={() => isEdit ? setEditModalVisible(false) : setAddModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
         <View style={[styles.formModal, { backgroundColor: colors.surface }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add Inventory Item</Text>
-            <TouchableOpacity onPress={() => setAddModalVisible(false)}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+              {isEdit ? 'Edit Inventory Item' : 'Add Inventory Item'}
+            </Text>
+            <TouchableOpacity onPress={() => isEdit ? setEditModalVisible(false) : setAddModalVisible(false)}>
               <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
             </TouchableOpacity>
           </View>
@@ -481,18 +426,15 @@ export default function InventoryScreen() {
 
             <View style={styles.formGroup}>
               <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Inventory Type *</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={formData.inventory_type_id}
-                  onValueChange={(value) => setFormData({ ...formData, inventory_type_id: value })}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="Select Type" value="" />
-                  {inventoryTypes?.map((type: any) => (
-                    <Picker.Item key={type.id} label={type.name} value={type.id.toString()} />
-                  ))}
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Select Type"
+                selectedValue={formData.inventory_type_id}
+                onValueChange={(value) => setFormData({ ...formData, inventory_type_id: value })}
+                options={inventoryTypes.map((type: any) => ({ 
+                  label: type.name || 'Unnamed Type', 
+                  value: type.id?.toString() || '' 
+                }))}
+              />
             </View>
 
             <View style={styles.formGroup}>
@@ -536,17 +478,12 @@ export default function InventoryScreen() {
 
             <View style={styles.formGroup}>
               <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Status</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={formData.status}
-                  onValueChange={(value) => setFormData({ ...formData, status: value })}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="Available" value="Available" />
-                  <Picker.Item label="Not Available" value="Not-Available" />
-                  <Picker.Item label="Damaged" value="Damaged" />
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Select Status"
+                selectedValue={formData.status}
+                onValueChange={(value) => setFormData({ ...formData, status: value })}
+                options={statusOptions}
+              />
             </View>
 
             <View style={styles.checkboxContainer}>
@@ -572,9 +509,9 @@ export default function InventoryScreen() {
 
             <TouchableOpacity
               style={[styles.submitButton, { backgroundColor: colors.primary }]}
-              onPress={handleAdd}
+              onPress={isEdit ? handleEdit : handleAdd}
             >
-              <Text style={styles.submitButtonText}>Add Item</Text>
+              <Text style={styles.submitButtonText}>{isEdit ? 'Update Item' : 'Add Item'}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -593,7 +530,7 @@ export default function InventoryScreen() {
         <View style={[styles.formModal, { backgroundColor: colors.surface }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              Assign {selectedItem?.name}
+              Assign {selectedItem?.name || 'Item'}
             </Text>
             <TouchableOpacity onPress={() => setAssignModalVisible(false)}>
               <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
@@ -607,18 +544,15 @@ export default function InventoryScreen() {
 
             <View style={styles.formGroup}>
               <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Assign to Room</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={assignmentData.room_id}
-                  onValueChange={(value) => setAssignmentData({ ...assignmentData, room_id: value })}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="Select Room" value="" />
-                  {rooms?.map((room: any) => (
-                    <Picker.Item key={room.id} label={room.name} value={room.id.toString()} />
-                  ))}
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Select Room"
+                selectedValue={assignmentData.room_id}
+                onValueChange={(value) => setAssignmentData({ ...assignmentData, room_id: value })}
+                options={rooms.map((room: any) => ({ 
+                  label: room.name || 'Unnamed Room', 
+                  value: room.id?.toString() || '' 
+                }))}
+              />
             </View>
 
             <View style={styles.formGroup}>
@@ -635,17 +569,16 @@ export default function InventoryScreen() {
 
             <View style={styles.formGroup}>
               <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Status</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={assignmentData.status}
-                  onValueChange={(value) => setAssignmentData({ ...assignmentData, status: value })}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="Issued" value="Issued" />
-                  <Picker.Item label="Assigned" value="Assigned" />
-                  <Picker.Item label="Damaged" value="Damaged" />
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Select Status"
+                selectedValue={assignmentData.status}
+                onValueChange={(value) => setAssignmentData({ ...assignmentData, status: value })}
+                options={[
+                  { label: 'Issued', value: 'Issued' },
+                  { label: 'Assigned', value: 'Assigned' },
+                  { label: 'Damaged', value: 'Damaged' },
+                ]}
+              />
             </View>
 
             <View style={styles.formGroup}>
@@ -671,7 +604,7 @@ export default function InventoryScreen() {
     </Modal>
   );
 
-  const isLoading = itemsLoading || typesLoading;
+  const isLoading = itemsLoading || typesLoading || branchesLoading || academicYearsLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -687,6 +620,44 @@ export default function InventoryScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              options={branches.map((branch: any) => ({ 
+                label: branch.name || 'Unnamed Branch', 
+                value: branch.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              options={academicYears.map((year: any) => ({ 
+                label: year.name || 'Unnamed Year', 
+                value: year.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Type"
+              selectedValue={selectedInventoryType}
+              onValueChange={setSelectedInventoryType}
+              options={inventoryTypeOptions}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
       {/* Header Controls */}
       <View style={[styles.headerControls, { backgroundColor: colors.surface }]}>
         <View style={styles.searchContainer}>
@@ -699,21 +670,12 @@ export default function InventoryScreen() {
           />
         </View>
         
-        <View style={styles.actionButtons}>
-          <TouchableOpacity
-            style={[styles.filterButton, { backgroundColor: colors.primary }]}
-            onPress={() => setFiltersVisible(true)}
-          >
-            <Text style={styles.filterButtonText}>Filters</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: '#10B981' }]}
-            onPress={() => setAddModalVisible(true)}
-          >
-            <Text style={styles.addButtonText}>+ Add</Text>
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity
+          style={[styles.addButton, { backgroundColor: '#10B981' }]}
+          onPress={() => setAddModalVisible(true)}
+        >
+          <Text style={styles.addButtonText}>+ Add</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Content */}
@@ -751,10 +713,9 @@ export default function InventoryScreen() {
         )}
       </ScrollView>
 
-      {renderFiltersModal()}
-      {renderAddModal()}
+      {renderFormModal(false)}
+      {renderFormModal(true)}
       {renderAssignModal()}
-      {editModalVisible && renderAddModal()}
     </SafeAreaView>
   );
 }
@@ -762,6 +723,22 @@ export default function InventoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   headerControls: {
     padding: 16,
@@ -781,23 +758,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  filterButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  filterButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   addButton: {
-    flex: 1,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -944,23 +905,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
-  filtersModal: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '70%',
-  },
   formModal: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
-  },
-  filtersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -969,10 +917,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
-  },
-  filtersTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   modalTitle: {
     fontSize: 20,
@@ -983,35 +927,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 8,
   },
-  filtersContent: {
-    padding: 20,
-  },
   formContent: {
     padding: 20,
   },
-  filterGroup: {
-    marginBottom: 20,
-  },
   formGroup: {
     marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
   },
   formLabel: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-  },
-  pickerContainer: {
-    borderRadius: 8,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 44,
   },
   formInput: {
     height: 44,
@@ -1063,17 +988,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 16,
     fontStyle: 'italic',
-  },
-  applyButton: {
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   submitButton: {
     paddingVertical: 12,

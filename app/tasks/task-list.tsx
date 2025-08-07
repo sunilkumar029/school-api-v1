@@ -17,12 +17,12 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
   useTasks, 
-  useBranches, 
-  useAcademicYears,
   useAllUsersExceptStudents 
 } from '@/hooks/useApi';
 import { apiService } from '@/api/apiService';
@@ -62,17 +62,23 @@ export default function TaskListScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedAssignedBy, setSelectedAssignedBy] = useState<number | undefined>();
+  const [selectedAssignedBy, setSelectedAssignedBy] = useState<number | null>(null);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
 
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
   // Fetch data
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears();
-  const { data: users } = useAllUsersExceptStudents({ 
+  const { data: users = [] } = useAllUsersExceptStudents({ 
     branch: selectedBranch,
     academic_year: selectedAcademicYear 
   });
@@ -83,20 +89,18 @@ export default function TaskListScreen() {
   }), [selectedBranch, selectedAcademicYear]);
 
   const { 
-    data: tasks, 
+    data: tasks = [], 
     loading: tasksLoading, 
     error: tasksError, 
     refetch: refetchTasks 
   } = useTasks(tasksParams);
 
   const filteredTasks = useMemo(() => {
-    if (!tasks) return [];
-    
     return tasks.filter((task: Task) => {
-      const matchesSearch = task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           task.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           task.description?.toLowerCase().includes(searchQuery.toLowerCase());
       
-      const matchesAssignedBy = !selectedAssignedBy || task.created_by.id === selectedAssignedBy;
+      const matchesAssignedBy = !selectedAssignedBy || task.created_by?.id === selectedAssignedBy;
       
       return matchesSearch && matchesAssignedBy;
     });
@@ -174,7 +178,7 @@ export default function TaskListScreen() {
       <View style={styles.taskHeader}>
         <View style={styles.taskTitleContainer}>
           <Text style={[styles.taskTitle, { color: colors.textPrimary }]} numberOfLines={2}>
-            {item.title}
+            {item.title || 'Untitled Task'}
           </Text>
           <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item) }]}>
             <Text style={styles.statusText}>{getStatusText(item)}</Text>
@@ -183,7 +187,7 @@ export default function TaskListScreen() {
       </View>
 
       <Text style={[styles.taskDescription, { color: colors.textSecondary }]} numberOfLines={3}>
-        {item.description}
+        {item.description || 'No description available'}
       </Text>
 
       <View style={styles.taskMeta}>
@@ -194,11 +198,11 @@ export default function TaskListScreen() {
           ⏰ Due: {formatDate(item.due_date)}
         </Text>
         <Text style={[styles.metaText, { color: colors.textSecondary }]}>
-          👤 Created by: {item.created_by.name}
+          👤 Created by: {item.created_by?.name || 'Unknown'}
         </Text>
       </View>
 
-      {item.assigned_users.length > 0 && (
+      {item.assigned_users && item.assigned_users.length > 0 && (
         <View style={styles.assignedUsers}>
           <Text style={[styles.assignedLabel, { color: colors.textSecondary }]}>
             Assigned to:
@@ -206,7 +210,7 @@ export default function TaskListScreen() {
           <View style={styles.usersList}>
             {item.assigned_users.slice(0, 3).map((user, index) => (
               <Text key={index} style={[styles.userName, { color: colors.primary }]}>
-                {user.name}
+                {user.name || 'Unknown User'}
               </Text>
             ))}
             {item.assigned_users.length > 3 && (
@@ -263,11 +267,11 @@ export default function TaskListScreen() {
           {selectedTask && (
             <ScrollView style={styles.modalBody}>
               <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>
-                {selectedTask.title}
+                {selectedTask.title || 'Untitled Task'}
               </Text>
 
               <Text style={[styles.detailDescription, { color: colors.textSecondary }]}>
-                {selectedTask.description}
+                {selectedTask.description || 'No description available'}
               </Text>
 
               <View style={styles.detailMeta}>
@@ -288,7 +292,7 @@ export default function TaskListScreen() {
                 <View style={styles.detailRow}>
                   <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Created by:</Text>
                   <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-                    {selectedTask.created_by.name}
+                    {selectedTask.created_by?.name || 'Unknown'}
                   </Text>
                 </View>
 
@@ -300,27 +304,27 @@ export default function TaskListScreen() {
                 </View>
               </View>
 
-              {selectedTask.assigned_users.length > 0 && (
+              {selectedTask.assigned_users && selectedTask.assigned_users.length > 0 && (
                 <View style={styles.detailSection}>
                   <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
                     Assigned Users:
                   </Text>
                   {selectedTask.assigned_users.map((user, index) => (
                     <Text key={index} style={[styles.listItem, { color: colors.textSecondary }]}>
-                      • {user.name}
+                      • {user.name || 'Unknown User'}
                     </Text>
                   ))}
                 </View>
               )}
 
-              {selectedTask.departments.length > 0 && (
+              {selectedTask.departments && selectedTask.departments.length > 0 && (
                 <View style={styles.detailSection}>
                   <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
                     Departments:
                   </Text>
                   {selectedTask.departments.map((dept, index) => (
                     <Text key={index} style={[styles.listItem, { color: colors.textSecondary }]}>
-                      • {dept.name}
+                      • {dept.name || 'Unknown Department'}
                     </Text>
                   ))}
                 </View>
@@ -347,6 +351,8 @@ export default function TaskListScreen() {
       </View>
     </Modal>
   );
+
+  const isLoading = tasksLoading || branchesLoading || academicYearsLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -381,34 +387,48 @@ export default function TaskListScreen() {
       </View>
 
       {/* Filters */}
-      <ScrollView horizontal style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Select Branch'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Select Year'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Assigned By</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedAssignedBy ? users?.find(u => u.id === selectedAssignedBy)?.name : 'All Users'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              options={branches.map((branch: any) => ({ 
+                label: branch.name || 'Unnamed Branch', 
+                value: branch.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              options={academicYears.map((year: any) => ({ 
+                label: year.name || 'Unnamed Year', 
+                value: year.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Assigned By"
+              selectedValue={selectedAssignedBy}
+              onValueChange={setSelectedAssignedBy}
+              options={[
+                { label: 'All Users', value: null },
+                ...users.map((user: any) => ({ 
+                  label: user.name || 'Unnamed User', 
+                  value: user.id 
+                }))
+              ]}
+            />
+          </View>
+        </ScrollView>
+      </View>
 
       {/* Add Task Button */}
       <View style={styles.addButtonContainer}>
@@ -421,7 +441,7 @@ export default function TaskListScreen() {
       </View>
 
       {/* Content */}
-      {tasksLoading ? (
+      {isLoading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
           <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
@@ -450,7 +470,7 @@ export default function TaskListScreen() {
           showsVerticalScrollIndicator={false}
           refreshControl={
             <RefreshControl
-              refreshing={tasksLoading}
+              refreshing={isLoading}
               onRefresh={refetchTasks}
               colors={[colors.primary]}
               tintColor={colors.primary}
@@ -486,27 +506,20 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   filtersContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 8,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
   },
-  filterGroup: {
-    marginHorizontal: 8,
-    minWidth: 120,
+  filtersScroll: {
+    paddingHorizontal: 16,
   },
-  filterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 4,
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
   },
-  filterButton: {
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  filterButtonText: {
+  filtersLabel: {
     fontSize: 14,
-    textAlign: 'center',
+    fontWeight: '600',
   },
   addButtonContainer: {
     paddingHorizontal: 16,

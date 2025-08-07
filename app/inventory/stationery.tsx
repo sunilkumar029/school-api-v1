@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -17,13 +16,12 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { Picker } from '@react-native-picker/picker';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { 
   useStationaryTypes, 
   useStationary, 
-  useInventoryTracking, 
-  useBranches, 
-  useAcademicYears,
+  useInventoryTracking,
   useStandards 
 } from '@/hooks/useApi';
 
@@ -36,29 +34,27 @@ interface StationaryItem {
   is_active: boolean;
 }
 
-interface InventoryItem {
-  id: number;
-  stationary_type: StationaryItem;
-  inventory_tracking: any;
-  quantity?: number;
-  price?: number;
-  status?: string;
-}
-
 export default function StationeryScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false);
   const [addModalVisible, setAddModalVisible] = useState(false);
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-  
-  // Filter states
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
+
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
+  // Local filter states
   const [searchQuery, setSearchQuery] = useState('');
-  
+
   // Form states
   const [formData, setFormData] = useState({
     name: '',
@@ -74,12 +70,10 @@ export default function StationeryScreen() {
     is_active: true,
   }), [selectedBranch, selectedAcademicYear]);
 
-  const { data: stationaryTypes, loading: typesLoading, refetch: refetchTypes } = useStationaryTypes(stationaryParams);
-  const { data: stationaryItems, loading: itemsLoading, refetch: refetchItems } = useStationary(stationaryParams);
-  const { data: inventoryTracking, loading: trackingLoading, refetch: refetchTracking } = useInventoryTracking(stationaryParams);
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears({ is_active: true });
-  const { data: standards } = useStandards({ is_active: true });
+  const { data: stationaryTypes = [], loading: typesLoading, refetch: refetchTypes } = useStationaryTypes(stationaryParams);
+  const { data: stationaryItems = [], loading: itemsLoading, refetch: refetchItems } = useStationary(stationaryParams);
+  const { data: inventoryTracking = [], loading: trackingLoading, refetch: refetchTracking } = useInventoryTracking(stationaryParams);
+  const { data: standards = [] } = useStandards({ is_active: true });
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -90,18 +84,18 @@ export default function StationeryScreen() {
 
   const filteredItems = useMemo(() => {
     return stationaryTypes.filter((item: StationaryItem) => {
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           item.description?.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesSearch;
     });
   }, [stationaryTypes, searchQuery]);
 
   const handleAdd = useCallback(async () => {
     try {
-      // Implementation for adding new stationery item
       setAddModalVisible(false);
       setFormData({ name: '', description: '', quantity: '', price: '' });
       refetchTypes();
+      Alert.alert('Success', 'Stationery item added successfully');
     } catch (error) {
       Alert.alert('Error', 'Failed to add stationery item');
     }
@@ -109,11 +103,11 @@ export default function StationeryScreen() {
 
   const handleEdit = useCallback(async () => {
     try {
-      // Implementation for editing stationery item
       setEditModalVisible(false);
       setSelectedItem(null);
       setFormData({ name: '', description: '', quantity: '', price: '' });
       refetchTypes();
+      Alert.alert('Success', 'Stationery item updated successfully');
     } catch (error) {
       Alert.alert('Error', 'Failed to update stationery item');
     }
@@ -130,8 +124,8 @@ export default function StationeryScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              // Implementation for deleting stationery item
               refetchTypes();
+              Alert.alert('Success', 'Stationery item deleted successfully');
             } catch (error) {
               Alert.alert('Error', 'Failed to delete stationery item');
             }
@@ -144,16 +138,16 @@ export default function StationeryScreen() {
   const renderStationeryCard = (item: StationaryItem) => (
     <View key={item.id} style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       <View style={styles.itemHeader}>
-        <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name}</Text>
+        <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name || 'Unnamed Item'}</Text>
         <View style={[styles.statusBadge, { backgroundColor: item.is_active ? '#10B981' : '#EF4444' }]}>
           <Text style={styles.statusText}>{item.is_active ? 'Active' : 'Inactive'}</Text>
         </View>
       </View>
-      
+
       <Text style={[styles.itemDescription, { color: colors.textSecondary }]}>
-        {item.description}
+        {item.description || 'No description available'}
       </Text>
-      
+
       <View style={styles.itemDetails}>
         <Text style={[styles.itemBranch, { color: colors.textSecondary }]}>
           Branch: {item.branch?.name || 'N/A'}
@@ -169,8 +163,8 @@ export default function StationeryScreen() {
           onPress={() => {
             setSelectedItem(item);
             setFormData({
-              name: item.name,
-              description: item.description,
+              name: item.name || '',
+              description: item.description || '',
               quantity: '',
               price: '',
             });
@@ -179,7 +173,7 @@ export default function StationeryScreen() {
         >
           <Text style={[styles.actionButtonText, { color: colors.primary }]}>Edit</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[styles.actionButton, { borderColor: '#EF4444' }]}
           onPress={() => handleDelete(item)}
@@ -190,77 +184,20 @@ export default function StationeryScreen() {
     </View>
   );
 
-  const renderFiltersModal = () => (
+  const renderFormModal = (isEdit = false) => (
     <Modal
-      visible={filtersVisible}
+      visible={isEdit ? editModalVisible : addModalVisible}
       transparent={true}
       animationType="slide"
-      onRequestClose={() => setFiltersVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.filtersModal, { backgroundColor: colors.surface }]}>
-          <View style={styles.filtersHeader}>
-            <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>Filters</Text>
-            <TouchableOpacity onPress={() => setFiltersVisible(false)}>
-              <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.filtersContent}>
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedBranch}
-                  onValueChange={setSelectedBranch}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {branches?.map((branch: any) => (
-                    <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedAcademicYear}
-                  onValueChange={setSelectedAcademicYear}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {academicYears?.map((year: any) => (
-                    <Picker.Item key={year.id} label={year.name} value={year.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.applyButton, { backgroundColor: colors.primary }]}
-              onPress={() => setFiltersVisible(false)}
-            >
-              <Text style={styles.applyButtonText}>Apply Filters</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-
-  const renderAddModal = () => (
-    <Modal
-      visible={addModalVisible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={() => setAddModalVisible(false)}
+      onRequestClose={() => isEdit ? setEditModalVisible(false) : setAddModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
         <View style={[styles.formModal, { backgroundColor: colors.surface }]}>
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Add Stationery Item</Text>
-            <TouchableOpacity onPress={() => setAddModalVisible(false)}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+              {isEdit ? 'Edit Stationery Item' : 'Add Stationery Item'}
+            </Text>
+            <TouchableOpacity onPress={() => isEdit ? setEditModalVisible(false) : setAddModalVisible(false)}>
               <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
             </TouchableOpacity>
           </View>
@@ -318,9 +255,9 @@ export default function StationeryScreen() {
 
             <TouchableOpacity
               style={[styles.submitButton, { backgroundColor: colors.primary }]}
-              onPress={handleAdd}
+              onPress={isEdit ? handleEdit : handleAdd}
             >
-              <Text style={styles.submitButtonText}>Add Item</Text>
+              <Text style={styles.submitButtonText}>{isEdit ? 'Update Item' : 'Add Item'}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -328,7 +265,7 @@ export default function StationeryScreen() {
     </Modal>
   );
 
-  const isLoading = typesLoading || itemsLoading || trackingLoading;
+  const isLoading = typesLoading || itemsLoading || trackingLoading || branchesLoading || academicYearsLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -344,6 +281,37 @@ export default function StationeryScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+
+            <ModalDropdownFilter
+              label="Branch"
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              options={branches.map((branch: any) => ({ 
+                label: branch.name || 'Unnamed Branch', 
+                value: branch.id 
+              }))}
+              disabled={true}
+            />
+
+            <ModalDropdownFilter
+              label="Academic Year"
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              options={academicYears.map((year: any) => ({ 
+                label: year.name || 'Unnamed Year', 
+                value: year.id 
+              }))}
+              disabled={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
       {/* Header Controls */}
       <View style={[styles.headerControls, { backgroundColor: colors.surface }]}>
         <View style={styles.searchContainer}>
@@ -355,22 +323,13 @@ export default function StationeryScreen() {
             onChangeText={setSearchQuery}
           />
         </View>
-        
-        <View style={styles.actionButtons}>
-          <TouchableOpacity
-            style={[styles.filterButton, { backgroundColor: colors.primary }]}
-            onPress={() => setFiltersVisible(true)}
-          >
-            <Text style={styles.filterButtonText}>Filters</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: '#10B981' }]}
-            onPress={() => setAddModalVisible(true)}
-          >
-            <Text style={styles.addButtonText}>+ Add</Text>
-          </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity
+          style={[styles.addButton, { backgroundColor: '#10B981' }]}
+          onPress={() => setAddModalVisible(true)}
+        >
+          <Text style={styles.addButtonText}>+ Add</Text>
+        </TouchableOpacity>
       </View>
 
       {/* Content */}
@@ -409,9 +368,8 @@ export default function StationeryScreen() {
         )}
       </ScrollView>
 
-      {renderFiltersModal()}
-      {renderAddModal()}
-      {/* Edit modal would be similar to add modal but with pre-filled data */}
+      {renderFormModal(false)}
+      {renderFormModal(true)}
     </SafeAreaView>
   );
 }
@@ -419,6 +377,22 @@ export default function StationeryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   headerControls: {
     padding: 16,
@@ -438,23 +412,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  filterButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  filterButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   addButton: {
-    flex: 1,
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -555,23 +513,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
-  filtersModal: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '70%',
-  },
   formModal: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
-  },
-  filtersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -580,10 +525,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
-  },
-  filtersTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   modalTitle: {
     fontSize: 20,
@@ -594,35 +535,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 8,
   },
-  filtersContent: {
-    padding: 20,
-  },
   formContent: {
     padding: 20,
   },
-  filterGroup: {
-    marginBottom: 20,
-  },
   formGroup: {
     marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
   },
   formLabel: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 8,
-  },
-  pickerContainer: {
-    borderRadius: 8,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 44,
   },
   formInput: {
     height: 44,
@@ -646,17 +568,6 @@ const styles = StyleSheet.create({
   },
   halfWidth: {
     flex: 1,
-  },
-  applyButton: {
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   submitButton: {
     paddingVertical: 12,

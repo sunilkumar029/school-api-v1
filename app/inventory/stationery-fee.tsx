@@ -17,14 +17,12 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { Picker } from '@react-native-picker/picker';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { 
   useStationaryFee,
-  useBranches, 
-  useAcademicYears,
   useStandards,
   useSections,
-  useStudentDetails,
 } from '@/hooks/useApi';
 
 interface StationaryFeeItem {
@@ -70,16 +68,23 @@ export default function StationeryFeeScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false);
   const [studentDetailsModalVisible, setStudentDetailsModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'students'>('overview');
   
-  // Filter states
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedStandard, setSelectedStandard] = useState<number>(1);
-  const [selectedSection, setSelectedSection] = useState<string>('');
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
+  // Local filter states
+  const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
   // Fetch data with memoized parameters
@@ -90,15 +95,13 @@ export default function StationeryFeeScreen() {
     omit: 'created_by,modified_by',
   }), [selectedBranch, selectedAcademicYear, selectedStandard]);
 
-  const { data: stationaryFeeData, loading: feeLoading, refetch: refetchFee } = useStationaryFee(stationaryFeeParams);
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears({ is_active: true });
-  const { data: standards } = useStandards({ 
+  const { data: stationaryFeeData = [], loading: feeLoading, refetch: refetchFee } = useStationaryFee(stationaryFeeParams);
+  const { data: standards = [] } = useStandards({ 
     branch: selectedBranch,
     is_active: true,
     academic_year: selectedAcademicYear,
   });
-  const { data: sections } = useSections({ 
+  const { data: sections = [] } = useSections({ 
     branch: selectedBranch,
     standard: selectedStandard,
     omit: 'created_by',
@@ -154,14 +157,14 @@ export default function StationeryFeeScreen() {
     return (
       <ScrollView style={styles.overviewContent}>
         {stationaryFeeData.map((item: StationaryFeeItem) => {
-          const activeItems = getActiveStationaryItems(item.standard.stationary);
-          const totalValue = calculateTotalStationaryValue(item.standard.stationary);
+          const activeItems = getActiveStationaryItems(item.standard?.stationary || []);
+          const totalValue = calculateTotalStationaryValue(item.standard?.stationary || []);
           
           return (
             <View key={item.id} style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={styles.cardHeader}>
                 <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
-                  {item.standard.name}
+                  {item.standard?.name || 'Unnamed Standard'}
                 </Text>
                 <View style={[styles.badge, { backgroundColor: colors.primary }]}>
                   <Text style={styles.badgeText}>{activeItems.length} Items</Text>
@@ -182,9 +185,9 @@ export default function StationeryFeeScreen() {
               <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemsList}>
                 {activeItems.map((stationaryItem: any) => (
                   <View key={stationaryItem.id} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                    <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem.name}</Text>
-                    <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem.price)}</Text>
-                    <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem.quantity}</Text>
+                    <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem.name || 'Unnamed Item'}</Text>
+                    <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem.price || 0)}</Text>
+                    <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem.quantity || 0}</Text>
                   </View>
                 ))}
               </ScrollView>
@@ -220,8 +223,8 @@ export default function StationeryFeeScreen() {
     ];
 
     const filteredStudents = mockStudents.filter(student => {
-      const matchesSearch = student.user_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           student.admission_number.toString().includes(searchQuery);
+      const matchesSearch = student.user_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           student.admission_number?.toString().includes(searchQuery);
       return matchesSearch;
     });
 
@@ -274,96 +277,6 @@ export default function StationeryFeeScreen() {
     );
   };
 
-  const renderFiltersModal = () => (
-    <Modal
-      visible={filtersVisible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={() => setFiltersVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.filtersModal, { backgroundColor: colors.surface }]}>
-          <View style={styles.filtersHeader}>
-            <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>Filters</Text>
-            <TouchableOpacity onPress={() => setFiltersVisible(false)}>
-              <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.filtersContent}>
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedBranch}
-                  onValueChange={setSelectedBranch}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {branches?.map((branch: any) => (
-                    <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedAcademicYear}
-                  onValueChange={setSelectedAcademicYear}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {academicYears?.map((year: any) => (
-                    <Picker.Item key={year.id} label={year.name} value={year.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Standard</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedStandard}
-                  onValueChange={setSelectedStandard}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {standards?.map((standard: any) => (
-                    <Picker.Item key={standard.id} label={standard.name} value={standard.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Section (Optional)</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedSection}
-                  onValueChange={setSelectedSection}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="All Sections" value="" />
-                  {sections?.map((section: any) => (
-                    <Picker.Item key={section.id} label={section.name} value={section.id.toString()} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.applyButton, { backgroundColor: colors.primary }]}
-              onPress={() => setFiltersVisible(false)}
-            >
-              <Text style={styles.applyButtonText}>Apply Filters</Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
-  );
-
   const renderStudentDetailsModal = () => (
     <Modal
       visible={studentDetailsModalVisible}
@@ -375,7 +288,7 @@ export default function StationeryFeeScreen() {
         <View style={[styles.detailsModal, { backgroundColor: colors.surface }]}>
           <View style={styles.modalHeader}>
             <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              {selectedStudent?.user_name} - Stationery Details
+              {selectedStudent?.user_name || 'Student'} - Stationery Details
             </Text>
             <TouchableOpacity onPress={() => setStudentDetailsModalVisible(false)}>
               <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
@@ -434,7 +347,7 @@ export default function StationeryFeeScreen() {
     </Modal>
   );
 
-  const isLoading = feeLoading;
+  const isLoading = feeLoading || branchesLoading || academicYearsLoading;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -450,6 +363,63 @@ export default function StationeryFeeScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              options={branches.map((branch: any) => ({ 
+                label: branch.name || 'Unnamed Branch', 
+                value: branch.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              options={academicYears.map((year: any) => ({ 
+                label: year.name || 'Unnamed Year', 
+                value: year.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Standard"
+              selectedValue={selectedStandard}
+              onValueChange={setSelectedStandard}
+              options={[
+                { label: 'All Standards', value: null },
+                ...standards.map((standard: any) => ({ 
+                  label: standard.name || 'Unnamed Standard', 
+                  value: standard.id 
+                }))
+              ]}
+            />
+            
+            <ModalDropdownFilter
+              label="Section"
+              selectedValue={selectedSection}
+              onValueChange={setSelectedSection}
+              options={[
+                { label: 'All Sections', value: null },
+                ...sections.map((section: any) => ({ 
+                  label: section.name || 'Unnamed Section', 
+                  value: section.id?.toString() 
+                }))
+              ]}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
       {/* Header Controls */}
       <View style={[styles.headerControls, { backgroundColor: colors.surface }]}>
         {activeTab === 'students' && (
@@ -463,13 +433,6 @@ export default function StationeryFeeScreen() {
             />
           </View>
         )}
-        
-        <TouchableOpacity
-          style={[styles.filterButton, { backgroundColor: colors.primary }]}
-          onPress={() => setFiltersVisible(true)}
-        >
-          <Text style={styles.filterButtonText}>🔍 Filters</Text>
-        </TouchableOpacity>
       </View>
 
       {/* Tabs */}
@@ -514,7 +477,6 @@ export default function StationeryFeeScreen() {
         {activeTab === 'overview' ? renderStationaryOverview() : renderStudentsView()}
       </View>
 
-      {renderFiltersModal()}
       {renderStudentDetailsModal()}
     </SafeAreaView>
   );
@@ -523,6 +485,22 @@ export default function StationeryFeeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   headerControls: {
     padding: 16,
@@ -541,17 +519,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
-  },
-  filterButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  filterButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -729,23 +696,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'flex-end',
   },
-  filtersModal: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '80%',
-  },
   detailsModal: {
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     maxHeight: '90%',
-  },
-  filtersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -754,10 +708,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#E5E7EB',
-  },
-  filtersTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
   },
   modalTitle: {
     fontSize: 18,
@@ -769,38 +719,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: 8,
   },
-  filtersContent: {
-    padding: 20,
-  },
   modalContent: {
     padding: 20,
-  },
-  filterGroup: {
-    marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  pickerContainer: {
-    borderRadius: 8,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 44,
-  },
-  applyButton: {
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
   detailSection: {
     marginBottom: 24,
