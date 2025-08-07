@@ -1056,3 +1056,125 @@ export const useInventoryTracking = (params: any = {}) => {
 
   return { data, loading, error, refetch };
 };
+
+// Salary Templates hooks
+export const useSalaryTemplatesGrouped = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getSalaryTemplatesGrouped(params);
+      setData(response || []);
+    } catch (err: any) {
+      console.error('Salary templates fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch salary templates');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useSalaryCategories = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getSalaryCategories(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Salary categories fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch salary categories');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useAllUsersExceptStudents = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getAllUsersExceptStudents(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Users fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch users');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+// Expenditure hooks
+export const useExpenditure = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getExpenditure(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Expenditure fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch expenditure');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

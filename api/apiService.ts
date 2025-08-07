@@ -696,6 +696,60 @@ class ApiService {
     const response = await this.api.patch(`/api/student-details/${id}/`, data);
     return response.data;
   }
-}
+
+  // Salary Templates Management
+  async getSalaryTemplatesGrouped(params?: any): Promise<any> {
+    const response = await this.api.get("/api/salary-templates/grouped/", { params });
+    return response.data;
+  }
+
+  async getSalaryCategories(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/salary-categories/", { params });
+    return response.data;
+  }
+
+  async createSalaryTemplate(data: any): Promise<any> {
+    const response = await this.api.post("/api/salary-templates/", data);
+    return response.data;
+  }
+
+  async updateSalaryCategory(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/salary-categories/${id}/`, data);
+    return response.data;
+  }
+
+  async createSalaryCategory(data: any): Promise<any> {
+    const response = await this.api.post("/api/salary-categories/", data);
+    return response.data;
+  }
+
+  async deleteSalaryCategory(id: number): Promise<void> {
+    await this.api.delete(`/api/salary-categories/${id}/`);
+  }
+
+  async getAllUsersExceptStudents(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/users/get-all-users-expect-students/", { params });
+    return response.data;
+  }
+
+  // School Expenditure Management
+  async getExpenditure(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/expenditure/", { params });
+    return response.data;
+  }
+
+  async createExpenditure(data: any): Promise<any> {
+    const response = await this.api.post("/api/expenditure/", data);
+    return response.data;
+  }
+
+  async updateExpenditure(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/expenditure/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteExpenditure(id: number): Promise<void> {
+    await this.api.delete(`/api/expenditure/${id}/`);
+  }
 
 export const apiService = new ApiService();

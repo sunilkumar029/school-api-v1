@@ -248,6 +248,38 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                           </TouchableOpacity>
                         );
                       }
+                      
+                      if (item.route === '/finance/staff-payroll') {
+                        return (
+                          <>
+                            <TouchableOpacity
+                              key={itemIndex}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                              onPress={() => handleItemPress(item.route)}
+                            >
+                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Staff Payroll</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.menuItem}
+                              onPress={() => {
+                                router.push('/finance/salary-templates');
+                                onClose();
+                              }}
+                            >
+                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Salary Templates</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                              style={styles.menuItem}
+                              onPress={() => {
+                                router.push('/finance/school-expenditure');
+                                onClose();
+                              }}
+                            >
+                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>School Expenditure</Text>
+                            </TouchableOpacity>
+                          </>
+                        );
+                      }
                       return (
                         <TouchableOpacity
                           key={itemIndex}
