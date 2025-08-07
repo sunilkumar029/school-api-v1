@@ -28,8 +28,8 @@ export default function RootLayout() {
   }
 
   return (
-    <ErrorBoundary>
-      <ThemeProvider>
+    <ThemeProvider>
+      <ErrorBoundary>
         <AuthProvider>
           <GlobalFiltersProvider>
             <Stack screenOptions={{ headerShown: false }}>
@@ -57,7 +57,7 @@ export default function RootLayout() {
             <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
           </GlobalFiltersProvider>
         </AuthProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
+      </ErrorBoundary>
+    </ThemeProvider>
   );
 }
