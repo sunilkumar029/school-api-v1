@@ -1193,3 +1193,597 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+} from 'react-native';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { TopBar } from '@/components/TopBar';
+import { SideDrawer } from '@/components/SideDrawer';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSchoolExpenditure, useExpenseCategories } from '@/hooks/useApi';
+
+interface Expenditure {
+  id: number;
+  category: {
+    id: number;
+    name: string;
+  };
+  description: string;
+  amount: number;
+  expense_date: string;
+  status: 'pending' | 'approved' | 'rejected' | 'paid';
+  approved_by?: {
+    id: number;
+    name: string;
+  };
+  approved_date?: string;
+  payment_method?: string;
+  reference_number?: string;
+  receipts: string[];
+  branch: {
+    id: number;
+    name: string;
+  };
+  created_date: string;
+}
+
+export default function SchoolExpenditureScreen() {
+  const { colors } = useTheme();
+  const { user } = useAuth();
+  const router = useRouter();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
+
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
+  // Fetch data
+  const { data: categories = [], loading: categoriesLoading } = useExpenseCategories();
+
+  const expenditureParams = useMemo(() => ({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
+    category: selectedCategory,
+    status: selectedStatus,
+    month: selectedMonth,
+    year: selectedYear,
+  }), [selectedBranch, selectedAcademicYear, selectedCategory, selectedStatus, selectedMonth, selectedYear]);
+
+  const { 
+    data: expenditures = [], 
+    loading: expenditureLoading, 
+    error: expenditureError,
+    refetch: refetchExpenditure
+  } = useSchoolExpenditure(expenditureParams);
+
+  // Filter options
+  const categoryOptions = useMemo(() => [
+    { id: 0, name: 'All Categories' },
+    ...categories.map((category: any) => ({
+      id: category.id,
+      name: category.name || 'Unnamed Category'
+    }))
+  ], [categories]);
+
+  const statusOptions = useMemo(() => [
+    { id: 0, name: 'All Status' },
+    { id: 1, name: 'Pending' },
+    { id: 2, name: 'Approved' },
+    { id: 3, name: 'Rejected' },
+    { id: 4, name: 'Paid' },
+  ], []);
+
+  const statusMapping = {
+    0: null,
+    1: 'pending',
+    2: 'approved',
+    3: 'rejected',
+    4: 'paid'
+  };
+
+  const monthOptions = useMemo(() => [
+    { id: 0, name: 'All Months' },
+    { id: 1, name: 'January' },
+    { id: 2, name: 'February' },
+    { id: 3, name: 'March' },
+    { id: 4, name: 'April' },
+    { id: 5, name: 'May' },
+    { id: 6, name: 'June' },
+    { id: 7, name: 'July' },
+    { id: 8, name: 'August' },
+    { id: 9, name: 'September' },
+    { id: 10, name: 'October' },
+    { id: 11, name: 'November' },
+    { id: 12, name: 'December' },
+  ], []);
+
+  // Generate year options (current year ± 5 years)
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear - 5; year <= currentYear + 1; year++) {
+      years.push({ id: year, name: year.toString() });
+    }
+    return years;
+  }, []);
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending': return colors.warning || '#f59e0b';
+      case 'approved': return colors.info || '#3b82f6';
+      case 'rejected': return colors.error || '#ef4444';
+      case 'paid': return colors.success || '#10b981';
+      default: return colors.textSecondary || '#6b7280';
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  };
+
+  const formatCurrency = (amount: number) => {
+    if (!amount) return '$0';
+    return `$${amount.toLocaleString()}`;
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'Invalid Date';
+    }
+  };
+
+  const getTotalExpenditure = () => {
+    return expenditures.reduce((sum: number, exp: Expenditure) => sum + (exp.amount || 0), 0);
+  };
+
+  const handleRefresh = () => {
+    refetchExpenditure();
+  };
+
+  const renderSummaryCard = () => {
+    const totalAmount = getTotalExpenditure();
+    const pendingCount = expenditures.filter((exp: Expenditure) => exp.status === 'pending').length;
+    const approvedCount = expenditures.filter((exp: Expenditure) => exp.status === 'approved').length;
+    const paidCount = expenditures.filter((exp: Expenditure) => exp.status === 'paid').length;
+
+    return (
+      <View style={[styles.summaryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+        <Text style={[styles.summaryTitle, { color: colors.textPrimary }]}>Expenditure Summary</Text>
+        
+        <View style={styles.summaryGrid}>
+          <View style={styles.summaryItem}>
+            <Text style={[styles.summaryValue, { color: colors.primary }]}>
+              {formatCurrency(totalAmount)}
+            </Text>
+            <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Total Amount</Text>
+          </View>
+          
+          <View style={styles.summaryItem}>
+            <Text style={[styles.summaryValue, { color: colors.warning }]}>
+              {pendingCount}
+            </Text>
+            <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Pending</Text>
+          </View>
+          
+          <View style={styles.summaryItem}>
+            <Text style={[styles.summaryValue, { color: colors.info }]}>
+              {approvedCount}
+            </Text>
+            <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Approved</Text>
+          </View>
+          
+          <View style={styles.summaryItem}>
+            <Text style={[styles.summaryValue, { color: colors.success }]}>
+              {paidCount}
+            </Text>
+            <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Paid</Text>
+          </View>
+        </View>
+      </View>
+    );
+  };
+
+  const renderExpenditureCard = ({ item }: { item: Expenditure }) => (
+    <View style={[styles.expenditureCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+      <View style={styles.expenditureHeader}>
+        <View style={styles.expenditureInfo}>
+          <Text style={[styles.categoryName, { color: colors.primary }]}>
+            {item.category?.name || 'Uncategorized'}
+          </Text>
+          <Text style={[styles.amount, { color: colors.textPrimary }]}>
+            {formatCurrency(item.amount)}
+          </Text>
+        </View>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
+          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+            {getStatusLabel(item.status)}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
+        {item.description || 'No description'}
+      </Text>
+
+      <View style={styles.expenditureDetails}>
+        <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+          Date: {formatDate(item.expense_date)}
+        </Text>
+        
+        {item.payment_method && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Payment: {item.payment_method}
+          </Text>
+        )}
+        
+        {item.reference_number && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Ref: {item.reference_number}
+          </Text>
+        )}
+        
+        {item.approved_by && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Approved by: {item.approved_by.name} on {formatDate(item.approved_date || '')}
+          </Text>
+        )}
+      </View>
+
+      {item.receipts && item.receipts.length > 0 && (
+        <Text style={[styles.receiptsText, { color: colors.info }]}>
+          📎 {item.receipts.length} receipt(s) attached
+        </Text>
+      )}
+    </View>
+  );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={[styles.emptyStateTitle, { color: colors.textPrimary }]}>
+        No Expenditures Found
+      </Text>
+      <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+        There are no school expenditures matching your current filters.
+      </Text>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorState}>
+      <Text style={[styles.errorTitle, { color: colors.error }]}>
+        Unable to Load Expenditures
+      </Text>
+      <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+        Please check your connection and try again.
+      </Text>
+      <TouchableOpacity 
+        style={[styles.retryButton, { backgroundColor: colors.primary }]}
+        onPress={handleRefresh}
+      >
+        <Text style={[styles.retryButtonText, { color: colors.surface }]}>
+          Retry
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (branchesLoading || academicYearsLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <TopBar
+          title="School Expenditure"
+          onMenuPress={() => setDrawerVisible(true)}
+          onNotificationPress={() => router.push('/notifications')}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading filters...
+          </Text>
+        </View>
+        <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopBar
+        title="School Expenditure"
+        onMenuPress={() => setDrawerVisible(true)}
+        onNotificationPress={() => router.push('/notifications')}
+      />
+
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Category"
+              items={categoryOptions}
+              selectedValue={selectedCategory || 0}
+              onValueChange={(value) => setSelectedCategory(value === 0 ? null : value)}
+              loading={categoriesLoading}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Status"
+              items={statusOptions}
+              selectedValue={selectedStatus ? Object.keys(statusMapping).find(key => statusMapping[key] === selectedStatus) || 0 : 0}
+              onValueChange={(value) => setSelectedStatus(statusMapping[value])}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Year"
+              items={yearOptions}
+              selectedValue={selectedYear}
+              onValueChange={(value) => setSelectedYear(value)}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Month"
+              items={monthOptions}
+              selectedValue={selectedMonth || 0}
+              onValueChange={(value) => setSelectedMonth(value === 0 ? null : value)}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {expenditureLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+              Loading expenditures...
+            </Text>
+          </View>
+        ) : expenditureError ? (
+          renderErrorState()
+        ) : (
+          <FlatList
+            data={expenditures}
+            renderItem={renderExpenditureCard}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={expenditureLoading}
+                onRefresh={handleRefresh}
+                colors={[colors.primary]}
+              />
+            }
+            ListHeaderComponent={expenditures.length > 0 ? renderSummaryCard : null}
+            ListEmptyComponent={renderEmptyState}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
+
+      <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    flexGrow: 0,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  content: {
+    flex: 1,
+  },
+  listContainer: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  summaryCard: {
+    padding: 16,
+    marginBottom: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  summaryGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+  },
+  summaryItem: {
+    alignItems: 'center',
+    minWidth: '22%',
+  },
+  summaryValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  summaryLabel: {
+    fontSize: 12,
+    textAlign: 'center',
+  },
+  expenditureCard: {
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  expenditureHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  expenditureInfo: {
+    flex: 1,
+  },
+  categoryName: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  amount: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  description: {
+    fontSize: 14,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  expenditureDetails: {
+    marginBottom: 8,
+  },
+  detailText: {
+    fontSize: 12,
+    marginBottom: 2,
+  },
+  receiptsText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  errorState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  retryButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});

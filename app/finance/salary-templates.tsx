@@ -1036,3 +1036,559 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+import React, { useState, useMemo } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+  RefreshControl,
+  Alert,
+} from 'react-native';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { TopBar } from '@/components/TopBar';
+import { SideDrawer } from '@/components/SideDrawer';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useSalaryTemplates, useDepartments } from '@/hooks/useApi';
+
+interface SalaryTemplate {
+  id: number;
+  name: string;
+  description?: string;
+  department: {
+    id: number;
+    name: string;
+  };
+  base_salary: number;
+  allowances: {
+    id: number;
+    name: string;
+    amount: number;
+    type: 'fixed' | 'percentage';
+  }[];
+  deductions: {
+    id: number;
+    name: string;
+    amount: number;
+    type: 'fixed' | 'percentage';
+  }[];
+  is_active: boolean;
+  created_date: string;
+  modified_date: string;
+}
+
+export default function SalaryTemplatesScreen() {
+  const { colors } = useTheme();
+  const { user } = useAuth();
+  const router = useRouter();
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<boolean | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<SalaryTemplate | null>(null);
+
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
+
+  // Fetch data
+  const { data: departments = [], loading: departmentsLoading } = useDepartments();
+
+  const templatesParams = useMemo(() => ({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
+    department: selectedDepartment,
+    is_active: selectedStatus,
+  }), [selectedBranch, selectedAcademicYear, selectedDepartment, selectedStatus]);
+
+  const { 
+    data: salaryTemplates = [], 
+    loading: templatesLoading, 
+    error: templatesError,
+    refetch: refetchTemplates
+  } = useSalaryTemplates(templatesParams);
+
+  // Filter options
+  const departmentOptions = useMemo(() => [
+    { id: 0, name: 'All Departments' },
+    ...departments.map((dept: any) => ({
+      id: dept.id,
+      name: dept.name || 'Unnamed Department'
+    }))
+  ], [departments]);
+
+  const statusOptions = useMemo(() => [
+    { id: 0, name: 'All Status' },
+    { id: 1, name: 'Active' },
+    { id: 2, name: 'Inactive' },
+  ], []);
+
+  const statusMapping = {
+    0: null,
+    1: true,
+    2: false
+  };
+
+  const formatCurrency = (amount: number) => {
+    if (!amount) return '$0';
+    return `$${amount.toLocaleString()}`;
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
+    try {
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'Invalid Date';
+    }
+  };
+
+  const calculateTotalSalary = (template: SalaryTemplate) => {
+    const allowancesTotal = template.allowances?.reduce((sum, allowance) => {
+      if (allowance.type === 'percentage') {
+        return sum + (template.base_salary * allowance.amount / 100);
+      }
+      return sum + allowance.amount;
+    }, 0) || 0;
+
+    const deductionsTotal = template.deductions?.reduce((sum, deduction) => {
+      if (deduction.type === 'percentage') {
+        return sum + (template.base_salary * deduction.amount / 100);
+      }
+      return sum + deduction.amount;
+    }, 0) || 0;
+
+    return template.base_salary + allowancesTotal - deductionsTotal;
+  };
+
+  const handleRefresh = () => {
+    refetchTemplates();
+  };
+
+  const handleTemplatePress = (template: SalaryTemplate) => {
+    setSelectedTemplate(template);
+  };
+
+  const handleCreateTemplate = () => {
+    router.push('/finance/add-salary-template');
+  };
+
+  const handleEditTemplate = (template: SalaryTemplate) => {
+    router.push(`/finance/edit-salary-template?templateId=${template.id}`);
+  };
+
+  const renderTemplateCard = ({ item }: { item: SalaryTemplate }) => (
+    <TouchableOpacity 
+      style={[styles.templateCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+      onPress={() => handleTemplatePress(item)}
+    >
+      <View style={styles.templateHeader}>
+        <Text style={[styles.templateName, { color: colors.textPrimary }]} numberOfLines={1}>
+          {item.name || 'Unnamed Template'}
+        </Text>
+        <View style={[styles.statusBadge, { backgroundColor: item.is_active ? colors.success + '20' : colors.textSecondary + '20' }]}>
+          <Text style={[styles.statusText, { color: item.is_active ? colors.success : colors.textSecondary }]}>
+            {item.is_active ? 'Active' : 'Inactive'}
+          </Text>
+        </View>
+      </View>
+
+      <Text style={[styles.department, { color: colors.primary }]}>
+        {item.department?.name || 'No Department'}
+      </Text>
+
+      {item.description && (
+        <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
+          {item.description}
+        </Text>
+      )}
+
+      <View style={styles.salaryDetails}>
+        <View style={styles.salaryRow}>
+          <Text style={[styles.salaryLabel, { color: colors.textSecondary }]}>Base Salary:</Text>
+          <Text style={[styles.salaryValue, { color: colors.textPrimary }]}>
+            {formatCurrency(item.base_salary)}
+          </Text>
+        </View>
+
+        {item.allowances && item.allowances.length > 0 && (
+          <View style={styles.salaryRow}>
+            <Text style={[styles.salaryLabel, { color: colors.textSecondary }]}>Allowances:</Text>
+            <Text style={[styles.salaryValue, { color: colors.success }]}>
+              +{item.allowances.length} items
+            </Text>
+          </View>
+        )}
+
+        {item.deductions && item.deductions.length > 0 && (
+          <View style={styles.salaryRow}>
+            <Text style={[styles.salaryLabel, { color: colors.textSecondary }]}>Deductions:</Text>
+            <Text style={[styles.salaryValue, { color: colors.error }]}>
+              -{item.deductions.length} items
+            </Text>
+          </View>
+        )}
+
+        <View style={[styles.salaryRow, styles.totalRow]}>
+          <Text style={[styles.totalLabel, { color: colors.textPrimary }]}>Net Salary:</Text>
+          <Text style={[styles.totalValue, { color: colors.primary }]}>
+            {formatCurrency(calculateTotalSalary(item))}
+          </Text>
+        </View>
+      </View>
+
+      <View style={styles.templateFooter}>
+        <Text style={[styles.dateText, { color: colors.textSecondary }]}>
+          Modified: {formatDate(item.modified_date)}
+        </Text>
+        <TouchableOpacity
+          style={[styles.editButton, { backgroundColor: colors.primary }]}
+          onPress={() => handleEditTemplate(item)}
+        >
+          <Text style={[styles.editButtonText, { color: colors.surface }]}>Edit</Text>
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={[styles.emptyStateTitle, { color: colors.textPrimary }]}>
+        No Salary Templates Found
+      </Text>
+      <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+        Create salary templates to standardize compensation structures across departments.
+      </Text>
+      <TouchableOpacity 
+        style={[styles.createButton, { backgroundColor: colors.primary }]}
+        onPress={handleCreateTemplate}
+      >
+        <Text style={[styles.createButtonText, { color: colors.surface }]}>
+          Create Template
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  const renderErrorState = () => (
+    <View style={styles.errorState}>
+      <Text style={[styles.errorTitle, { color: colors.error }]}>
+        Unable to Load Salary Templates
+      </Text>
+      <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+        Please check your connection and try again.
+      </Text>
+      <TouchableOpacity 
+        style={[styles.retryButton, { backgroundColor: colors.primary }]}
+        onPress={handleRefresh}
+      >
+        <Text style={[styles.retryButtonText, { color: colors.surface }]}>
+          Retry
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (branchesLoading || academicYearsLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <TopBar
+          title="Salary Templates"
+          onMenuPress={() => setDrawerVisible(true)}
+          onNotificationPress={() => router.push('/notifications')}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading filters...
+          </Text>
+        </View>
+        <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <TopBar
+        title="Salary Templates"
+        onMenuPress={() => setDrawerVisible(true)}
+        onNotificationPress={() => router.push('/notifications')}
+        rightAction={{
+          icon: 'plus',
+          onPress: handleCreateTemplate
+        }}
+      />
+
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Department"
+              items={departmentOptions}
+              selectedValue={selectedDepartment || 0}
+              onValueChange={(value) => setSelectedDepartment(value === 0 ? null : value)}
+              loading={departmentsLoading}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Status"
+              items={statusOptions}
+              selectedValue={selectedStatus !== null ? Object.keys(statusMapping).find(key => statusMapping[key] === selectedStatus) || 0 : 0}
+              onValueChange={(value) => setSelectedStatus(statusMapping[value])}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* Content */}
+      <View style={styles.content}>
+        {templatesLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+              Loading salary templates...
+            </Text>
+          </View>
+        ) : templatesError ? (
+          renderErrorState()
+        ) : (
+          <FlatList
+            data={salaryTemplates}
+            renderItem={renderTemplateCard}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={templatesLoading}
+                onRefresh={handleRefresh}
+                colors={[colors.primary]}
+              />
+            }
+            ListEmptyComponent={renderEmptyState}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
+
+      <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    flexGrow: 0,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginRight: 8,
+  },
+  content: {
+    flex: 1,
+  },
+  listContainer: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  templateCard: {
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  templateHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  templateName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+    marginRight: 8,
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  department: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 14,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  salaryDetails: {
+    marginBottom: 12,
+  },
+  salaryRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  salaryLabel: {
+    fontSize: 14,
+  },
+  salaryValue: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  totalRow: {
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  totalLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  totalValue: {
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  templateFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 12,
+  },
+  editButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 6,
+  },
+  editButtonText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 24,
+  },
+  createButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  createButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  errorState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  retryButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+});

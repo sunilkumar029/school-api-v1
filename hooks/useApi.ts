@@ -1726,6 +1726,222 @@ export const useTaskSubmissions = (params?: Record<string, any>) => {
   return { data, loading, error, refetch };
 };
 
+// Salary Templates hook
+export const useSalaryTemplates = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Mock data for now - replace with actual API call
+      const mockData = [
+        {
+          id: 1,
+          name: 'Elementary Teacher Template',
+          description: 'Standard salary template for elementary teachers',
+          department: { id: 1, name: 'Elementary Education' },
+          base_salary: 45000,
+          allowances: [
+            { id: 1, name: 'Teaching Allowance', amount: 5000, type: 'fixed' },
+            { id: 2, name: 'Transport Allowance', amount: 2000, type: 'fixed' }
+          ],
+          deductions: [
+            { id: 1, name: 'Tax', amount: 10, type: 'percentage' },
+            { id: 2, name: 'Insurance', amount: 500, type: 'fixed' }
+          ],
+          is_active: true,
+          created_date: '2024-01-15',
+          modified_date: '2024-12-15'
+        }
+      ];
+      setData(mockData);
+    } catch (err: any) {
+      console.error('Salary templates fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch salary templates');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+// School Expenditure hook
+export const useSchoolExpenditure = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Mock data for now - replace with actual API call
+      const mockData = [
+        {
+          id: 1,
+          category: { id: 1, name: 'Infrastructure' },
+          description: 'Classroom renovation and maintenance',
+          amount: 15000,
+          expense_date: '2024-12-10',
+          status: 'approved',
+          approved_by: { id: 1, name: 'John Admin' },
+          approved_date: '2024-12-11',
+          payment_method: 'Bank Transfer',
+          reference_number: 'EXP-2024-001',
+          receipts: ['receipt1.pdf'],
+          branch: { id: 1, name: 'Main Campus' },
+          created_date: '2024-12-10'
+        }
+      ];
+      setData(mockData);
+    } catch (err: any) {
+      console.error('School expenditure fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch school expenditure');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+// Expense Categories hook
+export const useExpenseCategories = () => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Mock data for now - replace with actual API call
+      const mockData = [
+        { id: 1, name: 'Infrastructure' },
+        { id: 2, name: 'Equipment' },
+        { id: 3, name: 'Supplies' },
+        { id: 4, name: 'Utilities' },
+        { id: 5, name: 'Staff Training' }
+      ];
+      setData(mockData);
+    } catch (err: any) {
+      console.error('Expense categories fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch expense categories');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+// Student Marks Analytics hook
+export const useStudentMarksAnalytics = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      // Mock data for now - replace with actual API call
+      const mockData = {
+        subject_wise: [
+          {
+            subject: 'Mathematics',
+            average_marks: 78.5,
+            highest_marks: 98,
+            lowest_marks: 45,
+            pass_percentage: 85.2,
+            students_count: 120
+          },
+          {
+            subject: 'English',
+            average_marks: 82.1,
+            highest_marks: 95,
+            lowest_marks: 52,
+            pass_percentage: 89.7,
+            students_count: 120
+          }
+        ],
+        class_wise: [
+          {
+            class_name: 'Class 10A',
+            average_marks: 80.3,
+            total_students: 30,
+            passed_students: 27,
+            failed_students: 3
+          },
+          {
+            class_name: 'Class 10B',
+            average_marks: 75.8,
+            total_students: 28,
+            passed_students: 24,
+            failed_students: 4
+          }
+        ],
+        overall_stats: {
+          total_students: 120,
+          overall_average: 78.9,
+          overall_pass_percentage: 87.5,
+          grade_distribution: [
+            { grade: 'A', count: 25, percentage: 20.8 },
+            { grade: 'B', count: 35, percentage: 29.2 },
+            { grade: 'C', count: 30, percentage: 25.0 },
+            { grade: 'D', count: 15, percentage: 12.5 },
+            { grade: 'F', count: 15, percentage: 12.5 }
+          ]
+        }
+      };
+      setData(mockData);
+    } catch (err: any) {
+      console.error('Student marks analytics fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks analytics');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
 // Leave Management hooks
 export const useLeaveRequests = (params?: Record<string, any>) => {
   const [data, setData] = useState<any[]>([]);
