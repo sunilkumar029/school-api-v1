@@ -1,0 +1,369 @@
+------------------------------- Tasks module
+GET https: //vai.dev.sms.visionariesai.com/api/tasks_create/
+[
+    {
+        "id": 12,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 37,
+            "name": "Santoshi P"
+        },
+        "assigned_users": [
+            {
+                "id": 37,
+                "name": "Santoshi P"
+            }
+        ],
+        "departments": [],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 14,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 4,
+                "name": "Rupa K"
+            }
+        ],
+        "departments": [],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 15,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 4,
+                "name": "Rupa K"
+            }
+        ],
+        "departments": [],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 16,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 4,
+                "name": "Rupa K"
+            }
+        ],
+        "departments": [
+            {
+                "id": 1,
+                "name": "Mathematics"
+            },
+            {
+                "id": 16,
+                "name": "Chemistry"
+            },
+            {
+                "id": 15,
+                "name": "Biology"
+            }
+        ],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 17,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 4,
+                "name": "Rupa K"
+            }
+        ],
+        "departments": [
+            {
+                "id": 1,
+                "name": "Mathematics"
+            },
+            {
+                "id": 16,
+                "name": "Chemistry"
+            },
+            {
+                "id": 15,
+                "name": "Biology"
+            }
+        ],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 18,
+        "title": "testing departments",
+        "description": "this is testing departments",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-13",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 5,
+                "name": "somasekhar S"
+            }
+        ],
+        "departments": [],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 19,
+        "title": "Complete Notes",
+        "description": "Arrange all apparatus before Monday.",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-10",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [],
+        "departments": [
+            {
+                "id": 1,
+                "name": "Mathematics"
+            },
+            {
+                "id": 16,
+                "name": "Chemistry"
+            },
+            {
+                "id": 15,
+                "name": "Biology"
+            }
+        ],
+        "standards": [],
+        "sections": [],
+        "is_submitted": false,
+        "submission_task_percentage": null
+    },
+    {
+        "id": 21,
+        "title": "testing pending11",
+        "description": "this is tsting pending",
+        "from_date": "2025-06-05",
+        "due_date": "2025-06-07",
+        "created_by": {
+            "id": 3,
+            "name": "Narasing M"
+        },
+        "assigned_users": [
+            {
+                "id": 37,
+                "name": "Santoshi P"
+            },
+            {
+                "id": 60,
+                "name": "Santoshi P"
+            },
+            {
+                "id": 92,
+                "name": "Sankar V"
+            },
+            {
+                "id": 93,
+                "name": "Siva Sankar K"
+            },
+            {
+                "id": 102,
+                "name": "Santoshi K"
+            }
+        ],
+        "departments": [],
+        "standards": [],
+        "sections": [],
+        "is_submitted": true,
+        "submission_task_percentage": 92.0
+    }
+]
+
+(EDIT)
+GET https: //vai.dev.sms.visionariesai.com/api/departments/?inactive=true&name=&branch=1&academic_year=1
+GET https: //vai.dev.sms.visionariesai.com/api/standards/?inactive=true&branch=1&name=&academic_year=1
+GET https: //vai.dev.sms.visionariesai.com/api/users/?city=&admission_number=&employee_id=&standard=&section_id=&section=&department=&first_name=&last_name=&group__name=&academic_year=1&branch=1&limit=1500&offset=0&omit=created_by,modified_by,branch,designation__modified_by,designation__created_by,group__permissions,guardians__created_by,guardians__modified_by,department__branch,department__modified_by,department__created_by,branch
+
+PATCH https: //vai.dev.sms.visionariesai.com/api/tasks_create/21/
+PAYLOAD EXAMPLE {
+    "id": 21,
+    "assigned_to_users": [
+        37,
+        60,
+        92,
+        93,
+        102
+    ],
+    "assigned_to_departments": [],
+    "assigned_to_standards": [],
+    "assigned_to_sections": [],
+    "title": "testing pending11",
+    "description": "this is tsting pending",
+    "submission_task_percentage": 92,
+    "from_date": "2025-06-05",
+    "due_date": "2025-06-07",
+    "created_at": "2025-06-05T21:55:43.317799+05:30",
+    "created_by": 3
+}
+
+POST https: //vai.dev.sms.visionariesai.com/api/tasks_create/
+{
+    "id": 23,
+    "assigned_to_users": [
+        42,
+        43,
+        47
+    ],
+    "assigned_to_departments": [
+        1,
+        39,
+        44
+    ],
+    "assigned_to_standards": [
+        1,
+        26
+    ],
+    "assigned_to_sections": [
+        17
+    ],
+    "title": "d",
+    "description": "fg",
+    "submission_task_percentage": null,
+    "from_date": "2025-08-07",
+    "due_date": "2025-08-09",
+    "created_at": "2025-08-07T11:00:12.287399+05:30",
+    "created_by": 3
+}
+
+DELETE https: //vai.dev.sms.visionariesai.com/api/tasks_create/19/
+
+
+------------------------------- Submitted Tasks
+GET https: //vai.dev.sms.visionariesai.com/api/task-submissions/
+{
+    "meta": {
+        "count": 4,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 17,
+            "task": 21,
+            "submitted_by": 37,
+            "submitted_at": "2025-06-05T21:56:29.648484+05:30",
+            "submission_notes": "this is testing for perctange",
+            "completion_percent": 50,
+            "submission_link": "https://vai.dev.sms.visionariesai.com/api/schema/swagger-ui/#",
+            "submitted_by_detail": {
+                "id": 37,
+                "name": "Santoshi P"
+            },
+            "created_by_detail": {
+                "id": 3,
+                "name": "Narasing M"
+            }
+        },
+        {
+            "id": 18,
+            "task": 21,
+            "submitted_by": 37,
+            "submitted_at": "2025-06-05T21:58:43.457769+05:30",
+            "submission_notes": "this is testing again",
+            "completion_percent": 60,
+            "submission_link": "https://vai.dev.sms.visionariesai.com/api/schema/swagger-ui/#",
+            "submitted_by_detail": {
+                "id": 37,
+                "name": "Santoshi P"
+            },
+            "created_by_detail": {
+                "id": 3,
+                "name": "Narasing M"
+            }
+        },
+        {
+            "id": 19,
+            "task": 21,
+            "submitted_by": 37,
+            "submitted_at": "2025-06-05T22:04:02.804430+05:30",
+            "submission_notes": "this is testing for pactange",
+            "completion_percent": 50,
+            "submission_link": "https://vai.dev.sms.visionariesai.com/api/schema/swagger-ui/#",
+            "submitted_by_detail": {
+                "id": 37,
+                "name": "Santoshi P"
+            },
+            "created_by_detail": {
+                "id": 3,
+                "name": "Narasing M"
+            }
+        },
+        {
+            "id": 20,
+            "task": 21,
+            "submitted_by": 37,
+            "submitted_at": "2025-06-05T22:10:51.001259+05:30",
+            "submission_notes": "this is testin 30",
+            "completion_percent": 92,
+            "submission_link": "https://vai.dev.sms.visionariesai.com/api/schema/swagger-ui/#",
+            "submitted_by_detail": {
+                "id": 37,
+                "name": "Santoshi P"
+            },
+            "created_by_detail": {
+                "id": 3,
+                "name": "Narasing M"
+            }
+        }
+    ]
+}
