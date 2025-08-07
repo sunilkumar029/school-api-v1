@@ -1335,23 +1335,115 @@ export const useInventory = (params?: Record<string, any>) => {
   return useApi<any[]>('/inventory/', params);
 };
 
+// Generic useApi hook
+const useApi = <T>(endpoint: string, params?: Record<string, any>) => {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.api.get(endpoint, { params });
+      setData(response.data.results || response.data);
+    } catch (err: any) {
+      console.error(`Error fetching ${endpoint}:`, err);
+      setError(err.response?.data?.message || err.message || `Failed to fetch ${endpoint}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [endpoint, JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
 // Exam-related hooks
 export const useExams = (params?: Record<string, any>) => {
-  return useApi<any[]>('/exams/', params);
+  return useApi<any[]>('/api/exams/', params);
 };
 
 export const useExamTypes = () => {
-  return useApi<any[]>('/exam-types/');
+  return useApi<any[]>('/api/exam-types/');
 };
 
 export const useStudentExamMarks = (params?: Record<string, any>) => {
-  return useApi<any[]>('/student-exam-marks/', params);
+  return useApi<any[]>('/api/student-exam-marks/', params);
 };
 
 export const useStudentExamMarksAnalytics = (params?: Record<string, any>) => {
-  return useApi<any>('/student-exam-marks/exam-analytics/', params);
+  return useApi<any>('/api/student-exam-marks/exam-analytics/', params);
 };
 
 export const useExamScheduleDetails = (scheduleId: number) => {
-  return useApi<any>(`/exam-schedules/${scheduleId}/get-question-paper/`);
+  return useApi<any>(`/api/exam-schedules/${scheduleId}/get-question-paper/`);
+};
+
+// Tasks module hooks
+export const useTasks = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getTasks(params);
+      setData(response || []);
+    } catch (err: any) {
+      console.error('Tasks fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch tasks');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useTaskSubmissions = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getTaskSubmissions(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Task submissions fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch task submissions');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
 };

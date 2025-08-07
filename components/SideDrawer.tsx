@@ -35,6 +35,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
   const { user } = useAuth();
   const router = useRouter();
 
+  const [expandedMenus, setExpandedMenus] = React.useState({
+    exams: false,
+    tasks: false,
+  });
+
+  const toggleSubmenu = (menu: keyof typeof expandedMenus) => {
+    setExpandedMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
+  };
+
   const drawerSections: DrawerSection[] = [
     {
       title: 'Core Modules',
@@ -345,6 +354,90 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
               }
               return renderSection(section, index);
             })}
+
+            {/* Exams Section */}
+            <TouchableOpacity
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              onPress={() => toggleSubmenu('exams')}
+            >
+              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
+                📝 Exams
+              </Text>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.exams ? '−' : '+'}
+              </Text>
+            </TouchableOpacity>
+
+            {expandedMenus.exams && (
+              <View style={styles.submenu}>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/exams/student-exam-timetable')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📅 Exam Timetable
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/exams/student-marks-table')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📊 Marks Table
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/exams/student-marks-analytics')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📈 Marks Analytics
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Tasks Section */}
+            <TouchableOpacity
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              onPress={() => toggleSubmenu('tasks')}
+            >
+              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
+                ✅ Tasks
+              </Text>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.tasks ? '−' : '+'}
+              </Text>
+            </TouchableOpacity>
+
+            {expandedMenus.tasks && (
+              <View style={styles.submenu}>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/tasks/task-list')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📋 Task List
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/tasks/add-edit-task')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    ➕ Add Task
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/tasks/task-submissions')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📩 Submissions
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
         <TouchableOpacity style={styles.backdrop} onPress={onClose} />
@@ -471,5 +564,24 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontSize: 10,
     fontWeight: 'bold',
+  },
+  expandIcon: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  submenu: {
+    paddingLeft: 20,
+    backgroundColor: '#F9FAFB', // Light background for submenu
+  },
+  submenuItem: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  submenuText: {
+    fontSize: 15,
+    fontWeight: '500',
   },
 });

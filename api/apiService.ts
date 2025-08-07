@@ -848,6 +848,51 @@ class ApiService {
     const response = await this.api.get("/api/student-marks/analytics/", { params });
     return response.data;
   }
+
+  // Tasks Management
+  async getTasks(params?: any): Promise<any[]> {
+    const response = await this.api.get("/api/tasks_create/", { params });
+    return response.data;
+  }
+
+  async createTask(data: any): Promise<any> {
+    const response = await this.api.post("/api/tasks_create/", data);
+    return response.data;
+  }
+
+  async getTask(id: number): Promise<any> {
+    const response = await this.api.get(`/api/tasks_create/${id}/`);
+    return response.data;
+  }
+
+  async updateTask(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/tasks_create/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteTask(id: number): Promise<void> {
+    await this.api.delete(`/api/tasks_create/${id}/`);
+  }
+
+  // Task Submissions
+  async getTaskSubmissions(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/task-submissions/", { params });
+    return response.data;
+  }
+
+  async createTaskSubmission(data: any): Promise<any> {
+    const response = await this.api.post("/api/task-submissions/", data);
+    return response.data;
+  }
+
+  async updateTaskSubmission(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/task-submissions/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteTaskSubmission(id: number): Promise<void> {
+    await this.api.delete(`/api/task-submissions/${id}/`);
+  }
 }
 
 export const apiService = new ApiService();
