@@ -102,3 +102,116 @@ export const GlobalFiltersProvider: React.FC<GlobalFiltersProviderProps> = ({ ch
     </GlobalFiltersContext.Provider>
   );
 };
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useBranches, useAcademicYears } from '@/hooks/useApi';
+
+interface GlobalFiltersContextType {
+  selectedBranch: number | null;
+  selectedAcademicYear: number | null;
+  branches: any[];
+  academicYears: any[];
+  setSelectedBranch: (branch: number | null) => void;
+  setSelectedAcademicYear: (year: number | null) => void;
+  loading: boolean;
+  error: string | null;
+}
+
+const GlobalFiltersContext = createContext<GlobalFiltersContextType | undefined>(undefined);
+
+export function useGlobalFilters() {
+  const context = useContext(GlobalFiltersContext);
+  if (!context) {
+    throw new Error('useGlobalFilters must be used within a GlobalFiltersProvider');
+  }
+  return context;
+}
+
+interface GlobalFiltersProviderProps {
+  children: ReactNode;
+}
+
+export function GlobalFiltersProvider({ children }: GlobalFiltersProviderProps) {
+  const [selectedBranch, setSelectedBranchState] = useState<number | null>(null);
+  const [selectedAcademicYear, setSelectedAcademicYearState] = useState<number | null>(null);
+
+  const { data: branches = [], loading: branchesLoading, error: branchesError } = useBranches();
+  const { data: academicYears = [], loading: yearsLoading, error: yearsError } = useAcademicYears();
+
+  const loading = branchesLoading || yearsLoading;
+  const error = branchesError || yearsError;
+
+  // Load saved filters from storage
+  useEffect(() => {
+    const loadSavedFilters = async () => {
+      try {
+        const savedBranch = await AsyncStorage.getItem('selectedBranch');
+        const savedYear = await AsyncStorage.getItem('selectedAcademicYear');
+        
+        if (savedBranch) {
+          setSelectedBranchState(parseInt(savedBranch, 10));
+        } else if (branches.length > 0) {
+          // Set first branch as default
+          setSelectedBranchState(branches[0].id);
+        }
+        
+        if (savedYear) {
+          setSelectedAcademicYearState(parseInt(savedYear, 10));
+        } else if (academicYears.length > 0) {
+          // Set current academic year as default
+          const currentYear = academicYears.find(year => year.is_current) || academicYears[0];
+          setSelectedAcademicYearState(currentYear.id);
+        }
+      } catch (error) {
+        console.error('Error loading saved filters:', error);
+      }
+    };
+
+    if (branches.length > 0 || academicYears.length > 0) {
+      loadSavedFilters();
+    }
+  }, [branches, academicYears]);
+
+  const setSelectedBranch = async (branch: number | null) => {
+    setSelectedBranchState(branch);
+    try {
+      if (branch) {
+        await AsyncStorage.setItem('selectedBranch', branch.toString());
+      } else {
+        await AsyncStorage.removeItem('selectedBranch');
+      }
+    } catch (error) {
+      console.error('Error saving branch:', error);
+    }
+  };
+
+  const setSelectedAcademicYear = async (year: number | null) => {
+    setSelectedAcademicYearState(year);
+    try {
+      if (year) {
+        await AsyncStorage.setItem('selectedAcademicYear', year.toString());
+      } else {
+        await AsyncStorage.removeItem('selectedAcademicYear');
+      }
+    } catch (error) {
+      console.error('Error saving academic year:', error);
+    }
+  };
+
+  const value: GlobalFiltersContextType = {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear,
+    loading,
+    error,
+  };
+
+  return (
+    <GlobalFiltersContext.Provider value={value}>
+      {children}
+    </GlobalFiltersContext.Provider>
+  );
+}

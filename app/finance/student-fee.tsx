@@ -8,7 +8,7 @@ import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { GlobalFilters } from '@/components/GlobalFilters';
-import { useTotalFeeSummary, useFeeSummary, useFeePayments, useStandards, useSections } from '@/hooks/useApi';
+import { useFeeSummary, useStandards, useSections } from '@/hooks/useApi';
 
 interface StudentFee {
   id: string;

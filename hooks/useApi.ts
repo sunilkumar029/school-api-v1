@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiService } from "@/api/apiService";
-import { useQuery } from '@tanstack/react-query';
 
 export function useAnnouncements(params?: any) {
   const [data, setData] = useState<any[]>([]);
@@ -117,15 +116,38 @@ export function useStudentMarksAnalytics(params?: {
   section?: string;
   exam_type?: string;
 }) {
-  return useQuery(
-    ['student-marks-analytics', params],
-    () => apiService.getStudentMarksAnalytics(params || {}),
-    {
-      enabled: !!params?.branch && !!params?.academicYear,
-      retry: 1,
-      retryDelay: 1000,
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!params?.branch || !params?.academicYear) {
+      setLoading(false);
+      return;
     }
-  );
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStudentMarksAnalytics(params || {});
+      setData(response);
+    } catch (err: any) {
+      console.error('Student marks analytics fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks analytics');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
 }
 
 // Student Marks Table
@@ -136,15 +158,38 @@ export function useStudentMarksTable(params?: {
   section?: string;
   exam_type?: string;
 }) {
-  return useQuery(
-    ['student-marks-table', params],
-    () => apiService.getStudentMarksTable(params || {}),
-    {
-      enabled: !!params?.branch && !!params?.academic_year,
-      retry: 1,
-      retryDelay: 1000,
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!params?.branch || !params?.academic_year) {
+      setLoading(false);
+      return;
     }
-  );
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getStudentMarksTable(params || {});
+      setData(response);
+    } catch (err: any) {
+      console.error('Student marks table fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch student marks table');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
 }
 
 // Leave Quotas
@@ -154,27 +199,69 @@ export function useLeaveQuotas(params?: {
   department?: number;
   leave_type?: string;
 }) {
-  return useQuery(
-    ['leave-quotas', params],
-    () => apiService.getLeaveQuotas(params || {}),
-    {
-      enabled: !!params?.branch && !!params?.academic_year,
-      retry: 1,
-      retryDelay: 1000,
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    if (!params?.branch || !params?.academic_year) {
+      setLoading(false);
+      return;
     }
-  );
+
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getLeaveQuotas(params || {});
+      setData(response);
+    } catch (err: any) {
+      console.error('Leave quotas fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch leave quotas');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
 }
 
 // Attendance Dashboard
 export function useAttendanceDashboard() {
-  return useQuery(
-    ['attendance-dashboard'],
-    () => apiService.getAttendanceDashboard(),
-    {
-      retry: 1,
-      retryDelay: 1000,
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getAttendanceDashboard();
+      setData(response);
+    } catch (err: any) {
+      console.error('Attendance dashboard fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch attendance dashboard');
+    } finally {
+      setLoading(false);
     }
-  );
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
 }
 
 export function useAnnualLeaveQuotas(userId?: number) {

@@ -337,3 +337,108 @@ const styles = StyleSheet.create({
     padding: 20,
   },
 });
+import React from 'react';
+import { View, Text, StyleSheet, Alert } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+
+export function GlobalFilters() {
+  const { colors } = useTheme();
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear,
+    loading,
+    error
+  } = useGlobalFilters();
+
+  if (error) {
+    Alert.alert('Error', error);
+  }
+
+  return (
+    <View style={[styles.container, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+      <Text style={[styles.title, { color: colors.textPrimary }]}>Global Filters</Text>
+      
+      <View style={styles.filtersRow}>
+        <View style={styles.filterGroup}>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Branch</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedBranch}
+              onValueChange={(value) => setSelectedBranch(value)}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              enabled={!loading && branches.length > 0}
+            >
+              <Picker.Item label="Select Branch" value={null} />
+              {branches.map((branch) => (
+                <Picker.Item
+                  key={branch.id}
+                  label={branch.name}
+                  value={branch.id}
+                />
+              ))}
+            </Picker>
+          </View>
+        </View>
+
+        <View style={styles.filterGroup}>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Academic Year</Text>
+          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
+            <Picker
+              selectedValue={selectedAcademicYear}
+              onValueChange={(value) => setSelectedAcademicYear(value)}
+              style={[styles.picker, { color: colors.textPrimary }]}
+              enabled={!loading && academicYears.length > 0}
+            >
+              <Picker.Item label="Select Year" value={null} />
+              {academicYears.map((year) => (
+                <Picker.Item
+                  key={year.id}
+                  label={year.name}
+                  value={year.id}
+                />
+              ))}
+            </Picker>
+          </View>
+        </View>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    borderBottomWidth: 1,
+  },
+  title: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  filterGroup: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 40,
+  },
+});
