@@ -1,0 +1,2118 @@
+------------------------------- EXAMS TIMETABLE
+
+GET https: //vai.dev.sms.visionariesai.com/api/exams/?
+GET https: //vai.dev.sms.visionariesai.com/api/exams/?omit=created_by,modified_by,standard__created_by,standard__stationary,standard__modified_by,standard__academic_year,academic_year__created_by,academic_year__modified_by,exam_schedules__created_by,exam_schedules__modified_by,exam_schedules__department__branch,exam_schedules__department__created_by,exam_schedules__department__modified_by,exam_schedules__department__head_of_the_department&standard=&exam_types=&branch=1&academic_year=1
+{
+    "meta": {
+        "count": 33,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "modified": "2025-01-31T10:16:49.759946+05:30",
+            "name": "Unit Exams",
+            "start_date": "2025-01-31",
+            "is_active": true,
+            "modified_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "first_name": "Narasing",
+                "modified_by": 1,
+                "id": 3,
+                "is_staff": false,
+                "user_permissions": [],
+                "timezone": "Asia/Kolkata"
+            },
+            "academic_year": {
+                "modified": "2025-06-01T09:14:26.877453+05:30",
+                "created_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "created_by": 1,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata"
+                },
+                "created": "2024-12-23T22:07:33.918280+05:30",
+                "modified_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "created_by": 1,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata"
+                },
+                "name": "2024-2025",
+                "id": 1,
+                "end_date": "2025-07-30",
+                "start_date": "2024-06-01"
+            },
+            "description": "Unit exams",
+            "is_online": false,
+            "exam_types": null,
+            "standard": {
+                "id": 19,
+                "academic_year_display": {
+                    "id": 1
+                },
+                "access_to_all_user_ids": [],
+                "student_assigned_count": 0,
+                "student_total_count": 1,
+                "section_count": 0,
+                "stationary": [
+                    {
+                        "id": 2,
+                        "name": "Books",
+                        "price": 1000,
+                        "description": "Books",
+                        "is_active": true,
+                        "quantity": 10,
+                        "stationary_type": {
+                            "id": 2,
+                            "name": "Book",
+                            "description": "Books for students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 2
+                        }
+                    },
+                    {
+                        "id": 1,
+                        "name": "Uniform",
+                        "price": 1450,
+                        "description": "uniform",
+                        "is_active": true,
+                        "quantity": 5,
+                        "stationary_type": {
+                            "id": 1,
+                            "name": "Uniform",
+                            "description": "Uniform for Students",
+                            "is_active": true,
+                            "academic_year_id": 1,
+                            "branch_id": 1
+                        }
+                    }
+                ],
+                "inventory": [],
+                "sections": [],
+                "created_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "modified_by": {
+                    "id": 3,
+                    "name": "Narasing M"
+                },
+                "access_to_all_users": false,
+                "created": "2024-12-24T18:21:11.382490+05:30",
+                "modified": "2025-03-15T21:28:47.559734+05:30",
+                "is_active": true,
+                "name": "8th Standard",
+                "branch": 1
+            },
+            "created_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "first_name": "Narasing",
+                "modified_by": 1,
+                "id": 3,
+                "is_staff": false,
+                "user_permissions": [],
+                "timezone": "Asia/Kolkata"
+            },
+            "created": "2025-01-31T10:16:49.759946+05:30",
+            "section": null,
+            "id": 1,
+            "exam_schedules": [
+                {
+                    "department": {
+                        "modified": "2025-06-26T23:25:09.898094+05:30",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "branch": {
+                            "modified": "2025-03-30T12:37:45.638892+05:30",
+                            "created_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "created": "2024-12-23T21:38:49.939251+05:30",
+                            "modified_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "is_active": true,
+                            "name": "Branch 1",
+                            "id": 1,
+                            "address": {
+                                "city": "Vijayawada",
+                                "state": "Andhra Pradesh",
+                                "street": "Vijayawada",
+                                "landmark": "Vijayawada 1",
+                                "zip_code": "520001"
+                            },
+                            "center_point": {
+                                "type": "Point",
+                                "coordinates": [
+                                    80.62025214123565,
+                                    16.507235006708214
+                                ]
+                            },
+                            "geo_location": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ],
+                                        [
+                                            80.6201631673348,
+                                            16.50721957673649
+                                        ],
+                                        [
+                                            80.62027846041298,
+                                            16.507155671004796
+                                        ],
+                                        [
+                                            80.62033943875502,
+                                            16.507248636487958
+                                        ],
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ]
+                                    ]
+                                ]
+                            },
+                            "is_main_branch": false
+                        },
+                        "staff_count": 3,
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "created": "2024-12-23T22:19:23.257922+05:30",
+                        "is_active": true,
+                        "name": "Mathematics",
+                        "id": 1,
+                        "head_of_the_department": {
+                            "id": 266,
+                            "first_name": "i",
+                            "last_name": "lalith",
+                            "email": "lalith@gmai.com",
+                            "phone": "+919582332534",
+                            "address": {
+                                "city": "srikakulam",
+                                "state": "Andhra Pradesh",
+                                "street": "ippili",
+                                "landmark": "ippili",
+                                "zip_code": "532401"
+                            },
+                            "gender": "Male",
+                            "dob": "2025-07-23",
+                            "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/06db9aa4-9709-42ba-b0aa-2b9cc041637a.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHZ72LJPXF%2F20250807%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250807T050408Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEE0aCmFwLXNvdXRoLTEiRzBFAiEA5s8W4eyQINlBahOBn9rajKnDV4XE5%2FRkSqLLj8pbT%2FUCIEL8K4VQEhBafTiy46Y1qnt8Y4dYsksnPGcxlPP9RpYQKscFCIb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMMDIyNDk5MDMxNTY3IgyoOsKijjNo5977lR4qmwWdNN7EjTCF69%2F7GfHu5m017XU9eTKQzsm2TlH9Byy83%2BO2yo%2FmCFShvZIvV0RvZcMmuUy07mnrUO3KElLXykmYk%2F%2FIUNcLcpodZTGe5ycg8bOsb8HG0JtjmQYS%2FcsRHhqF6fRNDFC3yds82dVr5%2FmWbvlxudLxXMoTipCuFH49NJpYLgyUMC2cfG2LZeJ288qcRgLDCJ1mlidLbD7NoaMRkhZMOxqgjpOD%2Bvn1lVEOTGy2J4QkVHg5%2Flct0YoyKJxV1%2BOQ5WmA1cPb0foyrZXYpMyx51VhFwuWukhuNBBqyoZjpced2fs0rMAmg962vwSFtY5veIS26grm0MEl33mwJgo4RqBcHsy8JrsSyNaxNClwv8hkLeUJcreMZaa5dRvadX7O3HWifIbFWYwockz%2BwCgIlx79AhvlOMIs7j4SaGmszoAC8n1jfFJDUOgLSweraD1y2fa5%2FF83sBF7qKhKVWAmsB3BbYOYja1bImh0eepDu92eCNFaaxZxL7R6rteyYq1L4ZAcIohcqUW5BIsSQv1W39XJHZ845CjtgYvQGufPk5NuWUgdMfjIk3QMQmcOM60ovR3ofkGCsAdXwCtI5sQqXjxNxRPaUy8gJiZ6p%2FAjCf0%2FjtkIJALGnEk2Kd1O7NlGm4b1YtJe4ns7PKT8ykWlnXAmq%2BxUtVcq7evgls7Yo%2FcH2CcCmSd%2FXEk%2BfyuYOvqEXk%2F7NRqLm7HMNDOOrEBSfE4SFPFksdgevbf5cvWF%2FiNU3jqG1JhCVUFMyWqCKrDSMHOqfhg9xOVw8hRgRMM44SHfWc643dp025F0W8Y6zzPclY%2BfhakSMAz%2BoPBDZwPVbFuajrWtFVIFjBRdqxLDrOOzeEgQ5Ic28MkYAWfcFxD0eVVMjCciMJng0MQGOrEBGHrJVgaPWbctIjccoXsAWvt5g7f9lIjO9bmqdSMy%2FcXnkLBQxl5uQRnWqeZmVYCQ3isrT2zyrRY2nk4O69Az06SPlvTivY4hJUcra9GdynuyO%2BhLSuHSh3pt8n1Wd8Ptd5Vk8MHeomi%2BmvLYW7phfpnNOibT6w1FGgzlSR%2FFodNQOnO8sJtzsk%2BKrvwqEPDcMQQJ5AwLgYzA%2FGsLO4OwCwK0b7tUWYZebt%2BQuX7mbJHu&X-Amz-Signature=59393e64e9e67fe21b134807ffa99f203a41c7cb1f0fc8ce2c056cf65678833a",
+                            "designation": "Head of Department",
+                            "department": "Mathematics",
+                            "branch": "Branch 1",
+                            "group": "Head of Department"
+                        },
+                        "department_type": "Teaching",
+                        "access_to_all_users": true,
+                        "access_to_all_user_ids": [
+                            266,
+                            177,
+                            269,
+                            178
+                        ]
+                    },
+                    "end_time": "2025-01-31T12:08:00+05:30",
+                    "modified": "2025-01-31T10:16:49.884462+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "start_time": "2025-01-31T10:08:00+05:30",
+                    "created": "2025-01-31T10:16:49.884462+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "is_active": true,
+                    "marks": 100,
+                    "id": 1
+                },
+                {
+                    "department": {
+                        "modified": "2025-01-02T16:02:19.308659+05:30",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "branch": {
+                            "modified": "2025-03-30T12:37:45.638892+05:30",
+                            "created_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "created": "2024-12-23T21:38:49.939251+05:30",
+                            "modified_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "is_active": true,
+                            "name": "Branch 1",
+                            "id": 1,
+                            "address": {
+                                "city": "Vijayawada",
+                                "state": "Andhra Pradesh",
+                                "street": "Vijayawada",
+                                "landmark": "Vijayawada 1",
+                                "zip_code": "520001"
+                            },
+                            "center_point": {
+                                "type": "Point",
+                                "coordinates": [
+                                    80.62025214123565,
+                                    16.507235006708214
+                                ]
+                            },
+                            "geo_location": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ],
+                                        [
+                                            80.6201631673348,
+                                            16.50721957673649
+                                        ],
+                                        [
+                                            80.62027846041298,
+                                            16.507155671004796
+                                        ],
+                                        [
+                                            80.62033943875502,
+                                            16.507248636487958
+                                        ],
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ]
+                                    ]
+                                ]
+                            },
+                            "is_main_branch": false
+                        },
+                        "staff_count": 1,
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "created": "2024-12-23T23:42:08.864417+05:30",
+                        "is_active": true,
+                        "name": "Telugu",
+                        "id": 8,
+                        "head_of_the_department": {
+                            "id": 103,
+                            "first_name": "Yeswanth",
+                            "last_name": "M",
+                            "email": "yeswanthp2008@gmail.com",
+                            "phone": "+917075904701",
+                            "address": {
+                                "city": "Vizag",
+                                "state": "Andhra Pradesh",
+                                "street": "Old ramalaya temple street",
+                                "landmark": "Vizag",
+                                "zip_code": "500020"
+                            },
+                            "gender": "Male",
+                            "dob": "1996-02-01",
+                            "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/ca43cd64-ee19-4dae-933d-922acca219e3.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHZ72LJPXF%2F20250807%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250807T050409Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEE0aCmFwLXNvdXRoLTEiRzBFAiEA5s8W4eyQINlBahOBn9rajKnDV4XE5%2FRkSqLLj8pbT%2FUCIEL8K4VQEhBafTiy46Y1qnt8Y4dYsksnPGcxlPP9RpYQKscFCIb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMMDIyNDk5MDMxNTY3IgyoOsKijjNo5977lR4qmwWdNN7EjTCF69%2F7GfHu5m017XU9eTKQzsm2TlH9Byy83%2BO2yo%2FmCFShvZIvV0RvZcMmuUy07mnrUO3KElLXykmYk%2F%2FIUNcLcpodZTGe5ycg8bOsb8HG0JtjmQYS%2FcsRHhqF6fRNDFC3yds82dVr5%2FmWbvlxudLxXMoTipCuFH49NJpYLgyUMC2cfG2LZeJ288qcRgLDCJ1mlidLbD7NoaMRkhZMOxqgjpOD%2Bvn1lVEOTGy2J4QkVHg5%2Flct0YoyKJxV1%2BOQ5WmA1cPb0foyrZXYpMyx51VhFwuWukhuNBBqyoZjpced2fs0rMAmg962vwSFtY5veIS26grm0MEl33mwJgo4RqBcHsy8JrsSyNaxNClwv8hkLeUJcreMZaa5dRvadX7O3HWifIbFWYwockz%2BwCgIlx79AhvlOMIs7j4SaGmszoAC8n1jfFJDUOgLSweraD1y2fa5%2FF83sBF7qKhKVWAmsB3BbYOYja1bImh0eepDu92eCNFaaxZxL7R6rteyYq1L4ZAcIohcqUW5BIsSQv1W39XJHZ845CjtgYvQGufPk5NuWUgdMfjIk3QMQmcOM60ovR3ofkGCsAdXwCtI5sQqXjxNxRPaUy8gJiZ6p%2FAjCf0%2FjtkIJALGnEk2Kd1O7NlGm4b1YtJe4ns7PKT8ykWlnXAmq%2BxUtVcq7evgls7Yo%2FcH2CcCmSd%2FXEk%2BfyuYOvqEXk%2F7NRqLm7HMNDOOrEBSfE4SFPFksdgevbf5cvWF%2FiNU3jqG1JhCVUFMyWqCKrDSMHOqfhg9xOVw8hRgRMM44SHfWc643dp025F0W8Y6zzPclY%2BfhakSMAz%2BoPBDZwPVbFuajrWtFVIFjBRdqxLDrOOzeEgQ5Ic28MkYAWfcFxD0eVVMjCciMJng0MQGOrEBGHrJVgaPWbctIjccoXsAWvt5g7f9lIjO9bmqdSMy%2FcXnkLBQxl5uQRnWqeZmVYCQ3isrT2zyrRY2nk4O69Az06SPlvTivY4hJUcra9GdynuyO%2BhLSuHSh3pt8n1Wd8Ptd5Vk8MHeomi%2BmvLYW7phfpnNOibT6w1FGgzlSR%2FFodNQOnO8sJtzsk%2BKrvwqEPDcMQQJ5AwLgYzA%2FGsLO4OwCwK0b7tUWYZebt%2BQuX7mbJHu&X-Amz-Signature=35364278abafc52879691e950e215eabb60a40e35ea3ae8bde5b445068cd6855",
+                            "designation": "Head of Department",
+                            "department": "Telugu",
+                            "branch": "Branch 1",
+                            "group": "Head of Department"
+                        },
+                        "department_type": "Teaching",
+                        "access_to_all_users": true,
+                        "access_to_all_user_ids": [
+                            103,
+                            204
+                        ]
+                    },
+                    "end_time": "2025-02-01T12:09:00+05:30",
+                    "modified": "2025-01-31T10:16:49.897831+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "start_time": "2025-02-01T10:09:00+05:30",
+                    "created": "2025-01-31T10:16:49.897831+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "is_active": true,
+                    "marks": 100,
+                    "id": 2
+                },
+                {
+                    "department": {
+                        "modified": "2025-01-02T15:57:19.475110+05:30",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "branch": {
+                            "modified": "2025-03-30T12:37:45.638892+05:30",
+                            "created_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "created": "2024-12-23T21:38:49.939251+05:30",
+                            "modified_by": {
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "last_name": "M",
+                                "group": 1,
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "is_active": true,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "created_by": 1,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "first_name": "Narasing",
+                                "modified_by": 1,
+                                "id": 3,
+                                "is_staff": false,
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata"
+                            },
+                            "is_active": true,
+                            "name": "Branch 1",
+                            "id": 1,
+                            "address": {
+                                "city": "Vijayawada",
+                                "state": "Andhra Pradesh",
+                                "street": "Vijayawada",
+                                "landmark": "Vijayawada 1",
+                                "zip_code": "520001"
+                            },
+                            "center_point": {
+                                "type": "Point",
+                                "coordinates": [
+                                    80.62025214123565,
+                                    16.507235006708214
+                                ]
+                            },
+                            "geo_location": {
+                                "type": "Polygon",
+                                "coordinates": [
+                                    [
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ],
+                                        [
+                                            80.6201631673348,
+                                            16.50721957673649
+                                        ],
+                                        [
+                                            80.62027846041298,
+                                            16.507155671004796
+                                        ],
+                                        [
+                                            80.62033943875502,
+                                            16.507248636487958
+                                        ],
+                                        [
+                                            80.620226241159,
+                                            16.507309199025244
+                                        ]
+                                    ]
+                                ]
+                            },
+                            "is_main_branch": false
+                        },
+                        "staff_count": 1,
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "created": "2025-01-02T15:52:35.868553+05:30",
+                        "is_active": true,
+                        "name": "computers",
+                        "id": 14,
+                        "head_of_the_department": {
+                            "id": 196,
+                            "first_name": "Yeswanth",
+                            "last_name": "M",
+                            "email": "yeswanth345@gmail.com",
+                            "phone": "+916303298721",
+                            "address": {
+                                "city": "Mabagam",
+                                "state": "Andhra Pradesh",
+                                "street": "Main street",
+                                "landmark": "Narasannapeta",
+                                "zip_code": "748960"
+                            },
+                            "gender": "Male",
+                            "dob": "2024-12-30",
+                            "profile_picture": null,
+                            "designation": "Senior Teacher",
+                            "department": "computers",
+                            "branch": "Branch 1",
+                            "group": "Head of Department"
+                        },
+                        "department_type": "Teaching",
+                        "access_to_all_users": true,
+                        "access_to_all_user_ids": [
+                            196,
+                            200,
+                            210,
+                            215
+                        ]
+                    },
+                    "end_time": "2025-02-02T12:10:00+05:30",
+                    "modified": "2025-01-31T10:16:49.904735+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "start_time": "2025-02-02T10:10:00+05:30",
+                    "created": "2025-01-31T10:16:49.904735+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "is_active": true,
+                    "marks": 100,
+                    "id": 3
+                }
+            ],
+            "end_date": "2025-02-02"
+        },
+    ]
+}
+
+GET https: //vai.dev.sms.visionariesai.com/api/exam-types/
+{
+    "meta": {
+        "count": 3,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "id": 2,
+            "name": "Half yearly Exams",
+            "description": "unit exams"
+        },
+        {
+            "id": 3,
+            "name": "Unit Exams",
+            "description": "unit exams"
+        },
+        {
+            "id": 4,
+            "name": "Annual",
+            "description": "half"
+        }
+    ]
+}
+
+GET https: //vai.dev.sms.visionariesai.com/api/exam-schedules/15/get-question-paper/ (DETAILS OF THE EXAM)
+{
+    "meta": {
+        "count": 4,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "question_options": [
+                {
+                    "question": 4,
+                    "is_correct": true,
+                    "modified": "2025-07-01T17:46:50.400888+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "created": "2025-03-29T17:45:19.416047+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "name": "చిన్న",
+                    "id": 9
+                },
+                {
+                    "question": 4,
+                    "is_correct": false,
+                    "modified": "2025-07-01T17:47:18.000366+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "created": "2025-07-01T17:47:18.000366+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "name": "నల్ల",
+                    "id": 43
+                },
+                {
+                    "question": 4,
+                    "is_correct": false,
+                    "modified": "2025-07-01T17:47:27.138420+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "created": "2025-07-01T17:47:27.138420+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "name": "గోరు",
+                    "id": 44
+                },
+                {
+                    "question": 4,
+                    "is_correct": false,
+                    "modified": "2025-07-01T17:47:41.347871+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "created": "2025-07-01T17:47:41.347871+05:30",
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "name": "పొడవు",
+                    "id": 45
+                }
+            ],
+            "question": "\"పెద్ద\" కి విరుద్ధ పదం ఏమిటి?",
+            "modified": "2025-07-01T17:46:30.779675+05:30",
+            "created_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "first_name": "Narasing",
+                "modified_by": 1,
+                "id": 3,
+                "is_staff": false,
+                "user_permissions": [],
+                "timezone": "Asia/Kolkata"
+            },
+            "created": "2025-03-29T17:44:09.443790+05:30",
+            "modified_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "created_by": 1,
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "first_name": "Narasing",
+                "modified_by": 1,
+                "id": 3,
+                "is_staff": false,
+                "user_permissions": [],
+                "timezone": "Asia/Kolkata"
+            },
+            "marks": 100,
+            "id": 4,
+            "exam": {
+                "department": {
+                    "modified": "2025-01-02T16:02:19.308659+05:30",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "branch": {
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "created": "2024-12-23T21:38:49.939251+05:30",
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "created_by": 1,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "first_name": "Narasing",
+                            "modified_by": 1,
+                            "id": 3,
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "is_active": true,
+                        "name": "Branch 1",
+                        "id": 1,
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        },
+                        "is_main_branch": false
+                    },
+                    "staff_count": 1,
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "created_by": 1,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "first_name": "Narasing",
+                        "modified_by": 1,
+                        "id": 3,
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "created": "2024-12-23T23:42:08.864417+05:30",
+                    "is_active": true,
+                    "name": "Telugu",
+                    "id": 8,
+                    "head_of_the_department": {
+                        "id": 103,
+                        "first_name": "Yeswanth",
+                        "last_name": "M",
+                        "email": "yeswanthp2008@gmail.com",
+                        "phone": "+917075904701",
+                        "address": {
+                            "city": "Vizag",
+                            "state": "Andhra Pradesh",
+                            "street": "Old ramalaya temple street",
+                            "landmark": "Vizag",
+                            "zip_code": "500020"
+                        },
+                        "gender": "Male",
+                        "dob": "1996-02-01",
+                        "profile_picture": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/ca43cd64-ee19-4dae-933d-922acca219e3.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHZ72LJPXF%2F20250807%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250807T050609Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEE0aCmFwLXNvdXRoLTEiRzBFAiEA5s8W4eyQINlBahOBn9rajKnDV4XE5%2FRkSqLLj8pbT%2FUCIEL8K4VQEhBafTiy46Y1qnt8Y4dYsksnPGcxlPP9RpYQKscFCIb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEQABoMMDIyNDk5MDMxNTY3IgyoOsKijjNo5977lR4qmwWdNN7EjTCF69%2F7GfHu5m017XU9eTKQzsm2TlH9Byy83%2BO2yo%2FmCFShvZIvV0RvZcMmuUy07mnrUO3KElLXykmYk%2F%2FIUNcLcpodZTGe5ycg8bOsb8HG0JtjmQYS%2FcsRHhqF6fRNDFC3yds82dVr5%2FmWbvlxudLxXMoTipCuFH49NJpYLgyUMC2cfG2LZeJ288qcRgLDCJ1mlidLbD7NoaMRkhZMOxqgjpOD%2Bvn1lVEOTGy2J4QkVHg5%2Flct0YoyKJxV1%2BOQ5WmA1cPb0foyrZXYpMyx51VhFwuWukhuNBBqyoZjpced2fs0rMAmg962vwSFtY5veIS26grm0MEl33mwJgo4RqBcHsy8JrsSyNaxNClwv8hkLeUJcreMZaa5dRvadX7O3HWifIbFWYwockz%2BwCgIlx79AhvlOMIs7j4SaGmszoAC8n1jfFJDUOgLSweraD1y2fa5%2FF83sBF7qKhKVWAmsB3BbYOYja1bImh0eepDu92eCNFaaxZxL7R6rteyYq1L4ZAcIohcqUW5BIsSQv1W39XJHZ845CjtgYvQGufPk5NuWUgdMfjIk3QMQmcOM60ovR3ofkGCsAdXwCtI5sQqXjxNxRPaUy8gJiZ6p%2FAjCf0%2FjtkIJALGnEk2Kd1O7NlGm4b1YtJe4ns7PKT8ykWlnXAmq%2BxUtVcq7evgls7Yo%2FcH2CcCmSd%2FXEk%2BfyuYOvqEXk%2F7NRqLm7HMNDOOrEBSfE4SFPFksdgevbf5cvWF%2FiNU3jqG1JhCVUFMyWqCKrDSMHOqfhg9xOVw8hRgRMM44SHfWc643dp025F0W8Y6zzPclY%2BfhakSMAz%2BoPBDZwPVbFuajrWtFVIFjBRdqxLDrOOzeEgQ5Ic28MkYAWfcFxD0eVVMjCciMJng0MQGOrEBGHrJVgaPWbctIjccoXsAWvt5g7f9lIjO9bmqdSMy%2FcXnkLBQxl5uQRnWqeZmVYCQ3isrT2zyrRY2nk4O69Az06SPlvTivY4hJUcra9GdynuyO%2BhLSuHSh3pt8n1Wd8Ptd5Vk8MHeomi%2BmvLYW7phfpnNOibT6w1FGgzlSR%2FFodNQOnO8sJtzsk%2BKrvwqEPDcMQQJ5AwLgYzA%2FGsLO4OwCwK0b7tUWYZebt%2BQuX7mbJHu&X-Amz-Signature=eff850e52bf2e0209da4742d12c66a42554aacf59f3fe0b4f404f464ed81380f",
+                        "designation": "Head of Department",
+                        "department": "Telugu",
+                        "branch": "Branch 1",
+                        "group": "Head of Department"
+                    },
+                    "department_type": "Teaching",
+                    "access_to_all_users": true,
+                    "access_to_all_user_ids": [
+                        103,
+                        204
+                    ]
+                },
+                "end_time": "2025-04-01T17:36:00+05:30",
+                "modified": "2025-03-29T17:55:42.733383+05:30",
+                "created_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "created_by": 1,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata"
+                },
+                "start_time": "2025-03-31T17:36:00+05:30",
+                "created": "2025-03-29T17:36:36.339750+05:30",
+                "modified_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "created_by": 1,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "first_name": "Narasing",
+                    "modified_by": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata"
+                },
+                "is_active": false,
+                "marks": 100,
+                "id": 15
+            },
+            "negative_marks": 0
+        },
+    ]
+}
+
+------------------------------- exam marks
+GET https: //vai.dev.sms.visionariesai.com/api/branches/?is_active=true
+GET https: //vai.dev.sms.visionariesai.com/api/academic-years/
+GET https: //vai.dev.sms.visionariesai.com/api/standards/?branch=1&is_active=true&academic_year=1&standard=undefined
+GET https: //vai.dev.sms.visionariesai.com/api/exam-types/
+
+------------------------------- student exam marks data
+GET https: //vai.dev.sms.visionariesai.com/api/student-exam-marks/exam-analytics/?branch_id=1&academic_year_id=1 (ACADEMIC YEAR AND BRANCH ARE MUST)
+{
+    "overall_summary": {
+        "total_students": 28,
+        "average_marks": 73.91,
+        "pass_percentage": 75.76,
+        "fail_percentage": 4.04
+    },
+    "standards": [
+        {
+            "id": 38,
+            "name": "1st",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 43,
+                    "name": "A",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 58,
+            "name": "testing notification111111",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 1,
+            "name": "1st Standard",
+            "total_students": 6,
+            "average_marks": 74.2,
+            "top_performer": {
+                "id": 4,
+                "name": "Susma Sri P",
+                "percentage": 95.0
+            },
+            "low_performer": {
+                "id": 81,
+                "name": "Harshini K",
+                "percentage": 45.0
+            },
+            "sections": [
+                {
+                    "id": 1,
+                    "name": "C Section",
+                    "average_marks": 74.2,
+                    "pass_rate": 100.0
+                },
+                {
+                    "id": 2,
+                    "name": "B Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 48,
+                    "name": "W",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 47,
+                    "name": "testing notification section1",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 26,
+            "name": "14th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 17,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 24,
+            "name": "12th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 58,
+                    "name": "A",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 27,
+            "name": "15th standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 20,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 21,
+                    "name": "B Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 14,
+            "name": "3rd Standard",
+            "total_students": 9,
+            "average_marks": 70.85,
+            "top_performer": {
+                "id": 55,
+                "name": "Alekhya U",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": 55,
+                "name": "Alekhya U",
+                "percentage": 23.0
+            },
+            "sections": [
+                {
+                    "id": 5,
+                    "name": "A Section",
+                    "average_marks": 67.11,
+                    "pass_rate": 88.89
+                },
+                {
+                    "id": 16,
+                    "name": "B section",
+                    "average_marks": 72.82,
+                    "pass_rate": 45.71
+                }
+            ]
+        },
+        {
+            "id": 28,
+            "name": "16th Standard",
+            "total_students": 1,
+            "average_marks": 74.0,
+            "top_performer": {
+                "id": 86,
+                "name": "Hareesha M",
+                "percentage": 98.0
+            },
+            "low_performer": {
+                "id": 86,
+                "name": "Hareesha M",
+                "percentage": 45.0
+            },
+            "sections": [
+                {
+                    "id": 22,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 23,
+                    "name": "A section",
+                    "average_marks": 74.0,
+                    "pass_rate": 100.0
+                },
+                {
+                    "id": 25,
+                    "name": "B Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 29,
+            "name": "17th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 16,
+            "name": "5th Standard",
+            "total_students": 1,
+            "average_marks": 57.0,
+            "top_performer": {
+                "id": 83,
+                "name": "Krishna K",
+                "percentage": 57.0
+            },
+            "low_performer": {
+                "id": 83,
+                "name": "Krishna K",
+                "percentage": 57.0
+            },
+            "sections": [
+                {
+                    "id": 18,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 19,
+                    "name": "b Section",
+                    "average_marks": 57.0,
+                    "pass_rate": 100.0
+                }
+            ]
+        },
+        {
+            "id": 17,
+            "name": "6th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 24,
+                    "name": "A section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 18,
+            "name": "7th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 47,
+            "name": "23th standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 48,
+            "name": "test2",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 31,
+            "name": "19th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 30,
+                    "name": "B Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 29,
+                    "name": "A section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 31,
+                    "name": "C Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 21,
+            "name": "10th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 32,
+            "name": "8th standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 19,
+            "name": "8th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 49,
+            "name": "test after getting error",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 50,
+            "name": "aiml",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 54,
+            "name": "101st standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 22,
+            "name": "11th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 51,
+            "name": "100th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 55,
+            "name": "testing stationary1",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 15,
+            "name": "4th Standards",
+            "total_students": 3,
+            "average_marks": 80.22,
+            "top_performer": {
+                "id": 73,
+                "name": "Vimala R",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": 49,
+                "name": "Swathi D",
+                "percentage": 56.0
+            },
+            "sections": [
+                {
+                    "id": 13,
+                    "name": "B Section",
+                    "average_marks": 87.17,
+                    "pass_rate": 85.71
+                },
+                {
+                    "id": 28,
+                    "name": "C Section",
+                    "average_marks": 66.33,
+                    "pass_rate": 100.0
+                }
+            ]
+        },
+        {
+            "id": 35,
+            "name": "8th class",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 20,
+            "name": "9th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 32,
+                    "name": "A section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 63,
+                    "name": "testing section notification",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 56,
+            "name": "testing section stationary1",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 13,
+            "name": "2nd standard",
+            "total_students": 7,
+            "average_marks": 74.38,
+            "top_performer": {
+                "id": 74,
+                "name": "Virajitha N",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": 65,
+                "name": "Sai jyothi N",
+                "percentage": 24.0
+            },
+            "sections": [
+                {
+                    "id": 3,
+                    "name": "A Section",
+                    "average_marks": 24.5,
+                    "pass_rate": 0.0
+                },
+                {
+                    "id": 4,
+                    "name": "B Section",
+                    "average_marks": 77.88,
+                    "pass_rate": 100.0
+                },
+                {
+                    "id": 42,
+                    "name": "D section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 55,
+                    "name": "test for natioifcation",
+                    "average_marks": 86.33,
+                    "pass_rate": 100.0
+                }
+            ]
+        },
+        {
+            "id": 39,
+            "name": "Class X",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": []
+        },
+        {
+            "id": 25,
+            "name": "13th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 15,
+                    "name": "B Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 14,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 30,
+            "name": "18th Standard",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 26,
+                    "name": "A Section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                },
+                {
+                    "id": 27,
+                    "name": "C section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 23,
+            "name": "12th standard",
+            "total_students": 1,
+            "average_marks": 78.5,
+            "top_performer": {
+                "id": 64,
+                "name": "Swathi R",
+                "percentage": 90.0
+            },
+            "low_performer": {
+                "id": 64,
+                "name": "Swathi R",
+                "percentage": 56.0
+            },
+            "sections": [
+                {
+                    "id": 12,
+                    "name": "A section",
+                    "average_marks": 78.5,
+                    "pass_rate": 100.0
+                },
+                {
+                    "id": 59,
+                    "name": "testing for section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        },
+        {
+            "id": 59,
+            "name": "testing1",
+            "total_students": 0,
+            "average_marks": 0,
+            "top_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "low_performer": {
+                "id": null,
+                "name": "--",
+                "percentage": null
+            },
+            "sections": [
+                {
+                    "id": 64,
+                    "name": "testing section",
+                    "average_marks": 0,
+                    "pass_rate": 0
+                }
+            ]
+        }
+    ],
+    "departments": [
+        {
+            "id": 1,
+            "name": "Mathematics",
+            "total_students": 15,
+            "average_marks": 78.08,
+            "pass_rate": 80.0
+        },
+        {
+            "id": 8,
+            "name": "Telugu",
+            "total_students": 26,
+            "average_marks": 64.7,
+            "pass_rate": 77.14
+        },
+        {
+            "id": 9,
+            "name": "Hindi",
+            "total_students": 8,
+            "average_marks": 75.6,
+            "pass_rate": 62.5
+        },
+        {
+            "id": 10,
+            "name": "English",
+            "total_students": 8,
+            "average_marks": 83.2,
+            "pass_rate": 62.5
+        },
+        {
+            "id": 11,
+            "name": "Science",
+            "total_students": 8,
+            "average_marks": 89.4,
+            "pass_rate": 62.5
+        },
+        {
+            "id": 12,
+            "name": "social",
+            "total_students": 8,
+            "average_marks": 86.0,
+            "pass_rate": 62.5
+        },
+        {
+            "id": 13,
+            "name": "Sanskrit",
+            "total_students": 8,
+            "average_marks": 80.0,
+            "pass_rate": 100.0
+        },
+        {
+            "id": 14,
+            "name": "computers",
+            "total_students": 9,
+            "average_marks": 72.22,
+            "pass_rate": 88.89
+        }
+    ],
+    "teacher_performance": []
+}
