@@ -82,7 +82,7 @@ export default function TimetableScreen() {
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
   const [selectedSection, setSelectedSection] = useState<string>('');
   const [selectedTeacher, setSelectedTeacher] = useState<number | null>(null);
-  const [selectedDepartment, setSelectedDepartment] = useState<string>('All Departments');
+  const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
 
   const { 
@@ -95,9 +95,28 @@ export default function TimetableScreen() {
   } = useGlobalFilters();
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-  const departments = [
-    'All Departments', 'Computers', 'Telugu', 'Hindi', 'Science2', 
-    'Science', 'Mathematics', 'English', 'Telugu2', 'Chemistry', 'Social'
+  const departmentOptions = [
+    { id: null, name: 'All Departments' },
+    { id: 'Computers', name: 'Computers' },
+    { id: 'Telugu', name: 'Telugu' },
+    { id: 'Hindi', name: 'Hindi' },
+    { id: 'Science2', name: 'Science2' },
+    { id: 'Science', name: 'Science' },
+    { id: 'Mathematics', name: 'Mathematics' },
+    { id: 'English', name: 'English' },
+    { id: 'Telugu2', name: 'Telugu2' },
+    { id: 'Chemistry', name: 'Chemistry' },
+    { id: 'Social', name: 'Social' }
+  ];
+
+  const dayOptions = [
+    { id: 'Monday', name: 'Monday' },
+    { id: 'Tuesday', name: 'Tuesday' },
+    { id: 'Wednesday', name: 'Wednesday' },
+    { id: 'Thursday', name: 'Thursday' },
+    { id: 'Friday', name: 'Friday' },
+    { id: 'Saturday', name: 'Saturday' },
+    { id: 'Sunday', name: 'Sunday' }
   ];
 
   // Fetch data
@@ -288,10 +307,8 @@ export default function TimetableScreen() {
       }, {} as any);
     }
 
-    // Filter by department (this filter seems specific to teacher view, might need review)
-    // Note: The original code had a department filter here, but it was applied to the teacher view.
-    // This might be a mistake or intended for a specific use case. Keeping it as is for now.
-    if (selectedDepartment !== 'All Departments') {
+    // Filter by department
+    if (selectedDepartment) {
       filtered = Object.keys(filtered).reduce((acc, teacherKey) => {
         const dayData = filtered[teacherKey];
         if (dayData && dayData[selectedDay] && dayData[selectedDay].length > 0) {
@@ -660,35 +677,23 @@ export default function TimetableScreen() {
         {activeView === 'teacher' && (
           <>
             <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Department</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedDepartment}
-                  onValueChange={setSelectedDepartment}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                  dropdownIconColor={colors.textSecondary}
-                >
-                  {departments.map((dept) => (
-                    <Picker.Item key={dept} label={dept} value={dept} />
-                  ))}
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Department"
+                items={departmentOptions}
+                selectedValue={selectedDepartment}
+                onValueChange={setSelectedDepartment}
+                compact={true}
+              />
             </View>
 
             <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Day</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedDay}
-                  onValueChange={setSelectedDay}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                  dropdownIconColor={colors.textSecondary}
-                >
-                  {days.map((day) => (
-                    <Picker.Item key={day} label={day} value={day} />
-                  ))}
-                </Picker>
-              </View>
+              <ModalDropdownFilter
+                label="Day"
+                items={dayOptions}
+                selectedValue={selectedDay}
+                onValueChange={setSelectedDay}
+                compact={true}
+              />
             </View>
           </>
         )}

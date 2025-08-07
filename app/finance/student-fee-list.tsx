@@ -196,7 +196,12 @@ export default function StudentFeeListScreen() {
 
       {/* Global Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          style={styles.filtersScroll}
+          contentContainerStyle={styles.filtersContentContainer}
+        >
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
 
@@ -302,10 +307,14 @@ const styles = StyleSheet.create({
   filtersScroll: {
     paddingHorizontal: 16,
   },
+  filtersContentContainer: {
+    paddingRight: 32,
+  },
   filtersRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    minWidth: '100%',
   },
   filtersLabel: {
     fontSize: 14,

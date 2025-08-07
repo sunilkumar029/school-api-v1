@@ -241,11 +241,11 @@ export default function StudentAttendanceScreen() {
     <View key={record.id} style={[styles.recordCard, { backgroundColor: colors.surface }]}>
       <View style={styles.recordHeader}>
         <Text style={[styles.recordDate, { color: colors.textPrimary }]}>
-          {new Date(record.date).toLocaleDateString('en-US', {
+          {record.date ? new Date(record.date).toLocaleDateString('en-US', {
             weekday: 'short',
             month: 'short',
             day: 'numeric'
-          })}
+          }) : 'N/A'}
         </Text>
         <View style={[
           styles.statusBadge,
@@ -262,10 +262,10 @@ export default function StudentAttendanceScreen() {
       
       <View style={styles.recordDetails}>
         <Text style={[styles.recordSubject, { color: colors.textPrimary }]}>
-          {record.subject}
+          {typeof record.subject === 'string' ? record.subject : record.subject?.name || 'N/A'}
         </Text>
         <Text style={[styles.recordInfo, { color: colors.textSecondary }]}>
-          {record.period} • {record.teacher}
+          {record.period || 'N/A'} • {typeof record.teacher === 'string' ? record.teacher : record.teacher?.first_name || 'N/A'}
         </Text>
         {record.remarks && (
           <Text style={[styles.recordRemarks, { color: colors.textSecondary }]}>

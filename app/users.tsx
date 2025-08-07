@@ -17,7 +17,8 @@ import { SideDrawer } from "@/components/SideDrawer";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUsers, useBranches, useGroups, useAcademicYears } from "@/hooks/useApi";
-import { Picker } from "@react-native-picker/picker";
+import { useGlobalFilters } from "@/contexts/GlobalFiltersContext";
+import { ModalDropdownFilter } from "@/components/ModalDropdownFilter";
 import Modal from "react-native-modal";
 
 interface User {
@@ -181,76 +182,37 @@ export default function UsersScreen() {
 
       {filtersExpanded && (
         <View style={styles.filterContent}>
-          {/* Branch Dropdown */}
+          {/* Branch Filter */}
           <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Branch:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedBranch}
-                onValueChange={setTempSelectedBranch}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Branches" value={null} />
-                {branches?.map((branch: Branch) => (
-                  <Picker.Item 
-                    key={branch.id} 
-                    label={branch.name} 
-                    value={branch.id} 
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalDropdownFilter
+              label="Branch"
+              items={[{ id: null, name: 'All Branches' }, ...(branches?.map((branch: Branch) => ({ id: branch.id, name: branch.name })) || [])]}
+              selectedValue={tempSelectedBranch}
+              onValueChange={setTempSelectedBranch}
+              compact={false}
+            />
           </View>
 
-          {/* Group Dropdown */}
+          {/* Group Filter */}
           <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Group:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedGroup}
-                onValueChange={setTempSelectedGroup}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Groups" value={null} />
-                {groups?.map((group: Group) => (
-                  <Picker.Item 
-                    key={group.id} 
-                    label={group.name} 
-                    value={group.id} 
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalDropdownFilter
+              label="Group"
+              items={[{ id: null, name: 'All Groups' }, ...(groups?.map((group: Group) => ({ id: group.id, name: group.name })) || [])]}
+              selectedValue={tempSelectedGroup}
+              onValueChange={setTempSelectedGroup}
+              compact={false}
+            />
           </View>
 
-          {/* Academic Year Dropdown */}
+          {/* Academic Year Filter */}
           <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Academic Year:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedAcademicYear}
-                onValueChange={setTempSelectedAcademicYear}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Years" value={null} />
-                {academicYears?.map((year: AcademicYear) => (
-                  <Picker.Item 
-                    key={year.id} 
-                    label={year.year} 
-                    value={year.id} 
-                  />
-                ))}
-              </Picker>
-            </View>
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={[{ id: null, name: 'All Years' }, ...(academicYears?.map((year: AcademicYear) => ({ id: year.id, name: year.year })) || [])]}
+              selectedValue={tempSelectedAcademicYear}
+              onValueChange={setTempSelectedAcademicYear}
+              compact={false}
+            />
           </View>
 
           {/* Filter Action Buttons */}

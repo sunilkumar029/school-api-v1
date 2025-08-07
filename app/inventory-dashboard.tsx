@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { Picker } from '@react-native-picker/picker';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import {
   useInventoryDashboard,
   useInventoryList,
@@ -36,6 +36,18 @@ const getRandomColor = (str?: string): string => {
     return colors[Math.abs(hash) % colors.length];
   }
   return colors[Math.floor(Math.random() * colors.length)];
+};
+
+// Status color utility function - moved before usage
+const getStatusColor = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case 'available': return '#10B981';
+    case 'issued': return '#3B82F6';
+    case 'damaged': return '#EF4444';
+    case 'not-available': return '#6B7280';
+    case 'assigned': return '#8B5CF6';
+    default: return '#9CA3AF';
+  }
 };
 
 interface DashboardCard {
@@ -160,16 +172,7 @@ export default function InventoryDashboardScreen() {
 
 
 
-  const getStatusColor = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case 'available': return '#10B981';
-      case 'issued': return '#3B82F6';
-      case 'damaged': return '#EF4444';
-      case 'not-available': return '#6B7280';
-      case 'assigned': return '#8B5CF6';
-      default: return '#9CA3AF';
-    }
-  };
+  
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -328,33 +331,23 @@ export default function InventoryDashboardScreen() {
     <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
       <View style={styles.filterRow}>
         <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-            <Picker
-              selectedValue={selectedBranch}
-              onValueChange={setSelectedBranch}
-              style={[styles.picker, { color: colors.textPrimary }]}
-            >
-              {branches?.map((branch: any) => (
-                <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
-              ))}
-            </Picker>
-          </View>
+          <ModalDropdownFilter
+            label="Branch"
+            items={branches?.map((branch: any) => ({ id: branch.id, name: branch.name })) || []}
+            selectedValue={selectedBranch}
+            onValueChange={setSelectedBranch}
+            compact={true}
+          />
         </View>
 
         <View style={styles.filterItem}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-            <Picker
-              selectedValue={selectedAcademicYear}
-              onValueChange={setSelectedAcademicYear}
-              style={[styles.picker, { color: colors.textPrimary }]}
-            >
-              {academicYears?.map((year: any) => (
-                <Picker.Item key={year.id} label={year.name} value={year.id} />
-              ))}
-            </Picker>
-          </View>
+          <ModalDropdownFilter
+            label="Academic Year"
+            items={academicYears?.map((year: any) => ({ id: year.id, name: year.name })) || []}
+            selectedValue={selectedAcademicYear}
+            onValueChange={setSelectedAcademicYear}
+            compact={true}
+          />
         </View>
       </View>
     </View>
