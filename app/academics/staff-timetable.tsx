@@ -26,7 +26,7 @@ import {
 } from '@/hooks/useApi';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { Picker } from '@react-native-picker/picker';
-import ModalDropdownFilter from '@/components/ModalDropdownFilter';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 
 
 interface TimetableEntry {
@@ -83,6 +83,8 @@ export default function TimetableScreen() {
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
   const [selectedSection, setSelectedSection] = useState<string>('');
   const [selectedTeacher, setSelectedTeacher] = useState<number | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('All Departments');
+  const [selectedDay, setSelectedDay] = useState<string>('Monday');
 
   const { 
     selectedBranch, 

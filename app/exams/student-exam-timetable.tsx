@@ -49,6 +49,9 @@ export default function StudentExamTimetableScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string>('');
+  const [selectedExamType, setSelectedExamType] = useState<string>('all');
   const [selectedBranch, setSelectedBranch] = useState<number>(1);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [selectedStandard, setSelectedStandard] = useState<number | undefined>();

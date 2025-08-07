@@ -1,324 +1,192 @@
-
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  TextInput,
-  Alert,
   ActivityIndicator,
   RefreshControl,
-  Modal,
+  TextInput,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { Picker } from '@react-native-picker/picker';
-import { useTotalFeeSummary, useStandards, useAcademicYears, useBranches, useSections } from '@/hooks/useApi';
+import { useRouter } from 'expo-router';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useTotalFeeSummary, useStandards } from '@/hooks/useApi';
 
-interface StudentFee {
-  user_id: number;
-  user_name: string;
-  admission_number: number;
-  academic_year: string;
-  academic_year_id: number;
+interface FeeItem {
+  id: number;
+  student_name: string;
   standard: string;
-  standard_id: number;
   section: string;
-  section_id: number;
-  totalfee: number;
-  pending_fee: number;
-  transactions: Array<{
-    payment_date: string;
-    amount: number;
-    fee_type: string;
-    payment_type: string;
-    payment_reference: string;
-  }>;
-  concessions: Array<{
-    amount: number;
-    fee_type: string;
-  }>;
+  total_fee: number;
+  paid_amount: number;
+  pending_amount: number;
+  status: 'paid' | 'partial' | 'pending';
+  due_date: string;
 }
 
 export default function StudentFeeListScreen() {
   const { colors } = useTheme();
+  const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [filtersVisible, setFiltersVisible] = useState(false);
-  
-  // Filter states
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedStandard, setSelectedStandard] = useState<string>('');
-  const [selectedSection, setSelectedSection] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [feeRangeMin, setFeeRangeMin] = useState('');
-  const [feeRangeMax, setFeeRangeMax] = useState('');
+  const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('all');
 
-  // Fetch data
-  const feeParams = useMemo(() => {
-    const params: any = {
-      branch: selectedBranch,
-      academic_year: selectedAcademicYear,
-    };
-    if (selectedStandard) params.standard = selectedStandard;
-    if (selectedSection) params.section = selectedSection;
-    return params;
-  }, [selectedBranch, selectedAcademicYear, selectedStandard, selectedSection]);
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
 
-  const { data: students, loading: studentsLoading, refetch: refetchStudents } = useTotalFeeSummary(feeParams);
-  
-  const standardParams = useMemo(() => ({
+  // API parameters
+  const apiParams = useMemo(() => ({
     branch: selectedBranch,
-    is_active: true,
     academic_year: selectedAcademicYear,
-  }), [selectedBranch, selectedAcademicYear]);
-
-  const { data: standards } = useStandards(standardParams);
-  const { data: academicYears } = useAcademicYears({ is_active: true });
-  const { data: branches } = useBranches({ is_active: true });
-  
-  const sectionParams = useMemo(() => ({
-    branch: selectedBranch,
     standard: selectedStandard,
-    omit: 'created_by',
-  }), [selectedBranch, selectedStandard]);
+    status: selectedStatus !== 'all' ? selectedStatus : undefined,
+  }), [selectedBranch, selectedAcademicYear, selectedStandard, selectedStatus]);
 
-  const { data: sections } = useSections(sectionParams);
+  const { data: feeData, loading, error, refetch } = useTotalFeeSummary(apiParams);
+  const { data: standards } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
+  });
 
-  // Filter students based on search and fee range
-  const filteredStudents = useMemo(() => {
-    let filtered = students.filter((student: StudentFee) => {
-      const matchesSearch = student.user_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           student.admission_number.toString().includes(searchQuery);
-      
-      let matchesFeeRange = true;
-      if (feeRangeMin) {
-        matchesFeeRange = matchesFeeRange && student.totalfee >= parseInt(feeRangeMin);
-      }
-      if (feeRangeMax) {
-        matchesFeeRange = matchesFeeRange && student.totalfee <= parseInt(feeRangeMax);
-      }
-      
-      return matchesSearch && matchesFeeRange;
-    });
+  const standardOptions = useMemo(() => {
+    const options = [{ id: 0, name: 'All Standards' }];
+    if (standards) {
+      options.push(...standards.map(s => ({ id: s.id, name: s.name })));
+    }
+    return options;
+  }, [standards]);
+
+  const statusOptions = [
+    { id: 'all', name: 'All Status' },
+    { id: 'paid', name: 'Paid' },
+    { id: 'partial', name: 'Partial' },
+    { id: 'pending', name: 'Pending' },
+  ];
+
+  // Filter data based on search query
+  const filteredData = useMemo(() => {
+    if (!feeData) return [];
+
+    let filtered = feeData;
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(item =>
+        item.student_name?.toLowerCase().includes(query) ||
+        item.standard?.toLowerCase().includes(query) ||
+        item.section?.toLowerCase().includes(query)
+      );
+    }
 
     return filtered;
-  }, [students, searchQuery, feeRangeMin, feeRangeMax]);
+  }, [feeData, searchQuery]);
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR'
-    }).format(amount);
+  const handleRefresh = () => {
+    refetch();
   };
 
-  const getStatusColor = (pendingFee: number) => {
-    if (pendingFee <= 0) return '#10B981'; // Paid
-    if (pendingFee > 0) return '#EF4444'; // Pending
-    return '#F59E0B'; // Partially paid
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'paid': return '#4CAF50';
+      case 'partial': return '#FF9800';
+      case 'pending': return '#F44336';
+      default: return colors.textSecondary;
+    }
   };
 
-  const getStatusText = (pendingFee: number, totalFee: number) => {
-    if (pendingFee <= 0) return 'Paid';
-    if (pendingFee === totalFee) return 'Pending';
-    return 'Partially Paid';
-  };
-
-  const handleViewDetails = (student: StudentFee) => {
-    router.push(`/finance/student-fee-details?userId=${student.user_id}&academicYear=${student.academic_year_id}`);
-  };
-
-  const clearFilters = () => {
-    setSelectedStandard('');
-    setSelectedSection('');
-    setSearchQuery('');
-    setFeeRangeMin('');
-    setFeeRangeMax('');
-  };
-
-  const renderFiltersModal = () => (
-    <Modal
-      visible={filtersVisible}
-      transparent={true}
-      animationType="slide"
-      onRequestClose={() => setFiltersVisible(false)}
+  const renderFeeItem = (item: FeeItem) => (
+    <TouchableOpacity
+      key={item.id}
+      style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+      onPress={() => router.push(`/finance/student-fee-details?id=${item.id}`)}
     >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.filtersModal, { backgroundColor: colors.surface }]}>
-          <View style={styles.filtersHeader}>
-            <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>Filters</Text>
-            <TouchableOpacity onPress={() => setFiltersVisible(false)}>
-              <Text style={[styles.closeButton, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.filtersContent}>
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedBranch}
-                  onValueChange={setSelectedBranch}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {branches?.map((branch: any) => (
-                    <Picker.Item key={branch.id} label={branch.name} value={branch.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedAcademicYear}
-                  onValueChange={setSelectedAcademicYear}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  {academicYears?.map((year: any) => (
-                    <Picker.Item key={year.id} label={year.name} value={year.id} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Standard</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedStandard}
-                  onValueChange={setSelectedStandard}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="All Standards" value="" />
-                  {standards?.map((standard: any) => (
-                    <Picker.Item key={standard.id} label={standard.name} value={standard.id.toString()} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Section</Text>
-              <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                <Picker
-                  selectedValue={selectedSection}
-                  onValueChange={setSelectedSection}
-                  style={[styles.picker, { color: colors.textPrimary }]}
-                >
-                  <Picker.Item label="All Sections" value="" />
-                  {sections?.map((section: any) => (
-                    <Picker.Item key={section.id} label={section.name} value={section.id.toString()} />
-                  ))}
-                </Picker>
-              </View>
-            </View>
-
-            <View style={styles.filterGroup}>
-              <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Fee Range</Text>
-              <View style={styles.feeRangeContainer}>
-                <TextInput
-                  style={[styles.feeRangeInput, { backgroundColor: colors.background, borderColor: colors.border, color: colors.textPrimary }]}
-                  placeholder="Min Amount"
-                  placeholderTextColor={colors.textSecondary}
-                  value={feeRangeMin}
-                  onChangeText={setFeeRangeMin}
-                  keyboardType="numeric"
-                />
-                <Text style={[styles.feeRangeTo, { color: colors.textSecondary }]}>to</Text>
-                <TextInput
-                  style={[styles.feeRangeInput, { backgroundColor: colors.background, borderColor: colors.border, color: colors.textPrimary }]}
-                  placeholder="Max Amount"
-                  placeholderTextColor={colors.textSecondary}
-                  value={feeRangeMax}
-                  onChangeText={setFeeRangeMax}
-                  keyboardType="numeric"
-                />
-              </View>
-            </View>
-
-            <View style={styles.filterActions}>
-              <TouchableOpacity
-                style={[styles.clearButton, { borderColor: colors.border }]}
-                onPress={clearFilters}
-              >
-                <Text style={[styles.clearButtonText, { color: colors.textSecondary }]}>Clear Filters</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.applyButton, { backgroundColor: colors.primary }]}
-                onPress={() => setFiltersVisible(false)}
-              >
-                <Text style={styles.applyButtonText}>Apply Filters</Text>
-              </TouchableOpacity>
-            </View>
-          </ScrollView>
+      <View style={styles.feeHeader}>
+        <Text style={[styles.studentName, { color: colors.textPrimary }]}>
+          {item.student_name}
+        </Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
+          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+            {item.status?.toUpperCase()}
+          </Text>
         </View>
       </View>
-    </Modal>
+
+      <View style={styles.feeDetails}>
+        <Text style={[styles.classInfo, { color: colors.textSecondary }]}>
+          {item.standard} - {item.section}
+        </Text>
+
+        <View style={styles.amountRow}>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Total Fee:</Text>
+          <Text style={[styles.amount, { color: colors.textPrimary }]}>
+            ₹{item.total_fee?.toLocaleString() || 0}
+          </Text>
+        </View>
+
+        <View style={styles.amountRow}>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Paid:</Text>
+          <Text style={[styles.amount, { color: '#4CAF50' }]}>
+            ₹{item.paid_amount?.toLocaleString() || 0}
+          </Text>
+        </View>
+
+        <View style={styles.amountRow}>
+          <Text style={[styles.label, { color: colors.textSecondary }]}>Pending:</Text>
+          <Text style={[styles.amount, { color: '#F44336' }]}>
+            ₹{item.pending_amount?.toLocaleString() || 0}
+          </Text>
+        </View>
+
+        {item.due_date && (
+          <Text style={[styles.dueDate, { color: colors.textSecondary }]}>
+            Due: {new Date(item.due_date).toLocaleDateString()}
+          </Text>
+        )}
+      </View>
+    </TouchableOpacity>
   );
 
-  const renderStudentCard = (student: StudentFee) => {
-    const paidAmount = student.totalfee - student.pending_fee;
-    const status = getStatusText(student.pending_fee, student.totalfee);
-    const statusColor = getStatusColor(student.pending_fee);
-
+  if (loading) {
     return (
-      <View key={student.user_id} style={[styles.studentCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <View style={styles.studentHeader}>
-          <View style={styles.studentInfo}>
-            <Text style={[styles.studentName, { color: colors.textPrimary }]}>{student.user_name}</Text>
-            <Text style={[styles.studentDetails, { color: colors.textSecondary }]}>
-              {student.standard} - {student.section} | #{student.admission_number}
-            </Text>
-          </View>
-          <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
-            <Text style={styles.statusText}>{status}</Text>
-          </View>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <TopBar
+          title="Student Fee List"
+          onMenuPress={() => setDrawerVisible(true)}
+          onNotificationsPress={() => router.push('/(tabs)/notifications')}
+          onSettingsPress={() => router.push('/(tabs)/settings')}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading fee data...
+          </Text>
         </View>
-        
-        <View style={styles.feeDetails}>
-          <View style={styles.feeRow}>
-            <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Fee:</Text>
-            <Text style={[styles.feeValue, { color: colors.textPrimary }]}>{formatCurrency(student.totalfee)}</Text>
-          </View>
-          <View style={styles.feeRow}>
-            <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Paid:</Text>
-            <Text style={[styles.feeValue, { color: '#10B981' }]}>{formatCurrency(paidAmount)}</Text>
-          </View>
-          <View style={styles.feeRow}>
-            <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Pending:</Text>
-            <Text style={[styles.feeValue, { color: student.pending_fee > 0 ? '#EF4444' : '#10B981' }]}>
-              {formatCurrency(student.pending_fee)}
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.cardActions}>
-          <TouchableOpacity
-            style={[styles.viewButton, { borderColor: colors.primary }]}
-            onPress={() => handleViewDetails(student)}
-          >
-            <Text style={[styles.viewButtonText, { color: colors.primary }]}>View Details</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </SafeAreaView>
     );
-  };
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Student Fees"
+        title="Student Fee List"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push("/(tabs)/notifications")}
-        onSettingsPress={() => router.push("/(tabs)/settings")}
+        onNotificationsPress={() => router.push('/(tabs)/notifications')}
+        onSettingsPress={() => router.push('/(tabs)/settings')}
       />
 
       <SideDrawer
@@ -326,56 +194,99 @@ export default function StudentFeeListScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Search and Filter Bar */}
-      <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
+
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
+
+            <ModalDropdownFilter
+              label="Standard"
+              items={standardOptions}
+              selectedValue={selectedStandard || 0}
+              onValueChange={(value) => setSelectedStandard(value === 0 ? null : value)}
+              compact={true}
+            />
+
+            <ModalDropdownFilter
+              label="Status"
+              items={statusOptions}
+              selectedValue={selectedStatus}
+              onValueChange={setSelectedStatus}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
+
+      {/* Search Bar */}
+      <View style={styles.searchContainer}>
         <TextInput
-          style={[styles.searchInput, { backgroundColor: colors.background, borderColor: colors.border, color: colors.textPrimary }]}
-          placeholder="Search by name or admission number..."
+          style={[
+            styles.searchInput,
+            {
+              backgroundColor: colors.surface,
+              borderColor: colors.border,
+              color: colors.textPrimary,
+            },
+          ]}
+          placeholder="Search by student name, standard, or section..."
           placeholderTextColor={colors.textSecondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        <TouchableOpacity
-          style={[styles.filterButton, { backgroundColor: colors.primary }]}
-          onPress={() => setFiltersVisible(true)}
-        >
-          <Text style={styles.filterButtonText}>Filters</Text>
-        </TouchableOpacity>
       </View>
 
-      {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         refreshControl={
           <RefreshControl
-            refreshing={studentsLoading}
-            onRefresh={refetchStudents}
+            refreshing={loading}
+            onRefresh={handleRefresh}
             colors={[colors.primary]}
             tintColor={colors.primary}
           />
         }
       >
-        {studentsLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-              Loading student fees...
-            </Text>
+        {error && (
+          <View style={[styles.errorCard, { backgroundColor: '#FFEBEE', borderColor: '#F44336' }]}>
+            <Text style={[styles.errorText, { color: '#C62828' }]}>{error}</Text>
+            <TouchableOpacity onPress={handleRefresh} style={styles.retryButton}>
+              <Text style={[styles.retryText, { color: colors.primary }]}>Retry</Text>
+            </TouchableOpacity>
           </View>
-        ) : filteredStudents.length > 0 ? (
-          <View style={styles.listContent}>
-            {filteredStudents.map(renderStudentCard)}
-          </View>
+        )}
+
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+          Fee Summary ({filteredData.length} students)
+        </Text>
+
+        {filteredData.length > 0 ? (
+          filteredData.map(renderFeeItem)
         ) : (
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-              {searchQuery || feeRangeMin || feeRangeMax ? 'No students match your search criteria' : 'No student fee records found'}
+              No fee data found for the selected criteria
             </Text>
           </View>
         )}
       </ScrollView>
-
-      {renderFiltersModal()}
     </SafeAreaView>
   );
 }
@@ -384,68 +295,92 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  searchContainer: {
+  filtersContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
     flexDirection: 'row',
-    padding: 16,
+    alignItems: 'center',
     gap: 12,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  searchContainer: {
+    padding: 16,
   },
   searchInput: {
-    flex: 1,
     height: 44,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  filterButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 8,
-    justifyContent: 'center',
-  },
-  filterButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
   content: {
     flex: 1,
-  },
-  listContent: {
     padding: 16,
   },
-  studentCard: {
-    borderRadius: 12,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+  },
+  errorCard: {
     padding: 16,
-    marginBottom: 16,
+    borderRadius: 8,
     borderWidth: 1,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  studentHeader: {
+    marginBottom: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
+    alignItems: 'center',
   },
-  studentInfo: {
+  errorText: {
     flex: 1,
+    fontSize: 14,
+  },
+  retryButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+  },
+  retryText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  feeCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    borderWidth: 1,
+  },
+  feeHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
   },
   studentName: {
     fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  studentDetails: {
-    fontSize: 14,
+    flex: 1,
   },
   statusBadge: {
     paddingHorizontal: 12,
@@ -453,47 +388,33 @@ const styles = StyleSheet.create({
     borderRadius: 12,
   },
   statusText: {
-    color: '#FFFFFF',
     fontSize: 12,
     fontWeight: '600',
   },
   feeDetails: {
-    marginBottom: 16,
+    gap: 8,
   },
-  feeRow: {
+  classInfo: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  amountRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 4,
+    alignItems: 'center',
   },
-  feeLabel: {
+  label: {
     fontSize: 14,
+    fontWeight: '500',
   },
-  feeValue: {
+  amount: {
     fontSize: 14,
     fontWeight: '600',
   },
-  cardActions: {
-    flexDirection: 'row',
-  },
-  viewButton: {
-    flex: 1,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderRadius: 6,
-    alignItems: 'center',
-  },
-  viewButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  loadingContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 40,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
+  dueDate: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    marginTop: 4,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -503,94 +424,5 @@ const styles = StyleSheet.create({
   emptyText: {
     fontSize: 16,
     textAlign: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  filtersModal: {
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    maxHeight: '80%',
-  },
-  filtersHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  filtersTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  closeButton: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    padding: 8,
-  },
-  filtersContent: {
-    padding: 20,
-  },
-  filterGroup: {
-    marginBottom: 20,
-  },
-  filterLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  pickerContainer: {
-    borderRadius: 8,
-    borderWidth: 1,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 44,
-  },
-  feeRangeContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  feeRangeInput: {
-    flex: 1,
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-  },
-  feeRangeTo: {
-    fontSize: 14,
-  },
-  filterActions: {
-    flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
-  },
-  clearButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  clearButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  applyButton: {
-    flex: 1,
-    paddingVertical: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  applyButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

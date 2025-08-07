@@ -56,13 +56,13 @@ export default function ClassesScreen() {
   const [selectedClass, setSelectedClass] = useState<any>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  const { 
-    selectedBranch, 
-    selectedAcademicYear, 
-    branches, 
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
     academicYears,
     setSelectedBranch,
-    setSelectedAcademicYear 
+    setSelectedAcademicYear
   } = useGlobalFilters();
 
 
@@ -276,24 +276,48 @@ export default function ClassesScreen() {
           </Text>
         </TouchableOpacity>
       </View>
-      
-      <ModalDropdownFilter
-        visible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        onConfirm={handleFilterConfirm}
-        options={
-          // Determine which filter options to show based on which filter was tapped
-          // For now, let's assume we are always showing Branch and Academic Year filters
-          [
-            { title: 'Branch', key: 'branch', data: branches.map(b => ({ id: b.id, name: b.name })) },
-            { title: 'Academic Year', key: 'academicYear', data: academicYears.map(ay => ({ id: ay.id, name: ay.name })) },
-          ]
-        }
-        selectedOptions={{
-          branch: branches.find(b => b.id === selectedBranch),
-          academicYear: academicYears.find(ay => ay.id === selectedAcademicYear),
-        }}
-      />
+
+      {modalVisible && (
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                Select Filters
+              </Text>
+              <TouchableOpacity
+                onPress={() => setModalVisible(false)}
+                style={styles.closeButton}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.modalBody}>
+              <ModalDropdownFilter
+                label="Branch"
+                items={branches || []}
+                selectedValue={selectedBranch}
+                onValueChange={(value) => {
+                  setSelectedBranch(value);
+                  setModalVisible(false);
+                }}
+                compact={false}
+              />
+
+              <ModalDropdownFilter
+                label="Academic Year"
+                items={academicYears || []}
+                selectedValue={selectedAcademicYear}
+                onValueChange={(value) => {
+                  setSelectedAcademicYear(value);
+                  setModalVisible(false);
+                }}
+                compact={false}
+              />
+            </View>
+          </View>
+        </View>
+      )}
 
 
       <View style={styles.tabContainer}>
@@ -512,5 +536,50 @@ const styles = StyleSheet.create({
   comingSoon: {
     fontSize: 16,
     textAlign: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+  },
+  modalContent: {
+    width: '90%',
+    padding: 20,
+    borderRadius: 10,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+    paddingBottom: 10,
+    marginBottom: 15,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  closeButton: {
+    padding: 5,
+  },
+  closeButtonText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  modalBody: {
+    // Add specific styles for modal body if needed
   },
 });

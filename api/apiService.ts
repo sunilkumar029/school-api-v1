@@ -40,8 +40,17 @@ class ApiService {
           } else {
             // For development, provide a demo token if available
             console.warn("No auth token found. Some API calls may fail.");
-            // You can set a demo token here if needed
-            // config.headers.Authorization = `Token demo_token_here`;
+            
+            // Check if this is a public endpoint that doesn't require auth
+            const publicEndpoints = ['/api/academic-years/', '/api/branches/'];
+            const isPublicEndpoint = publicEndpoints.some(endpoint => 
+              config.url?.includes(endpoint)
+            );
+            
+            if (!isPublicEndpoint) {
+              // Reject non-public API calls without token
+              return Promise.reject(new Error('Authentication required'));
+            }
           }
 
           // Fallback to demo server if no base URL is set
