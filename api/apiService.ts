@@ -757,6 +757,52 @@ class ApiService {
     const response = await this.api.get(`/api/expenditure/summary/branch-${branch}/academic-year-${academicYear}/`);
     return response.data;
   }
+
+  // Inventory Management
+  async getInventoryList(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/inventory/", { params });
+    return response.data;
+  }
+
+  async createInventory(data: any): Promise<any> {
+    const response = await this.api.post("/api/inventory/", data);
+    return response.data;
+  }
+
+  async updateInventory(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/inventory/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteInventory(id: number): Promise<void> {
+    await this.api.delete(`/api/inventory/${id}/`);
+  }
+
+  async getInventoryTypes(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/inventory-types/", { params });
+    return response.data;
+  }
+
+  async createInventoryType(data: any): Promise<any> {
+    const response = await this.api.post("/api/inventory-types/", data);
+    return response.data;
+  }
+
+  async getInventoryDashboard(params?: any): Promise<any> {
+    const response = await this.api.get("/api/inventory/dashboard/", { params });
+    return response.data;
+  }
+
+  async getInventoryStatus(params?: any): Promise<any> {
+    const response = await this.api.get("/api/inventory/inventory-status/", { params });
+    return response.data;
+  }
+
+  // Rooms for assignment
+  async getRooms(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/stationary-types/", { params });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

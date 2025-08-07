@@ -1209,3 +1209,124 @@ export const useExpenditureSummary = (branch: number, academicYear: number) => {
 
   return { data, loading, error, refetch };
 };
+
+// Inventory Management hooks
+export const useInventoryList = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getInventoryList(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Inventory list fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory list');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useInventoryTypes = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getInventoryTypes(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Inventory types fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory types');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useInventoryDashboard = (params: any = {}) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getInventoryDashboard(params);
+      setData(response);
+    } catch (err: any) {
+      console.error('Inventory dashboard fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch inventory dashboard');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useRooms = (params: any = {}) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getRooms(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error('Rooms fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch rooms');
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};

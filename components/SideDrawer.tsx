@@ -194,7 +194,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             <View style={styles.userInfo}>
               <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
                 <Text style={styles.avatarText}>
-                  {user?.username?.charAt(0).toUpperCase() || 
+                  {user?.username?.charAt(0).toUpperCase() ||
                    user?.email?.charAt(0).toUpperCase() || 'U'}
                 </Text>
               </View>
@@ -300,6 +300,42 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                         </TouchableOpacity>
                       );
                     })}
+                  </View>
+                );
+              }
+              // Add Inventory and Inventory Dashboard links here
+              if (section.title === 'Management') {
+                return (
+                  <View key={index} style={styles.section}>
+                    <Text style={[styles.sectionTitle, { color: colors.primary }]}>
+                      {section.title}
+                    </Text>
+                    {section.items.map((item, itemIndex) => {
+                      if (item.roles && !item.roles.includes(user?.role || 'student')) {
+                        return null;
+                      }
+                      return (
+                        <TouchableOpacity
+                          key={itemIndex}
+                          style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                          onPress={() => handleItemPress(item.route)}
+                        >
+                          <Text style={styles.menuIcon}>{item.icon}</Text>
+                          <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                            {item.title}
+                          </Text>
+                          <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
+                        </TouchableOpacity>
+                      );
+                    })}
+                    {/* Add Inventory Dashboard link */}
+                    <TouchableOpacity
+                      style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                      onPress={() => handleNavigation('/inventory-dashboard')}
+                    >
+                      <MaterialIcons name="dashboard" size={24} color={colors.textSecondary} />
+                      <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Inventory Dashboard</Text>
+                    </TouchableOpacity>
                   </View>
                 );
               }

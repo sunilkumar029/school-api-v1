@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -15,13 +14,40 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { 
+import {
   useExpenditureSummary,
   useBranches,
-  useAcademicYears 
+  useAcademicYears
 } from '@/hooks/useApi';
 
-const { width } = Dimensions.get('window');
+// Assuming these are defined elsewhere or need to be imported/defined
+// For the sake of this example, let's define them here.
+const screenWidth = Dimensions.get('window').width;
+const chartConfig = {
+  // Define your chart configurations here
+  // Example:
+  backgroundGradientFrom: "#ffffff",
+  backgroundGradientTo: "#ffffff",
+  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false // optional
+};
+
+const getRandomColor = (key: string | number) => {
+  const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#F97316'];
+  if (typeof key === 'string') {
+    let hash = 0;
+    for (let i = 0; i < key.length; i++) {
+      hash = key.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  }
+  return colors[key % colors.length];
+};
+
+import { PieChart } from "react-native-chart-kit";
+
 
 interface ExpenditureSummary {
   total: number;
@@ -115,7 +141,7 @@ export default function ExpensesDashboardScreen() {
                     key={branch.id}
                     style={[
                       styles.filterChip,
-                      { 
+                      {
                         borderColor: colors.border,
                         backgroundColor: selectedBranch === branch.id ? colors.primary : 'transparent'
                       }
@@ -141,7 +167,7 @@ export default function ExpensesDashboardScreen() {
                     key={year.id}
                     style={[
                       styles.filterChip,
-                      { 
+                      {
                         borderColor: colors.border,
                         backgroundColor: selectedAcademicYear === year.id ? colors.primary : 'transparent'
                       }
@@ -222,7 +248,7 @@ export default function ExpensesDashboardScreen() {
     return (
       <View style={styles.summaryCardsContainer}>
         {cards.map((card, index) => (
-          <View 
+          <View
             key={index}
             style={[styles.summaryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
           >
@@ -246,57 +272,71 @@ export default function ExpensesDashboardScreen() {
     );
   };
 
-  const renderPieChart = () => {
-    if (!expenseSummary?.category_distribution) return null;
+  const renderPieChart = (data: any[], title: string) => {
+    if (!data || data.length === 0) {
+      return (
+        <View style={styles.emptyChart}>
+          <Text style={[styles.emptyChartText, { color: colors.textSecondary }]}>
+            No data available for {title}
+          </Text>
+        </View>
+      );
+    }
 
-    const totalAngle = 360;
-    let currentAngle = 0;
+    const chartData = data.map((item, index) => {
+      const value = item.total || item.value || item.amount || 0;
+      const name = item.category || item.name || `Item ${index + 1}`;
+
+      return {
+        name: name,
+        population: Math.max(value, 0), // Ensure non-negative values
+        color: getRandomColor(name),
+        legendFontColor: colors.textPrimary,
+        legendFontSize: 12,
+      };
+    }).filter(item => item.population > 0); // Filter out zero values
+
+    if (chartData.length === 0) {
+      return (
+        <View style={styles.emptyChart}>
+          <Text style={[styles.emptyChartText, { color: colors.textSecondary }]}>
+            No data available for {title}
+          </Text>
+        </View>
+      );
+    }
 
     return (
-      <View style={[styles.chartContainer, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
-          Expense Distribution by Category
-        </Text>
-        
-        <View style={styles.pieChartContainer}>
-          <View style={styles.pieChart}>
-            {expenseSummary.category_distribution.map((item, index) => {
-              const angle = (item.percentage / 100) * totalAngle;
-              const color = getCategoryColor(index);
-              currentAngle += angle;
-              
-              return (
-                <View
-                  key={index}
-                  style={[
-                    styles.pieSlice,
-                    {
-                      backgroundColor: color,
-                      transform: [{ rotate: `${currentAngle - angle}deg` }],
-                    }
-                  ]}
-                />
-              );
-            })}
-          </View>
-          
-          <View style={styles.pieChartLegend}>
-            {expenseSummary.category_distribution.map((item, index) => (
-              <View key={index} style={styles.legendItem}>
-                <View style={[styles.legendColor, { backgroundColor: getCategoryColor(index) }]} />
-                <Text style={[styles.legendText, { color: colors.textPrimary }]}>
-                  {item.category} ({item.percentage.toFixed(1)}%)
-                </Text>
-                <Text style={[styles.legendAmount, { color: colors.textSecondary }]}>
-                  {formatCurrency(item.total)}
-                </Text>
-              </View>
-            ))}
-          </View>
+      <View style={styles.chartWrapper}>
+        <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
+        <View style={styles.chartContainer}>
+          <PieChart
+            data={chartData}
+            width={screenWidth - 80}
+            height={200}
+            chartConfig={chartConfig}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="0"
+            center={[10, 10]}
+            absolute
+          />
+        </View>
+        {/* Legend */}
+        <View style={styles.legendContainer}>
+          {chartData.map((item, index) => (
+            <View key={index} style={styles.legendItem}>
+              <View style={[styles.legendColor, { backgroundColor: item.color }]} />
+              <Text style={[styles.legendText, { color: colors.textPrimary }]}>
+                {item.name}: {formatCurrency(item.population)}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
     );
   };
+
 
   const renderBarChart = () => {
     if (!expenseSummary?.salary_by_month) return null;
@@ -308,11 +348,11 @@ export default function ExpensesDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           Salary Expenses by Month
         </Text>
-        
+
         <View style={styles.barChart}>
           {expenseSummary.salary_by_month.map((item, index) => {
             const barHeight = (item.total / maxAmount) * 150;
-            
+
             return (
               <View key={index} style={styles.barContainer}>
                 <View style={styles.barWrapper}>
@@ -367,7 +407,7 @@ export default function ExpensesDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           {activeTimeFilter.charAt(0).toUpperCase() + activeTimeFilter.slice(1)} Overview
         </Text>
-        
+
         <View style={styles.overviewContent}>
           <View style={styles.overviewCard}>
             <Text style={[styles.overviewLabel, { color: colors.textSecondary }]}>
@@ -377,7 +417,7 @@ export default function ExpensesDashboardScreen() {
               {formatCurrency(current)}
             </Text>
           </View>
-          
+
           <View style={styles.overviewCard}>
             <Text style={[styles.overviewLabel, { color: colors.textSecondary }]}>
               Previous {activeTimeFilter}
@@ -386,7 +426,7 @@ export default function ExpensesDashboardScreen() {
               {formatCurrency(previous)}
             </Text>
           </View>
-          
+
           <View style={styles.overviewCard}>
             <Text style={[styles.overviewLabel, { color: colors.textSecondary }]}>
               Growth
@@ -450,7 +490,7 @@ export default function ExpensesDashboardScreen() {
       >
         {renderSummaryCards()}
         {renderTimeBasedOverview()}
-        {renderPieChart()}
+        {renderPieChart(expenseSummary?.category_distribution || [], 'Expense Distribution by Category')}
         {renderBarChart()}
       </ScrollView>
     </SafeAreaView>
@@ -549,7 +589,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   summaryCard: {
-    width: (width - 44) / 2,
+    width: (screenWidth - 44) / 2,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
@@ -675,5 +715,56 @@ const styles = StyleSheet.create({
   overviewValue: {
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  // Styles added/modified for pie chart and legend
+  chartWrapper: {
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  chartTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  chartContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  legendContainer: {
+    paddingHorizontal: 16,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  legendText: {
+    fontSize: 12,
+    flex: 1,
+  },
+  // Added for empty chart state
+  emptyChart: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 200,
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#f9fafb',
+  },
+  emptyChartText: {
+    fontSize: 14,
+    textAlign: 'center',
   },
 });

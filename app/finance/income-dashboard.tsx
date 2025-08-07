@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -15,14 +14,42 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { 
+import {
   useFeeDashboardAnalytics,
   useExpenditureSummary,
   useBranches,
-  useAcademicYears 
+  useAcademicYears
 } from '@/hooks/useApi';
+import { PieChart } from 'react-native-chart-kit';
+import * as FileSystem from 'expo-file-system'; // Assuming this is needed for image handling in inventory
 
-const { width } = Dimensions.get('window');
+
+const { width: screenWidth } = Dimensions.get('window');
+
+// Placeholder for getRandomColor function, assuming it exists elsewhere or needs to be defined
+const getRandomColor = (key: string | number): string => {
+  // Simple hash function to generate color based on key
+  let hash = 0;
+  const strKey = String(key);
+  for (let i = 0; i < strKey.length; i++) {
+    hash = strKey.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const color = ((hash & 0x00FFFFFF) | 0x1000000).toString(16).substring(1);
+  return `#${color}`;
+};
+
+// Placeholder for chartConfig, assuming it's defined elsewhere
+const chartConfig = {
+  backgroundGradientFrom: '#FFFFFF',
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: '#FFFFFF',
+  backgroundGradientToOpacity: 0,
+  color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Default color, will be overridden by PieChart's data
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false // Set to false for PieChart
+};
+
 
 export default function IncomeDashboardScreen() {
   const { colors } = useTheme();
@@ -98,7 +125,7 @@ export default function IncomeDashboardScreen() {
                     key={branch.id}
                     style={[
                       styles.filterChip,
-                      { 
+                      {
                         borderColor: colors.border,
                         backgroundColor: selectedBranch === branch.id ? colors.primary : 'transparent'
                       }
@@ -124,7 +151,7 @@ export default function IncomeDashboardScreen() {
                     key={year.id}
                     style={[
                       styles.filterChip,
-                      { 
+                      {
                         borderColor: colors.border,
                         backgroundColor: selectedAcademicYear === year.id ? colors.primary : 'transparent'
                       }
@@ -183,7 +210,7 @@ export default function IncomeDashboardScreen() {
     return (
       <View style={styles.summaryCardsContainer}>
         {cards.map((card, index) => (
-          <View 
+          <View
             key={index}
             style={[styles.summaryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
           >
@@ -246,13 +273,13 @@ export default function IncomeDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           Monthly Fee Collection (Expected vs Collected)
         </Text>
-        
+
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.barChart}>
             {feeAnalytics.monthly_collections.slice(-6).map((item: any, index: number) => {
               const expectedHeight = (item.expected / maxAmount) * 150;
               const collectedHeight = (item.collected / maxAmount) * 150;
-              
+
               return (
                 <View key={index} style={styles.barContainer}>
                   <View style={styles.barWrapper}>
@@ -288,7 +315,7 @@ export default function IncomeDashboardScreen() {
             })}
           </View>
         </ScrollView>
-        
+
         <View style={styles.chartLegend}>
           <View style={styles.legendItem}>
             <View style={[styles.legendColor, { backgroundColor: colors.primary }]} />
@@ -314,14 +341,14 @@ export default function IncomeDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           Fee Collection by Standards
         </Text>
-        
+
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <View style={styles.barChart}>
             {validStandards.slice(0, 8).map((item: any, index: number) => {
               const expectedHeight = (item.expected / maxAmount) * 150;
               const collectedHeight = (item.collected / maxAmount) * 150;
               const collectionRate = item.expected > 0 ? (item.collected / item.expected) * 100 : 0;
-              
+
               return (
                 <View key={index} style={styles.barContainer}>
                   <View style={styles.barWrapper}>
@@ -374,12 +401,12 @@ export default function IncomeDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           Fee Overview by Type
         </Text>
-        
+
         <View style={styles.feeTypesList}>
           {topFeeTypes.map((item: any, index: number) => {
             const collectionRate = item.expected > 0 ? (item.collected / item.expected) * 100 : 0;
             const isOverCollected = item.collected > item.expected;
-            
+
             return (
               <View key={index} style={styles.feeTypeItem}>
                 <View style={styles.feeTypeHeader}>
@@ -393,7 +420,7 @@ export default function IncomeDashboardScreen() {
                     {collectionRate.toFixed(0)}%
                   </Text>
                 </View>
-                
+
                 <View style={styles.feeTypeProgress}>
                   <View style={[styles.progressBar, { backgroundColor: colors.border }]}>
                     <View
@@ -407,7 +434,7 @@ export default function IncomeDashboardScreen() {
                     />
                   </View>
                 </View>
-                
+
                 <View style={styles.feeTypeAmounts}>
                   <Text style={[styles.feeTypeAmount, { color: colors.textSecondary }]}>
                     Collected: {formatCurrency(item.collected)}
@@ -434,7 +461,7 @@ export default function IncomeDashboardScreen() {
         <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>
           Time-based Collection Summary
         </Text>
-        
+
         <View style={styles.timeGrid}>
           <View style={styles.timeCard}>
             <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>Today</Text>
@@ -445,7 +472,7 @@ export default function IncomeDashboardScreen() {
               {timeData.growth.daily > 0 ? '+' : ''}{timeData.growth.daily}%
             </Text>
           </View>
-          
+
           <View style={styles.timeCard}>
             <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>This Week</Text>
             <Text style={[styles.timeValue, { color: colors.textPrimary }]}>
@@ -455,7 +482,7 @@ export default function IncomeDashboardScreen() {
               {timeData.growth.weekly > 0 ? '+' : ''}{timeData.growth.weekly}%
             </Text>
           </View>
-          
+
           <View style={styles.timeCard}>
             <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>This Month</Text>
             <Text style={[styles.timeValue, { color: colors.textPrimary }]}>
@@ -465,7 +492,7 @@ export default function IncomeDashboardScreen() {
               {timeData.growth.monthly > 0 ? '+' : ''}{timeData.growth.monthly}%
             </Text>
           </View>
-          
+
           <View style={styles.timeCard}>
             <Text style={[styles.timeLabel, { color: colors.textSecondary }]}>This Year</Text>
             <Text style={[styles.timeValue, { color: colors.textPrimary }]}>
@@ -475,6 +502,72 @@ export default function IncomeDashboardScreen() {
               of {formatCurrency(timeData.this_year.expected)}
             </Text>
           </View>
+        </View>
+      </View>
+    );
+  };
+
+  // New function to render Pie Chart (corrected version)
+  const renderPieChart = (data: any[], title: string) => {
+    if (!data || data.length === 0) {
+      return (
+        <View style={styles.emptyChart}>
+          <Text style={[styles.emptyChartText, { color: colors.textSecondary }]}>
+            No data available for {title}
+          </Text>
+        </View>
+      );
+    }
+
+    const chartData = data.map((item, index) => {
+      const value = item.collected || item.total || item.value || item.amount || 0;
+      const name = item.name || item.category || `Item ${index + 1}`;
+
+      return {
+        name: name,
+        population: Math.max(value, 0), // Ensure non-negative values
+        color: getRandomColor(name),
+        legendFontColor: colors.textPrimary,
+        legendFontSize: 12,
+      };
+    }).filter(item => item.population > 0); // Filter out zero values
+
+    if (chartData.length === 0) {
+      return (
+        <View style={styles.emptyChart}>
+          <Text style={[styles.emptyChartText, { color: colors.textSecondary }]}>
+            No data available for {title}
+          </Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.chartWrapper}>
+        <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
+        <View style={styles.chartContainer}>
+          <PieChart
+            data={chartData}
+            width={screenWidth - 80}
+            height={200}
+            chartConfig={chartConfig}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="0"
+            center={[10, 10]}
+            absolute
+          />
+        </View>
+        {/* Legend */}
+        <View style={styles.legendContainer}>
+          {chartData.map((item, index) => (
+            <View key={index} style={styles.legendItem}>
+              <View style={[styles.legendColor, { backgroundColor: item.color }]} />
+              <Text style={[styles.legendText, { color: colors.textPrimary }]}>
+                {item.name}: {formatCurrency(item.population)}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
     );
@@ -614,7 +707,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   summaryCard: {
-    width: (width - 44) / 2,
+    width: (screenWidth - 44) / 2,
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,
@@ -782,7 +875,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   timeCard: {
-    width: (width - 60) / 2,
+    width: (screenWidth - 60) / 2,
     alignItems: 'center',
     padding: 12,
   },
@@ -801,5 +894,43 @@ const styles = StyleSheet.create({
   },
   timeSubtext: {
     fontSize: 10,
+  },
+  // Styles for Pie Chart
+  emptyChart: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: 200,
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E5E7EB', // Example border color
+  },
+  emptyChartText: {
+    fontSize: 14,
+    textAlign: 'center',
+  },
+  chartWrapper: {
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
+  // chartTitle is already defined above
+  // chartContainer is already defined above
+  legendContainer: {
+    paddingHorizontal: 16,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  legendColor: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  legendText: {
+    fontSize: 12,
+    flex: 1,
   },
 });
