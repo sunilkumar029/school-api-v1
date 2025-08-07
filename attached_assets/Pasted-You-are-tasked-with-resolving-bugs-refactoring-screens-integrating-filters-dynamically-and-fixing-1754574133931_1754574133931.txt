@@ -1,0 +1,218 @@
+You are tasked with resolving bugs, refactoring screens, integrating filters dynamically, and fixing styling + behavior inconsistencies across all API-integrated screens in the React Native + Tailwind CSS + Expo application.
+
+🔁 I. GLOBAL FILTERS (MANDATORY ACROSS ALL API-INTEGRATED SCREENS)
+Implement global dropdown filters:
+
+Branch
+
+Academic Year
+
+Functionality Requirements:
+
+These should function exactly as implemented in the Dashboard
+
+Filters must be selectable via a modal (dropdown modal), not a static dropdown or button
+
+Filters must update the data dynamically via API on all relevant screens
+
+Filters must co-exist with screen-specific filters (e.g., status, type, class)
+
+Design Consistency:
+
+Style the dropdowns and modals the same way as the Dashboard
+
+Reuse components; do not duplicate filter UIs
+
+Do not use hardcoded values — filters must pull from state/context
+
+🧱 II. RUNTIME ERRORS (GROUPED BY TYPE)
+1. 🔥 Object Rendering as React Child
+Error: Objects are not valid as a React child
+Cause: Rendering object directly instead of extracting readable fields
+Screens Affected:
+
+academics/student-attendance
+
+Possibly other list-based components with improper JSX rendering
+
+Action:
+
+Fix rendering logic: extract relevant fields (teacher.name, section.name, etc.) instead of rendering the full object
+
+2. 🧠 Function Call Before Declaration
+Error: Cannot access 'getRandomColor' before initialization
+Screen: /inventory-dashboard
+Fix:
+
+Move the getRandomColor function above where it's used or import it from a helper file
+
+🎛️ III. SCREEN-BY-SCREEN FIXES & FILTER INTEGRATIONS
+✅ DASHBOARD SCREEN
+Fix broken styling and layout (missing UI structure)
+
+Add or fix the global filters (Branch & Academic Year) modal behavior
+
+Ensure dashboard data updates on global filter change
+
+✅ ANALYTICS SCREEN
+❌ Remove analytics from its own screen
+
+✅ Move it to /mockdata OR
+
+🔁 Integrate it fully with real APIs and global filters
+
+✅ CLASSES SCREEN
+Fix:
+
+Tapping list item doesn’t open details modal
+
+Weekly timetable not showing
+
+Action buttons non-functional
+
+Ensure proper global filters are included
+
+✅ DEPARTMENTS SCREEN
+Add global filters with same styling and modal interaction as Dashboard
+
+✅ STAFF TIMETABLE
+Dropdown filters should use the same modal-based dropdown design
+
+Ensure they interact with API and global filter context
+
+✅ STUDENT MARKS
+❌ Remove student-marks screen entirely
+
+✅ Move to /mockdata if required for testing
+
+✅ STUDENT FEE MODULE
+/student-fee-list & /student-fee-analytics:
+
+Fix dropdown styles — use Dashboard-style filters
+
+Ensure filter data binding is functional and dynamic
+
+✅ STAFF PAYROLL
+Month & Year dropdowns should:
+
+Be visible
+
+Styled like global filter dropdowns
+
+Work dynamically with API
+
+Roll filter may remain fixed, but behavior should be dynamic
+
+✅ SALARY TEMPLATE
+Review the screen logic
+
+Apply global filter and consistent dropdown UI
+
+Ensure layout and interaction matches new structure
+
+✅ TRANSPORT MANAGEMENT
+Current global filters are static → make them dynamic
+
+Use modal-style dropdowns
+
+Update data based on selected Branch & Academic Year
+
+✅ ATTENDANCE DASHBOARD
+Static global filters → change to dynamic and functional modal dropdowns
+
+✅ USER MANAGEMENT, INVENTORY, STATIONARY
+Screens:
+
+/users
+
+/inventory
+
+/inventory/management
+
+/inventory/stationary
+
+/inventory/stationary-fee
+
+Action:
+
+Style filters like the Dashboard
+
+Ensure filter values dynamically affect API calls
+
+Avoid redundant filters per screen
+
+📘 IV. EXAMS MODULE FIXES
+/exams/student-exam-timetable
+Fix filter rendering (accessibility issues on dark screen)
+
+Ensure modal dropdowns and global filters are applied
+
+/exams/student-marks-table
+Fix: Failed to load student marks error
+
+Apply global filters correctly to API request
+
+Debug backend response if required
+
+/exams/student-marks-analytics
+Fix filter layout + functionality
+
+Use modal-style selectors for filters
+
+🔔 V. NOTIFICATION SCREEN
+Connect screen to the Notification API
+
+Add dynamic filter for:
+
+Notification Type (e.g., "Alert", "Event", "Reminder")
+
+Plus: Global Filters (Branch + Academic Year)
+
+Fix runtime error:
+
+ts
+Copy
+Edit
+Cannot read properties of undefined (reading 'toUpperCase')
+Add safety checks to avoid rendering errors
+
+✅ VI. FILTER DROPDOWN CONSISTENCY (GLOBAL INSTRUCTION)
+Every dropdown or filter on every screen must:
+
+Use modal-based selector like the Dashboard
+
+Be reusable (FilterModal component or similar)
+
+Dynamically control screen data (not just for appearance)
+
+Be styled consistently (padding, border, font)
+
+🧠 VII. FINAL CHECKLIST (AGENT MUST ENSURE)
+ All API-connected screens use dynamic, working filters
+
+ All filters match dashboard UI/UX (modal-based, styled)
+
+ Runtime errors (object rendering, undefined access) are eliminated
+
+ No screen uses static filters or hardcoded values
+
+ Styling is consistent, responsive, and accessible
+
+ Screens are cleaned up (remove mock or broken screens)
+
+ Global filters persist and update content app-wide
+
+ Dropdowns appear as modals on every screen (no button toggles)
+
+📣 FINAL COMMAND TO REPLIT
+Begin processing all API-connected screens. Fix all listed issues, apply modal-based global filters on every screen, and remove redundant or broken code. Maintain consistent styling and ensure data dynamically updates based on filters. Do not leave any filters hardcoded.
+
+Once complete, provide a report listing:
+
+Screens updated
+
+Errors fixed
+
+Filters implemented
+
+Screens removed (if any)
