@@ -1,0 +1,1614 @@
+------------------------------- Inventory list
+GET https: //vai.dev.sms.visionariesai.com/api/inventory/?branch=1&omit=created_by,modified_by,branch
+{
+    "meta": {
+        "count": 18,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "modified": "2025-07-07T08:31:53.323134+05:30",
+            "inventory_type": {
+                "academic_year": {
+                    "modified": "2025-06-01T09:14:26.877453+05:30",
+                    "start_date": "2024-06-01",
+                    "id": 1,
+                    "created_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "name": "2024-2025",
+                    "modified_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "end_date": "2025-07-30",
+                    "created": "2024-12-23T22:07:33.918280+05:30"
+                },
+                "modified": "2025-05-24T15:12:02.589083+05:30",
+                "id": 10,
+                "is_active": true,
+                "type": "Stationary",
+                "created_by": {
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "id": 3,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "is_active": true,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "group": 1,
+                    "last_name": "M",
+                    "modified_by": 1,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "first_name": "Narasing"
+                },
+                "branch": {
+                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                    "id": 1,
+                    "address": {
+                        "city": "Vijayawada",
+                        "state": "Andhra Pradesh",
+                        "street": "Vijayawada",
+                        "landmark": "Vijayawada 1",
+                        "zip_code": "520001"
+                    },
+                    "is_active": true,
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ],
+                                [
+                                    80.6201631673348,
+                                    16.50721957673649
+                                ],
+                                [
+                                    80.62027846041298,
+                                    16.507155671004796
+                                ],
+                                [
+                                    80.62033943875502,
+                                    16.507248636487958
+                                ],
+                                [
+                                    80.620226241159,
+                                    16.507309199025244
+                                ]
+                            ]
+                        ]
+                    },
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            80.62025214123565,
+                            16.507235006708214
+                        ]
+                    },
+                    "created_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "name": "Branch 1",
+                    "modified_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "is_main_branch": false,
+                    "created": "2024-12-23T21:38:49.939251+05:30"
+                },
+                "name": "Computer",
+                "modified_by": {
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "id": 3,
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "is_active": true,
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "user_permissions": [],
+                    "timezone": "Asia/Kolkata",
+                    "created_by": 1,
+                    "group": 1,
+                    "last_name": "M",
+                    "modified_by": 1,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "first_name": "Narasing"
+                },
+                "created": "2025-01-02T14:53:57.237126+05:30",
+                "description": "Computers"
+            },
+            "id": 7,
+            "status": "Not-Available",
+            "price": 8000,
+            "is_active": true,
+            "name": "Benches",
+            "remarks": "No",
+            "created": "2025-01-03T11:35:31.973363+05:30",
+            "description": "Bench",
+            "bill_image": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/19c91dc1-0d43-4810-8950-0bba4c456b49.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHX3EWG5IG%2F20250807%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250807T035455Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEwaCmFwLXNvdXRoLTEiRjBEAiAen5lX7SGqkPfDG%2Bqkz1xfkRqqtnr72tvtdyus%2BOytwQIgQPPxFtkTz%2B5816vJ3GZeW6mfGYTpMAR4U8IDvDzGRkoqxwUIhf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgwwMjI0OTkwMzE1NjciDM8AHUGd%2BLtI1cNtfCqbBepU7kAUKbwpyK0tusQmPPazis%2BbbX%2BED7XTKoww0kYlSA2iYQN%2BMAMQDPMN44qYimHIMlrw5eMBjaV9kmR9KmvEjBFXOiIYtYvPD%2FSA5YspsX4gP%2FeD91a9eSaat4hh9r3YO%2BY5QYIX7K6swtE%2BzJC0fJADShrOB38ruSrRa7DXe7aUjNYrPysegMDeTQrrpAaQ72IU%2Fo7kZvA6Hl7qJnyiENjoeza8VtA205aGWgVmL2NARPvxcn7%2Fr9WaQ3GyeOAVXrCrJbSC76jW9mb5%2FdkNCPPEfwKwi58nHrkhbP%2BrpOsrHpnDMGuZTjDNUJX7qST7QI4gPRl3ycYwBP3doFV00xTMqV5RQsYCjp1cS1DzKFCtYgNbBYQPXNhmBkugy4EH4tP5IzESQaf85LjNRTx3d2Ky%2BGYBGHYwLSB%2BP3OYKxY5a6cWBYnbDSL1bTV0l202N0W68PIqHVeiCU9roBC04hbQaRGTypF4o6l0y9GbykLtV59o3rLfExxxZ3gjXwB1LDoxfMRBHpGtQ37ciC3KgoXYxP4LkwjSY2JiwPufu8VoeJx8a46GimmRoCXD6Ep7lnDY0xsn4dh5mtUMAVfTvOENaepOhmfZZcJZrEMY42YstRd%2BtuIJXfKHbyH2eiRqs3dZUAACVe%2BCR1UW3jQDTHYddr%2BxEeVOZpT0Wndqps4u35SoFN9dTyinJGF5scxU%2Bijo4PaD3%2FpxSTKlJw0wrxakpur4VsaZJdhe5%2Bv1d%2BuK3AG6MW28SHQMyN4Da4DU7Jg7Cughx8efjIkF7LGHApqd8GLHX2zu1ZsN9AOwKHum9kxwahMcrWa1l41AZuKweTe7KOiLu01HSMKMJ0X4WW6jWV27ZedqtIyPsO%2FohCZGfraqRXGth48w3MHQxAY6sgGfZqxwoZbOx%2ByrN86i6X5XDxvP95ecv7S0aHJ36%2BgjeeGPbgSQkkLnYuy6KjqYqj%2FgyExXUO0m6DLx4n3dnAQTvaLnQnPcb3s3v8ZsOwqMKID3m9seUXInHIcHwBTwvfmIKElXqwWwAC0G%2F%2B%2FEM4Zs5FjNMHsoJku0X4bDF0zY0x2CVtFa05myj1gbOP%2BHpVh9Q6%2FOmpS11HWW0IJyqZ4Sc3O68H3RLbHZLFsTOdHgT7dZ&X-Amz-Signature=94adfe7c294d77b7edc9459b740ff188509499b59caaafaa65d035523275b204",
+            "quantity": 4,
+            "is_stationary": false,
+            "product_image": "https://sms-dev-be.s3.amazonaws.com/media/64ae3519-07a4-4d9b-91aa-96cc03ed2e84/63b5bc5d-641a-4c88-91f9-d7203a3729c2.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQKPIL7IHX3EWG5IG%2F20250807%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20250807T035455Z&X-Amz-Expires=3600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEEwaCmFwLXNvdXRoLTEiRjBEAiAen5lX7SGqkPfDG%2Bqkz1xfkRqqtnr72tvtdyus%2BOytwQIgQPPxFtkTz%2B5816vJ3GZeW6mfGYTpMAR4U8IDvDzGRkoqxwUIhf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FARAAGgwwMjI0OTkwMzE1NjciDM8AHUGd%2BLtI1cNtfCqbBepU7kAUKbwpyK0tusQmPPazis%2BbbX%2BED7XTKoww0kYlSA2iYQN%2BMAMQDPMN44qYimHIMlrw5eMBjaV9kmR9KmvEjBFXOiIYtYvPD%2FSA5YspsX4gP%2FeD91a9eSaat4hh9r3YO%2BY5QYIX7K6swtE%2BzJC0fJADShrOB38ruSrRa7DXe7aUjNYrPysegMDeTQrrpAaQ72IU%2Fo7kZvA6Hl7qJnyiENjoeza8VtA205aGWgVmL2NARPvxcn7%2Fr9WaQ3GyeOAVXrCrJbSC76jW9mb5%2FdkNCPPEfwKwi58nHrkhbP%2BrpOsrHpnDMGuZTjDNUJX7qST7QI4gPRl3ycYwBP3doFV00xTMqV5RQsYCjp1cS1DzKFCtYgNbBYQPXNhmBkugy4EH4tP5IzESQaf85LjNRTx3d2Ky%2BGYBGHYwLSB%2BP3OYKxY5a6cWBYnbDSL1bTV0l202N0W68PIqHVeiCU9roBC04hbQaRGTypF4o6l0y9GbykLtV59o3rLfExxxZ3gjXwB1LDoxfMRBHpGtQ37ciC3KgoXYxP4LkwjSY2JiwPufu8VoeJx8a46GimmRoCXD6Ep7lnDY0xsn4dh5mtUMAVfTvOENaepOhmfZZcJZrEMY42YstRd%2BtuIJXfKHbyH2eiRqs3dZUAACVe%2BCR1UW3jQDTHYddr%2BxEeVOZpT0Wndqps4u35SoFN9dTyinJGF5scxU%2Bijo4PaD3%2FpxSTKlJw0wrxakpur4VsaZJdhe5%2Bv1d%2BuK3AG6MW28SHQMyN4Da4DU7Jg7Cughx8efjIkF7LGHApqd8GLHX2zu1ZsN9AOwKHum9kxwahMcrWa1l41AZuKweTe7KOiLu01HSMKMJ0X4WW6jWV27ZedqtIyPsO%2FohCZGfraqRXGth48w3MHQxAY6sgGfZqxwoZbOx%2ByrN86i6X5XDxvP95ecv7S0aHJ36%2BgjeeGPbgSQkkLnYuy6KjqYqj%2FgyExXUO0m6DLx4n3dnAQTvaLnQnPcb3s3v8ZsOwqMKID3m9seUXInHIcHwBTwvfmIKElXqwWwAC0G%2F%2B%2FEM4Zs5FjNMHsoJku0X4bDF0zY0x2CVtFa05myj1gbOP%2BHpVh9Q6%2FOmpS11HWW0IJyqZ4Sc3O68H3RLbHZLFsTOdHgT7dZ&X-Amz-Signature=d387ae3cfd7392428f1fea7be701eee4218c832dace5dc649a1ed4d2bf26aee5",
+            "inventory_tracking": [
+                {
+                    "modified": "2025-01-03T12:38:41.553426+05:30",
+                    "id": 6,
+                    "standard": null,
+                    "quantity": 5,
+                    "status": "Damaged",
+                    "created_at": "2025-04-23T00:40:57.458874+05:30",
+                    "return_date": "2024-01-02",
+                    "inventory": 7,
+                    "created_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "modified_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "room": {
+                        "modified": "2024-12-31T14:18:07.830243+05:30",
+                        "floor": {
+                            "modified": "2024-12-31T14:11:14.710298+05:30",
+                            "id": 7,
+                            "is_active": true,
+                            "created_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "name": "foot ball court",
+                            "modified_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "created": "2024-12-31T14:11:14.710298+05:30",
+                            "description": "foot ball court",
+                            "place": {
+                                "modified": "2024-12-23T21:45:27.499682+05:30",
+                                "place_type": {
+                                    "modified": "2025-03-21T11:16:00.625744+05:30",
+                                    "id": 3,
+                                    "is_active": true,
+                                    "created_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "name": "Canteens",
+                                    "modified_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "created": "2024-12-23T21:45:00.604618+05:30",
+                                    "description": "This is Canteen"
+                                },
+                                "id": 4,
+                                "is_active": true,
+                                "geo_location": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                80.6202564788723,
+                                                16.507239828567364
+                                            ],
+                                            [
+                                                80.62028026252307,
+                                                16.50727454595713
+                                            ],
+                                            [
+                                                80.62033388574872,
+                                                16.50724850791771
+                                            ],
+                                            [
+                                                80.62031039546162,
+                                                16.507211540323524
+                                            ],
+                                            [
+                                                80.6202564788723,
+                                                16.507239828567364
+                                            ]
+                                        ]
+                                    ]
+                                },
+                                "center_point": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                        80.6202945955672,
+                                        16.50724561480409
+                                    ]
+                                },
+                                "created_by": {
+                                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                                    "is_superuser": false,
+                                    "email": "murapakanarasingarao@gmail.com",
+                                    "id": 3,
+                                    "date_joined": "2024-12-23T02:50:33+05:30",
+                                    "is_staff": false,
+                                    "is_active": true,
+                                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                    "user_permissions": [],
+                                    "timezone": "Asia/Kolkata",
+                                    "created_by": 1,
+                                    "group": 1,
+                                    "last_name": "M",
+                                    "modified_by": 1,
+                                    "created": "2024-12-23T02:50:33.549827+05:30",
+                                    "first_name": "Narasing"
+                                },
+                                "branch": {
+                                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                                    "id": 1,
+                                    "address": {
+                                        "city": "Vijayawada",
+                                        "state": "Andhra Pradesh",
+                                        "street": "Vijayawada",
+                                        "landmark": "Vijayawada 1",
+                                        "zip_code": "520001"
+                                    },
+                                    "is_active": true,
+                                    "geo_location": {
+                                        "type": "Polygon",
+                                        "coordinates": [
+                                            [
+                                                [
+                                                    80.620226241159,
+                                                    16.507309199025244
+                                                ],
+                                                [
+                                                    80.6201631673348,
+                                                    16.50721957673649
+                                                ],
+                                                [
+                                                    80.62027846041298,
+                                                    16.507155671004796
+                                                ],
+                                                [
+                                                    80.62033943875502,
+                                                    16.507248636487958
+                                                ],
+                                                [
+                                                    80.620226241159,
+                                                    16.507309199025244
+                                                ]
+                                            ]
+                                        ]
+                                    },
+                                    "center_point": {
+                                        "type": "Point",
+                                        "coordinates": [
+                                            80.62025214123565,
+                                            16.507235006708214
+                                        ]
+                                    },
+                                    "created_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "name": "Branch 1",
+                                    "modified_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "is_main_branch": false,
+                                    "created": "2024-12-23T21:38:49.939251+05:30"
+                                },
+                                "name": "Play Ground",
+                                "modified_by": {
+                                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                                    "is_superuser": false,
+                                    "email": "murapakanarasingarao@gmail.com",
+                                    "id": 3,
+                                    "date_joined": "2024-12-23T02:50:33+05:30",
+                                    "is_staff": false,
+                                    "is_active": true,
+                                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                    "user_permissions": [],
+                                    "timezone": "Asia/Kolkata",
+                                    "created_by": 1,
+                                    "group": 1,
+                                    "last_name": "M",
+                                    "modified_by": 1,
+                                    "created": "2024-12-23T02:50:33.549827+05:30",
+                                    "first_name": "Narasing"
+                                },
+                                "created": "2024-12-23T21:45:27.499682+05:30",
+                                "description": "This is Play Ground"
+                            }
+                        },
+                        "id": 6,
+                        "is_active": true,
+                        "created": "2024-12-31T14:17:36.842025+05:30",
+                        "room_no": "1",
+                        "capacity": 10,
+                        "created_by": {
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "id": 3,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "is_active": true,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "modified_by": 1,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "first_name": "Narasing"
+                        },
+                        "description": "paying room",
+                        "name": "Play Ground",
+                        "modified_by": {
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "id": 3,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "is_active": true,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "modified_by": 1,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "first_name": "Narasing"
+                        },
+                        "room_type": {
+                            "modified": "2024-12-31T14:20:43.282584+05:30",
+                            "id": 3,
+                            "is_active": false,
+                            "created_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "name": "Play Room",
+                            "modified_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "created": "2024-12-31T14:17:15.540284+05:30",
+                            "description": "play room"
+                        }
+                    },
+                    "remarks": "No",
+                    "created": "2025-01-03T12:20:33.843935+05:30"
+                },
+                {
+                    "modified": "2025-01-03T12:38:57.665552+05:30",
+                    "id": 7,
+                    "standard": null,
+                    "quantity": 5,
+                    "status": "Issued",
+                    "created_at": "2025-04-23T00:40:57.458874+05:30",
+                    "return_date": "2025-01-01",
+                    "inventory": 7,
+                    "created_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "modified_by": {
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "id": 3,
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "is_active": true,
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "user_permissions": [],
+                        "timezone": "Asia/Kolkata",
+                        "created_by": 1,
+                        "group": 1,
+                        "last_name": "M",
+                        "modified_by": 1,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "first_name": "Narasing"
+                    },
+                    "room": {
+                        "modified": "2024-12-23T21:49:34.439553+05:30",
+                        "floor": {
+                            "modified": "2025-08-02T19:20:47.352947+05:30",
+                            "id": 1,
+                            "is_active": true,
+                            "created_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "name": "Floor 1",
+                            "modified_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "created": "2024-12-23T21:46:27.205273+05:30",
+                            "description": "This is Floor 1",
+                            "place": {
+                                "modified": "2024-12-23T21:41:30.945363+05:30",
+                                "place_type": {
+                                    "modified": "2025-01-30T16:54:48.802060+05:30",
+                                    "id": 1,
+                                    "is_active": true,
+                                    "created_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "name": "Buildings",
+                                    "modified_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "created": "2024-12-23T21:40:35.980346+05:30",
+                                    "description": "This is Building"
+                                },
+                                "id": 1,
+                                "is_active": true,
+                                "geo_location": {
+                                    "type": "Polygon",
+                                    "coordinates": [
+                                        [
+                                            [
+                                                80.62016025462293,
+                                                16.50722086258415
+                                            ],
+                                            [
+                                                80.6201954376611,
+                                                16.50726779535492
+                                            ],
+                                            [
+                                                80.62023967315815,
+                                                16.507239185652594
+                                            ],
+                                            [
+                                                80.62020746569527,
+                                                16.50719611036608
+                                            ],
+                                            [
+                                                80.62016025462293,
+                                                16.50722086258415
+                                            ]
+                                        ]
+                                    ]
+                                },
+                                "center_point": {
+                                    "type": "Point",
+                                    "coordinates": [
+                                        80.62019835037756,
+                                        16.507232435049417
+                                    ]
+                                },
+                                "created_by": {
+                                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                                    "is_superuser": false,
+                                    "email": "murapakanarasingarao@gmail.com",
+                                    "id": 3,
+                                    "date_joined": "2024-12-23T02:50:33+05:30",
+                                    "is_staff": false,
+                                    "is_active": true,
+                                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                    "user_permissions": [],
+                                    "timezone": "Asia/Kolkata",
+                                    "created_by": 1,
+                                    "group": 1,
+                                    "last_name": "M",
+                                    "modified_by": 1,
+                                    "created": "2024-12-23T02:50:33.549827+05:30",
+                                    "first_name": "Narasing"
+                                },
+                                "branch": {
+                                    "modified": "2025-03-30T12:37:45.638892+05:30",
+                                    "id": 1,
+                                    "address": {
+                                        "city": "Vijayawada",
+                                        "state": "Andhra Pradesh",
+                                        "street": "Vijayawada",
+                                        "landmark": "Vijayawada 1",
+                                        "zip_code": "520001"
+                                    },
+                                    "is_active": true,
+                                    "geo_location": {
+                                        "type": "Polygon",
+                                        "coordinates": [
+                                            [
+                                                [
+                                                    80.620226241159,
+                                                    16.507309199025244
+                                                ],
+                                                [
+                                                    80.6201631673348,
+                                                    16.50721957673649
+                                                ],
+                                                [
+                                                    80.62027846041298,
+                                                    16.507155671004796
+                                                ],
+                                                [
+                                                    80.62033943875502,
+                                                    16.507248636487958
+                                                ],
+                                                [
+                                                    80.620226241159,
+                                                    16.507309199025244
+                                                ]
+                                            ]
+                                        ]
+                                    },
+                                    "center_point": {
+                                        "type": "Point",
+                                        "coordinates": [
+                                            80.62025214123565,
+                                            16.507235006708214
+                                        ]
+                                    },
+                                    "created_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "name": "Branch 1",
+                                    "modified_by": {
+                                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                                        "is_superuser": false,
+                                        "email": "murapakanarasingarao@gmail.com",
+                                        "id": 3,
+                                        "date_joined": "2024-12-23T02:50:33+05:30",
+                                        "is_staff": false,
+                                        "is_active": true,
+                                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                        "user_permissions": [],
+                                        "timezone": "Asia/Kolkata",
+                                        "created_by": 1,
+                                        "group": 1,
+                                        "last_name": "M",
+                                        "modified_by": 1,
+                                        "created": "2024-12-23T02:50:33.549827+05:30",
+                                        "first_name": "Narasing"
+                                    },
+                                    "is_main_branch": false,
+                                    "created": "2024-12-23T21:38:49.939251+05:30"
+                                },
+                                "name": "Block A",
+                                "modified_by": {
+                                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                                    "is_superuser": false,
+                                    "email": "murapakanarasingarao@gmail.com",
+                                    "id": 3,
+                                    "date_joined": "2024-12-23T02:50:33+05:30",
+                                    "is_staff": false,
+                                    "is_active": true,
+                                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                    "user_permissions": [],
+                                    "timezone": "Asia/Kolkata",
+                                    "created_by": 1,
+                                    "group": 1,
+                                    "last_name": "M",
+                                    "modified_by": 1,
+                                    "created": "2024-12-23T02:50:33.549827+05:30",
+                                    "first_name": "Narasing"
+                                },
+                                "created": "2024-12-23T21:41:30.945363+05:30",
+                                "description": "This is Block A Building"
+                            }
+                        },
+                        "id": 2,
+                        "is_active": true,
+                        "created": "2024-12-23T21:49:34.439553+05:30",
+                        "room_no": "2",
+                        "capacity": 40,
+                        "created_by": {
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "id": 3,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "is_active": true,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "modified_by": 1,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "first_name": "Narasing"
+                        },
+                        "description": "This is 10th Class Room",
+                        "name": "10th Class",
+                        "modified_by": {
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "id": 3,
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "is_active": true,
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "user_permissions": [],
+                            "timezone": "Asia/Kolkata",
+                            "created_by": 1,
+                            "group": 1,
+                            "last_name": "M",
+                            "modified_by": 1,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "first_name": "Narasing"
+                        },
+                        "room_type": {
+                            "modified": "2025-06-27T17:04:29.025667+05:30",
+                            "id": 2,
+                            "is_active": true,
+                            "created_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "name": "Class rooM",
+                            "modified_by": {
+                                "modified": "2025-08-06T09:58:15.374126+05:30",
+                                "is_superuser": false,
+                                "email": "murapakanarasingarao@gmail.com",
+                                "id": 3,
+                                "date_joined": "2024-12-23T02:50:33+05:30",
+                                "is_staff": false,
+                                "is_active": true,
+                                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                                "user_permissions": [],
+                                "timezone": "Asia/Kolkata",
+                                "created_by": 1,
+                                "group": 1,
+                                "last_name": "M",
+                                "modified_by": 1,
+                                "created": "2024-12-23T02:50:33.549827+05:30",
+                                "first_name": "Narasing"
+                            },
+                            "created": "2024-12-23T21:49:11.117428+05:30",
+                            "description": "This is Class Room"
+                        }
+                    },
+                    "remarks": "",
+                    "created": "2025-01-03T12:30:13.546293+05:30"
+                }
+            ]
+        },
+    ]
+}
+
+GET https: //vai.dev.sms.visionariesai.com/api/inventory-types/?&is_active=true&branch=1
+{
+    "meta": {
+        "count": 20,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "created_by": {
+                "group": 1,
+                "id": 3,
+                "is_staff": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "is_active": true,
+                "first_name": "Narasing",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "last_name": "M",
+                "is_superuser": false,
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "modified_by": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "timezone": "Asia/Kolkata"
+            },
+            "id": 36,
+            "modified": "2025-06-07T18:43:30.965385+05:30",
+            "description": "Markerss",
+            "type": "Stationary",
+            "is_active": true,
+            "modified_by": {
+                "group": 1,
+                "id": 3,
+                "is_staff": false,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "is_active": true,
+                "first_name": "Narasing",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "last_name": "M",
+                "is_superuser": false,
+                "user_permissions": [],
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "modified_by": 1,
+                "email": "murapakanarasingarao@gmail.com",
+                "timezone": "Asia/Kolkata"
+            },
+            "created": "2025-06-07T18:43:15.556194+05:30",
+            "name": "Markersss",
+            "academic_year": {
+                "end_date": "2025-07-30",
+                "created_by": {
+                    "group": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "last_name": "M",
+                    "is_superuser": false,
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "modified_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata"
+                },
+                "id": 1,
+                "modified": "2025-06-01T09:14:26.877453+05:30",
+                "start_date": "2024-06-01",
+                "created": "2024-12-23T22:07:33.918280+05:30",
+                "modified_by": {
+                    "group": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "last_name": "M",
+                    "is_superuser": false,
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "modified_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata"
+                },
+                "name": "2024-2025"
+            },
+            "branch": {
+                "address": {
+                    "city": "Vijayawada",
+                    "state": "Andhra Pradesh",
+                    "street": "Vijayawada",
+                    "landmark": "Vijayawada 1",
+                    "zip_code": "520001"
+                },
+                "created_by": {
+                    "group": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "last_name": "M",
+                    "is_superuser": false,
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "modified_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata"
+                },
+                "id": 1,
+                "modified": "2025-03-30T12:37:45.638892+05:30",
+                "is_active": true,
+                "is_main_branch": false,
+                "center_point": {
+                    "type": "Point",
+                    "coordinates": [
+                        80.62025214123565,
+                        16.507235006708214
+                    ]
+                },
+                "created": "2024-12-23T21:38:49.939251+05:30",
+                "modified_by": {
+                    "group": 1,
+                    "id": 3,
+                    "is_staff": false,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "is_active": true,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "last_name": "M",
+                    "is_superuser": false,
+                    "user_permissions": [],
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "modified_by": 1,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "timezone": "Asia/Kolkata"
+                },
+                "geo_location": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ],
+                            [
+                                80.6201631673348,
+                                16.50721957673649
+                            ],
+                            [
+                                80.62027846041298,
+                                16.507155671004796
+                            ],
+                            [
+                                80.62033943875502,
+                                16.507248636487958
+                            ],
+                            [
+                                80.620226241159,
+                                16.507309199025244
+                            ]
+                        ]
+                    ]
+                },
+                "name": "Branch 1"
+            }
+        },
+    ]
+}
+
+PATCH https: //vai.dev.sms.visionariesai.com/api/inventory/7/
+payload example {
+    "id": 7,
+    "name": "Benches",
+    "quantity": 4,
+    "is_stationary": false,
+    "inventory_type_id": "11",
+    "description": "Bench PART",
+    "price": 8000,
+    "status": "Not-Available",
+    "remarks": "No",
+    "branch_id": "1"
+}
+
+Edit inventory tracking 
+GET https: //vai.dev.sms.visionariesai.com/api/stationary-types/?is_active=undefined&omit=modified_by,created_by
+{
+    "meta": {
+        "count": 12,
+        "next": null,
+        "previous": null
+    },
+    "results": [
+        {
+            "is_active": true,
+            "created": "2025-08-02T20:05:49.302609+05:30",
+            "name": "Office Room",
+            "created_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "modified_by": 1,
+                "first_name": "Narasing",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_staff": false,
+                "user_permissions": [],
+                "id": 3,
+                "timezone": "Asia/Kolkata"
+            },
+            "modified_by": {
+                "last_login": "2025-08-06T09:58:15.367144+05:30",
+                "last_name": "M",
+                "is_active": true,
+                "created": "2024-12-23T02:50:33.549827+05:30",
+                "is_superuser": false,
+                "email": "murapakanarasingarao@gmail.com",
+                "group": 1,
+                "modified": "2025-08-06T09:58:15.374126+05:30",
+                "created_by": 1,
+                "modified_by": 1,
+                "first_name": "Narasing",
+                "date_joined": "2024-12-23T02:50:33+05:30",
+                "is_staff": false,
+                "user_permissions": [],
+                "id": 3,
+                "timezone": "Asia/Kolkata"
+            },
+            "modified": "2025-08-02T20:05:49.302609+05:30",
+            "room_no": "201",
+            "description": "this is resting",
+            "room_type": {
+                "is_active": true,
+                "created": "2025-01-24T14:30:12.981216+05:30",
+                "name": "Office Room",
+                "created_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "id": 3,
+                    "timezone": "Asia/Kolkata"
+                },
+                "modified": "2025-01-24T14:30:12.981216+05:30",
+                "modified_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "id": 3,
+                    "timezone": "Asia/Kolkata"
+                },
+                "description": "Thsi is Office Room",
+                "id": 8
+            },
+            "capacity": 30,
+            "id": 23,
+            "floor": {
+                "is_active": true,
+                "created": "2024-12-23T21:46:52.047560+05:30",
+                "name": "Floor 2",
+                "place": {
+                    "is_active": true,
+                    "created": "2024-12-23T21:41:30.945363+05:30",
+                    "place_type": {
+                        "is_active": true,
+                        "created": "2024-12-23T21:40:35.980346+05:30",
+                        "name": "Buildings",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "created_by": 1,
+                            "modified_by": 1,
+                            "first_name": "Narasing",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "id": 3,
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "modified": "2025-01-30T16:54:48.802060+05:30",
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "created_by": 1,
+                            "modified_by": 1,
+                            "first_name": "Narasing",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "id": 3,
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "description": "This is Building",
+                        "id": 1
+                    },
+                    "name": "Block A",
+                    "created_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "first_name": "Narasing",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "id": 3,
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "modified_by": {
+                        "last_login": "2025-08-06T09:58:15.367144+05:30",
+                        "last_name": "M",
+                        "is_active": true,
+                        "created": "2024-12-23T02:50:33.549827+05:30",
+                        "is_superuser": false,
+                        "email": "murapakanarasingarao@gmail.com",
+                        "group": 1,
+                        "modified": "2025-08-06T09:58:15.374126+05:30",
+                        "created_by": 1,
+                        "modified_by": 1,
+                        "first_name": "Narasing",
+                        "date_joined": "2024-12-23T02:50:33+05:30",
+                        "is_staff": false,
+                        "user_permissions": [],
+                        "id": 3,
+                        "timezone": "Asia/Kolkata"
+                    },
+                    "modified": "2024-12-23T21:41:30.945363+05:30",
+                    "center_point": {
+                        "type": "Point",
+                        "coordinates": [
+                            80.62019835037756,
+                            16.507232435049417
+                        ]
+                    },
+                    "description": "This is Block A Building",
+                    "id": 1,
+                    "branch": {
+                        "is_active": true,
+                        "created": "2024-12-23T21:38:49.939251+05:30",
+                        "name": "Branch 1",
+                        "created_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "created_by": 1,
+                            "modified_by": 1,
+                            "first_name": "Narasing",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "id": 3,
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "modified": "2025-03-30T12:37:45.638892+05:30",
+                        "modified_by": {
+                            "last_login": "2025-08-06T09:58:15.367144+05:30",
+                            "last_name": "M",
+                            "is_active": true,
+                            "created": "2024-12-23T02:50:33.549827+05:30",
+                            "is_superuser": false,
+                            "email": "murapakanarasingarao@gmail.com",
+                            "group": 1,
+                            "modified": "2025-08-06T09:58:15.374126+05:30",
+                            "created_by": 1,
+                            "modified_by": 1,
+                            "first_name": "Narasing",
+                            "date_joined": "2024-12-23T02:50:33+05:30",
+                            "is_staff": false,
+                            "user_permissions": [],
+                            "id": 3,
+                            "timezone": "Asia/Kolkata"
+                        },
+                        "is_main_branch": false,
+                        "center_point": {
+                            "type": "Point",
+                            "coordinates": [
+                                80.62025214123565,
+                                16.507235006708214
+                            ]
+                        },
+                        "address": {
+                            "city": "Vijayawada",
+                            "state": "Andhra Pradesh",
+                            "street": "Vijayawada",
+                            "landmark": "Vijayawada 1",
+                            "zip_code": "520001"
+                        },
+                        "id": 1,
+                        "geo_location": {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ],
+                                    [
+                                        80.6201631673348,
+                                        16.50721957673649
+                                    ],
+                                    [
+                                        80.62027846041298,
+                                        16.507155671004796
+                                    ],
+                                    [
+                                        80.62033943875502,
+                                        16.507248636487958
+                                    ],
+                                    [
+                                        80.620226241159,
+                                        16.507309199025244
+                                    ]
+                                ]
+                            ]
+                        }
+                    },
+                    "geo_location": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    80.62016025462293,
+                                    16.50722086258415
+                                ],
+                                [
+                                    80.6201954376611,
+                                    16.50726779535492
+                                ],
+                                [
+                                    80.62023967315815,
+                                    16.507239185652594
+                                ],
+                                [
+                                    80.62020746569527,
+                                    16.50719611036608
+                                ],
+                                [
+                                    80.62016025462293,
+                                    16.50722086258415
+                                ]
+                            ]
+                        ]
+                    }
+                },
+                "created_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "id": 3,
+                    "timezone": "Asia/Kolkata"
+                },
+                "modified_by": {
+                    "last_login": "2025-08-06T09:58:15.367144+05:30",
+                    "last_name": "M",
+                    "is_active": true,
+                    "created": "2024-12-23T02:50:33.549827+05:30",
+                    "is_superuser": false,
+                    "email": "murapakanarasingarao@gmail.com",
+                    "group": 1,
+                    "modified": "2025-08-06T09:58:15.374126+05:30",
+                    "created_by": 1,
+                    "modified_by": 1,
+                    "first_name": "Narasing",
+                    "date_joined": "2024-12-23T02:50:33+05:30",
+                    "is_staff": false,
+                    "user_permissions": [],
+                    "id": 3,
+                    "timezone": "Asia/Kolkata"
+                },
+                "modified": "2024-12-23T21:46:52.047560+05:30",
+                "description": "This is Floor 2",
+                "id": 2
+            }
+        },
+    ]
+}
+
+PATCH https: //vai.dev.sms.visionariesai.com/api/inventory-tracking/3/
+PAYLOAD EXAMPLE {
+    "room_id": 1,
+    "quantity": "6",
+    "inventory_id": 5,
+    "return_date": "2025-01-18",
+    "status": "Damaged",
+    "remarks": "No",
+    "stationery": "",
+    "branch_id": "1",
+    "id": 3
+}
+
+Add Inventory tracking
+GET https://vai.dev.sms.visionariesai.com/api/rooms/?branch=1&is_active=true
+GET https://vai.dev.sms.visionariesai.com/api/stationary-types/?is_active=undefined&omit=modified_by,created_by
+GET https://vai.dev.sms.visionariesai.com/api/inventory/?branch=1&omit=created_by,modified_by,branch
+POST https://vai.dev.sms.visionariesai.com/api/inventory-tracking/ 
+payload example {
+  "room_id": "23",
+  "quantity": "1",
+  "inventory_id": "15",
+  "return_date": "2025-09-07",
+  "status": "Issued",
+  "remarks": "URGENT",
+  "branch_id": "1"
+}  
+
+------------------------------- Inventory SUMMARY
+
+GET https://vai.dev.sms.visionariesai.com/api/inventory/dashboard/?branch=1
+{
+    "inventory_summary": {
+        "total_quantity": 1674,
+        "total_value": 808990,
+        "total_items": 18,
+        "categories": 14,
+        "status_breakdown": {
+            "status": "total"
+        }
+    },
+    "tracking_summary": {
+        "status": "total"
+    },
+    "monthly_trends": {
+        "Apr 2025": {
+            "Returned": 12,
+            "Lost": 4,
+            "Damaged": 12,
+            "Issued": 579
+        },
+        "Jun 2025": {
+            "Issued": 47
+        }
+    },
+    "top_issued_inventory": [],
+    "category_wise_issued": [],
+    "room_wise_inventory": {
+        "Floor 1 - 10th Class": {
+            "Damaged": 1,
+            "Issued": 259,
+            "Lost": 2,
+            "Returned": 12
+        },
+        "Second floor - Class Room": {
+            "Issued": 81
+        },
+        "Floor 1 - Office Room": {
+            "Damaged": 6,
+            "Issued": 239,
+            "Lost": 2
+        },
+        "foot ball court - Play Ground": {
+            "Damaged": 5,
+            "Issued": 9
+        },
+        "Basket Ball Court - Play Ground": {
+            "Issued": 5
+        }
+    }
+}
