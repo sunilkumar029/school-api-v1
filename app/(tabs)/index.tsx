@@ -18,12 +18,12 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import {
   useAttendanceDashboard,
+  useBranches,
+  useAcademicYears,
   useFeeDashboardAnalytics,
   useEvents,
   useAnnouncements,
 } from '@/hooks/useApi';
-import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
-import { GlobalFilters } from '@/components/GlobalFilters';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -40,16 +40,17 @@ export default function DashboardScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState<number>(1);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Use global filters
-  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
-
   // Fetch data
+  const { data: branches } = useBranches({ is_active: true });
+  const { data: academicYears } = useAcademicYears();
   const { data: attendanceData, loading: attendanceLoading } = useAttendanceDashboard();
   const { data: feeAnalytics, loading: feeLoading } = useFeeDashboardAnalytics({
-    branch: selectedBranch || 1,
-    academic_year: selectedAcademicYear || 1,
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
   });
   const { data: events } = useEvents({ is_active: true, limit: 5 });
   const { data: announcements } = useAnnouncements({ is_active: true, limit: 3 });
@@ -117,9 +118,6 @@ export default function DashboardScreen() {
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
-
-      {/* Global Filters */}
-      <GlobalFilters />
 
       <ScrollView
         style={styles.content}

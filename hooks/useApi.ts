@@ -177,7 +177,7 @@ export function useAttendanceDashboard() {
   );
 }
 
-export function useAnnualLeaveQuotas(userId?: number) {
+export function useLeaveQuotas(userId?: number) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
