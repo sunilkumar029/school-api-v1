@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -19,7 +18,7 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
+import {
   useHolidays,
   useBranches,
   useAcademicYears
@@ -67,11 +66,11 @@ export default function HolidayCalendarScreen() {
     academic_year: selectedAcademicYear,
   }), [selectedBranch, selectedAcademicYear]);
 
-  const { 
-    data: holidays, 
-    loading: holidaysLoading, 
-    error: holidaysError, 
-    refetch: refetchHolidays 
+  const {
+    data: holidays,
+    loading: holidaysLoading,
+    error: holidaysError,
+    refetch: refetchHolidays
   } = useHolidays(holidayParams);
 
   const formatDate = (dateString: string) => {
@@ -171,7 +170,7 @@ export default function HolidayCalendarScreen() {
 
   const sortedHolidays = useMemo(() => {
     if (!holidays) return [];
-    
+
     return [...holidays].sort((a, b) => {
       return new Date(a.date).getTime() - new Date(b.date).getTime();
     });
@@ -179,9 +178,9 @@ export default function HolidayCalendarScreen() {
 
   const renderHolidayItem = ({ item }: { item: Holiday }) => (
     <View style={[
-      styles.holidayCard, 
-      { 
-        backgroundColor: colors.surface, 
+      styles.holidayCard,
+      {
+        backgroundColor: colors.surface,
         borderColor: colors.border,
         borderLeftWidth: 4,
         borderLeftColor: isUpcoming(item.date) ? colors.primary : colors.textSecondary
@@ -201,7 +200,7 @@ export default function HolidayCalendarScreen() {
             </Text>
           )}
         </View>
-        
+
         <View style={styles.holidayActions}>
           <View style={[
             styles.dateCircle,
@@ -214,7 +213,7 @@ export default function HolidayCalendarScreen() {
               {new Date(item.date).toLocaleDateString('en-US', { month: 'short' })}
             </Text>
           </View>
-          
+
           {user?.is_staff && (
             <View style={styles.actionButtons}>
               <TouchableOpacity
@@ -332,7 +331,7 @@ export default function HolidayCalendarScreen() {
               {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
             </Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
             <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
               {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}

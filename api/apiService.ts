@@ -1014,6 +1014,76 @@ class ApiService {
     const response = await this.api.patch(`/api/hostel-products/${id}/`, data);
     return response.data;
   }
+
+  // Support/Query Management
+  async getSupportQueries(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/query/", { params });
+    return response.data;
+  }
+
+  async createSupportQuery(data: any): Promise<any> {
+    const response = await this.api.post("/api/query/", data);
+    return response.data;
+  }
+
+  async updateSupportQuery(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/query/${id}/`, data);
+    return response.data;
+  }
+
+  // Transport Management
+  async getVehicles(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/vehicles/", { params });
+    return response.data;
+  }
+
+  async createVehicle(data: any): Promise<any> {
+    const response = await this.api.post("/api/vehicles/", data);
+    return response.data;
+  }
+
+  async getTrips(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/trips/", { params });
+    return response.data;
+  }
+
+  async createTrip(data: any): Promise<any> {
+    const response = await this.api.post("/api/trips/", data);
+    return response.data;
+  }
+
+  async getDrivers(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/drivers/", { params });
+    return response.data;
+  }
+
+  // Class Attendance
+  async getClassAttendance(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/class-attendance/", { params });
+    return response.data;
+  }
+
+  async createClassAttendance(data: any): Promise<any> {
+    const response = await this.api.post("/api/class-attendance/", data);
+    return response.data;
+  }
+
+  // Staff Attendance
+  async getStaffAttendance(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/staff-attendance/", { params });
+    return response.data;
+  }
+
+  async createStaffAttendance(data: any): Promise<any> {
+    const response = await this.api.post("/api/staff-attendance/", data);
+    return response.data;
+  }
+
+  // Attendance Dashboard
+  async getAttendanceAnalytics(params?: any): Promise<any> {
+    const response = await this.api.get("/api/attendance-analytics/", { params });
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

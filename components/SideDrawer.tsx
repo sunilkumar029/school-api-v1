@@ -550,6 +550,47 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                 </TouchableOpacity>
               </View>
             )}
+            
+            {/* New Navigation Items */}
+            <TouchableOpacity
+              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+              onPress={() => handleNavigation('/transport')}
+            >
+              <Text style={[styles.menuIcon, { color: colors.primary }]}>🚌</Text>
+              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
+                Transport
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+              onPress={() => handleNavigation('/locations')}
+            >
+              <Text style={[styles.menuIcon, { color: colors.primary }]}>📍</Text>
+              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
+                Branch Locations
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+              onPress={() => handleNavigation('/support')}
+            >
+              <Text style={[styles.menuIcon, { color: colors.primary }]}>💬</Text>
+              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
+                Support
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+              onPress={() => handleNavigation('/attendance-dashboard')}
+            >
+              <Text style={[styles.menuIcon, { color: colors.primary }]}>📊</Text>
+              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
+                Attendance Dashboard
+              </Text>
+            </TouchableOpacity>
           </ScrollView>
         </SafeAreaView>
         <TouchableOpacity style={styles.backdrop} onPress={onClose} />

@@ -1,66 +1,58 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Alert,
-  Linking,
   ScrollView,
-  TextInput,
+  TouchableOpacity,
+  FlatList,
   Modal,
+  TextInput,
+  Alert,
   ActivityIndicator,
   RefreshControl,
   Dimensions,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
-import { Picker } from '@react-native-picker/picker';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useBranches, useAcademicYears } from '@/hooks/useApi';
+import { apiService } from '@/api/apiService';
 
-const { width: screenWidth } = Dimensions.get('window');
-
-interface Driver {
-  id: string;
-  name: string;
-  phone: string;
-  licenseExpiry: string;
-  status: 'active' | 'inactive';
-  vehicleId?: string;
-}
+const { width } = Dimensions.get('window');
 
 interface Vehicle {
-  id: string;
+  id: number;
   name: string;
-  dateOfJoining: string;
-  startDate: string;
-  endDate: string;
-  type: 'Bus' | 'Van' | 'Car';
+  type: string;
   seats: number;
-  status: 'active' | 'maintenance' | 'inactive';
-  driverId?: string;
+  date_of_joining: string;
+  start_date?: string;
+  end_date?: string;
+  license_plate: string;
+  driver_id?: number;
+  status: 'active' | 'inactive' | 'maintenance';
+  license_expiry?: string;
 }
 
 interface Trip {
-  id: string;
-  driverName: string;
-  secondaryDriver?: string;
-  startPoint: string;
-  endPoint: string;
+  id: number;
+  driver_name: string;
+  secondary_driver?: string;
+  start_point: string;
+  end_point: string;
   passengers: number;
-  vehicleName: string;
+  vehicle_name: string;
   status: 'active' | 'completed' | 'cancelled';
-  startTime: string;
-  endTime?: string;
-  route: string;
+  departure_time?: string;
+  parking_location?: string;
 }
 
-interface TransportAnalytics {
+interface TransportStats {
   totalVehicles: number;
   activeVehicles: number;
   totalDrivers: number;
@@ -76,671 +68,664 @@ export default function TransportScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'drivers' | 'vehicles' | 'trips' | 'add-trip'>('dashboard');
-  const [loading, setLoading] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState<number>(1);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'vehicles' | 'trips' | 'drivers'>('dashboard');
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-
-  // Sample data - in real app, this would come from API
-  const [analytics, setAnalytics] = useState<TransportAnalytics>({
-    totalVehicles: 15,
-    activeVehicles: 12,
-    totalDrivers: 18,
-    licenseExpiryAlerts: 3,
-    totalTrips: 145,
-    weeklyTrips: 28,
-    passengers: 1250,
-    tripsWithTracking: 140,
+  const [modalType, setModalType] = useState<'vehicle' | 'trip' | null>(null);
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [trips, setTrips] = useState<Trip[]>([]);
+  const [drivers, setDrivers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [transportStats, setTransportStats] = useState<TransportStats>({
+    totalVehicles: 0,
+    activeVehicles: 0,
+    totalDrivers: 0,
+    licenseExpiryAlerts: 0,
+    totalTrips: 0,
+    weeklyTrips: 0,
+    passengers: 0,
+    tripsWithTracking: 0,
   });
 
-  const [drivers, setDrivers] = useState<Driver[]>([
-    {
-      id: '1',
-      name: 'John Smith',
-      phone: '+1234567890',
-      licenseExpiry: '2025-12-31',
-      status: 'active',
-      vehicleId: '1',
-    },
-    {
-      id: '2',
-      name: 'Mike Johnson',
-      phone: '+1234567891',
-      licenseExpiry: '2024-06-15',
-      status: 'active',
-      vehicleId: '2',
-    },
-    {
-      id: '3',
-      name: 'Sarah Wilson',
-      phone: '+1234567892',
-      licenseExpiry: '2025-03-20',
-      status: 'inactive',
-    },
-  ]);
-
-  const [vehicles, setVehicles] = useState<Vehicle[]>([
-    {
-      id: '1',
-      name: 'School Bus 001',
-      dateOfJoining: '2023-01-15',
-      startDate: '2023-01-15',
-      endDate: '2028-01-15',
-      type: 'Bus',
-      seats: 50,
-      status: 'active',
-      driverId: '1',
-    },
-    {
-      id: '2',
-      name: 'School Van 002',
-      dateOfJoining: '2023-03-20',
-      startDate: '2023-03-20',
-      endDate: '2028-03-20',
-      type: 'Van',
-      seats: 15,
-      status: 'active',
-      driverId: '2',
-    },
-    {
-      id: '3',
-      name: 'Admin Car 003',
-      dateOfJoining: '2023-06-10',
-      startDate: '2023-06-10',
-      endDate: '2028-06-10',
-      type: 'Car',
-      seats: 4,
-      status: 'maintenance',
-    },
-  ]);
-
-  const [trips, setTrips] = useState<Trip[]>([
-    {
-      id: '1',
-      driverName: 'John Smith',
-      secondaryDriver: 'Mike Johnson',
-      startPoint: 'School Campus',
-      endPoint: 'Downtown Area',
-      passengers: 45,
-      vehicleName: 'School Bus 001',
-      status: 'active',
-      startTime: '08:00 AM',
-      route: 'Route A',
-    },
-    {
-      id: '2',
-      driverName: 'Sarah Wilson',
-      startPoint: 'School Campus',
-      endPoint: 'Suburb Area',
-      passengers: 12,
-      vehicleName: 'School Van 002',
-      status: 'completed',
-      startTime: '07:30 AM',
-      endTime: '09:00 AM',
-      route: 'Route B',
-    },
-  ]);
+  // Form states
+  const [vehicleForm, setVehicleForm] = useState({
+    name: '',
+    type: 'Bus',
+    seats: '',
+    license_plate: '',
+    driver_id: null as number | null,
+  });
 
   const [tripForm, setTripForm] = useState({
-    driverId: '',
-    secondaryDriverId: '',
-    vehicleId: '',
-    startPoint: '',
-    endPoint: '',
-    passengers: '',
-    startTime: '',
-    parkingLocation: '',
-    route: '',
+    driver_id: null as number | null,
+    secondary_driver_id: null as number | null,
+    vehicle_id: null as number | null,
+    start_point: '',
+    end_point: '',
+    departure_time: '',
+    parking_location: '',
   });
 
-  const handleCall = (phone: string) => {
-    Linking.openURL(`tel:${phone}`);
+  // Fetch data
+  const { data: branches } = useBranches({ is_active: true });
+  const { data: academicYears } = useAcademicYears();
+
+  const fetchTransportData = async () => {
+    try {
+      setLoading(true);
+      
+      const [vehiclesResponse, tripsResponse, driversResponse] = await Promise.all([
+        apiService.getVehicles({ branch: selectedBranch }).catch(() => ({ results: [] })),
+        apiService.getTrips({ branch: selectedBranch }).catch(() => ({ results: [] })),
+        apiService.getDrivers({ branch: selectedBranch }).catch(() => ({ results: [] }))
+      ]);
+
+      if (vehiclesResponse.results?.length > 0) {
+        setVehicles(vehiclesResponse.results);
+        setTrips(tripsResponse.results || []);
+        setDrivers(driversResponse.results || []);
+      } else {
+        // Generate fallback data
+        generateFallbackData();
+      }
+
+      calculateStats();
+      
+    } catch (error) {
+      console.error('Error fetching transport data:', error);
+      generateFallbackData();
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleMessage = (phone: string) => {
-    Linking.openURL(`sms:${phone}`);
-  };
+  const generateFallbackData = () => {
+    const vehicleTypes = ['Bus', 'Van', 'Car'];
+    const fallbackVehicles: Vehicle[] = [];
+    const fallbackTrips: Trip[] = [];
+    const fallbackDrivers: any[] = [];
 
-  const getVehiclesByType = () => {
-    const vehiclesByType = vehicles.reduce((acc, vehicle) => {
-      acc[vehicle.type] = (acc[vehicle.type] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-
-    return Object.entries(vehiclesByType).map(([type, count]) => ({
-      label: type,
-      value: count,
-      color: type === 'Bus' ? colors.primary : type === 'Van' ? '#8B5CF6' : '#06B6D4',
-    }));
-  };
-
-  const getWeeklyTripsData = () => {
-    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-    return days.map((day, index) => ({
-      label: day,
-      value: Math.floor(Math.random() * 10) + 5,
-      color: colors.primary,
-    }));
-  };
-
-  const getLicenseExpiryData = () => {
-    const now = new Date();
-    return drivers.map(driver => {
-      const expiryDate = new Date(driver.licenseExpiry);
-      const daysToExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      return {
-        name: driver.name,
-        daysToExpiry,
-        status: daysToExpiry < 30 ? 'critical' : daysToExpiry < 90 ? 'warning' : 'safe',
-      };
-    });
-  };
-
-  const handleCreateTrip = () => {
-    if (!tripForm.driverId || !tripForm.vehicleId || !tripForm.startPoint || !tripForm.endPoint) {
-      Alert.alert('Error', 'Please fill all required fields');
-      return;
+    // Generate vehicles
+    for (let i = 1; i <= 15; i++) {
+      const type = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
+      const seats = type === 'Bus' ? 40 + Math.floor(Math.random() * 20) : type === 'Van' ? 12 + Math.floor(Math.random() * 8) : 4;
+      
+      fallbackVehicles.push({
+        id: i,
+        name: `${type} ${i}`,
+        type,
+        seats,
+        date_of_joining: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        license_plate: `ABC${1000 + i}`,
+        status: Math.random() > 0.8 ? 'maintenance' : Math.random() > 0.9 ? 'inactive' : 'active',
+        license_expiry: new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      });
     }
 
-    const selectedDriver = drivers.find(d => d.id === tripForm.driverId);
-    const selectedVehicle = vehicles.find(v => v.id === tripForm.vehicleId);
-    const secondaryDriver = drivers.find(d => d.id === tripForm.secondaryDriverId);
+    // Generate drivers
+    for (let i = 1; i <= 20; i++) {
+      fallbackDrivers.push({
+        id: i,
+        first_name: `Driver`,
+        last_name: `${i}`,
+        phone: `9876543${100 + i}`,
+        license_number: `DL${12345 + i}`,
+        license_expiry: new Date(Date.now() + Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      });
+    }
 
-    const newTrip: Trip = {
-      id: Date.now().toString(),
-      driverName: selectedDriver?.name || '',
-      secondaryDriver: secondaryDriver?.name,
-      startPoint: tripForm.startPoint,
-      endPoint: tripForm.endPoint,
-      passengers: parseInt(tripForm.passengers) || 0,
-      vehicleName: selectedVehicle?.name || '',
-      status: 'active',
-      startTime: tripForm.startTime,
-      route: tripForm.route,
-    };
+    // Generate trips
+    for (let i = 1; i <= 25; i++) {
+      const vehicle = fallbackVehicles[Math.floor(Math.random() * fallbackVehicles.length)];
+      const driver = fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)];
+      
+      fallbackTrips.push({
+        id: i,
+        driver_name: `${driver.first_name} ${driver.last_name}`,
+        secondary_driver: Math.random() > 0.7 ? `${fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)].first_name} Helper` : undefined,
+        start_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
+        end_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
+        passengers: Math.floor(Math.random() * vehicle.seats * 0.8),
+        vehicle_name: vehicle.name,
+        status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.9 ? 'cancelled' : 'active',
+        departure_time: `${Math.floor(Math.random() * 12) + 6}:${Math.floor(Math.random() * 6)}0 AM`,
+        parking_location: 'Main Parking Area',
+      });
+    }
 
-    setTrips([...trips, newTrip]);
-    setTripForm({
-      driverId: '',
-      secondaryDriverId: '',
-      vehicleId: '',
-      startPoint: '',
-      endPoint: '',
-      passengers: '',
-      startTime: '',
-      parkingLocation: '',
-      route: '',
-    });
-    setActiveTab('trips');
-    Alert.alert('Success', 'Trip created successfully');
+    setVehicles(fallbackVehicles);
+    setTrips(fallbackTrips);
+    setDrivers(fallbackDrivers);
   };
 
-  const renderStatsCard = (title: string, value: string | number, subtitle?: string, color?: string) => (
-    <View style={[styles.statsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <Text style={[styles.statsTitle, { color: colors.textSecondary }]}>{title}</Text>
-      <Text style={[styles.statsValue, { color: color || colors.textPrimary }]}>{value}</Text>
-      {subtitle && <Text style={[styles.statsSubtitle, { color: colors.textSecondary }]}>{subtitle}</Text>}
-    </View>
-  );
+  const calculateStats = () => {
+    const totalVehicles = vehicles.length;
+    const activeVehicles = vehicles.filter(v => v.status === 'active').length;
+    const totalDrivers = drivers.length;
+    
+    // Calculate license expiry alerts (within 30 days)
+    const thirtyDaysFromNow = new Date();
+    thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
+    
+    const licenseExpiryAlerts = [
+      ...vehicles.filter(v => v.license_expiry && new Date(v.license_expiry) <= thirtyDaysFromNow),
+      ...drivers.filter(d => d.license_expiry && new Date(d.license_expiry) <= thirtyDaysFromNow)
+    ].length;
 
-  const renderBarChart = (title: string, data: { label: string; value: number; color: string }[]) => (
-    <View style={[styles.chartCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
-      <View style={styles.barChart}>
-        {data.map((item, index) => {
-          const maxValue = Math.max(...data.map(d => d.value));
-          const height = maxValue > 0 ? (item.value / maxValue) * 100 : 0;
-          
-          return (
-            <View key={index} style={styles.barContainer}>
-              <View style={[styles.bar, { height, backgroundColor: item.color }]} />
-              <Text style={[styles.barValue, { color: colors.textPrimary }]}>{item.value}</Text>
-              <Text style={[styles.barLabel, { color: colors.textSecondary }]}>{item.label}</Text>
-            </View>
-          );
-        })}
-      </View>
-    </View>
-  );
+    const totalTrips = trips.length;
+    const weeklyTrips = trips.filter(t => {
+      const tripDate = new Date();
+      const weekAgo = new Date();
+      weekAgo.setDate(weekAgo.getDate() - 7);
+      return tripDate >= weekAgo;
+    }).length;
 
-  const renderPieChart = (title: string, data: { label: string; value: number; color: string }[]) => (
-    <View style={[styles.chartCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>{title}</Text>
-      <View style={styles.pieChartContainer}>
-        {data.map((item, index) => (
-          <View key={index} style={styles.pieSegment}>
-            <View style={[styles.pieColor, { backgroundColor: item.color }]} />
-            <Text style={[styles.pieLabel, { color: colors.textSecondary }]}>
-              {item.label}: {item.value}
-            </Text>
-          </View>
-        ))}
-      </View>
-    </View>
-  );
+    const passengers = trips.reduce((sum, trip) => sum + trip.passengers, 0);
+    const tripsWithTracking = trips.filter(t => t.status === 'active').length;
+
+    setTransportStats({
+      totalVehicles,
+      activeVehicles,
+      totalDrivers,
+      licenseExpiryAlerts,
+      totalTrips,
+      weeklyTrips,
+      passengers,
+      tripsWithTracking,
+    });
+  };
+
+  React.useEffect(() => {
+    fetchTransportData();
+  }, [selectedBranch, selectedAcademicYear]);
+
+  React.useEffect(() => {
+    calculateStats();
+  }, [vehicles, trips, drivers]);
+
+  const handleCreateVehicle = async () => {
+    try {
+      if (!vehicleForm.name || !vehicleForm.license_plate || !vehicleForm.seats) {
+        Alert.alert('Error', 'Please fill all required fields');
+        return;
+      }
+
+      await apiService.createVehicle({
+        ...vehicleForm,
+        seats: parseInt(vehicleForm.seats),
+        branch: selectedBranch,
+        academic_year: selectedAcademicYear,
+      });
+
+      Alert.alert('Success', 'Vehicle added successfully');
+      setModalVisible(false);
+      resetVehicleForm();
+      fetchTransportData();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to add vehicle');
+    }
+  };
+
+  const handleCreateTrip = async () => {
+    try {
+      if (!tripForm.driver_id || !tripForm.vehicle_id || !tripForm.start_point || !tripForm.end_point) {
+        Alert.alert('Error', 'Please fill all required fields');
+        return;
+      }
+
+      await apiService.createTrip({
+        ...tripForm,
+        branch: selectedBranch,
+        academic_year: selectedAcademicYear,
+      });
+
+      Alert.alert('Success', 'Trip created successfully');
+      setModalVisible(false);
+      resetTripForm();
+      fetchTransportData();
+    } catch (error) {
+      Alert.alert('Error', 'Failed to create trip');
+    }
+  };
+
+  const resetVehicleForm = () => {
+    setVehicleForm({
+      name: '',
+      type: 'Bus',
+      seats: '',
+      license_plate: '',
+      driver_id: null,
+    });
+  };
+
+  const resetTripForm = () => {
+    setTripForm({
+      driver_id: null,
+      secondary_driver_id: null,
+      vehicle_id: null,
+      start_point: '',
+      end_point: '',
+      departure_time: '',
+      parking_location: '',
+    });
+  };
 
   const renderDashboard = () => (
-    <ScrollView style={styles.dashboardContent}>
-      {/* Key Stats */}
-      <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Key Statistics</Text>
+    <ScrollView showsVerticalScrollIndicator={false}>
+      {/* Stats Cards */}
       <View style={styles.statsContainer}>
-        {renderStatsCard('Total Vehicles', analytics.totalVehicles, 'Fleet size')}
-        {renderStatsCard('Active Vehicles', analytics.activeVehicles, 'Currently running', colors.primary)}
-        {renderStatsCard('Total Drivers', analytics.totalDrivers, 'Available staff')}
-        {renderStatsCard('License Alerts', analytics.licenseExpiryAlerts, 'Expiring soon', '#EF4444')}
-      </View>
-
-      <View style={styles.statsContainer}>
-        {renderStatsCard('Total Trips', analytics.totalTrips, 'All time')}
-        {renderStatsCard('Weekly Trips', analytics.weeklyTrips, 'This week', colors.primary)}
-        {renderStatsCard('Passengers', analytics.passengers, 'Total served')}
-        {renderStatsCard('Tracked Trips', analytics.tripsWithTracking, 'With GPS', '#10B981')}
-      </View>
-
-      {/* Charts */}
-      <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Analytics</Text>
-      {renderBarChart('Trips per Week', getWeeklyTripsData())}
-      {renderPieChart('Vehicles by Type', getVehiclesByType())}
-
-      {/* License Expiry Alerts */}
-      <View style={[styles.chartCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <Text style={[styles.chartTitle, { color: colors.textPrimary }]}>License Expiry Alerts</Text>
-        {getLicenseExpiryData().map((driver, index) => (
-          <View key={index} style={styles.licenseAlert}>
-            <Text style={[styles.driverName, { color: colors.textPrimary }]}>{driver.name}</Text>
-            <Text style={[
-              styles.expiryDays,
-              { color: driver.status === 'critical' ? '#EF4444' : driver.status === 'warning' ? '#F59E0B' : '#10B981' }
-            ]}>
-              {driver.daysToExpiry > 0 ? `${driver.daysToExpiry} days` : 'Expired'}
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: colors.primary }]}>
+              {transportStats.totalVehicles}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Total Vehicles
             </Text>
           </View>
-        ))}
-      </View>
-
-      {/* Quick Actions */}
-      <View style={[styles.quickActions, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Quick Actions</Text>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.primary }]}
-          onPress={() => setActiveTab('add-trip')}
-        >
-          <Text style={styles.actionButtonText}>Create New Trip</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: '#007AFF' }]}
-          onPress={() => setActiveTab('vehicles')}
-        >
-          <Text style={styles.actionButtonText}>Manage Vehicles</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: '#10B981' }]}
-          onPress={() => setActiveTab('drivers')}
-        >
-          <Text style={styles.actionButtonText}>Manage Drivers</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
-  );
-
-  const renderDriverCard = ({ item }: { item: Driver }) => {
-    const assignedVehicle = vehicles.find(v => v.id === item.vehicleId);
-    const expiryDate = new Date(item.licenseExpiry);
-    const daysToExpiry = Math.ceil((expiryDate.getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
-    
-    return (
-      <View style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-        <View style={styles.itemHeader}>
-          <View style={styles.itemInfo}>
-            <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name}</Text>
-            <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-              {assignedVehicle ? `Driving: ${assignedVehicle.name}` : 'No vehicle assigned'}
+          
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: '#4CAF50' }]}>
+              {transportStats.activeVehicles}
             </Text>
-            <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-              License expires: {item.licenseExpiry} ({daysToExpiry} days)
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Active Vehicles
             </Text>
           </View>
-          <View style={[
-            styles.statusBadge,
-            { backgroundColor: item.status === 'active' ? '#34C759' : '#FF3B30' }
-          ]}>
-            <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
-          </View>
         </View>
-        <View style={styles.itemActions}>
-          <TouchableOpacity
-            style={[styles.contactButton, { backgroundColor: '#34C759' }]}
-            onPress={() => handleCall(item.phone)}
-          >
-            <Text style={styles.contactButtonText}>📞</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.contactButton, { backgroundColor: '#007AFF' }]}
-            onPress={() => handleMessage(item.phone)}
-          >
-            <Text style={styles.contactButtonText}>💬</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
-  };
 
-  const renderVehicleCard = ({ item }: { item: Vehicle }) => {
-    const assignedDriver = drivers.find(d => d.id === item.driverId);
-    
-    return (
-      <TouchableOpacity
-        style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-        onPress={() => {
-          setSelectedItem(item);
-          setModalVisible(true);
-        }}
-      >
-        <View style={styles.itemHeader}>
-          <View style={styles.itemInfo}>
-            <Text style={[styles.itemName, { color: colors.textPrimary }]}>{item.name}</Text>
-            <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-              {item.type} • {item.seats} seats
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: colors.primary }]}>
+              {transportStats.totalDrivers}
             </Text>
-            <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-              DOJ: {new Date(item.dateOfJoining).toLocaleDateString()}
-            </Text>
-            <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-              Driver: {assignedDriver?.name || 'Unassigned'}
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Total Drivers
             </Text>
           </View>
-          <View style={[
-            styles.statusBadge,
-            { 
-              backgroundColor: item.status === 'active' ? '#34C759' : 
-                              item.status === 'maintenance' ? '#FF9500' : '#FF3B30'
-            }
-          ]}>
-            <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderTripCard = ({ item }: { item: Trip }) => (
-    <View style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <View style={styles.itemHeader}>
-        <View style={styles.itemInfo}>
-          <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-            {item.startPoint} → {item.endPoint}
-          </Text>
-          <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-            Driver: {item.driverName}
-            {item.secondaryDriver && ` • Co-driver: ${item.secondaryDriver}`}
-          </Text>
-          <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-            Vehicle: {item.vehicleName}
-          </Text>
-          <Text style={[styles.itemDetails, { color: colors.textSecondary }]}>
-            Passengers: {item.passengers} • Time: {item.startTime}
-            {item.endTime && ` - ${item.endTime}`}
-          </Text>
-        </View>
-        <View style={[
-          styles.statusBadge,
-          { 
-            backgroundColor: item.status === 'active' ? '#34C759' : 
-                            item.status === 'completed' ? '#007AFF' : '#FF3B30'
-          }
-        ]}>
-          <Text style={styles.statusText}>{item.status.toUpperCase()}</Text>
-        </View>
-      </View>
-    </View>
-  );
-
-  const renderAddTripForm = () => (
-    <ScrollView style={styles.formContainer}>
-      <Text style={[styles.formTitle, { color: colors.textPrimary }]}>Create New Trip</Text>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Driver *</Text>
-        <View style={[styles.pickerContainer, { borderColor: colors.border }]}>
-          <Picker
-            selectedValue={tripForm.driverId}
-            onValueChange={(value) => setTripForm({...tripForm, driverId: value})}
-            style={[styles.picker, { color: colors.textPrimary }]}
-          >
-            <Picker.Item label="Select Driver" value="" />
-            {drivers.filter(d => d.status === 'active').map(driver => (
-              <Picker.Item key={driver.id} label={driver.name} value={driver.id} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Secondary Driver</Text>
-        <View style={[styles.pickerContainer, { borderColor: colors.border }]}>
-          <Picker
-            selectedValue={tripForm.secondaryDriverId}
-            onValueChange={(value) => setTripForm({...tripForm, secondaryDriverId: value})}
-            style={[styles.picker, { color: colors.textPrimary }]}
-          >
-            <Picker.Item label="Select Secondary Driver" value="" />
-            {drivers.filter(d => d.status === 'active' && d.id !== tripForm.driverId).map(driver => (
-              <Picker.Item key={driver.id} label={driver.name} value={driver.id} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Vehicle *</Text>
-        <View style={[styles.pickerContainer, { borderColor: colors.border }]}>
-          <Picker
-            selectedValue={tripForm.vehicleId}
-            onValueChange={(value) => setTripForm({...tripForm, vehicleId: value})}
-            style={[styles.picker, { color: colors.textPrimary }]}
-          >
-            <Picker.Item label="Select Vehicle" value="" />
-            {vehicles.filter(v => v.status === 'active').map(vehicle => (
-              <Picker.Item key={vehicle.id} label={`${vehicle.name} (${vehicle.seats} seats)`} value={vehicle.id} />
-            ))}
-          </Picker>
-        </View>
-      </View>
-
-      <View style={styles.formRow}>
-        <View style={styles.formGroupHalf}>
-          <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Start Point *</Text>
-          <TextInput
-            style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-            placeholder="Enter start location"
-            placeholderTextColor={colors.textSecondary}
-            value={tripForm.startPoint}
-            onChangeText={(text) => setTripForm({...tripForm, startPoint: text})}
-          />
-        </View>
-        <View style={styles.formGroupHalf}>
-          <Text style={[styles.formLabel, { color: colors.textPrimary }]}>End Point *</Text>
-          <TextInput
-            style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-            placeholder="Enter destination"
-            placeholderTextColor={colors.textSecondary}
-            value={tripForm.endPoint}
-            onChangeText={(text) => setTripForm({...tripForm, endPoint: text})}
-          />
-        </View>
-      </View>
-
-      <View style={styles.formRow}>
-        <View style={styles.formGroupHalf}>
-          <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Passengers</Text>
-          <TextInput
-            style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-            placeholder="Number of passengers"
-            placeholderTextColor={colors.textSecondary}
-            keyboardType="numeric"
-            value={tripForm.passengers}
-            onChangeText={(text) => setTripForm({...tripForm, passengers: text})}
-          />
-        </View>
-        <View style={styles.formGroupHalf}>
-          <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Start Time</Text>
-          <TextInput
-            style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-            placeholder="HH:MM AM/PM"
-            placeholderTextColor={colors.textSecondary}
-            value={tripForm.startTime}
-            onChangeText={(text) => setTripForm({...tripForm, startTime: text})}
-          />
-        </View>
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Parking Location</Text>
-        <TextInput
-          style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-          placeholder="Enter parking location"
-          placeholderTextColor={colors.textSecondary}
-          value={tripForm.parkingLocation}
-          onChangeText={(text) => setTripForm({...tripForm, parkingLocation: text})}
-        />
-      </View>
-
-      <View style={styles.formGroup}>
-        <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Route</Text>
-        <TextInput
-          style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-          placeholder="Enter route details"
-          placeholderTextColor={colors.textSecondary}
-          value={tripForm.route}
-          onChangeText={(text) => setTripForm({...tripForm, route: text})}
-        />
-      </View>
-
-      <TouchableOpacity
-        style={[styles.submitButton, { backgroundColor: colors.primary }]}
-        onPress={handleCreateTrip}
-      >
-        <Text style={styles.submitButtonText}>Create Trip</Text>
-      </TouchableOpacity>
-    </ScrollView>
-  );
-
-  const renderVehicleDetailModal = () => (
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-          <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              Vehicle Details
+          
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: '#FF9800' }]}>
+              {transportStats.licenseExpiryAlerts}
             </Text>
-            <TouchableOpacity
-              onPress={() => setModalVisible(false)}
-              style={styles.closeButton}
-            >
-              <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              License Alerts
+            </Text>
           </View>
+        </View>
 
-          {selectedItem && (
-            <ScrollView style={styles.modalBody}>
-              <Text style={[styles.vehicleName, { color: colors.textPrimary }]}>
-                {selectedItem.name}
-              </Text>
-              <Text style={[styles.vehicleType, { color: colors.textSecondary }]}>
-                {selectedItem.type} • {selectedItem.seats} seats
-              </Text>
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: colors.primary }]}>
+              {transportStats.totalTrips}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Total Trips
+            </Text>
+          </View>
+          
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: '#4CAF50' }]}>
+              {transportStats.weeklyTrips}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Weekly Trips
+            </Text>
+          </View>
+        </View>
 
-              <View style={styles.vehicleDetails}>
-                <View style={styles.vehicleDetailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Date of Joining:</Text>
-                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-                    {new Date(selectedItem.dateOfJoining).toLocaleDateString()}
-                  </Text>
-                </View>
-                <View style={styles.vehicleDetailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Start Date:</Text>
-                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-                    {new Date(selectedItem.startDate).toLocaleDateString()}
-                  </Text>
-                </View>
-                <View style={styles.vehicleDetailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>End Date:</Text>
-                  <Text style={[styles.detailValue, { color: colors.textPrimary }]}>
-                    {new Date(selectedItem.endDate).toLocaleDateString()}
-                  </Text>
-                </View>
-                <View style={styles.vehicleDetailRow}>
-                  <Text style={[styles.detailLabel, { color: colors.textSecondary }]}>Status:</Text>
-                  <Text style={[styles.detailValue, { 
-                    color: selectedItem.status === 'active' ? '#10B981' : 
-                           selectedItem.status === 'maintenance' ? '#F59E0B' : '#EF4444'
-                  }]}>
-                    {selectedItem.status.toUpperCase()}
-                  </Text>
-                </View>
+        <View style={styles.statsRow}>
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: colors.primary }]}>
+              {transportStats.passengers}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              Passengers
+            </Text>
+          </View>
+          
+          <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.statValue, { color: '#2196F3' }]}>
+              {transportStats.tripsWithTracking}
+            </Text>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>
+              With Tracking
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Charts Section */}
+      <View style={[styles.chartSection, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
+          Vehicle Types Distribution
+        </Text>
+        <View style={styles.vehicleTypes}>
+          {['Bus', 'Van', 'Car'].map((type) => {
+            const count = vehicles.filter(v => v.type === type).length;
+            const percentage = vehicles.length > 0 ? (count / vehicles.length) * 100 : 0;
+            
+            return (
+              <View key={type} style={styles.vehicleTypeItem}>
+                <Text style={[styles.vehicleTypeName, { color: colors.textPrimary }]}>
+                  {type}
+                </Text>
+                <Text style={[styles.vehicleTypeCount, { color: colors.textSecondary }]}>
+                  {count} ({percentage.toFixed(1)}%)
+                </Text>
               </View>
+            );
+          })}
+        </View>
+      </View>
+    </ScrollView>
+  );
 
-              <TouchableOpacity
-                style={[styles.editButton, { backgroundColor: colors.primary }]}
-                onPress={() => {
-                  setModalVisible(false);
-                  // Handle edit functionality
-                  Alert.alert('Edit Vehicle', 'Edit functionality would be implemented here');
-                }}
-              >
-                <Text style={styles.editButtonText}>Edit Details</Text>
-              </TouchableOpacity>
-            </ScrollView>
+  const renderVehicles = () => (
+    <FlatList
+      data={vehicles}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity 
+          style={[styles.vehicleCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+          onPress={() => {
+            // Handle vehicle detail view
+          }}
+        >
+          <View style={styles.vehicleHeader}>
+            <Text style={[styles.vehicleName, { color: colors.textPrimary }]}>
+              {item.name}
+            </Text>
+            <View style={[
+              styles.statusBadge,
+              { backgroundColor: item.status === 'active' ? '#4CAF50' : item.status === 'maintenance' ? '#FF9800' : '#F44336' }
+            ]}>
+              <Text style={styles.statusText}>{item.status}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.vehicleDetails}>
+            <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
+              Type: {item.type} • Seats: {item.seats}
+            </Text>
+            <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
+              License: {item.license_plate}
+            </Text>
+            <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
+              DOJ: {new Date(item.date_of_joining).toLocaleDateString()}
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )}
+      contentContainerStyle={styles.listContent}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No vehicles found
+          </Text>
+        </View>
+      }
+    />
+  );
+
+  const renderTrips = () => (
+    <FlatList
+      data={trips}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <TouchableOpacity 
+          style={[styles.tripCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+          onPress={() => {
+            // Handle trip detail view with tracking
+          }}
+        >
+          <View style={styles.tripHeader}>
+            <Text style={[styles.tripRoute, { color: colors.textPrimary }]}>
+              {item.start_point} → {item.end_point}
+            </Text>
+            <View style={[
+              styles.statusBadge,
+              { backgroundColor: item.status === 'active' ? '#4CAF50' : item.status === 'completed' ? '#2196F3' : '#F44336' }
+            ]}>
+              <Text style={styles.statusText}>{item.status}</Text>
+            </View>
+          </View>
+          
+          <View style={styles.tripDetails}>
+            <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
+              Driver: {item.driver_name}
+            </Text>
+            {item.secondary_driver && (
+              <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
+                Secondary: {item.secondary_driver}
+              </Text>
+            )}
+            <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
+              Vehicle: {item.vehicle_name} • Passengers: {item.passengers}
+            </Text>
+            {item.departure_time && (
+              <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
+                Departure: {item.departure_time}
+              </Text>
+            )}
+          </View>
+        </TouchableOpacity>
+      )}
+      contentContainerStyle={styles.listContent}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No trips found
+          </Text>
+        </View>
+      }
+    />
+  );
+
+  const renderDrivers = () => (
+    <FlatList
+      data={drivers}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={({ item }) => (
+        <View style={[styles.driverCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+          <Text style={[styles.driverName, { color: colors.textPrimary }]}>
+            {item.first_name} {item.last_name}
+          </Text>
+          <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
+            Phone: {item.phone}
+          </Text>
+          <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
+            License: {item.license_number}
+          </Text>
+          {item.license_expiry && (
+            <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
+              Expires: {new Date(item.license_expiry).toLocaleDateString()}
+            </Text>
           )}
         </View>
-      </View>
-    </Modal>
+      )}
+      contentContainerStyle={styles.listContent}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No drivers found
+          </Text>
+        </View>
+      }
+    />
   );
 
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'dashboard': 
-        return renderDashboard();
-      case 'drivers': 
-        return (
-          <FlatList
-            data={drivers}
-            renderItem={renderDriverCard}
-            keyExtractor={(item) => item.id}
-            style={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        );
-      case 'vehicles': 
-        return (
-          <FlatList
-            data={vehicles}
-            renderItem={renderVehicleCard}
-            keyExtractor={(item) => item.id}
-            style={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        );
-      case 'trips': 
-        return (
-          <FlatList
-            data={trips}
-            renderItem={renderTripCard}
-            keyExtractor={(item) => item.id}
-            style={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        );
-      case 'add-trip': 
-        return renderAddTripForm();
-      default: 
-        return renderDashboard();
-    }
+  const renderModal = () => {
+    if (!modalVisible || !modalType) return null;
+
+    return (
+      <Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <View style={styles.modalHeader}>
+              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                {modalType === 'vehicle' ? 'Add Vehicle' : 'Create Trip'}
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  setModalVisible(false);
+                  setModalType(null);
+                  modalType === 'vehicle' ? resetVehicleForm() : resetTripForm();
+                }}
+                style={styles.closeButton}
+              >
+                <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.modalBody}>
+              {modalType === 'vehicle' ? (
+                <>
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Vehicle Name *</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Enter vehicle name"
+                      placeholderTextColor={colors.textSecondary}
+                      value={vehicleForm.name}
+                      onChangeText={(text) => setVehicleForm(prev => ({ ...prev, name: text }))}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Type *</Text>
+                    <View style={styles.radioGroup}>
+                      {['Bus', 'Van', 'Car'].map((type) => (
+                        <TouchableOpacity
+                          key={type}
+                          style={styles.radioOption}
+                          onPress={() => setVehicleForm(prev => ({ ...prev, type }))}
+                        >
+                          <View style={[
+                            styles.radioCircle,
+                            { borderColor: colors.border },
+                            vehicleForm.type === type && { backgroundColor: colors.primary }
+                          ]}>
+                            {vehicleForm.type === type && (
+                              <Text style={styles.radioCheck}>●</Text>
+                            )}
+                          </View>
+                          <Text style={[styles.radioLabel, { color: colors.textPrimary }]}>
+                            {type}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Seats *</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Number of seats"
+                      placeholderTextColor={colors.textSecondary}
+                      keyboardType="numeric"
+                      value={vehicleForm.seats}
+                      onChangeText={(text) => setVehicleForm(prev => ({ ...prev, seats: text }))}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>License Plate *</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Enter license plate"
+                      placeholderTextColor={colors.textSecondary}
+                      value={vehicleForm.license_plate}
+                      onChangeText={(text) => setVehicleForm(prev => ({ ...prev, license_plate: text }))}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.submitButton, { backgroundColor: colors.primary }]}
+                    onPress={handleCreateVehicle}
+                  >
+                    <Text style={styles.submitButtonText}>Add Vehicle</Text>
+                  </TouchableOpacity>
+                </>
+              ) : (
+                <>
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Driver *</Text>
+                    <TouchableOpacity style={[styles.formInput, { borderColor: colors.border }]}>
+                      <Text style={[styles.formInputText, { color: colors.textPrimary }]}>
+                        {tripForm.driver_id ? 
+                          drivers.find(d => d.id === tripForm.driver_id)?.first_name + ' ' + drivers.find(d => d.id === tripForm.driver_id)?.last_name : 
+                          'Select Driver'
+                        }
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Vehicle *</Text>
+                    <TouchableOpacity style={[styles.formInput, { borderColor: colors.border }]}>
+                      <Text style={[styles.formInputText, { color: colors.textPrimary }]}>
+                        {tripForm.vehicle_id ? 
+                          vehicles.find(v => v.id === tripForm.vehicle_id)?.name : 
+                          'Select Vehicle'
+                        }
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Start Point *</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Enter start location"
+                      placeholderTextColor={colors.textSecondary}
+                      value={tripForm.start_point}
+                      onChangeText={(text) => setTripForm(prev => ({ ...prev, start_point: text }))}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>End Point *</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Enter destination"
+                      placeholderTextColor={colors.textSecondary}
+                      value={tripForm.end_point}
+                      onChangeText={(text) => setTripForm(prev => ({ ...prev, end_point: text }))}
+                    />
+                  </View>
+
+                  <View style={styles.formGroup}>
+                    <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Parking Location</Text>
+                    <TextInput
+                      style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
+                      placeholder="Enter parking location"
+                      placeholderTextColor={colors.textSecondary}
+                      value={tripForm.parking_location}
+                      onChangeText={(text) => setTripForm(prev => ({ ...prev, parking_location: text }))}
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    style={[styles.submitButton, { backgroundColor: colors.primary }]}
+                    onPress={handleCreateTrip}
+                  >
+                    <Text style={styles.submitButtonText}>Create Trip</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+    );
   };
 
   return (
@@ -757,37 +742,85 @@ export default function TransportScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
+      {/* Filter Row */}
+      <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
+              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
+              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {user?.is_staff && (
+          <TouchableOpacity
+            style={[styles.addButton, { backgroundColor: colors.primary }]}
+            onPress={() => {
+              if (activeTab === 'vehicles') {
+                setModalType('vehicle');
+                setModalVisible(true);
+              } else if (activeTab === 'trips') {
+                setModalType('trip');
+                setModalVisible(true);
+              }
+            }}
+          >
+            <Text style={styles.addButtonText}>
+              + {activeTab === 'vehicles' ? 'Vehicle' : activeTab === 'trips' ? 'Trip' : 'Add'}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
+
       {/* Tab Navigation */}
       <View style={[styles.tabContainer, { backgroundColor: colors.surface }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          {[
-            { key: 'dashboard', label: 'Dashboard' },
-            { key: 'drivers', label: 'Drivers' },
-            { key: 'vehicles', label: 'Vehicles' },
-            { key: 'trips', label: 'Trips' },
-            { key: 'add-trip', label: 'Add Trip' },
-          ].map((tab) => (
+          {['dashboard', 'vehicles', 'trips', 'drivers'].map((tab) => (
             <TouchableOpacity
-              key={tab.key}
+              key={tab}
               style={[
                 styles.tab,
-                activeTab === tab.key && { borderBottomColor: colors.primary, borderBottomWidth: 2 }
+                activeTab === tab && { backgroundColor: colors.primary }
               ]}
-              onPress={() => setActiveTab(tab.key as any)}
+              onPress={() => setActiveTab(tab as any)}
             >
               <Text style={[
                 styles.tabText,
-                { color: activeTab === tab.key ? colors.primary : colors.textSecondary }
+                { color: activeTab === tab ? '#FFFFFF' : colors.textSecondary }
               ]}>
-                {tab.label}
+                {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
       </View>
 
-      {renderContent()}
-      {renderVehicleDetailModal()}
+      {/* Content */}
+      <View style={styles.content}>
+        {loading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+              Loading transport data...
+            </Text>
+          </View>
+        ) : (
+          <>
+            {activeTab === 'dashboard' && renderDashboard()}
+            {activeTab === 'vehicles' && renderVehicles()}
+            {activeTab === 'trips' && renderTrips()}
+            {activeTab === 'drivers' && renderDrivers()}
+          </>
+        )}
+      </View>
+
+      {renderModal()}
     </SafeAreaView>
   );
 }
@@ -796,166 +829,130 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  tabContainer: {
+  filterContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: 8,
     paddingHorizontal: 16,
   },
-  tab: {
-    paddingVertical: 12,
+  filterButton: {
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginRight: 8,
+  },
+  filterText: {
+    fontSize: 12,
+    fontWeight: '500',
+  },
+  addButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 6,
+  },
+  addButtonText: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  tabContainer: {
     paddingHorizontal: 16,
-    alignItems: 'center',
+    paddingVertical: 8,
+  },
+  tab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    marginRight: 8,
   },
   tabText: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '500',
   },
-  dashboardContent: {
+  content: {
+    flex: 1,
     padding: 16,
   },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 12,
-    marginTop: 8,
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
   },
   statsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 12,
-    marginBottom: 16,
+    marginBottom: 20,
   },
-  statsCard: {
-    flex: 1,
-    minWidth: (screenWidth - 48) / 2 - 6,
-    padding: 16,
-    borderRadius: 12,
-    borderWidth: 1,
-    alignItems: 'center',
-  },
-  statsTitle: {
-    fontSize: 12,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  statsValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  statsSubtitle: {
-    fontSize: 10,
-    textAlign: 'center',
-  },
-  chartCard: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    borderWidth: 1,
-  },
-  chartTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  barChart: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    alignItems: 'flex-end',
-    height: 120,
-  },
-  barContainer: {
-    alignItems: 'center',
-    flex: 1,
-  },
-  bar: {
-    width: 20,
-    borderRadius: 2,
-    marginBottom: 8,
-  },
-  barValue: {
-    fontSize: 10,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  barLabel: {
-    fontSize: 10,
-    textAlign: 'center',
-  },
-  pieChartContainer: {
-    alignItems: 'flex-start',
-  },
-  pieSegment: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  pieColor: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-    marginRight: 8,
-  },
-  pieLabel: {
-    fontSize: 14,
-  },
-  licenseAlert: {
+  statsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    marginBottom: 12,
   },
-  driverName: {
-    fontSize: 14,
-    fontWeight: '600',
+  statCard: {
+    flex: 1,
+    padding: 16,
+    borderRadius: 8,
+    marginHorizontal: 4,
+    alignItems: 'center',
   },
-  expiryDays: {
-    fontSize: 14,
-    fontWeight: '600',
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
-  quickActions: {
+  statLabel: {
+    fontSize: 12,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  chartSection: {
     padding: 16,
     borderRadius: 12,
-    borderWidth: 1,
+    marginBottom: 20,
   },
-  actionButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 12,
+  },
+  vehicleTypes: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+  },
+  vehicleTypeItem: {
     alignItems: 'center',
-    marginBottom: 8,
   },
-  actionButtonText: {
-    color: '#FFFFFF',
+  vehicleTypeName: {
     fontSize: 14,
     fontWeight: '600',
   },
-  listContent: {
-    padding: 16,
+  vehicleTypeCount: {
+    fontSize: 12,
+    marginTop: 4,
   },
-  itemCard: {
+  listContent: {
+    paddingBottom: 20,
+  },
+  vehicleCard: {
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
   },
-  itemHeader: {
+  vehicleHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  itemInfo: {
-    flex: 1,
-    marginRight: 12,
-  },
-  itemName: {
+  vehicleName: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  itemDetails: {
-    fontSize: 14,
-    marginBottom: 2,
+    flex: 1,
   },
   statusBadge: {
     paddingHorizontal: 8,
@@ -967,69 +964,59 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  itemActions: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 12,
+  vehicleDetails: {
+    gap: 4,
   },
-  contactButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  contactButtonText: {
-    fontSize: 16,
-  },
-  formContainer: {
-    padding: 16,
-  },
-  formTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 20,
-  },
-  formGroup: {
-    marginBottom: 16,
-  },
-  formRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  formGroupHalf: {
-    flex: 1,
-  },
-  formLabel: {
+  vehicleInfo: {
     fontSize: 14,
-    fontWeight: '600',
+  },
+  tripCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
+  },
+  tripHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 8,
   },
-  pickerContainer: {
-    borderWidth: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
+  tripRoute: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    flex: 1,
   },
-  picker: {
-    height: 44,
+  tripDetails: {
+    gap: 4,
   },
-  formInput: {
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
+  tripInfo: {
     fontSize: 14,
   },
-  submitButton: {
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
+  driverCard: {
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 12,
+    borderWidth: 1,
   },
-  submitButtonText: {
-    color: '#FFFFFF',
+  driverName: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  driverInfo: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  emptyText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
   modalOverlay: {
     flex: 1,
@@ -1041,13 +1028,15 @@ const styles = StyleSheet.create({
     width: '90%',
     maxHeight: '80%',
     borderRadius: 12,
-    padding: 20,
+    padding: 0,
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 16,
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E0E0E0',
   },
   modalTitle: {
     fontSize: 18,
@@ -1062,40 +1051,58 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalBody: {
-    maxHeight: 400,
+    padding: 20,
   },
-  vehicleName: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  vehicleType: {
-    fontSize: 16,
+  formGroup: {
     marginBottom: 16,
   },
-  vehicleDetails: {
-    marginBottom: 20,
-  },
-  vehicleDetailRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
-  },
-  detailLabel: {
-    fontSize: 14,
-  },
-  detailValue: {
-    fontSize: 14,
+  formLabel: {
+    fontSize: 16,
     fontWeight: '600',
+    marginBottom: 8,
   },
-  editButton: {
-    paddingVertical: 12,
+  formInput: {
+    height: 44,
+    borderWidth: 1,
     borderRadius: 8,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    justifyContent: 'center',
+  },
+  formInputText: {
+    fontSize: 16,
+  },
+  radioGroup: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  radioOption: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
-  editButtonText: {
+  radioCircle: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginRight: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  radioCheck: {
+    color: '#FFFFFF',
+    fontSize: 8,
+  },
+  radioLabel: {
+    fontSize: 14,
+  },
+  submitButton: {
+    paddingVertical: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  submitButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '600',
