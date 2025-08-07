@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -17,6 +16,9 @@ import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { apiService } from '@/api/apiService';
+import { useStandards, useSections, useUsers } from '@/hooks/useApi';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 
 interface ClassData {
   id: number;
@@ -51,15 +53,27 @@ export default function ClassesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<'classes' | 'timetable'>('classes');
+  const [selectedClass, setSelectedClass] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const { 
+    selectedBranch, 
+    selectedAcademicYear, 
+    branches, 
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear 
+  } = useGlobalFilters();
+
 
   const fetchClassesData = async () => {
     try {
       setError(null);
-      
-      // Since there's no direct classes endpoint, we'll use departments and branches
+
+      // Fetch data based on selected filters
       const [departmentsResponse, branchesResponse] = await Promise.all([
-        apiService.getDepartments(),
-        apiService.getBranches()
+        apiService.getDepartments(selectedBranch, selectedAcademicYear),
+        apiService.getBranches() // Assuming getBranches is always needed for the filter itself
       ]);
 
       // Transform departments into class-like data
@@ -69,18 +83,25 @@ export default function ClassesScreen() {
         section: dept.department_type || 'A',
         subject: dept.description || 'General Studies',
         teacher: dept.head_teacher || 'Staff Member',
-        schedule: 'Mon-Fri 9:00-16:00',
-        room: `Room ${100 + index}`,
-        student_count: Math.floor(Math.random() * 40) + 15,
+        schedule: 'Mon-Fri 9:00-16:00', // Placeholder, actual schedule might come from elsewhere
+        room: `Room ${100 + index}`, // Placeholder
+        student_count: Math.floor(Math.random() * 40) + 15, // Placeholder
         is_active: dept.is_active !== false,
       })) || [];
 
       setClasses(transformedClasses);
+      // Update branches data if not already loaded or if it's the initial load
+      if (!branches || branches.length === 0) {
+        // Assuming branchesResponse.results contains the branch data
+        // You might need to adjust this based on the actual structure of branchesResponse
+        // For now, let's assume it's an array of objects with id and name
+        // Example: setSelectedBranches(branchesResponse.results.map(b => ({ id: b.id, name: b.name })));
+      }
 
     } catch (err) {
       console.error('Error fetching classes data:', err);
       setError('Failed to fetch classes data');
-      
+
       // Fallback data
       setClasses([
         {
@@ -119,15 +140,15 @@ export default function ClassesScreen() {
 
   useEffect(() => {
     fetchClassesData();
-  }, []);
+  }, [selectedBranch, selectedAcademicYear]); // Re-fetch when filters change
 
   const renderClassCard = (classItem: ClassData) => (
     <TouchableOpacity
       key={classItem.id}
-      style={[styles.classCard, { backgroundColor: colors.surface }]}
+      style={[styles.classCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
       onPress={() => {
-        // Navigate to class details
-        Alert.alert('Class Details', `Navigate to ${classItem.name} details`);
+        setSelectedClass(classItem);
+        setModalVisible(true);
       }}
     >
       <View style={styles.classHeader}>
@@ -203,6 +224,15 @@ export default function ClassesScreen() {
     </View>
   );
 
+  const handleFilterConfirm = (filterType: string, value: any) => {
+    if (filterType === 'branch') {
+      setSelectedBranch(value.id);
+    } else if (filterType === 'academicYear') {
+      setSelectedAcademicYear(value.id);
+    }
+    setModalVisible(false);
+  };
+
   if (loading) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -235,6 +265,36 @@ export default function ClassesScreen() {
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
+
+      <View style={styles.filterBar}>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={[styles.filterButtonText, { color: colors.primary }]}>
+            Filter: {selectedBranch?.name || 'All Branches'} | {selectedAcademicYear?.name || 'All Years'}
+          </Text>
+        </TouchableOpacity>
+      </View>
+      
+      <ModalDropdownFilter
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        onConfirm={handleFilterConfirm}
+        options={
+          // Determine which filter options to show based on which filter was tapped
+          // For now, let's assume we are always showing Branch and Academic Year filters
+          [
+            { title: 'Branch', key: 'branch', data: branches.map(b => ({ id: b.id, name: b.name })) },
+            { title: 'Academic Year', key: 'academicYear', data: academicYears.map(ay => ({ id: ay.id, name: ay.name })) },
+          ]
+        }
+        selectedOptions={{
+          branch: branches.find(b => b.id === selectedBranch),
+          academicYear: academicYears.find(ay => ay.id === selectedAcademicYear),
+        }}
+      />
+
 
       <View style={styles.tabContainer}>
         <TouchableOpacity
@@ -319,6 +379,23 @@ const styles = StyleSheet.create({
     marginTop: 16,
     fontSize: 16,
   },
+  filterBar: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  filterButton: {
+    padding: 10,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#CCC',
+    alignItems: 'center',
+  },
+  filterButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
   tabContainer: {
     flexDirection: 'row',
     marginHorizontal: 16,
@@ -373,6 +450,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+    borderWidth: 1, // Added border width for consistency with filter bar
   },
   classHeader: {
     flexDirection: 'row',

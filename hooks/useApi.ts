@@ -1536,34 +1536,67 @@ export const useTasks = (params?: Record<string, any>) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const fetchData = useCallback(async () => {
+    // Circuit breaker: stop trying after 3 failures
+    if (retryCount >= 3) {
+      setError("Too many failed attempts. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
       
       // Clean up params - remove invalid status values
       const cleanParams = { ...params };
-      if (cleanParams.status === 'pending') {
-        // Use valid status alternatives or remove
-        cleanParams.status = 'in_progress'; // or another valid status
+      if (cleanParams && typeof cleanParams === 'object') {
+        // Remove problematic parameters
+        delete cleanParams.status; // Remove until we know valid values
+        
+        // Only include valid branch and academic_year if they exist
+        const validParams: any = {};
+        if (cleanParams.branch) validParams.branch = cleanParams.branch;
+        if (cleanParams.academic_year) validParams.academic_year = cleanParams.academic_year;
+        if (cleanParams.limit) validParams.limit = cleanParams.limit;
+        
+        const response = await apiService.getTasks(validParams);
+        setData(response || []);
+        setRetryCount(0); // Reset on success
+      } else {
+        const response = await apiService.getTasks();
+        setData(response || []);
+        setRetryCount(0);
       }
-      
-      const response = await apiService.getTasks(cleanParams);
-      setData(response || []);
     } catch (err: any) {
       console.error('Tasks fetch error:', err);
-      setError(err.response?.data?.message || err.message || 'Failed to fetch tasks');
+      
+      let errorMessage = 'Failed to fetch tasks';
+      if (err.response?.status === 500) {
+        errorMessage = 'Server error. Tasks API may be experiencing issues.';
+      } else if (err.response?.status === 401) {
+        errorMessage = 'Authentication required. Please log in again.';
+      } else if (err.message?.includes('timeout')) {
+        errorMessage = 'Request timed out. Please check your connection.';
+      } else {
+        errorMessage = err.response?.data?.message || err.message || errorMessage;
+      }
+      
+      setError(errorMessage);
+      setRetryCount(prev => prev + 1);
     } finally {
       setLoading(false);
     }
-  }, [JSON.stringify(params)]);
+  }, [JSON.stringify(params), retryCount]);
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
   const refetch = useCallback(() => {
+    setRetryCount(0);
     fetchData();
   }, [fetchData]);
 

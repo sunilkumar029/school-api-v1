@@ -65,35 +65,40 @@ export const GlobalFiltersProvider: React.FC<GlobalFiltersProviderProps> = ({
           "global_selected_academic_year",
         );
 
+        // Set branch
         if (savedBranch && branches.some(b => b.id === parseInt(savedBranch))) {
           setSelectedBranchState(parseInt(savedBranch));
         } else if (branches.length > 0) {
-          setSelectedBranchState(branches[0].id);
-          await AsyncStorage.setItem("global_selected_branch", branches[0].id.toString());
+          const defaultBranch = branches[0].id;
+          setSelectedBranchState(defaultBranch);
+          await AsyncStorage.setItem("global_selected_branch", defaultBranch.toString());
         }
 
+        // Set academic year
         if (savedYear && academicYears.some(y => y.id === parseInt(savedYear))) {
           setSelectedAcademicYearState(parseInt(savedYear));
         } else if (academicYears.length > 0) {
-          setSelectedAcademicYearState(academicYears[0].id);
-          await AsyncStorage.setItem("global_selected_academic_year", academicYears[0].id.toString());
+          const defaultYear = academicYears[0].id;
+          setSelectedAcademicYearState(defaultYear);
+          await AsyncStorage.setItem("global_selected_academic_year", defaultYear.toString());
         }
       } catch (error) {
         console.error("Error loading saved filters:", error);
         // Set defaults if loading fails
-        if (branches.length > 0) {
+        if (branches.length > 0 && !selectedBranch) {
           setSelectedBranchState(branches[0].id);
         }
-        if (academicYears.length > 0) {
+        if (academicYears.length > 0 && !selectedAcademicYear) {
           setSelectedAcademicYearState(academicYears[0].id);
         }
       }
     };
 
-    if (branches.length > 0 || academicYears.length > 0) {
+    // Only load if we have data and haven't set values yet
+    if ((branches.length > 0 && !selectedBranch) || (academicYears.length > 0 && !selectedAcademicYear)) {
       loadSavedFilters();
     }
-  }, [branches, academicYears]);
+  }, [branches, academicYears, selectedBranch, selectedAcademicYear]);
 
   const setSelectedBranch = async (branchId: number) => {
     setSelectedBranchState(branchId);

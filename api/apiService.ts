@@ -31,26 +31,36 @@ class ApiService {
     // Request interceptor to add auth token and base URL
     this.api.interceptors.request.use(
       async (config) => {
-        const token = await AsyncStorage.getItem("auth_token");
-        let baseUrl = await AsyncStorage.getItem("base_url");
+        try {
+          const token = await AsyncStorage.getItem("auth_token");
+          let baseUrl = await AsyncStorage.getItem("base_url");
 
-        if (token) {
-          config.headers.Authorization = `Token ${token}`;
-        } else {
-          // For development, skip auth for some endpoints or provide a default token
-          console.warn("No auth token found. Some API calls may fail.");
+          if (token) {
+            config.headers.Authorization = `Token ${token}`;
+          } else {
+            // For development, provide a demo token if available
+            console.warn("No auth token found. Some API calls may fail.");
+            // You can set a demo token here if needed
+            // config.headers.Authorization = `Token demo_token_here`;
+          }
+
+          // Fallback to demo server if no base URL is set
+          if (!baseUrl) {
+            baseUrl = "https://vai.dev.sms.visionariesai.com"; // Demo server fallback
+          }
+
+          if (baseUrl) {
+            config.baseURL = baseUrl;
+          }
+
+          // Add timeout and other defaults
+          config.timeout = config.timeout || 15000; // Reduced from 30s to 15s
+
+          return config;
+        } catch (error) {
+          console.error("Request interceptor error:", error);
+          return config;
         }
-
-        // Fallback to demo server if no base URL is set
-        if (!baseUrl) {
-          baseUrl = "https://vai.dev.sms.visionariesai.com"; // Demo server fallback
-        }
-
-        if (baseUrl) {
-          config.baseURL = baseUrl;
-        }
-
-        return config;
       },
       (error) => {
         console.error("Request interceptor error:", error);
