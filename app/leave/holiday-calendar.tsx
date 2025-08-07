@@ -18,7 +18,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-area';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
   useHolidays,
   useBranches,

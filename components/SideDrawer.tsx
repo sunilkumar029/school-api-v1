@@ -536,6 +536,18 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>🍽️ Canteen</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-inventory' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-inventory')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>📦 Inventory</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-analytics' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-analytics')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>📊 Analytics</Text>
+                </TouchableOpacity>
               </View>
             )}
           </ScrollView>

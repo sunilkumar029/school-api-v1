@@ -1009,6 +1009,11 @@ class ApiService {
     const response = await this.api.post("/api/hostel-products/", data);
     return response.data;
   }
+
+  async updateHostelProduct(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/hostel-products/${id}/`, data);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
