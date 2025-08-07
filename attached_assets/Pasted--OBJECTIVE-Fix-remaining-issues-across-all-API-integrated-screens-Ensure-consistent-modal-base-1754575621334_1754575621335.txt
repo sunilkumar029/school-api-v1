@@ -1,0 +1,80 @@
+# 🎯 OBJECTIVE
+Fix remaining issues across all API-integrated screens. Ensure consistent modal-based filter usage (Branch, Academic Year, and screen-specific filters). Finalize API connections, error handling, and UI unification.
+
+# ✅ COMPLETED TASKS (DO NOT REPEAT)
+- Fixed ModalDropdownFilter import issues
+- Fixed missing variables in Staff Timetable (selectedDepartment, selectedDay)
+- Replaced broken modals in Classes screen with ModalDropdownFilter
+- Implemented and connected Student Fee List & Analytics screens
+- Fixed Student Exam Timetable state management
+- Improved API service: auth token handling, fallback for public endpoints
+
+# 🚧 IN PROGRESS
+1. **Student Marks Table**
+   - Fix API error (400 or empty result bug)
+   - Add filter integration (global + exam + subject)
+
+2. **Hostel Screens**
+   - Convert all static dropdowns to `ModalDropdownFilter`
+   - Apply GlobalFiltersContext (Branch, Academic Year)
+   - Screens include:
+     - `hostel/index.tsx`
+     - `hostel/add-room.tsx`
+     - `hostel/room-allocation.tsx`
+     - `hostel/room-list.tsx`
+
+3. **Transport Management**
+   - Replace static filters with modal filters
+   - Apply GlobalFiltersContext
+   - Ensure loading/error state management
+
+4. **Inventory Management**
+   - Update:
+     - `inventory/index.tsx`
+     - `inventory/products.tsx`
+     - `inventory/orders.tsx`
+     - `inventory/stationary.tsx`
+     - `inventory/stationery-fee.tsx`
+   - Remove mock data
+   - Hook into global filters + relevant item types/suppliers
+
+5. **User Management**
+   - Implement modal filters for roles, status, and department
+   - Integrate global filters
+   - Ensure list updates correctly on filter change
+
+# 🧱 GLOBAL FILTER SYSTEM (REQUIRED ON EVERY PAGE)
+All pages must:
+- Use `useGlobalFilters()` from `GlobalFiltersContext`
+- Reactively update data when Branch or Academic Year changes
+- Use `ModalDropdownFilter` for consistency
+- Support screen-specific additional filters via modal
+
+# 🧹 CLEANUP AND QA
+- Remove any screens using mock/static data
+- Ensure dark/light theme compatibility
+- Confirm every screen:
+  - Shows loading state
+  - Has error fallback UI
+  - Uses `ModalDropdownFilter`
+  - Pulls filters from GlobalFiltersContext
+  - Uses `useApi` with proper auth & circuit breaker
+
+# 📂 RECENTLY UPDATED FILES
+- app/(tabs)/staff-timetable.tsx
+- app/(tabs)/classes.tsx
+- app/finance/student-fee-list.tsx
+- app/finance/student-fee-analytics.tsx
+- app/exams/student-exam-timetable.tsx
+- contexts/GlobalFiltersContext.tsx
+- components/ModalDropdownFilter.tsx
+- api/apiService.ts
+
+# 📊 STATUS OVERVIEW
+- Screens Done: 6/15
+- API Integration: ~80%
+- Modal Filter Usage: 40%
+- Critical Bug Fixes: 4/8
+
+# 🔚 FINAL GOAL
+Ensure all API-integrated screens use a unified modal filter system, robust token-based authentication, consistent UI states, and respond correctly to global (Branch + Academic Year) filter changes.
