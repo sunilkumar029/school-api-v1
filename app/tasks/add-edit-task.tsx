@@ -604,6 +604,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
+
 import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,

@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useColorScheme } from 'react-native';
@@ -7,34 +6,58 @@ export type FontSize = 'small' | 'medium' | 'large';
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 interface ThemeColors {
+  primary: string;
+  secondary: string;
   background: string;
   surface: string;
-  primary: string;
   textPrimary: string;
   textSecondary: string;
   border: string;
+  success: string;
+  warning: string;
+  error: string;
+  info: string;
+  cardBackground: string;
+  modalOverlay: string;
+  inputBackground: string;
   tabBar: string;
   card: string;
 }
 
 const lightColors: ThemeColors = {
-  background: '#FFFFFF',
-  surface: '#F9FAFB',
-  primary: '#3D5AFE',
-  textPrimary: '#212121',
-  textSecondary: '#757575',
-  border: '#E5E7EB',
+  primary: '#007AFF',
+  secondary: '#5856D6',
+  background: '#F2F2F7',
+  surface: '#FFFFFF',
+  textPrimary: '#000000',
+  textSecondary: '#8E8E93',
+  border: '#C6C6C8',
+  success: '#34C759',
+  warning: '#FF9500',
+  error: '#FF3B30',
+  info: '#007AFF',
+  cardBackground: '#FFFFFF',
+  modalOverlay: 'rgba(0, 0, 0, 0.5)',
+  inputBackground: '#F2F2F7',
   tabBar: '#FFFFFF',
   card: '#FFFFFF',
 };
 
 const darkColors: ThemeColors = {
-  background: '#121212',
-  surface: '#1E1E1E',
-  primary: '#3D5AFE',
+  primary: '#0A84FF',
+  secondary: '#5E5CE6',
+  background: '#000000',
+  surface: '#1C1C1E',
   textPrimary: '#FFFFFF',
-  textSecondary: '#CCCCCC',
-  border: '#374151',
+  textSecondary: '#8E8E93',
+  border: '#38383A',
+  success: '#30D158',
+  warning: '#FF9F0A',
+  error: '#FF453A',
+  info: '#64D2FF',
+  cardBackground: '#2C2C2E',
+  modalOverlay: 'rgba(0, 0, 0, 0.7)',
+  inputBackground: '#1C1C1E',
   tabBar: '#1E1E1E',
   card: '#1E1E1E',
 };

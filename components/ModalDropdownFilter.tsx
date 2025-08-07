@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,6 +7,8 @@ import {
   Modal,
   ScrollView,
   ActivityIndicator,
+  Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 
@@ -25,6 +26,7 @@ interface ModalDropdownFilterProps {
   loading?: boolean;
   placeholder?: string;
   compact?: boolean;
+  fullWidth?: boolean; // Added for potential future use or consistency
 }
 
 export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
@@ -35,6 +37,7 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
   loading = false,
   placeholder = "Select option",
   compact = false,
+  fullWidth = false, // Default to false if not provided
 }) => {
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
@@ -47,27 +50,34 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
       {!compact && (
         <Text style={[styles.label, { color: colors.textPrimary }]}>{label}</Text>
       )}
-      
+
       <TouchableOpacity
         style={[
-          compact ? styles.compactButton : styles.button,
-          { borderColor: colors.border, backgroundColor: colors.surface }
+          styles.dropdownButton,
+          compact && styles.compactButton,
+          fullWidth && styles.fullWidth,
+          {
+            borderColor: colors.border,
+            backgroundColor: colors.surface,
+          },
         ]}
         onPress={() => setModalVisible(true)}
         disabled={loading}
+        accessibilityRole="button"
+        accessibilityLabel={`Select ${label}: ${selectedItem?.name || 'No selection'}`}
+        accessibilityHint={`Opens a list to choose ${label}`}
       >
         <Text
           style={[
-            compact ? styles.compactButtonText : styles.buttonText,
-            { color: colors.textPrimary }
+            styles.buttonText,
+            compact && styles.compactText,
+            { color: colors.textPrimary },
           ]}
           numberOfLines={1}
         >
           {compact && displayText.length > 12 ? displayText.slice(0, 12) + '...' : displayText}
         </Text>
-        <Text style={[styles.dropdownIcon, { color: colors.textSecondary }]}>
-          ▼
-        </Text>
+        <Text style={[styles.arrow, { color: colors.textSecondary }]}>▼</Text>
       </TouchableOpacity>
 
       <Modal
@@ -76,21 +86,32 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
         animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-                Select {label}
-              </Text>
-              <TouchableOpacity
-                onPress={() => setModalVisible(false)}
-                style={styles.closeButton}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.primary }]}>
-                  ✕
+        <View style={[styles.modalOverlay, { backgroundColor: colors.modalOverlay }]}>
+          <SafeAreaView style={styles.modalSafeArea}>
+            <View
+              style={[
+                styles.modalContent,
+                { backgroundColor: colors.surface },
+                compact && styles.compactModal,
+              ]}
+            >
+              <View style={styles.modalHeader}>
+                <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+                  Select {label}
                 </Text>
-              </TouchableOpacity>
-            </View>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setModalVisible(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Close modal"
+                >
+                  <Text
+                    style={[styles.closeButtonText, { color: colors.primary }]}
+                  >
+                    ✕
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
             <ScrollView style={styles.modalBody}>
               {loading ? (
@@ -99,6 +120,10 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                   color={colors.primary}
                   style={styles.loading}
                 />
+              ) : items.length === 0 ? (
+                <View style={styles.emptyStateContainer}>
+                  <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>No items available</Text>
+                </View>
               ) : (
                 items.map((item) => (
                   <TouchableOpacity
@@ -117,6 +142,9 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                       onValueChange(item.id);
                       setModalVisible(false);
                     }}
+                    accessibilityRole="menuitem"
+                    accessibilityLabel={item.name}
+                    accessibilityState={{ selected: selectedValue === item.id }}
                   >
                     <Text
                       style={[
@@ -143,9 +171,10 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
               )}
             </ScrollView>
           </View>
+          </SafeAreaView>
         </View>
       </Modal>
-    </View>
+    </>
   );
 };
 
@@ -161,43 +190,51 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 8,
   },
-  button: {
+  dropdownButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
-    paddingVertical: 12,
+    paddingVertical: 10,
     borderWidth: 1,
     borderRadius: 8,
     minHeight: 44,
+    minWidth: 120,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
   },
   compactButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 8,
     paddingVertical: 6,
-    borderWidth: 1,
-    borderRadius: 6,
     minWidth: 80,
+  },
+  fullWidth: {
+    width: '100%',
   },
   buttonText: {
     fontSize: 14,
     fontWeight: '500',
     flex: 1,
+    marginRight: 8, // Add some space for the arrow
   },
-  compactButtonText: {
+  compactText: {
     fontSize: 12,
-    fontWeight: '500',
-    flex: 1,
   },
-  dropdownIcon: {
+  arrow: {
     fontSize: 10,
-    marginLeft: 4,
+    fontWeight: 'bold',
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalSafeArea: {
+    flex: 1,
+    width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -206,6 +243,11 @@ const styles = StyleSheet.create({
     maxHeight: '70%',
     borderRadius: 12,
     elevation: 8,
+    overflow: 'hidden', // To ensure border radius is applied to children
+  },
+  compactModal: {
+    width: '90%',
+    maxHeight: '80%',
   },
   modalHeader: {
     flexDirection: 'row',
@@ -213,7 +255,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: '#E5E7EB', // Consider using theme colors here
   },
   modalTitle: {
     fontSize: 18,
@@ -227,13 +269,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   modalBody: {
-    maxHeight: 300,
+    flexGrow: 1, // Allow scroll view to take available space
+    maxHeight: 300, // Explicitly set max height, though this might conflict with flexGrow depending on usage
+    paddingBottom: 16, // Add padding at the bottom of the scrollable content
   },
   modalItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 16,
     borderBottomWidth: 1,
   },
   modalItemText: {
@@ -245,6 +290,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   loading: {
-    padding: 20,
+    paddingVertical: 20,
+  },
+  emptyStateContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 40,
+  },
+  emptyStateText: {
+    fontSize: 16,
+    fontStyle: 'italic',
   },
 });

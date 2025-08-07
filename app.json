@@ -5,26 +5,29 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "scheme": "visionariesai-school-system",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/images/splash-icon.png",
+      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#4A90E2"
+      "backgroundColor": "#ffffff"
     },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.visionariesai.schoolsystem",
+      "buildNumber": "1.0.0"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundImage": "./assets/images/background-image.png",
-        "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true,
-      "package": "com.safikumar00.visionariesaischoolsystem"
+      "package": "com.visionariesai.schoolsystem",
+      "versionCode": 1
     },
     "web": {
       "bundler": "metro",
@@ -38,9 +41,8 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "4b4ab043-23ad-420e-a688-cfdf81bc9ac7"
+      "router": {
+        "origin": false
       }
     }
   }

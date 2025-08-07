@@ -1573,34 +1573,70 @@ export const useInventory = (params?: Record<string, any>) => {
 };
 
 // Generic useApi hook
-const useApi = <T>(endpoint: string, params?: Record<string, any>) => {
+const useApi = <T>(
+  endpoint: string,
+  params?: Record<string, any>,
+  options: { retryCount?: number; retryDelay?: number } = {},
+) => {
+  const { retryCount = 3, retryDelay = 1000 } = options;
   const [data, setData] = useState<T | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryAttempt, setRetryAttempt] = useState(0);
 
   const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await apiService.api.get(endpoint, { params });
-      setData(response.data.results || response.data);
-    } catch (err: any) {
-      console.error(`Error fetching ${endpoint}:`, err);
-      setError(err.response?.data?.message || err.message || `Failed to fetch ${endpoint}`);
-    } finally {
-      setLoading(false);
-    }
-  }, [endpoint, JSON.stringify(params)]);
+    let isMounted = true;
+    let attempts = 0;
+
+    const attemptFetch = async (): Promise<void> => {
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await apiService.api.get(endpoint, { params });
+        if (isMounted) {
+          setData(response.data.results || response.data);
+          setRetryAttempt(0);
+        }
+      } catch (err: any) {
+        attempts++;
+        if (isMounted) {
+          if (attempts < retryCount) {
+            console.warn(`API call to ${endpoint} failed, retrying (${attempts}/${retryCount})...`);
+            setTimeout(() => {
+              if (isMounted) {
+                attemptFetch();
+              }
+            }, retryDelay * attempts);
+          } else {
+            setError(err.response?.data?.message || err.message || `Failed to fetch ${endpoint}`);
+            setRetryAttempt(attempts);
+            console.error(`API Error after retries for ${endpoint}:`, err);
+          }
+        }
+      } finally {
+        if (isMounted && (attempts >= retryCount || !error)) {
+          setLoading(false);
+        }
+      }
+    };
+
+    await attemptFetch();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [endpoint, JSON.stringify(params), retryCount, retryDelay]);
+
+  const refetch = useCallback(() => {
+    setRetryAttempt(0);
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, [fetchData]); // Depend on fetchData to re-run when it changes
 
-  const refetch = useCallback(() => {
-    fetchData();
-  }, [fetchData]);
-
-  return { data, loading, error, refetch };
+  return { data, loading, error, refetch, retryAttempt };
 };
 
 // Exam-related hooks
