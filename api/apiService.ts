@@ -958,6 +958,57 @@ class ApiService {
   async deleteHoliday(id: number): Promise<void> {
     await this.api.delete(`/api/holidays/${id}/`);
   }
+
+  // Hostel Management
+  async getHostelRooms(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/hostel-rooms/", { params });
+    return response.data;
+  }
+
+  async getHostelBeds(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/hostel-beds/", { params });
+    return response.data;
+  }
+
+  async assignBed(bedId: number, data: any): Promise<any> {
+    const response = await this.api.post(`/api/hostel-beds/${bedId}/assign_student/`, data);
+    return response.data;
+  }
+
+  async getHostelVisitors(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/hostel-visitors/", { params });
+    return response.data;
+  }
+
+  async checkOutVisitor(visitorId: number): Promise<any> {
+    const response = await this.api.post(`/api/hostel-visitors/${visitorId}/check_out/`);
+    return response.data;
+  }
+
+  async getHostelMealPlans(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/hostel-mealplans/", { params });
+    return response.data;
+  }
+
+  async createMealPlan(data: any): Promise<any> {
+    const response = await this.api.post("/api/hostel-mealplans/", data);
+    return response.data;
+  }
+
+  async updateMealPlan(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/hostel-mealplans/${id}/`, data);
+    return response.data;
+  }
+
+  async getHostelProducts(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/hostel-products/", { params });
+    return response.data;
+  }
+
+  async createHostelProduct(data: any): Promise<any> {
+    const response = await this.api.post("/api/hostel-products/", data);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();

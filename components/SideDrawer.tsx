@@ -8,15 +8,16 @@ import {
   Modal,
   SafeAreaView,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface DrawerItem {
   title: string;
-  icon: string;
-  route: string;
+  icon?: string; // Made optional as some items might not have a direct icon in the list
+  route?: string; // Made optional as some items might be headers or lead to submenus
+  href?: string; // For navigation without a specific route object
   roles?: string[];
 }
 
@@ -34,17 +35,20 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
+  const activeRoute = usePathname(); // Get the current route
 
   const [expandedMenus, setExpandedMenus] = React.useState({
     exams: false,
     tasks: false,
     leave: false,
+    hostel: false, // Added hostel to expandedMenus state
   });
 
   const toggleSubmenu = (menu: keyof typeof expandedMenus) => {
     setExpandedMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
   };
 
+  // Removed the pre-defined Hostel section from drawerSections as it will be rendered manually
   const drawerSections: DrawerSection[] = [
     {
       title: 'Core Modules',
@@ -77,9 +81,10 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         { title: 'Create Question', route: '/exams/create-question' },
         { title: 'Schedule Exam', route: '/exams/schedule-exam' },
-        { title: 'Exam Timetable', route: '/exams/student-exam-timetable' },
-        { title: 'Student Marks', route: '/exams/student-marks-table' },
-        { title: 'Marks Analytics', route: '/exams/student-marks-analytics' },
+        // These are now handled by the expanded menu structure, so they are redundant here.
+        // { title: 'Exam Timetable', route: '/exams/student-exam-timetable' },
+        // { title: 'Student Marks', route: '/exams/student-marks-table' },
+        // { title: 'Marks Analytics', route: '/exams/student-marks-analytics' },
       ]
     },
     {
@@ -105,15 +110,16 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         { title: 'E-Course', icon: '💻', route: '/library/ecourse' },
       ]
     },
-    {
-      title: 'Hostel',
-      items: [
-        { title: 'Booking List', icon: '🏠', route: '/hostel/booking-list' },
-        { title: 'Room List', icon: '🚪', route: '/hostel/room-list' },
-        { title: 'Visitor List', icon: '👥', route: '/hostel/visitor-list' },
-        { title: 'Add Visitor', icon: '👤', route: '/hostel/add-visitor' },
-      ]
-    },
+    // Hostel section removed from here as it's handled by the expandable menu
+    // {
+    //   title: 'Hostel',
+    //   items: [
+    //     { title: 'Booking List', icon: '🏠', route: '/hostel/booking-list' },
+    //     { title: 'Room List', icon: '🚪', route: '/hostel/room-list' },
+    //     { title: 'Visitor List', icon: '👥', route: '/hostel/visitor-list' },
+    //     { title: 'Add Visitor', icon: '👤', route: '/hostel/add-visitor' },
+    //   ]
+    // },
     {
       title: 'Operations',
       items: [
@@ -139,12 +145,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         { title: 'Inventory', icon: '📦', route: '/inventory', roles: ['admin', 'staff'] },
         {
           title: 'Stationery',
-          href: '/inventory/stationery',
+          route: '/inventory/stationery', // Changed href to route for consistency
           icon: '📝',
         },
         {
           title: 'Stationery Fees',
-          href: '/inventory/stationery-fee',
+          route: '/inventory/stationery-fee', // Changed href to route for consistency
           icon: '💰',
         },
         { title: 'Invoice', icon: '📄', route: '/invoice' },
@@ -175,13 +181,18 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
           return null;
         }
 
+        // Handle items that might not have a route but are part of the section definition
+        if (!item.route && !item.href) return null;
+
+        const navigationRoute = item.route || item.href;
+
         return (
           <TouchableOpacity
             key={index}
-            style={[styles.menuItem, { borderBottomColor: colors.border }]}
-            onPress={() => handleItemPress(item.route)}
+            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === navigationRoute && styles.activeMenuItem]}
+            onPress={() => handleItemPress(navigationRoute!)} // Use ! as we've ensured it's not null
           >
-            <Text style={styles.menuIcon}>{item.icon}</Text>
+            {item.icon && <Text style={styles.menuIcon}>{item.icon}</Text>}
             <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
               {item.title}
             </Text>
@@ -244,8 +255,8 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                         return (
                           <TouchableOpacity
                             key={itemIndex}
-                            style={[styles.menuItem, { borderBottomColor: colors.border }]}
-                            onPress={() => handleItemPress(item.route)}
+                            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
+                            onPress={() => handleItemPress(item.route!)}
                           >
                             <MaterialIcons name="account-balance-wallet" size={24} color={colors.textSecondary} />
                             <Text style={[styles.menuItemText, { color: colors.textSecondary }]}>Student Fees</Text>
@@ -255,8 +266,8 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                         return (
                           <TouchableOpacity
                             key={itemIndex}
-                            style={[styles.menuItem, { borderBottomColor: colors.border }]}
-                            onPress={() => handleItemPress(item.route)}
+                            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
+                            onPress={() => handleItemPress(item.route!)}
                           >
                             <MaterialIcons name="analytics" size={24} color={colors.textSecondary} />
                             <View style={styles.menuItemWithBadge}>
@@ -274,13 +285,13 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                           <View key={itemIndex}>
                             <TouchableOpacity
                               key={itemIndex}
-                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
-                              onPress={() => handleItemPress(item.route)}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
+                              onPress={() => handleItemPress(item.route!)}
                             >
                               <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Staff Payroll</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/finance/salary-templates' && styles.activeMenuItem]}
                               onPress={() => {
                                 router.push('/finance/salary-templates');
                                 onClose();
@@ -289,7 +300,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                               <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Salary Templates</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/finance/school-expenditure' && styles.activeMenuItem]}
                               onPress={() => {
                                 router.push('/finance/school-expenditure');
                                 onClose();
@@ -303,8 +314,8 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                       return (
                         <TouchableOpacity
                           key={itemIndex}
-                          style={[styles.menuItem, { borderBottomColor: colors.border }]}
-                          onPress={() => handleItemPress(item.route)}
+                          style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
+                          onPress={() => handleItemPress(item.route!)}
                         >
                           <Text style={styles.menuIcon}>{item.icon}</Text>
                           <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
@@ -331,8 +342,8 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                       return (
                         <TouchableOpacity
                           key={itemIndex}
-                          style={[styles.menuItem, { borderBottomColor: colors.border }]}
-                          onPress={() => handleItemPress(item.route)}
+                          style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
+                          onPress={() => handleItemPress(item.route!)}
                         >
                           <Text style={styles.menuIcon}>{item.icon}</Text>
                           <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
@@ -344,7 +355,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                     })}
                     {/* Add Inventory Dashboard link */}
                     <TouchableOpacity
-                      style={[styles.menuItem, { borderBottomColor: colors.border }]}
+                      style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/inventory-dashboard' && styles.activeMenuItem]}
                       onPress={() => handleNavigation('/inventory-dashboard')}
                     >
                       <MaterialIcons name="dashboard" size={24} color={colors.textSecondary} />
@@ -358,11 +369,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
             {/* Exams Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/exams') && styles.activeMenuItem]}
               onPress={() => toggleSubmenu('exams')}
             >
-              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
-                📝 Exams
+              <Text style={styles.menuIcon}>📝</Text>
+              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                Exams
               </Text>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.exams ? '−' : '+'}
@@ -372,7 +384,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             {expandedMenus.exams && (
               <View style={styles.submenu}>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/exams/student-exam-timetable' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/exams/student-exam-timetable')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -380,7 +392,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/exams/student-marks-table' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/exams/student-marks-table')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -388,7 +400,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/exams/student-marks-analytics' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/exams/student-marks-analytics')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -400,11 +412,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
             {/* Tasks Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/tasks') && styles.activeMenuItem]}
               onPress={() => toggleSubmenu('tasks')}
             >
-              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
-                ✅ Tasks
+              <Text style={styles.menuIcon}>✅</Text>
+              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                Tasks
               </Text>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.tasks ? '−' : '+'}
@@ -414,7 +427,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             {expandedMenus.tasks && (
               <View style={styles.submenu}>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/tasks/task-list' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/tasks/task-list')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -422,7 +435,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/tasks/add-edit-task' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/tasks/add-edit-task')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -430,7 +443,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/tasks/task-submissions' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/tasks/task-submissions')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -442,11 +455,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
             {/* Leave Management Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/leave') && styles.activeMenuItem]}
               onPress={() => toggleSubmenu('leave')}
             >
-              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
-                🏖️ Leave Management
+              <Text style={styles.menuIcon}>🏖️</Text>
+              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                Leave Management
               </Text>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.leave ? '−' : '+'}
@@ -456,7 +470,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             {expandedMenus.leave && (
               <View style={styles.submenu}>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/leave/leave-requests' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/leave/leave-requests')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -464,7 +478,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/leave/leave-quota' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/leave/leave-quota')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
@@ -472,12 +486,55 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.submenuItem}
+                  style={[styles.submenuItem, activeRoute === '/leave/holiday-calendar' && styles.activeSubmenuItem]}
                   onPress={() => handleNavigation('/leave/holiday-calendar')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
                     📆 Holiday Calendar
                   </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Hostel Section - Added based on edited snippet */}
+            <TouchableOpacity
+              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/hostel') && styles.activeMenuItem]}
+              onPress={() => toggleSubmenu('hostel')}
+            >
+              <Text style={styles.menuIcon}>🏨</Text>
+              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                Hostel
+              </Text>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.hostel ? '−' : '+'}
+              </Text>
+            </TouchableOpacity>
+
+            {expandedMenus.hostel && (
+              <View style={styles.submenu}>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-rooms' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-rooms')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>🏨 Rooms</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-students' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-students')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>🧑‍🎓 Students</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-visitors' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-visitors')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>🧾 Visitors</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.submenuItem, activeRoute === '/hostel/hostel-canteen' && styles.activeSubmenuItem]}
+                  onPress={() => handleNavigation('/hostel/hostel-canteen')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>🍽️ Canteen</Text>
                 </TouchableOpacity>
               </View>
             )}
@@ -608,7 +665,7 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontWeight: 'bold',
   },
-  expandIcon: {
+  expandIcon: { // Renamed from expandIcon to submenuIcon for clarity
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
@@ -626,5 +683,12 @@ const styles = StyleSheet.create({
   submenuText: {
     fontSize: 15,
     fontWeight: '500',
+  },
+  // Added styles for active menu items
+  activeMenuItem: {
+    backgroundColor: '#E5E7EB', // Example active background color
+  },
+  activeSubmenuItem: {
+    backgroundColor: '#D1D5DB', // Example active submenu background color
   },
 });
