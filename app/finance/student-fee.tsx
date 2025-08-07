@@ -1,23 +1,30 @@
 
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal } from 'react-native';
+import React, { useState, useMemo } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Modal, ActivityIndicator, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { GlobalFilters } from '@/components/GlobalFilters';
+import { useTotalFeeSummary, useFeeSummary, useFeePayments, useStandards, useSections } from '@/hooks/useApi';
 
 interface StudentFee {
   id: string;
-  studentName: string;
+  student: {
+    id: number;
+    name: string;
+    roll_number?: string;
+  };
   class: string;
-  totalFee: number;
-  paidAmount: number;
+  total_fee: number;
+  paid_amount: number;
   balance: number;
   status: 'Paid' | 'Partially Paid' | 'Pending';
-  dueDate: string;
-  lastPaymentDate?: string;
-  paymentHistory: PaymentRecord[];
+  due_date: string;
+  last_payment_date?: string;
+  payment_history: PaymentRecord[];
 }
 
 interface PaymentRecord {
@@ -25,81 +32,73 @@ interface PaymentRecord {
   amount: number;
   date: string;
   method: string;
-  receiptNo: string;
+  receipt_no: string;
 }
 
 export default function StudentFeeScreen() {
   const { colors } = useTheme();
+  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterClass, setFilterClass] = useState('All');
   const [filterStatus, setFilterStatus] = useState('All');
+  const [selectedStandard, setSelectedStandard] = useState<number | undefined>();
+  const [selectedSection, setSelectedSection] = useState<string>('');
   const [detailsModalVisible, setDetailsModalVisible] = useState(false);
-  const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<StudentFee | null>(null);
 
-  const studentFees: StudentFee[] = [
-    {
-      id: '1',
-      studentName: 'John Smith',
-      class: '10-A',
-      totalFee: 5000,
-      paidAmount: 5000,
-      balance: 0,
-      status: 'Paid',
-      dueDate: '2024-03-31',
-      lastPaymentDate: '2024-01-15',
-      paymentHistory: [
-        { id: '1', amount: 2500, date: '2024-01-15', method: 'Bank Transfer', receiptNo: 'RCP001' },
-        { id: '2', amount: 2500, date: '2024-02-15', method: 'Cash', receiptNo: 'RCP002' }
-      ]
-    },
-    {
-      id: '2',
-      studentName: 'Emily Davis',
-      class: '11-B',
-      totalFee: 5500,
-      paidAmount: 3000,
-      balance: 2500,
-      status: 'Partially Paid',
-      dueDate: '2024-02-28',
-      lastPaymentDate: '2024-01-10',
-      paymentHistory: [
-        { id: '3', amount: 3000, date: '2024-01-10', method: 'Online', receiptNo: 'RCP003' }
-      ]
-    },
-    {
-      id: '3',
-      studentName: 'Michael Brown',
-      class: '12-A',
-      totalFee: 6000,
-      paidAmount: 0,
-      balance: 6000,
-      status: 'Pending',
-      dueDate: '2024-01-31',
-      paymentHistory: []
-    }
-  ];
+  // Fetch data using global filters
+  const feeParams = useMemo(() => ({
+    branch: selectedBranch || 1,
+    academic_year: selectedAcademicYear || 1,
+    ...(selectedStandard && { standard: selectedStandard }),
+    ...(selectedSection && { section: selectedSection }),
+  }), [selectedBranch, selectedAcademicYear, selectedStandard, selectedSection]);
 
-  const classes = ['All', '9-A', '10-A', '11-B', '12-A'];
+  const { data: feeSummary, loading: feeLoading, error: feeError, refetch } = useFeeSummary(feeParams);
+  const { data: standards } = useStandards({ branch: selectedBranch, academic_year: selectedAcademicYear });
+  const { data: sections } = useSections({ branch: selectedBranch, standard: selectedStandard });
+
+  const classes = ['All', ...(standards?.map(s => s.name) || [])];
   const statuses = ['All', 'Paid', 'Partially Paid', 'Pending'];
 
-  const filteredFees = studentFees.filter(fee => {
-    const matchesSearch = fee.studentName.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesClass = filterClass === 'All' || fee.class === filterClass;
-    const matchesStatus = filterStatus === 'All' || fee.status === filterStatus;
-    return matchesSearch && matchesClass && matchesStatus;
-  });
+  // Transform API data to match interface
+  const transformedFees: StudentFee[] = useMemo(() => {
+    if (!feeSummary) return [];
+    
+    return feeSummary.map((fee: any) => ({
+      id: fee.id?.toString() || Math.random().toString(),
+      student: {
+        id: fee.student?.id || 0,
+        name: fee.student?.name || fee.student_name || 'Unknown Student',
+        roll_number: fee.student?.roll_number,
+      },
+      class: fee.standard?.name || fee.class || 'Unknown',
+      total_fee: fee.total_fee || fee.total_amount || 0,
+      paid_amount: fee.paid_amount || fee.paid_fee || 0,
+      balance: (fee.total_fee || 0) - (fee.paid_amount || 0),
+      status: fee.paid_amount >= fee.total_fee ? 'Paid' : 
+              fee.paid_amount > 0 ? 'Partially Paid' : 'Pending',
+      due_date: fee.due_date || new Date().toISOString().split('T')[0],
+      last_payment_date: fee.last_payment_date,
+      payment_history: fee.payment_history || [],
+    }));
+  }, [feeSummary]);
+
+  const filteredFees = useMemo(() => {
+    return transformedFees.filter(fee => {
+      const matchesSearch = fee.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (fee.student.roll_number && fee.student.roll_number.toLowerCase().includes(searchQuery.toLowerCase()));
+      const matchesClass = filterClass === 'All' || fee.class === filterClass;
+      const matchesStatus = filterStatus === 'All' || fee.status === filterStatus;
+      return matchesSearch && matchesClass && matchesStatus;
+    });
+  }, [transformedFees, searchQuery, filterClass, filterStatus]);
 
   const handleViewDetails = (student: StudentFee) => {
     setSelectedStudent(student);
     setDetailsModalVisible(true);
-  };
-
-  const handleUpdatePayment = (student: StudentFee) => {
-    setSelectedStudent(student);
-    setPaymentModalVisible(true);
   };
 
   const getStatusColor = (status: string) => {
@@ -112,9 +111,9 @@ export default function StudentFeeScreen() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'INR'
     }).format(amount);
   };
 
@@ -122,8 +121,11 @@ export default function StudentFeeScreen() {
     <View key={fee.id} style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       <View style={styles.feeHeader}>
         <View style={styles.studentInfo}>
-          <Text style={[styles.studentName, { color: colors.textPrimary }]}>{fee.studentName}</Text>
-          <Text style={[styles.studentClass, { color: colors.textSecondary }]}>Class: {fee.class}</Text>
+          <Text style={[styles.studentName, { color: colors.textPrimary }]}>{fee.student.name}</Text>
+          <Text style={[styles.studentClass, { color: colors.textSecondary }]}>
+            Class: {fee.class}
+            {fee.student.roll_number && ` • Roll: ${fee.student.roll_number}`}
+          </Text>
         </View>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.status) }]}>
           <Text style={styles.statusText}>{fee.status}</Text>
@@ -133,11 +135,11 @@ export default function StudentFeeScreen() {
       <View style={styles.feeDetails}>
         <View style={styles.feeRow}>
           <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Fee:</Text>
-          <Text style={[styles.feeValue, { color: colors.textPrimary }]}>{formatCurrency(fee.totalFee)}</Text>
+          <Text style={[styles.feeValue, { color: colors.textPrimary }]}>{formatCurrency(fee.total_fee)}</Text>
         </View>
         <View style={styles.feeRow}>
           <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Paid:</Text>
-          <Text style={[styles.feeValue, { color: '#10B981' }]}>{formatCurrency(fee.paidAmount)}</Text>
+          <Text style={[styles.feeValue, { color: '#10B981' }]}>{formatCurrency(fee.paid_amount)}</Text>
         </View>
         <View style={styles.feeRow}>
           <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Balance:</Text>
@@ -147,13 +149,15 @@ export default function StudentFeeScreen() {
         </View>
         <View style={styles.feeRow}>
           <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Due Date:</Text>
-          <Text style={[styles.feeValue, { color: colors.textPrimary }]}>{fee.dueDate}</Text>
+          <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
+            {new Date(fee.due_date).toLocaleDateString()}
+          </Text>
         </View>
       </View>
 
-      {fee.lastPaymentDate && (
+      {fee.last_payment_date && (
         <Text style={[styles.lastPayment, { color: colors.textSecondary }]}>
-          Last payment: {fee.lastPaymentDate}
+          Last payment: {new Date(fee.last_payment_date).toLocaleDateString()}
         </Text>
       )}
       
@@ -164,16 +168,76 @@ export default function StudentFeeScreen() {
         >
           <Text style={[styles.actionButtonText, { color: colors.primary }]}>View Details</Text>
         </TouchableOpacity>
-        {fee.balance > 0 && (
-          <TouchableOpacity
-            style={[styles.actionButton, { backgroundColor: colors.primary }]}
-            onPress={() => handleUpdatePayment(fee)}
-          >
-            <Text style={styles.updateButtonText}>Update Payment</Text>
-          </TouchableOpacity>
-        )}
       </View>
     </View>
+  );
+
+  const renderDetailsModal = () => (
+    <Modal
+      visible={detailsModalVisible}
+      transparent={true}
+      animationType="slide"
+      onRequestClose={() => setDetailsModalVisible(false)}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+          <View style={styles.modalHeader}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Fee Details</Text>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setDetailsModalVisible(false)}
+            >
+              <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
+            </TouchableOpacity>
+          </View>
+          
+          {selectedStudent && (
+            <ScrollView style={styles.modalBody}>
+              <View style={styles.detailSection}>
+                <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>Student Information</Text>
+                <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+                  Name: {selectedStudent.student.name}
+                </Text>
+                <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+                  Class: {selectedStudent.class}
+                </Text>
+                {selectedStudent.student.roll_number && (
+                  <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+                    Roll Number: {selectedStudent.student.roll_number}
+                  </Text>
+                )}
+              </View>
+
+              <View style={styles.detailSection}>
+                <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>Fee Summary</Text>
+                <View style={[styles.feeSummary, { backgroundColor: colors.background }]}>
+                  <View style={styles.summaryRow}>
+                    <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Total Fee</Text>
+                    <Text style={[styles.summaryValue, { color: colors.textPrimary }]}>
+                      {formatCurrency(selectedStudent.total_fee)}
+                    </Text>
+                  </View>
+                  <View style={styles.summaryRow}>
+                    <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Paid Amount</Text>
+                    <Text style={[styles.summaryValue, { color: '#10B981' }]}>
+                      {formatCurrency(selectedStudent.paid_amount)}
+                    </Text>
+                  </View>
+                  <View style={[styles.summaryRow, styles.balanceRow, { borderTopColor: colors.border }]}>
+                    <Text style={[styles.summaryLabel, styles.balanceLabel, { color: colors.textPrimary }]}>Balance</Text>
+                    <Text style={[styles.summaryValue, styles.balanceValue, { 
+                      color: selectedStudent.balance > 0 ? '#EF4444' : '#10B981' 
+                    }]}>
+                      {formatCurrency(selectedStudent.balance)}
+                    </Text>
+                  </View>
+                </View>
+              </View>
+            </ScrollView>
+          )}
+        </View>
+      </View>
+    </Modal>
   );
 
   return (
@@ -190,11 +254,18 @@ export default function StudentFeeScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Search and Filters */}
+      {/* Global Filters */}
+      <GlobalFilters />
+
+      {/* Search and Local Filters */}
       <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
         <TextInput
-          style={[styles.searchInput, { backgroundColor: colors.background, borderColor: colors.border, color: colors.text }]}
-          placeholder="Search by student name..."
+          style={[styles.searchInput, { 
+            backgroundColor: colors.background, 
+            borderColor: colors.border, 
+            color: colors.textPrimary 
+          }]}
+          placeholder="Search by student name or roll number..."
           placeholderTextColor={colors.textSecondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -250,103 +321,50 @@ export default function StudentFeeScreen() {
       </View>
 
       {/* Fee List */}
-      <ScrollView style={styles.feeList}>
-        {filteredFees.length > 0 ? (
-          filteredFees.map(renderFeeCard)
-        ) : (
-          <View style={styles.emptyState}>
-            <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
-              No fee records found
-            </Text>
-          </View>
-        )}
-      </ScrollView>
-
-      {/* Details Modal */}
-      <Modal
-        visible={detailsModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setDetailsModalVisible(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-            <View style={styles.modalHeader}>
-              <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Fee Details</Text>
-              <TouchableOpacity
-                style={styles.closeButton}
-                onPress={() => setDetailsModalVisible(false)}
-              >
-                <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
-              </TouchableOpacity>
-            </View>
-            
-            {selectedStudent && (
-              <ScrollView style={styles.modalBody}>
-                <View style={styles.detailSection}>
-                  <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>Student Information</Text>
-                  <Text style={[styles.detailText, { color: colors.textSecondary }]}>
-                    Name: {selectedStudent.studentName}
-                  </Text>
-                  <Text style={[styles.detailText, { color: colors.textSecondary }]}>
-                    Class: {selectedStudent.class}
-                  </Text>
-                </View>
-
-                <View style={styles.detailSection}>
-                  <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>Fee Summary</Text>
-                  <View style={styles.feeSummary}>
-                    <View style={styles.summaryRow}>
-                      <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Total Fee</Text>
-                      <Text style={[styles.summaryValue, { color: colors.textPrimary }]}>
-                        {formatCurrency(selectedStudent.totalFee)}
-                      </Text>
-                    </View>
-                    <View style={styles.summaryRow}>
-                      <Text style={[styles.summaryLabel, { color: colors.textSecondary }]}>Paid Amount</Text>
-                      <Text style={[styles.summaryValue, { color: '#10B981' }]}>
-                        {formatCurrency(selectedStudent.paidAmount)}
-                      </Text>
-                    </View>
-                    <View style={[styles.summaryRow, styles.balanceRow]}>
-                      <Text style={[styles.summaryLabel, styles.balanceLabel, { color: colors.textPrimary }]}>Balance</Text>
-                      <Text style={[styles.summaryValue, styles.balanceValue, { color: selectedStudent.balance > 0 ? '#EF4444' : '#10B981' }]}>
-                        {formatCurrency(selectedStudent.balance)}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-
-                {selectedStudent.paymentHistory.length > 0 && (
-                  <View style={styles.detailSection}>
-                    <Text style={[styles.detailTitle, { color: colors.textPrimary }]}>Payment History</Text>
-                    {selectedStudent.paymentHistory.map((payment) => (
-                      <View key={payment.id} style={[styles.paymentRecord, { borderColor: colors.border }]}>
-                        <View style={styles.paymentInfo}>
-                          <Text style={[styles.paymentAmount, { color: colors.textPrimary }]}>
-                            {formatCurrency(payment.amount)}
-                          </Text>
-                          <Text style={[styles.paymentDate, { color: colors.textSecondary }]}>
-                            {payment.date}
-                          </Text>
-                        </View>
-                        <View style={styles.paymentDetails}>
-                          <Text style={[styles.paymentMethod, { color: colors.textSecondary }]}>
-                            {payment.method}
-                          </Text>
-                          <Text style={[styles.receiptNo, { color: colors.textSecondary }]}>
-                            Receipt: {payment.receiptNo}
-                          </Text>
-                        </View>
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </ScrollView>
-            )}
-          </View>
+      {feeLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading fee data...
+          </Text>
         </View>
-      </Modal>
+      ) : feeError ? (
+        <View style={styles.errorContainer}>
+          <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
+            Failed to load fee data. Please try again.
+          </Text>
+          <TouchableOpacity
+            onPress={refetch}
+            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+          >
+            <Text style={styles.retryButtonText}>Retry</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <ScrollView 
+          style={styles.feeList}
+          refreshControl={
+            <RefreshControl
+              refreshing={feeLoading}
+              onRefresh={refetch}
+              colors={[colors.primary]}
+              tintColor={colors.primary}
+            />
+          }
+        >
+          {filteredFees.length > 0 ? (
+            filteredFees.map(renderFeeCard)
+          ) : (
+            <View style={styles.emptyState}>
+              <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+                No fee records found
+              </Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
+
+      {renderDetailsModal()}
     </SafeAreaView>
   );
 }
@@ -389,6 +407,37 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '600',
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  loadingText: {
+    marginTop: 12,
+    fontSize: 16,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  retryButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '600',
+  },
   feeList: {
     flex: 1,
     padding: 16,
@@ -398,6 +447,11 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 12,
     borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
   feeHeader: {
     flexDirection: 'row',
@@ -460,11 +514,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
-  updateButtonText: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    fontWeight: '600',
-  },
   emptyState: {
     alignItems: 'center',
     marginTop: 50,
@@ -519,7 +568,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   feeSummary: {
-    backgroundColor: '#F9FAFB',
     borderRadius: 8,
     padding: 16,
   },
@@ -537,7 +585,6 @@ const styles = StyleSheet.create({
   },
   balanceRow: {
     borderTopWidth: 1,
-    borderTopColor: '#E5E7EB',
     paddingTop: 8,
     marginTop: 8,
   },
@@ -547,34 +594,5 @@ const styles = StyleSheet.create({
   balanceValue: {
     fontWeight: 'bold',
     fontSize: 18,
-  },
-  paymentRecord: {
-    borderWidth: 1,
-    borderRadius: 8,
-    padding: 12,
-    marginBottom: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  paymentInfo: {
-    flex: 1,
-  },
-  paymentAmount: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  paymentDate: {
-    fontSize: 14,
-    marginTop: 2,
-  },
-  paymentDetails: {
-    alignItems: 'flex-end',
-  },
-  paymentMethod: {
-    fontSize: 14,
-  },
-  receiptNo: {
-    fontSize: 12,
-    marginTop: 2,
   },
 });
