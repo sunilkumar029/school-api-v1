@@ -1,0 +1,103 @@
+🎯 OBJECTIVE:
+Fix critical errors, unify filter behavior with dashboard-style modal dropdowns, and refactor global filters (Department, Day, Branch, Academic Year) as modals across specified screens. Fix rendering crashes, UI overflow, and hook initialization bugs.
+
+✅ PHASE 1 – TASK FILES (7 TARGET FILES):
+1. /academics/staff-timetable.tsx
+Replace department and day dropdowns with ModalDropdownFilter
+
+Use GlobalFiltersContext to manage state
+
+Ensure data refetches when global filters change
+
+Ensure proper empty/loading/error state rendering
+
+2. /users.tsx
+Convert filters (especially department) to modal dropdown
+
+Connect to global filters (Branch, Academic Year, Department)
+
+Fix any state mismatch or unused legacy dropdown code
+
+3. /inventory-dashboard.tsx
+Fix getStatusColor reference error (Cannot access before initialization)
+
+Move status color logic to top or external helper file
+
+Refactor filters to match dashboard modal dropdown style
+
+4. /exams/student-marks-analytics.tsx
+Convert Department, Class, and Exam filters to modal dropdowns
+
+Use global filters context values where applicable
+
+Add error handling and loading state
+
+5. /finance/student-fee-list.tsx
+Fix horizontal filter overflow
+
+Wrap filter container in ScrollView with horizontal enabled
+
+Ensure scroll works on all devices and orientations
+
+6. /finance/student-fee-analytics.tsx
+Same fix as above: wrap filters in horizontally scrollable container
+
+Add margin/padding to ensure proper layout spacing
+
+Ensure filters respect global values (Branch, Academic Year)
+
+7. /academics/student-attendance.tsx
+Fix rendering crash:
+
+python
+Copy
+Edit
+Objects are not valid as a React child (found: object with keys {id, section, department, ...})
+Likely issue: trying to render an object directly inside JSX (e.g. Text({section}))
+
+Convert complex objects to readable strings (e.g., section.name, teacher.first_name)
+
+Add null/undefined checks before rendering
+
+🧱 STANDARDS FOR ALL SCREENS:
+Use ModalDropdownFilter from shared components
+
+Integrate useGlobalFilters() context:
+
+selectedBranch
+
+selectedAcademicYear
+
+selectedDepartment (if applicable)
+
+selectedDay (if applicable)
+
+No static dropdowns allowed
+
+Proper fallback UI:
+
+Loading...
+
+No Records Found
+
+API Error – Retry
+
+🧼 CLEAN-UP:
+Remove any unused imports
+
+Ensure filter-related state is only in context or screen-level, not duplicated
+
+Move any repeated logic to shared utils/hooks
+
+⚠️ MOCK SCREEN CLEANUP:
+Move the following screens to mock folder (do not delete):
+
+academics/student-marks.tsx
+
+app/analytics.tsx
+
+finance/staff-payroll.tsx
+
+transport.tsx
+
+Place them under src/screens/_mock/ or appropriate folder and add // MOCK SCREEN - NOT USED IN PROD comment on top of file.
