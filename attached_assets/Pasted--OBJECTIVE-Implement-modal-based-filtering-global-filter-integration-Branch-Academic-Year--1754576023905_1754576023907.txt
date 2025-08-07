@@ -1,0 +1,84 @@
+# 🎯 OBJECTIVE
+Implement modal-based filtering, global filter integration (Branch & Academic Year), and proper API hooks across all Hostel Management screens. Ensure consistent UX, fix bugs, and unify data-fetching patterns using `useApi`, `ModalDropdownFilter`, and `GlobalFiltersContext`.
+
+# ✅ PREVIOUSLY COMPLETED (DO NOT MODIFY)
+- Staff Timetable
+- Classes
+- Student Fee List & Analytics
+- Student Exam Timetable
+- Student Marks Table
+- Inventory Dashboard
+- GlobalFiltersContext Optimization
+- Token-based API Auth + Demo Fallback
+
+# 📌 CURRENT TASK: HOSTEL MODULE (6 SCREENS)
+
+## 1. hostel/hostel-rooms.tsx
+- Replace any static dropdowns with `ModalDropdownFilter`
+- Integrate `useGlobalFilters()` and react to Branch/Academic Year changes
+- Fix API connection and errors
+- Add loading & empty state fallback
+
+## 2. hostel/hostel-students.tsx
+- Connect to student-room allocation API
+- Implement filters for room, block (via modal)
+- Integrate GlobalFiltersContext
+- Ensure token-based fetching
+
+## 3. hostel/hostel-visitors.tsx
+- Filter: Visitor type, date
+- Use modal dropdown filters only
+- Add global filters (Branch, Academic Year)
+
+## 4. hostel/hostel-canteen.tsx
+- Integrate filters: Meal type, date
+- Fix API hook or write if missing
+- Remove mock/static data
+
+## 5. hostel/hostel-inventory.tsx
+- Filter: Item type or category (ModalDropdownFilter)
+- Sync with Branch & Academic Year from context
+- Confirm data reloads on filter change
+
+## 6. hostel/hostel-analytics.tsx
+- Add global filters (Branch, Academic Year)
+- Apply modal-style filters for category/date if applicable
+- Handle chart rendering issues for dark mode compatibility
+
+# 🧱 FILTER SYSTEM REQUIREMENTS
+All screens must:
+- Use `ModalDropdownFilter` for each dropdown
+- Subscribe to `useGlobalFilters()` context
+- Watch for `selectedBranch` and `selectedAcademicYear`
+- Reset data or refetch on filter change
+
+# 🔐 API SERVICE
+- Use `apiService` with token fallback for development
+- If endpoint is missing, wrap it using `useApi` or create new `useHostelXYZ()` hooks
+- Use try/catch with error fallback UI
+- Show toast or error state in UI for 4xx/5xx
+
+# ⚠️ VALIDATION & UI/UX
+- No mock data should remain
+- All screens must show:
+  - Loading state (Skeleton or spinner)
+  - Empty data fallback (No records found)
+  - Error state (API or auth issues)
+- All filters must work with modal-based dropdown
+- Theme should follow system preference (dark/light)
+
+# 🧹 CLEAN-UP
+- Remove unused imports or legacy filter components
+- Refactor repeated filter logic into shared utilities/hooks if needed
+
+# 📊 STATUS TRACKING
+Screens Completed: 8/22
+Current Focus: Hostel Screens (6)
+Next Queue:
+  - transport.tsx
+  - users.tsx
+  - inventory/*.tsx
+  - tasks/*.tsx
+
+# 🔚 GOAL
+Finish and unify all 6 Hostel screens using the new modal filter structure, global context, and authenticated APIs — in preparation for final rollout to Transport and User Management modules.
