@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -58,20 +57,20 @@ export default function StudentMarksTableScreen() {
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
   const { data: examTypes } = useExamTypes();
-  
+
   const standardsParams = useMemo(() => ({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
     is_active: true,
   }), [selectedBranch, selectedAcademicYear]);
-  
+
   const { data: standards } = useStandards(standardsParams);
-  
+
   const sectionsParams = useMemo(() => ({
     branch: selectedBranch,
     standard: selectedStandard,
   }), [selectedBranch, selectedStandard]);
-  
+
   const { data: sections } = useSections(sectionsParams);
 
   const marksParams = useMemo(() => {
@@ -97,7 +96,7 @@ export default function StudentMarksTableScreen() {
     if (!marks) return [];
 
     const studentMap = new Map();
-    
+
     marks.forEach((mark: StudentMark) => {
       const studentId = mark.student.id;
       if (!studentMap.has(studentId)) {
@@ -108,7 +107,7 @@ export default function StudentMarksTableScreen() {
           totalMaxMarks: 0,
         });
       }
-      
+
       const studentData = studentMap.get(studentId);
       studentData.subjects.push({
         subject: mark.exam_schedule.department.name,
@@ -146,7 +145,7 @@ export default function StudentMarksTableScreen() {
           </Text>
         )}
       </View>
-      
+
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subjectsScroll}>
         {item.subjects.map((subject: any, index: number) => (
           <View key={index} style={[styles.subjectCell, { backgroundColor: colors.background }]}>
@@ -167,7 +166,7 @@ export default function StudentMarksTableScreen() {
           </View>
         ))}
       </ScrollView>
-      
+
       <View style={[styles.totalCell, { backgroundColor: colors.background }]}>
         <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Total</Text>
         <Text style={[styles.totalMarks, { color: colors.textPrimary }]}>
@@ -199,53 +198,40 @@ export default function StudentMarksTableScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Filters */}
-      <ScrollView horizontal style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Select Branch'}
+      {/* Compact Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Select Year'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Standard</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'All Standards'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'Standard'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Section</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedSection ? sections?.find(s => s.id === selectedSection)?.name : 'All Sections'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedSection ? sections?.find(s => s.id === selectedSection)?.name : 'Section'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Exam Type</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'All Types'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'Exam Type'}
             </Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       {/* Content */}
       {marksLoading ? (
@@ -301,8 +287,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    paddingVertical: 16,
+    paddingVertical: 8, // Reduced padding
     paddingHorizontal: 8,
+    flexDirection: 'row', // Changed to row for horizontal scrolling
+    alignItems: 'center',
+  },
+  filtersContent: {
+    paddingHorizontal: 4, // Added padding for scroll view content
   },
   filterGroup: {
     marginHorizontal: 8,
@@ -322,6 +313,19 @@ const styles = StyleSheet.create({
   filterButtonText: {
     fontSize: 14,
     textAlign: 'center',
+  },
+  compactFilterButton: {
+    borderWidth: 1,
+    borderRadius: 20, // Rounded corners for compact buttons
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginHorizontal: 4, // Space between compact buttons
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  compactFilterText: {
+    fontSize: 14,
+    fontWeight: '500',
   },
   loadingContainer: {
     flex: 1,

@@ -38,6 +38,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
   const [expandedMenus, setExpandedMenus] = React.useState({
     exams: false,
     tasks: false,
+    leave: false,
   });
 
   const toggleSubmenu = (menu: keyof typeof expandedMenus) => {
@@ -425,7 +426,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   onPress={() => handleNavigation('/tasks/add-edit-task')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
-                    ➕ Add Task
+                    ➕ Add/Edit Task
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -433,7 +434,49 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   onPress={() => handleNavigation('/tasks/task-submissions')}
                 >
                   <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
-                    📩 Submissions
+                    📨 Task Submissions
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {/* Leave Management Section */}
+            <TouchableOpacity
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              onPress={() => toggleSubmenu('leave')}
+            >
+              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>
+                🏖️ Leave Management
+              </Text>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.leave ? '−' : '+'}
+              </Text>
+            </TouchableOpacity>
+
+            {expandedMenus.leave && (
+              <View style={styles.submenu}>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/leave/leave-requests')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📄 Leave Requests
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/leave/leave-quota')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📊 Leave Quota
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.submenuItem}
+                  onPress={() => handleNavigation('/leave/holiday-calendar')}
+                >
+                  <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                    📆 Holiday Calendar
                   </Text>
                 </TouchableOpacity>
               </View>

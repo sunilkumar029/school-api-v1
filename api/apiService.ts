@@ -893,6 +893,71 @@ class ApiService {
   async deleteTaskSubmission(id: number): Promise<void> {
     await this.api.delete(`/api/task-submissions/${id}/`);
   }
+
+  // Leave Management
+  async getLeaveRequests(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/leave/", { params });
+    return response.data;
+  }
+
+  async createLeaveRequest(data: any): Promise<any> {
+    const response = await this.api.post("/api/leave/", data);
+    return response.data;
+  }
+
+  async updateLeaveRequest(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/leave/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteLeaveRequest(id: number): Promise<void> {
+    await this.api.delete(`/api/leave/${id}/`);
+  }
+
+  async approveLeaveRequest(id: number, approvalData: any): Promise<any> {
+    const response = await this.api.patch(`/api/leave/${id}/approve/`, approvalData);
+    return response.data;
+  }
+
+  // Leave Quotas
+  async getLeaveQuotas(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/leave-quotas/", { params });
+    return response.data;
+  }
+
+  async createLeaveQuota(data: any): Promise<any> {
+    const response = await this.api.post("/api/leave-quotas/", data);
+    return response.data;
+  }
+
+  async updateLeaveQuota(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/leave-quotas/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteLeaveQuota(id: number): Promise<void> {
+    await this.api.delete(`/api/leave-quotas/${id}/`);
+  }
+
+  // Holiday Calendar
+  async getHolidays(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/holidays/", { params });
+    return response.data;
+  }
+
+  async createHoliday(data: any): Promise<any> {
+    const response = await this.api.post("/api/holidays/", data);
+    return response.data;
+  }
+
+  async updateHoliday(id: number, data: any): Promise<any> {
+    const response = await this.api.patch(`/api/holidays/${id}/`, data);
+    return response.data;
+  }
+
+  async deleteHoliday(id: number): Promise<void> {
+    await this.api.delete(`/api/holidays/${id}/`);
+  }
 }
 
 export const apiService = new ApiService();

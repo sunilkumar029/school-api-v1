@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -62,20 +61,20 @@ export default function StudentExamTimetableScreen() {
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
   const { data: examTypes } = useExamTypes();
-  
+
   const standardsParams = useMemo(() => ({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
     is_active: true,
   }), [selectedBranch, selectedAcademicYear]);
-  
+
   const { data: standards } = useStandards(standardsParams);
-  
+
   const sectionsParams = useMemo(() => ({
     branch: selectedBranch,
     standard: selectedStandard,
   }), [selectedBranch, selectedStandard]);
-  
+
   const { data: sections } = useSections(sectionsParams);
 
   const examsParams = useMemo(() => {
@@ -131,15 +130,15 @@ export default function StudentExamTimetableScreen() {
           </Text>
         </View>
       </View>
-      
+
       <Text style={[styles.examDate, { color: colors.textSecondary }]}>
         📅 {formatDate(item.start_date)} - {formatDate(item.end_date)}
       </Text>
-      
+
       <Text style={[styles.standard, { color: colors.textSecondary }]}>
         🎓 {item.standard?.name}
       </Text>
-      
+
       <View style={styles.schedulePreview}>
         <Text style={[styles.scheduleTitle, { color: colors.textPrimary }]}>
           Subjects ({item.exam_schedules.length}):
@@ -180,7 +179,7 @@ export default function StudentExamTimetableScreen() {
               <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
             </TouchableOpacity>
           </View>
-          
+
           {selectedExam && (
             <ScrollView style={styles.modalBody}>
               <View style={styles.examInfo}>
@@ -189,25 +188,25 @@ export default function StudentExamTimetableScreen() {
                   {formatDate(selectedExam.start_date)} - {formatDate(selectedExam.end_date)}
                 </Text>
               </View>
-              
+
               <View style={styles.examInfo}>
                 <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Mode:</Text>
                 <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
                   {selectedExam.is_online ? 'Online' : 'Offline'}
                 </Text>
               </View>
-              
+
               <View style={styles.examInfo}>
                 <Text style={[styles.infoLabel, { color: colors.textSecondary }]}>Standard:</Text>
                 <Text style={[styles.infoValue, { color: colors.textPrimary }]}>
                   {selectedExam.standard?.name}
                 </Text>
               </View>
-              
+
               <Text style={[styles.scheduleHeader, { color: colors.textPrimary }]}>
                 Exam Schedule:
               </Text>
-              
+
               {selectedExam.exam_schedules.map((schedule, index) => (
                 <View key={index} style={[styles.scheduleItem, { backgroundColor: colors.background }]}>
                   <Text style={[styles.subjectTitle, { color: colors.textPrimary }]}>
@@ -242,44 +241,34 @@ export default function StudentExamTimetableScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Filters */}
-      <ScrollView horizontal style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Branch</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Select Branch'}
+      {/* Compact Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Academic Year</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Select Year'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Standard</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'All Standards'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'Standard'}
             </Text>
           </TouchableOpacity>
-        </View>
-        
-        <View style={styles.filterGroup}>
-          <Text style={[styles.filterLabel, { color: colors.textPrimary }]}>Exam Type</Text>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
-              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'All Types'}
+
+          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
+            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'Exam Type'}
             </Text>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
 
       {/* Content */}
       {examsLoading ? (
@@ -337,8 +326,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    paddingVertical: 16,
+    paddingVertical: 8, // Reduced padding
     paddingHorizontal: 8,
+  },
+  filtersContent: { // New style for ScrollView content
+    paddingHorizontal: 4,
   },
   filterGroup: {
     marginHorizontal: 8,
@@ -358,6 +350,18 @@ const styles = StyleSheet.create({
   filterButtonText: {
     fontSize: 14,
     textAlign: 'center',
+  },
+  compactFilterButton: { // New style for compact filters
+    borderWidth: 1,
+    borderRadius: 20, // More rounded
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginHorizontal: 4, // Spacing between compact filters
+    backgroundColor: 'white', // Default background, will be overridden by theme
+  },
+  compactFilterText: { // New style for compact filter text
+    fontSize: 14,
+    fontWeight: '500',
   },
   loadingContainer: {
     flex: 1,
