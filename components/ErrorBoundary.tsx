@@ -93,11 +93,9 @@ class ErrorBoundaryClass extends Component<Props & { colors: any }, State> {
 export const ErrorBoundary: React.FC<Props> = ({ children, fallback }) => {
   const { colors } = useTheme();
   return (
-    <ThemeProvider>
-      <ErrorBoundaryClass colors={colors} fallback={fallback}>
-        {children}
-      </ErrorBoundaryClass>
-    </ThemeProvider>
+    <ErrorBoundaryClass colors={colors} fallback={fallback}>
+      {children}
+    </ErrorBoundaryClass>
   );
 };
 

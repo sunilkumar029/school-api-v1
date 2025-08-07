@@ -54,25 +54,16 @@ export function useEvents(params?: any) {
         setLoading(true);
         setError(null);
 
-        // Clean up params to avoid API errors
-        const cleanParams = { ...params };
+        // Use default params if none provided
+        const defaultParams = {
+          branch: 1,
+          academic_year: 1,
+          limit: 50,
+          ...params
+        };
 
-        // Remove problematic parameters that might cause 500 errors
-        if (cleanParams && typeof cleanParams === "object") {
-          // Only include valid parameters
-          const validParams: any = {};
-          if (cleanParams.branch) validParams.branch = cleanParams.branch;
-          if (cleanParams.academic_year)
-            validParams.academic_year = cleanParams.academic_year;
-          if (cleanParams.limit) validParams.limit = cleanParams.limit;
-          if (cleanParams.ordering) validParams.ordering = cleanParams.ordering;
-
-          const response = await apiService.getEvents(validParams);
-          setData(response.results || []);
-        } else {
-          const response = await apiService.getEvents();
-          setData(response.results || []);
-        }
+        const response = await apiService.getEvents(defaultParams);
+        setData(response.results || []);
 
         setHasInitialized(true);
         setRetryCount(0); // Reset retry count on success
@@ -1096,6 +1087,13 @@ export const useFeeDashboardAnalytics = (params: any = {}) => {
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
+    // Don't fetch if required parameters are missing
+    if (!params.branch || !params.academic_year) {
+      setLoading(false);
+      setError("Both 'branch' and 'academic_year' are required.");
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -22,10 +21,10 @@ import { OverviewCard } from '@/components/OverviewCard';
 import { QuickActionButton } from '@/components/QuickActionButton';
 import { RecentActivityItem } from '@/components/RecentActivityItem';
 import { EventItem } from '@/components/EventItem';
-import { 
-  useEvents, 
-  useNotifications, 
-  useAttendanceDashboard, 
+import {
+  useEvents,
+  useNotifications,
+  useAttendanceDashboard,
   useFeeDashboardAnalytics,
   useTasks,
   useLeaveRequests,
@@ -351,7 +350,7 @@ export default function DashboardScreen() {
                 </View>
               </TouchableOpacity>
             )}
-            
+
             {leaveRequests && leaveRequests.length > 0 && (
               <TouchableOpacity
                 style={[styles.pendingItem, { backgroundColor: colors.surface, borderLeftColor: '#E91E63' }]}
@@ -370,7 +369,7 @@ export default function DashboardScreen() {
                 </View>
               </TouchableOpacity>
             )}
-            
+
             {(!tasks || tasks.length === 0) && (!leaveRequests || leaveRequests.length === 0) && (
               <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
                 <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
