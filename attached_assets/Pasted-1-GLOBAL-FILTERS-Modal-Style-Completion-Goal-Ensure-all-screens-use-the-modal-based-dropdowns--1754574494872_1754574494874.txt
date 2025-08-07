@@ -1,0 +1,92 @@
+1. 🧩 GLOBAL FILTERS: Modal-Style Completion
+Goal: Ensure all screens use the modal-based dropdowns for Branch and Academic Year, matching the dashboard style.
+
+Tasks:
+
+ Refactor any screen using static dropdowns (especially staff timetable, transport, fee, hostel)
+
+ Create a reusable ModalDropdownFilter component if not already present
+
+ Apply this component to:
+
+Staff Timetable
+
+Student Fee List
+
+Student Fee Analytics
+
+Hostel Inventory
+
+Exam Timetable
+
+Exam Analytics
+
+User Management
+
+Transport Management
+
+2. 🧪 SCREEN BEHAVIOR & UI ISSUES
+🎓 Classes Screen
+ Fix modal not opening on list item tap
+
+ Fix weekly timetable not showing
+
+ Fix broken action buttons
+
+ Apply global filter component
+
+🕒 Staff Timetable
+ Fix dropdown styling (match modal-based design from dashboard)
+
+ Ensure filtering affects API
+
+💰 Student Fee Module
+ /student-fee-list: Apply modal filters + API integration
+
+ /student-fee-analytics: Same as above
+
+ Ensure consistency in UI components and spacing
+
+🧪 Exam Module
+ /exams/student-exam-timetable: Fix dark mode accessibility, filters
+
+ /exams/student-marks-table: Fix API error and add working filters
+
+ /exams/student-marks-analytics: Apply modal dropdowns
+
+3. 🧹 CLEAN-UP
+🔥 Remove/Move Mock Screens
+ Remove student-marks screen entirely
+
+ Move analytics and any other dev-only screens to /mockdata directory
+
+🧭 Navigation & Flow Consistency
+ Ensure every screen respects the selected Branch and Academic Year in all API calls
+
+ Store filter selections persistently (e.g., AsyncStorage or context)
+
+ Refresh screen content on filter change
+
+✍️ Suggested Commit Plan (Next Round of Files to Edit)
+File	Purpose
+components/ModalDropdownFilter.tsx	Reusable modal-based dropdown
+app/classes.tsx	Fix modal open logic, UI behavior
+app/staff-timetable.tsx	Replace static filters with modal version
+app/student-fee-list.tsx	Apply consistent filters
+app/exams/student-marks-table.tsx	Fix API + filter logic
+app/exams/student-exam-timetable.tsx	Accessibility + styling
+contexts/GlobalFiltersContext.tsx	Ensure listener + updater logic is solid
+api/apiService.ts	Add token guards and dynamic filter injection
+
+🧾 Final Checklist Before Completion
+ Every screen uses modal dropdowns for global filters
+
+ All filters are styled identically
+
+ No mock screens remain in production routes
+
+ All API calls dynamically respect global filters
+
+ All dropdowns open modally, not with Button-toggled dropdowns
+
+ No console errors or static filter logic left in the app
