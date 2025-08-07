@@ -1,0 +1,76 @@
+Objective:
+Update the remaining screens with standardized filter UI (ModalDropdownFilter), global filter integration (useGlobalFilters()), and consistent error/loading/empty state handling. Focus on completing the finance, exams, and tasks modules.
+
+✅ Target Screens for This Phase:
+app/tasks/add-task.tsx
+
+Apply consistent form layout and card styling.
+
+Ensure any dropdowns use ModalDropdownFilter.
+
+Add safe data handling for date pickers, user selectors, etc.
+
+Implement global filters if relevant (branch, academic year).
+
+app/tasks/edit-task.tsx
+
+Same updates as add-task.tsx.
+
+Ensure all fields are editable and error-checked.
+
+Apply shared design system for buttons, form spacing, and inputs.
+
+app/finance/salary-template.tsx
+
+Replace any filter dropdowns with ModalDropdownFilter.
+
+Integrate useGlobalFilters() for department, branch if applicable.
+
+Ensure filter layout is consistent with dashboard styles.
+
+app/finance/school-expenditure.tsx
+
+Standardize filters (category, date range, status).
+
+Use ModalDropdownFilter and horizontal scroll if needed.
+
+Handle null/undefined data and enhance error/loading states.
+
+app/exams/student-marks-analytics.tsx
+
+Replace department and day dropdowns with modal filters.
+
+Integrate global filters.
+
+Ensure table/chart displays are responsive and error-proof.
+
+Fix any layout or data rendering inconsistencies.
+
+📌 Implementation Checklist:
+ All dropdowns use ModalDropdownFilter (no Picker/legacy).
+
+ Global filters integrated via useGlobalFilters().
+
+ Null/undefined checks for all object property access.
+
+ Standardized loading/error/empty UI states applied.
+
+ Form styling and dropdown spacing match the design system.
+
+ Date/time pickers and text inputs follow reusable patterns.
+
+ Scroll behavior managed properly (horizontal + vertical).
+
+ Removed unused imports and cleaned legacy code.
+
+🔁 Shared Standards to Follow:
+Component structure should follow other updated screens.
+
+Use consistent padding, spacing, card elevation.
+
+Maintain consistent typography and color schemes.
+
+Use proper fallback UI (Loading spinner, "No Records Found", "Retry").
+
+Ensure all inputs are touch-friendly and screen-reader accessible.
+
