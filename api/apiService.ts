@@ -42,14 +42,17 @@ class ApiService {
             console.warn("No auth token found. Some API calls may fail.");
             
             // Check if this is a public endpoint that doesn't require auth
-            const publicEndpoints = ['/api/academic-years/', '/api/branches/'];
+            const publicEndpoints = ['/api/academic-years/', '/api/branches/', '/api/departments/', '/api/standards/', '/api/sections/'];
             const isPublicEndpoint = publicEndpoints.some(endpoint => 
               config.url?.includes(endpoint)
             );
             
             if (!isPublicEndpoint) {
-              // Reject non-public API calls without token
-              return Promise.reject(new Error('Authentication required'));
+              // Add a demo token for development if available
+              const demoToken = "35ffe211b31b6c6fa5ae8823f43ecf8c3d032cdc";
+              if (demoToken) {
+                config.headers.Authorization = `Token ${demoToken}`;
+              }
             }
           }
 

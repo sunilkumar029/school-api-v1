@@ -52,10 +52,10 @@ export function useEvents(params?: any) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Clean up params to avoid API errors
       const cleanParams = { ...params };
-      
+
       // Remove problematic parameters that might cause 500 errors
       if (cleanParams && typeof cleanParams === 'object') {
         // Only include valid parameters
@@ -64,14 +64,14 @@ export function useEvents(params?: any) {
         if (cleanParams.academic_year) validParams.academic_year = cleanParams.academic_year;
         if (cleanParams.limit) validParams.limit = cleanParams.limit;
         if (cleanParams.ordering) validParams.ordering = cleanParams.ordering;
-        
+
         const response = await apiService.getEvents(validParams);
         setData(response.results || []);
       } else {
         const response = await apiService.getEvents();
         setData(response.results || []);
       }
-      
+
       setHasInitialized(true);
       setRetryCount(0); // Reset retry count on success
       setIsBlocked(false);
@@ -1549,19 +1549,19 @@ export const useTasks = (params?: Record<string, any>) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Clean up params - remove invalid status values
       const cleanParams = { ...params };
       if (cleanParams && typeof cleanParams === 'object') {
         // Remove problematic parameters
         delete cleanParams.status; // Remove until we know valid values
-        
+
         // Only include valid branch and academic_year if they exist
         const validParams: any = {};
         if (cleanParams.branch) validParams.branch = cleanParams.branch;
         if (cleanParams.academic_year) validParams.academic_year = cleanParams.academic_year;
         if (cleanParams.limit) validParams.limit = cleanParams.limit;
-        
+
         const response = await apiService.getTasks(validParams);
         setData(response || []);
         setRetryCount(0); // Reset on success
@@ -1572,7 +1572,7 @@ export const useTasks = (params?: Record<string, any>) => {
       }
     } catch (err: any) {
       console.error('Tasks fetch error:', err);
-      
+
       let errorMessage = 'Failed to fetch tasks';
       if (err.response?.status === 500) {
         errorMessage = 'Server error. Tasks API may be experiencing issues.';
@@ -1583,7 +1583,7 @@ export const useTasks = (params?: Record<string, any>) => {
       } else {
         errorMessage = err.response?.data?.message || err.message || errorMessage;
       }
-      
+
       setError(errorMessage);
       setRetryCount(prev => prev + 1);
     } finally {
@@ -1643,13 +1643,13 @@ export const useLeaveRequests = (params?: Record<string, any>) => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Clean up params - remove invalid status values
       const cleanParams = { ...params };
       if (cleanParams.status === 'pending') {
         delete cleanParams.status; // Remove invalid status
       }
-      
+
       const response = await apiService.getLeaveRequests(cleanParams);
       setData(response.results || []);
     } catch (err: any) {

@@ -19,12 +19,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
   useExams, 
   useExamTypes, 
-  useBranches, 
-  useAcademicYears,
   useStandards,
-  useSections,
-  useExamScheduleDetails
+  useSections
 } from '@/hooks/useApi';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 
 interface ExamSchedule {
   id: number;
@@ -50,19 +49,20 @@ export default function StudentExamTimetableScreen() {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
-  const [selectedSection, setSelectedSection] = useState<string>('');
-  const [selectedExamType, setSelectedExamType] = useState<string>('all');
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedStandard, setSelectedStandard] = useState<number | undefined>();
-  const [selectedSection, setSelectedSection] = useState<number | undefined>();
-  const [selectedExamType, setSelectedExamType] = useState<number | undefined>();
+  const [selectedSection, setSelectedSection] = useState<number | null>(null);
+  const [selectedExamType, setSelectedExamType] = useState<number | null>(null);
+
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
   const [selectedExam, setSelectedExam] = useState<ExamSchedule | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Fetch data
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears();
   const { data: examTypes } = useExamTypes();
 
   const standardsParams = useMemo(() => ({
@@ -244,32 +244,44 @@ export default function StudentExamTimetableScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Compact Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'Standard'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'Exam Type'}
-            </Text>
-          </TouchableOpacity>
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Standard"
+              items={[{ id: 0, name: 'All Standards' }, ...(standards || [])]}
+              selectedValue={selectedStandard || 0}
+              onValueChange={(value) => setSelectedStandard(value === 0 ? null : value)}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Exam Type"
+              items={[{ id: 0, name: 'All Types' }, ...(examTypes || [])]}
+              selectedValue={selectedExamType || 0}
+              onValueChange={(value) => setSelectedExamType(value === 0 ? null : value)}
+              compact={true}
+            />
+          </View>
         </ScrollView>
       </View>
 
@@ -329,11 +341,20 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    paddingVertical: 8, // Reduced padding
-    paddingHorizontal: 8,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
   },
-  filtersContent: { // New style for ScrollView content
-    paddingHorizontal: 4,
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   filterGroup: {
     marginHorizontal: 8,

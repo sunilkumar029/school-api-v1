@@ -19,10 +19,9 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { 
   useTeacherTimetable, 
-  useBranches, 
-  useAcademicYears, 
   useStandards,
-  useSections
+  useSections,
+  usePeriods
 } from '@/hooks/useApi';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { Picker } from '@react-native-picker/picker';

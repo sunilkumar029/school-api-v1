@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -16,13 +15,9 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import {
-  useStudentMarksTable,
-  useBranches,
-  useAcademicYears,
-  useStandards,
-  useSections
-} from '@/hooks/useApi';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { useStandards, useSections, useExamTypes, useStudentMarksTable, useBranches, useAcademicYears } from '@/hooks/useApi';
 
 interface StudentMark {
   id: number;
@@ -48,12 +43,30 @@ export default function StudentMarksTableScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedStandard, setSelectedStandard] = useState<number | undefined>();
-  const [selectedSection, setSelectedSection] = useState<string>('');
-  const [selectedExamType, setSelectedExamType] = useState<string>('');
+  const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
+  const [selectedSection, setSelectedSection] = useState<string | null>(null); // Changed to string for section name
+  const [selectedExamType, setSelectedExamType] = useState<string | null>(null); // Changed to string for exam type name
   const [searchQuery, setSearchQuery] = useState('');
+
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    setSelectedBranch,
+    setSelectedAcademicYear
+  } = useGlobalFilters();
+
+  // Fetch filter data
+  const { data: apiStandards } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
+  });
+  const { data: apiSections } = useSections({
+    branch: selectedBranch,
+    standard: selectedStandard
+  });
+  const { data: apiExamTypes } = useExamTypes();
 
   // Ensure colors object exists with fallback
   const safeColors = colors || {
@@ -64,18 +77,6 @@ export default function StudentMarksTableScreen() {
     textSecondary: '#666666',
     border: '#E0E0E0',
   };
-
-  // Fetch data
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears();
-  const { data: standards } = useStandards({ 
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear 
-  });
-  const { data: sections } = useSections({ 
-    branch: selectedBranch,
-    standard: selectedStandard 
-  });
 
   const marksParams = useMemo(() => ({
     branch: selectedBranch,
@@ -92,13 +93,11 @@ export default function StudentMarksTableScreen() {
     refetch: refetchMarks
   } = useStudentMarksTable(marksParams);
 
-  const examTypes = ['Midterm', 'Final', 'Quiz', 'Assignment', 'Project'];
-
   const filteredMarks = useMemo(() => {
     if (!studentMarks || !Array.isArray(studentMarks)) return [];
 
     return studentMarks.filter((mark: StudentMark) => {
-      const matchesSearch = searchQuery === '' || 
+      const matchesSearch = searchQuery === '' ||
         mark.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         mark.subject.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (mark.student.roll_number && mark.student.roll_number.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -109,7 +108,7 @@ export default function StudentMarksTableScreen() {
 
   const groupedMarks = useMemo(() => {
     const grouped: { [key: string]: StudentMark[] } = {};
-    
+
     filteredMarks.forEach((mark: StudentMark) => {
       const studentKey = `${mark.student.id}-${mark.student.name}`;
       if (!grouped[studentKey]) {
@@ -228,39 +227,61 @@ export default function StudentMarksTableScreen() {
       {/* Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
-            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
-            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
-            </Text>
-          </TouchableOpacity>
-
-          {standards && standards.length > 0 && (
-            <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
-              <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
-                {selectedStandard ? standards.find(s => s.id === selectedStandard)?.name : 'Class'}
-              </Text>
-            </TouchableOpacity>
+          <ModalDropdownFilter
+            title={branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
+            items={branches?.map(b => ({ label: b.name, value: b.id })) || []}
+            onSelect={(value) => {
+              setSelectedBranch(value);
+              setSelectedStandard(null); // Reset dependent filters
+              setSelectedSection(null);
+              setSelectedExamType(null);
+            }}
+            selected={selectedBranch}
+          />
+          <ModalDropdownFilter
+            title={academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
+            items={academicYears?.map(ay => ({ label: ay.name, value: ay.id })) || []}
+            onSelect={(value) => {
+              setSelectedAcademicYear(value);
+              setSelectedStandard(null); // Reset dependent filters
+              setSelectedSection(null);
+              setSelectedExamType(null);
+            }}
+            selected={selectedAcademicYear}
+          />
+          {apiStandards && apiStandards.length > 0 && (
+            <ModalDropdownFilter
+              title={apiStandards.find(s => s.id === selectedStandard)?.name || 'Class'}
+              items={apiStandards.map(s => ({ label: s.name, value: s.id }))}
+              onSelect={(value) => {
+                setSelectedStandard(value);
+                setSelectedSection(null); // Reset dependent filters
+                setSelectedExamType(null);
+              }}
+              selected={selectedStandard}
+            />
           )}
-
-          {sections && sections.length > 0 && (
-            <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
-              <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
-                {selectedSection || 'Section'}
-              </Text>
-            </TouchableOpacity>
+          {apiSections && apiSections.length > 0 && (
+            <ModalDropdownFilter
+              title={apiSections.find(s => s.id === selectedSection)?.name || 'Section'}
+              items={apiSections.map(s => ({ label: s.name, value: s.id }))}
+              onSelect={(value) => {
+                setSelectedSection(value);
+                setSelectedExamType(null); // Reset dependent filters
+              }}
+              selected={selectedSection}
+            />
           )}
-
-          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
-            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
-              {selectedExamType || 'Exam Type'}
-            </Text>
-          </TouchableOpacity>
+          {apiExamTypes && apiExamTypes.length > 0 && (
+            <ModalDropdownFilter
+              title={apiExamTypes.find(et => et.name === selectedExamType)?.name || 'Exam Type'}
+              items={apiExamTypes.map(et => ({ label: et.name, value: et.name }))}
+              onSelect={(value) => {
+                setSelectedExamType(value);
+              }}
+              selected={selectedExamType}
+            />
+          )}
         </ScrollView>
       </View>
 

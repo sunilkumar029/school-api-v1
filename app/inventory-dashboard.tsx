@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -16,7 +15,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { Picker } from '@react-native-picker/picker';
-import { 
+import {
   useInventoryDashboard,
   useInventoryList,
   useInventoryTypes,
@@ -94,9 +93,9 @@ export default function InventoryDashboardScreen() {
       }, 0) || 0;
       return sum + (item.quantity - issuedQuantity);
     }, 0);
-    
+
     const toBeReceived = inventoryItems.filter(item => item.status === 'Not-Available').length;
-    
+
     const suppliers = new Set(inventoryItems.map(item => item.inventory_type?.name).filter(Boolean));
     const categories = new Set(inventoryItems.map(item => item.inventory_type?.type).filter(Boolean));
 
@@ -159,7 +158,7 @@ export default function InventoryDashboardScreen() {
     };
   }, [inventoryItems]);
 
-  
+
 
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
