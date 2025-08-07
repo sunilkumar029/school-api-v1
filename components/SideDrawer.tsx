@@ -144,6 +144,12 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
     onClose();
   };
 
+  // Helper function for navigation that also closes the drawer
+  const handleNavigation = (route: string) => {
+    router.push(route);
+    onClose();
+  };
+
   const renderSection = (section: DrawerSection, sectionIndex: number) => (
     <View key={sectionIndex} style={styles.section}>
       <Text style={[styles.sectionTitle, { color: colors.primary }]}>
@@ -248,10 +254,10 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                           </TouchableOpacity>
                         );
                       }
-                      
+
                       if (item.route === '/finance/staff-payroll') {
                         return (
-                          <>
+                          <View key={itemIndex}>
                             <TouchableOpacity
                               key={itemIndex}
                               style={[styles.menuItem, { borderBottomColor: colors.border }]}
@@ -260,7 +266,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                               <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Staff Payroll</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={styles.menuItem}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
                               onPress={() => {
                                 router.push('/finance/salary-templates');
                                 onClose();
@@ -269,7 +275,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                               <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Salary Templates</Text>
                             </TouchableOpacity>
                             <TouchableOpacity
-                              style={styles.menuItem}
+                              style={[styles.menuItem, { borderBottomColor: colors.border }]}
                               onPress={() => {
                                 router.push('/finance/school-expenditure');
                                 onClose();
@@ -277,7 +283,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                             >
                               <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>School Expenditure</Text>
                             </TouchableOpacity>
-                          </>
+                          </View>
                         );
                       }
                       return (

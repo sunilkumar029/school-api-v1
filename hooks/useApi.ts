@@ -1002,7 +1002,7 @@ export const useStudentDetails = (id: number) => {
 
   const fetchData = useCallback(async () => {
     if (!id) return;
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -1167,6 +1167,37 @@ export const useExpenditure = (params: any = {}) => {
       setLoading(false);
     }
   }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+// Expenditure Summary hook
+export const useExpenditureSummary = (branch: number, academicYear: number) => {
+  const [data, setData] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getExpenditureSummary(branch, academicYear);
+      setData(response);
+    } catch (err: any) {
+      console.error('Expenditure summary fetch error:', err);
+      setError(err.response?.data?.message || err.message || 'Failed to fetch expenditure summary');
+    } finally {
+      setLoading(false);
+    }
+  }, [branch, academicYear]);
 
   useEffect(() => {
     fetchData();

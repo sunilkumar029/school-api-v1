@@ -752,4 +752,11 @@ class ApiService {
     await this.api.delete(`/api/expenditure/${id}/`);
   }
 
+  // Expenditure Summary
+  async getExpenditureSummary(branch: number, academicYear: number): Promise<any> {
+    const response = await this.api.get(`/api/expenditure/summary/branch-${branch}/academic-year-${academicYear}/`);
+    return response.data;
+  }
+}
+
 export const apiService = new ApiService();
