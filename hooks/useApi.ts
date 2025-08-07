@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiService } from "@/api/apiService";
+import { useQuery } from '@tanstack/react-query';
 
 export function useAnnouncements(params?: any) {
   const [data, setData] = useState<any[]>([]);
@@ -108,41 +109,72 @@ export function useEvents(params?: any) {
   return { data, loading, error, refetch: manualRefetch };
 }
 
-export function useAttendanceDashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const fetchData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = await apiService.getAttendanceDashboard();
-      setData(response);
-    } catch (err: unknown) {
-      let errorMessage = "Failed to fetch attendance data";
-
-      if (err && typeof err === 'object') {
-        const axiosError = err as any;
-        if (axiosError.response) {
-          errorMessage = `Error ${axiosError.response.status}: ${axiosError.response.data?.message || axiosError.response.data || 'Server Error'}`;
-        } else if (axiosError.message) {
-          errorMessage = axiosError.message;
-        }
-      }
-
-      setError(errorMessage);
-      console.error("Error fetching attendance dashboard:", err);
-    } finally {
-      setLoading(false);
+// Student Marks Analytics / Dashboard
+export function useStudentMarksAnalytics(params?: {
+  branch?: number;
+  academicYear?: number;
+  standard?: number;
+  section?: string;
+  exam_type?: string;
+}) {
+  return useQuery(
+    ['student-marks-analytics', params],
+    () => apiService.getStudentMarksAnalytics(params || {}),
+    {
+      enabled: !!params?.branch && !!params?.academicYear,
+      retry: 1,
+      retryDelay: 1000,
     }
-  }, []);
+  );
+}
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+// Student Marks Table
+export function useStudentMarksTable(params?: {
+  branch?: number;
+  academic_year?: number;
+  standard?: number;
+  section?: string;
+  exam_type?: string;
+}) {
+  return useQuery(
+    ['student-marks-table', params],
+    () => apiService.getStudentMarksTable(params || {}),
+    {
+      enabled: !!params?.branch && !!params?.academic_year,
+      retry: 1,
+      retryDelay: 1000,
+    }
+  );
+}
 
-  return { data, loading, error, refetch: fetchData };
+// Leave Quotas
+export function useLeaveQuotas(params?: {
+  branch?: number;
+  academic_year?: number;
+  department?: number;
+  leave_type?: string;
+}) {
+  return useQuery(
+    ['leave-quotas', params],
+    () => apiService.getLeaveQuotas(params || {}),
+    {
+      enabled: !!params?.branch && !!params?.academic_year,
+      retry: 1,
+      retryDelay: 1000,
+    }
+  );
+}
+
+// Attendance Dashboard
+export function useAttendanceDashboard() {
+  return useQuery(
+    ['attendance-dashboard'],
+    () => apiService.getAttendanceDashboard(),
+    {
+      retry: 1,
+      retryDelay: 1000,
+    }
+  );
 }
 
 export function useLeaveQuotas(userId?: number) {

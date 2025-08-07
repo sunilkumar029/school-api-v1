@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -7,18 +8,17 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   RefreshControl,
-  FlatList,
+  TextInput,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
-import { useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  useStudentExamMarks,
-  useExamTypes, 
-  useBranches, 
+import {
+  useStudentMarksTable,
+  useBranches,
   useAcademicYears,
   useStandards,
   useSections
@@ -28,18 +28,19 @@ interface StudentMark {
   id: number;
   student: {
     id: number;
-    first_name: string;
-    last_name: string;
+    name: string;
     roll_number?: string;
   };
-  exam_schedule: {
-    department: {
-      name: string;
-    };
-    marks: number;
+  subject: {
+    id: number;
+    name: string;
   };
-  obtained_marks: number;
+  marks_obtained: number;
+  total_marks: number;
   percentage: number;
+  grade: string;
+  exam_type: string;
+  exam_date: string;
 }
 
 export default function StudentMarksTableScreen() {
@@ -50,144 +51,152 @@ export default function StudentMarksTableScreen() {
   const [selectedBranch, setSelectedBranch] = useState<number>(1);
   const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [selectedStandard, setSelectedStandard] = useState<number | undefined>();
-  const [selectedSection, setSelectedSection] = useState<number | undefined>();
-  const [selectedExamType, setSelectedExamType] = useState<number | undefined>();
+  const [selectedSection, setSelectedSection] = useState<string>('');
+  const [selectedExamType, setSelectedExamType] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Ensure colors object exists with fallback
+  const safeColors = colors || {
+    background: '#FFFFFF',
+    surface: '#F5F5F5',
+    primary: '#6200EE',
+    textPrimary: '#000000',
+    textSecondary: '#666666',
+    border: '#E0E0E0',
+  };
 
   // Fetch data
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
-  const { data: examTypes } = useExamTypes();
+  const { data: standards } = useStandards({ 
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear 
+  });
+  const { data: sections } = useSections({ 
+    branch: selectedBranch,
+    standard: selectedStandard 
+  });
 
-  const standardsParams = useMemo(() => ({
+  const marksParams = useMemo(() => ({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
-    is_active: true,
-  }), [selectedBranch, selectedAcademicYear]);
+    ...(selectedStandard && { standard: selectedStandard }),
+    ...(selectedSection && { section: selectedSection }),
+    ...(selectedExamType && { exam_type: selectedExamType }),
+  }), [selectedBranch, selectedAcademicYear, selectedStandard, selectedSection, selectedExamType]);
 
-  const { data: standards } = useStandards(standardsParams);
+  const {
+    data: studentMarks,
+    loading: marksLoading,
+    error: marksError,
+    refetch: refetchMarks
+  } = useStudentMarksTable(marksParams);
 
-  const sectionsParams = useMemo(() => ({
-    branch: selectedBranch,
-    standard: selectedStandard,
-  }), [selectedBranch, selectedStandard]);
+  const examTypes = ['Midterm', 'Final', 'Quiz', 'Assignment', 'Project'];
 
-  const { data: sections } = useSections(sectionsParams);
+  const filteredMarks = useMemo(() => {
+    if (!studentMarks || !Array.isArray(studentMarks)) return [];
 
-  const marksParams = useMemo(() => {
-    const params: any = {
-      branch_id: selectedBranch,
-      academic_year_id: selectedAcademicYear,
-    };
-    if (selectedStandard) params.standard_id = selectedStandard;
-    if (selectedSection) params.section_id = selectedSection;
-    if (selectedExamType) params.exam_type_id = selectedExamType;
-    return params;
-  }, [selectedBranch, selectedAcademicYear, selectedStandard, selectedSection, selectedExamType]);
+    return studentMarks.filter((mark: StudentMark) => {
+      const matchesSearch = searchQuery === '' || 
+        mark.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        mark.subject.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (mark.student.roll_number && mark.student.roll_number.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  const { 
-    data: marks, 
-    loading: marksLoading, 
-    error: marksError, 
-    refetch: refetchMarks 
-  } = useStudentExamMarks(marksParams);
+      return matchesSearch;
+    });
+  }, [studentMarks, searchQuery]);
 
-  // Group marks by student
-  const studentMarks = useMemo(() => {
-    if (!marks) return [];
-
-    const studentMap = new Map();
-
-    marks.forEach((mark: StudentMark) => {
-      const studentId = mark.student.id;
-      if (!studentMap.has(studentId)) {
-        studentMap.set(studentId, {
-          student: mark.student,
-          subjects: [],
-          totalMarks: 0,
-          totalMaxMarks: 0,
-        });
+  const groupedMarks = useMemo(() => {
+    const grouped: { [key: string]: StudentMark[] } = {};
+    
+    filteredMarks.forEach((mark: StudentMark) => {
+      const studentKey = `${mark.student.id}-${mark.student.name}`;
+      if (!grouped[studentKey]) {
+        grouped[studentKey] = [];
       }
-
-      const studentData = studentMap.get(studentId);
-      studentData.subjects.push({
-        subject: mark.exam_schedule.department.name,
-        obtainedMarks: mark.obtained_marks,
-        maxMarks: mark.exam_schedule.marks,
-        percentage: mark.percentage,
-      });
-      studentData.totalMarks += mark.obtained_marks;
-      studentData.totalMaxMarks += mark.exam_schedule.marks;
+      grouped[studentKey].push(mark);
     });
 
-    return Array.from(studentMap.values()).map(student => ({
-      ...student,
-      overallPercentage: student.totalMaxMarks > 0 ? (student.totalMarks / student.totalMaxMarks) * 100 : 0,
-    }));
-  }, [marks]);
+    return grouped;
+  }, [filteredMarks]);
 
   const getGradeColor = (percentage: number) => {
-    if (percentage >= 90) return '#4CAF50';
-    if (percentage >= 75) return '#8BC34A';
-    if (percentage >= 60) return '#FF9800';
-    if (percentage >= 40) return '#FF5722';
-    return '#F44336';
+    if (percentage >= 90) return '#4CAF50'; // A
+    if (percentage >= 80) return '#8BC34A'; // B
+    if (percentage >= 70) return '#FFC107'; // C
+    if (percentage >= 60) return '#FF9800'; // D
+    return '#F44336'; // F
   };
 
-  const renderStudentRow = ({ item }: { item: any }) => (
-    <View style={[styles.studentRow, { backgroundColor: colors.surface, borderColor: colors.border }]}>
-      <View style={styles.studentInfo}>
-        <Text style={[styles.studentName, { color: colors.textPrimary }]}>
-          {item.student.first_name} {item.student.last_name}
-        </Text>
-        {item.student.roll_number && (
-          <Text style={[styles.rollNumber, { color: colors.textSecondary }]}>
-            Roll: {item.student.roll_number}
-          </Text>
-        )}
-      </View>
+  const renderStudentMarks = (studentKey: string, marks: StudentMark[]) => {
+    const student = marks[0].student;
+    const totalMarksObtained = marks.reduce((sum, mark) => sum + mark.marks_obtained, 0);
+    const totalMaxMarks = marks.reduce((sum, mark) => sum + mark.total_marks, 0);
+    const overallPercentage = totalMaxMarks > 0 ? (totalMarksObtained / totalMaxMarks) * 100 : 0;
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.subjectsScroll}>
-        {item.subjects.map((subject: any, index: number) => (
-          <View key={index} style={[styles.subjectCell, { backgroundColor: colors.background }]}>
-            <Text style={[styles.subjectName, { color: colors.textSecondary }]}>
-              {subject.subject}
+    return (
+      <View key={studentKey} style={[styles.studentCard, { backgroundColor: safeColors.surface, borderColor: safeColors.border }]}>
+        <View style={styles.studentHeader}>
+          <View style={styles.studentInfo}>
+            <Text style={[styles.studentName, { color: safeColors.textPrimary }]}>
+              {student.name}
             </Text>
-            <Text style={[styles.subjectMarks, { color: colors.textPrimary }]}>
-              {subject.obtainedMarks}/{subject.maxMarks}
-            </Text>
-            <View style={[
-              styles.percentageBadge,
-              { backgroundColor: getGradeColor(subject.percentage) }
-            ]}>
-              <Text style={styles.percentageText}>
-                {subject.percentage.toFixed(1)}%
+            {student.roll_number && (
+              <Text style={[styles.rollNumber, { color: safeColors.textSecondary }]}>
+                Roll: {student.roll_number}
               </Text>
-            </View>
+            )}
           </View>
-        ))}
-      </ScrollView>
-
-      <View style={[styles.totalCell, { backgroundColor: colors.background }]}>
-        <Text style={[styles.totalLabel, { color: colors.textSecondary }]}>Total</Text>
-        <Text style={[styles.totalMarks, { color: colors.textPrimary }]}>
-          {item.totalMarks}/{item.totalMaxMarks}
-        </Text>
-        <View style={[
-          styles.overallBadge,
-          { backgroundColor: getGradeColor(item.overallPercentage) }
-        ]}>
-          <Text style={styles.overallText}>
-            {item.overallPercentage.toFixed(1)}%
-          </Text>
+          <View style={styles.overallScore}>
+            <Text style={[styles.overallPercentage, { color: getGradeColor(overallPercentage) }]}>
+              {overallPercentage.toFixed(1)}%
+            </Text>
+            <Text style={[styles.overallMarks, { color: safeColors.textSecondary }]}>
+              {totalMarksObtained}/{totalMaxMarks}
+            </Text>
+          </View>
         </View>
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.marksTable}>
+            <View style={[styles.tableHeader, { backgroundColor: safeColors.primary + '20' }]}>
+              <Text style={[styles.tableHeaderText, { color: safeColors.primary }]}>Subject</Text>
+              <Text style={[styles.tableHeaderText, { color: safeColors.primary }]}>Marks</Text>
+              <Text style={[styles.tableHeaderText, { color: safeColors.primary }]}>%</Text>
+              <Text style={[styles.tableHeaderText, { color: safeColors.primary }]}>Grade</Text>
+              <Text style={[styles.tableHeaderText, { color: safeColors.primary }]}>Exam</Text>
+            </View>
+
+            {marks.map((mark, index) => (
+              <View key={index} style={[styles.tableRow, { borderBottomColor: safeColors.border }]}>
+                <Text style={[styles.tableCell, { color: safeColors.textPrimary }]}>
+                  {mark.subject.name}
+                </Text>
+                <Text style={[styles.tableCell, { color: safeColors.textPrimary }]}>
+                  {mark.marks_obtained}/{mark.total_marks}
+                </Text>
+                <Text style={[styles.tableCell, { color: getGradeColor(mark.percentage) }]}>
+                  {mark.percentage.toFixed(1)}%
+                </Text>
+                <Text style={[styles.tableCell, { color: getGradeColor(mark.percentage) }]}>
+                  {mark.grade}
+                </Text>
+                <Text style={[styles.tableCell, { color: safeColors.textSecondary }]}>
+                  {mark.exam_type}
+                </Text>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
       </View>
-    </View>
-  );
+    );
+  };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: safeColors.background }]}>
       <TopBar
-        title="Student Marks"
+        title="Student Marks Table"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}
@@ -198,36 +207,58 @@ export default function StudentMarksTableScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {/* Compact Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
+      {/* Search Bar */}
+      <View style={[styles.searchContainer, { backgroundColor: safeColors.surface }]}>
+        <TextInput
+          style={[
+            styles.searchInput,
+            {
+              backgroundColor: safeColors.background,
+              borderColor: safeColors.border,
+              color: safeColors.textPrimary,
+            },
+          ]}
+          placeholder="Search by student name, roll number, or subject..."
+          placeholderTextColor={safeColors.textSecondary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </View>
+
+      {/* Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
+            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
               {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
+          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
+            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
               {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
             </Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {selectedStandard ? standards?.find(s => s.id === selectedStandard)?.name : 'Standard'}
-            </Text>
-          </TouchableOpacity>
+          {standards && standards.length > 0 && (
+            <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
+              <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
+                {selectedStandard ? standards.find(s => s.id === selectedStandard)?.name : 'Class'}
+              </Text>
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {selectedSection ? sections?.find(s => s.id === selectedSection)?.name : 'Section'}
-            </Text>
-          </TouchableOpacity>
+          {sections && sections.length > 0 && (
+            <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
+              <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
+                {selectedSection || 'Section'}
+              </Text>
+            </TouchableOpacity>
+          )}
 
-          <TouchableOpacity style={[styles.compactFilterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.compactFilterText, { color: colors.textPrimary }]}>
-              {selectedExamType ? examTypes?.find(et => et.id === selectedExamType)?.name : 'Exam Type'}
+          <TouchableOpacity style={[styles.filterButton, { borderColor: safeColors.border }]}>
+            <Text style={[styles.filterText, { color: safeColors.textPrimary }]}>
+              {selectedExamType || 'Exam Type'}
             </Text>
           </TouchableOpacity>
         </ScrollView>
@@ -236,47 +267,49 @@ export default function StudentMarksTableScreen() {
       {/* Content */}
       {marksLoading ? (
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-            Loading marks...
+          <ActivityIndicator size="large" color={safeColors.primary} />
+          <Text style={[styles.loadingText, { color: safeColors.textSecondary }]}>
+            Loading student marks...
           </Text>
         </View>
       ) : marksError ? (
         <View style={styles.errorContainer}>
           <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
-            Failed to load marks. Please try again.
+            Failed to load student marks. Please try again.
           </Text>
           <TouchableOpacity
             onPress={refetchMarks}
-            style={[styles.retryButton, { backgroundColor: colors.primary }]}
+            style={[styles.retryButton, { backgroundColor: safeColors.primary }]}
           >
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         </View>
       ) : (
-        <FlatList
-          data={studentMarks}
-          renderItem={renderStudentRow}
-          keyExtractor={(item) => item.student.id.toString()}
-          style={styles.marksList}
-          contentContainerStyle={styles.marksListContent}
-          showsVerticalScrollIndicator={false}
+        <ScrollView
+          style={styles.content}
           refreshControl={
             <RefreshControl
               refreshing={marksLoading}
               onRefresh={refetchMarks}
-              colors={[colors.primary]}
-              tintColor={colors.primary}
+              colors={[safeColors.primary]}
+              tintColor={safeColors.primary}
             />
           }
-          ListEmptyComponent={
+        >
+          {Object.keys(groupedMarks).length === 0 ? (
             <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                No marks found for the selected criteria
+              <Text style={[styles.emptyText, { color: safeColors.textSecondary }]}>
+                No student marks found for the selected criteria
               </Text>
             </View>
-          }
-        />
+          ) : (
+            <View style={styles.marksContainer}>
+              {Object.entries(groupedMarks).map(([studentKey, marks]) =>
+                renderStudentMarks(studentKey, marks)
+              )}
+            </View>
+          )}
+        </ScrollView>
       )}
     </SafeAreaView>
   );
@@ -286,45 +319,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  filtersContainer: {
-    paddingVertical: 8, // Reduced padding
-    paddingHorizontal: 8,
-    flexDirection: 'row', // Changed to row for horizontal scrolling
-    alignItems: 'center',
+  searchContainer: {
+    padding: 16,
   },
-  filtersContent: {
-    paddingHorizontal: 4, // Added padding for scroll view content
-  },
-  filterGroup: {
-    marginHorizontal: 8,
-    minWidth: 120,
-  },
-  filterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  filterButton: {
+  searchInput: {
+    height: 44,
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
-    paddingVertical: 8,
+    fontSize: 16,
   },
-  filterButtonText: {
-    fontSize: 14,
-    textAlign: 'center',
-  },
-  compactFilterButton: {
-    borderWidth: 1,
-    borderRadius: 20, // Rounded corners for compact buttons
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginHorizontal: 4, // Space between compact buttons
-    justifyContent: 'center',
+  filtersContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
   },
-  compactFilterText: {
-    fontSize: 14,
+  filtersContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  filterButton: {
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    minWidth: 70,
+  },
+  filterText: {
+    fontSize: 12,
+    textAlign: 'center',
     fontWeight: '500',
   },
   loadingContainer: {
@@ -358,87 +383,77 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  marksList: {
+  content: {
     flex: 1,
   },
-  marksListContent: {
+  marksContainer: {
     padding: 16,
   },
-  studentRow: {
-    flexDirection: 'row',
+  studentCard: {
     padding: 16,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 16,
     borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  studentHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    marginBottom: 16,
   },
   studentInfo: {
-    width: 120,
-    marginRight: 16,
+    flex: 1,
   },
   studentName: {
-    fontSize: 14,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   rollNumber: {
+    fontSize: 14,
+  },
+  overallScore: {
+    alignItems: 'flex-end',
+  },
+  overallPercentage: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  overallMarks: {
     fontSize: 12,
   },
-  subjectsScroll: {
+  marksTable: {
+    minWidth: 600,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  tableHeaderText: {
     flex: 1,
-    marginRight: 16,
-  },
-  subjectCell: {
-    width: 100,
-    padding: 8,
-    borderRadius: 8,
-    marginRight: 8,
-    alignItems: 'center',
-  },
-  subjectName: {
-    fontSize: 10,
+    fontSize: 14,
+    fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 4,
   },
-  subjectMarks: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 4,
+  tableRow: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
   },
-  percentageBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  percentageText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  totalCell: {
-    width: 80,
-    padding: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  totalLabel: {
-    fontSize: 10,
-    marginBottom: 4,
-  },
-  totalMarks: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  overallBadge: {
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 10,
-  },
-  overallText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: 'bold',
+  tableCell: {
+    flex: 1,
+    fontSize: 14,
+    textAlign: 'center',
   },
   emptyContainer: {
     flex: 1,

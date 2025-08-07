@@ -1,3 +1,4 @@
+
 import React from 'react';
 import {
   View,
@@ -15,15 +16,17 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 interface DrawerItem {
   title: string;
-  icon?: string; // Made optional as some items might not have a direct icon in the list
-  route?: string; // Made optional as some items might be headers or lead to submenus
-  href?: string; // For navigation without a specific route object
+  icon?: string;
+  route?: string;
+  href?: string;
   roles?: string[];
+  status?: 'working' | 'mock' | 'upcoming';
 }
 
 interface DrawerSection {
   title: string;
   items: DrawerItem[];
+  status?: 'working' | 'mock' | 'upcoming';
 }
 
 interface SideDrawerProps {
@@ -35,128 +38,133 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
-  const activeRoute = usePathname(); // Get the current route
+  const activeRoute = usePathname();
 
   const [expandedMenus, setExpandedMenus] = React.useState({
     exams: false,
     tasks: false,
     leave: false,
-    hostel: false, // Added hostel to expandedMenus state
+    hostel: false,
+    finance: false,
+    mock: false,
+    upcoming: false,
   });
 
   const toggleSubmenu = (menu: keyof typeof expandedMenus) => {
     setExpandedMenus((prev) => ({ ...prev, [menu]: !prev[menu] }));
   };
 
-  // Removed the pre-defined Hostel section from drawerSections as it will be rendered manually
-  const drawerSections: DrawerSection[] = [
+  // API-Integrated Sections (✅ Working)
+  const workingSections: DrawerSection[] = [
     {
-      title: 'Core Modules',
+      title: '✅ Dashboard & Core',
+      status: 'working',
       items: [
-        { title: 'Events', icon: '📅', route: '/(tabs)/events' },
-        { title: 'Wallet', icon: '💳', route: '/(tabs)/wallet' },
-        { title: 'Analytics', icon: '📊', route: '/(tabs)/analytics' },
-        { title: 'Chat', icon: '💬', route: '/chat' },
-        { title: 'File Management', icon: '📁', route: '/file-management' },
+        { title: 'Dashboard', icon: '🏠', route: '/(tabs)/index', status: 'working' },
+        { title: 'Events', icon: '📅', route: '/(tabs)/events', status: 'working' },
+        { title: 'Analytics', icon: '📊', route: '/(tabs)/analytics', status: 'working' },
+        { title: 'Notifications', icon: '🔔', route: '/(tabs)/notifications', status: 'working' },
       ]
     },
     {
-      title: 'Academic Modules',
+      title: '✅ Academic Management',
+      status: 'working',
       items: [
-        { title: 'Department', icon: '🏢', route: '/(tabs)/department' },
-        { title: 'Classes', icon: '📚', route: '/(tabs)/classes' },
-        { title: 'Teacher Performance', icon: '👨‍🏫', route: '/academics/teacher-performance' },
-        { title: 'Student Performance', icon: '📈', route: '/academics/student-performance' },
-        { title: 'Classroom', icon: '🏫', route: '/academics/classroom' },
-        { title: 'Online Class', icon: '💻', route: '/academics/online-class' },
-        { title: 'Staff Timetable', icon: '📅', route: '/academics/staff-timetable' },
-        { title: 'Class Timetable', icon: '⏰', route: '/academics/class-timetable' },
-        { title: 'Student Marks', icon: '📝', route: '/academics/student-marks' },
-        { title: 'Student Attendance', icon: '✅', route: '/academics/student-attendance' },
-      ]
-    },
-    // Exams section
-    {
-      title: 'Exams',
-      items: [
-        { title: 'Create Question', route: '/exams/create-question' },
-        { title: 'Schedule Exam', route: '/exams/schedule-exam' },
-        // These are now handled by the expanded menu structure, so they are redundant here.
-        // { title: 'Exam Timetable', route: '/exams/student-exam-timetable' },
-        // { title: 'Student Marks', route: '/exams/student-marks-table' },
-        // { title: 'Marks Analytics', route: '/exams/student-marks-analytics' },
+        { title: 'Classes', icon: '📚', route: '/(tabs)/classes', status: 'working' },
+        { title: 'Department', icon: '🏢', route: '/(tabs)/department', status: 'working' },
+        { title: 'Staff Timetable', icon: '📅', route: '/academics/staff-timetable', status: 'working' },
+        { title: 'Student Marks', icon: '📝', route: '/academics/student-marks', status: 'working' },
+        { title: 'Student Attendance', icon: '✅', route: '/academics/student-attendance', status: 'working' },
       ]
     },
     {
-      title: 'My Performance',
+      title: '✅ Finance & Fees',
+      status: 'working',
       items: [
-        { title: 'Employee Performance', icon: '👤', route: '/my-performance/employee' },
-        { title: 'Task Performance', icon: '📋', route: '/my-performance/task' },
+        { title: 'Student Fees', icon: '💳', route: '/finance/student-fee-list', status: 'working' },
+        { title: 'Fee Analytics', icon: '📊', route: '/finance/student-fee-analytics', status: 'working' },
+        { title: 'Staff Payroll', icon: '💼', route: '/finance/staff-payroll', status: 'working' },
+        { title: 'Salary Templates', icon: '📄', route: '/finance/salary-templates', status: 'working' },
+        { title: 'School Expenditure', icon: '💰', route: '/finance/school-expenditure', status: 'working' },
       ]
     },
     {
-      title: 'Finance',
+      title: '✅ Operations',
+      status: 'working',
       items: [
-        { title: 'Money Request', icon: '💰', route: '/finance/money-request' },
-        { title: 'Student Fee', icon: '💳', route: '/finance/student-fee-list' },
-        { title: 'Staff Payroll', icon: '💼', route: '/finance/staff-payroll' },
+        { title: 'Transport', icon: '🚌', route: '/transport', status: 'working' },
+        { title: 'Attendance Dashboard', icon: '📊', route: '/attendance-dashboard', status: 'working' },
+        { title: 'Branch Locations', icon: '📍', route: '/locations', status: 'working' },
+        { title: 'Support', icon: '💬', route: '/support', status: 'working' },
+        { title: 'Users Management', icon: '👥', route: '/users', status: 'working' },
       ]
     },
     {
-      title: 'Library',
+      title: '✅ Inventory & Assets',
+      status: 'working',
       items: [
-        { title: 'Resources', icon: '📚', route: '/library/resources' },
-        { title: 'Add Resource', icon: '➕', route: '/library/add-resource', roles: ['admin', 'staff'] },
-        { title: 'E-Course', icon: '💻', route: '/library/ecourse' },
+        { title: 'Inventory Dashboard', icon: '📦', route: '/inventory-dashboard', status: 'working' },
+        { title: 'Inventory List', icon: '📋', route: '/inventory', status: 'working' },
+        { title: 'Stationery', icon: '📝', route: '/inventory/stationery', status: 'working' },
+        { title: 'Stationery Fees', icon: '💰', route: '/inventory/stationery-fee', status: 'working' },
       ]
     },
-    // Hostel section removed from here as it's handled by the expandable menu
-    // {
-    //   title: 'Hostel',
-    //   items: [
-    //     { title: 'Booking List', icon: '🏠', route: '/hostel/booking-list' },
-    //     { title: 'Room List', icon: '🚪', route: '/hostel/room-list' },
-    //     { title: 'Visitor List', icon: '👥', route: '/hostel/visitor-list' },
-    //     { title: 'Add Visitor', icon: '👤', route: '/hostel/add-visitor' },
-    //   ]
-    // },
+  ];
+
+  // Mock/Static Sections (🧪 Mock Data)
+  const mockSections: DrawerSection[] = [
     {
-      title: 'Operations',
+      title: '🧪 Mock Data Screens',
+      status: 'mock',
       items: [
-        { title: 'Food Court', icon: '🍽️', route: '/(tabs)/foodcourt' },
-        { title: 'Timesheet', icon: '⏱️', route: '/timesheet' },
-        { title: 'Users', icon: '👥', route: '/users' },
-        { title: 'Weather', icon: '🌤️', route: '/weather' },
-        { title: 'Transport', icon: '🚌', route: '/transport' },
-      ]
-    },
-    {
-      title: 'Personal',
-      items: [
-        { title: 'Expense Claims', icon: '💰', route: '/expense-claims' },
-        { title: 'My Requests', icon: '📋', route: '/my-requests' },
-        { title: 'My Rewards', icon: '🏆', route: '/my-rewards' },
-        { title: 'My Tasks', icon: '📝', route: '/my-tasks' },
+        { title: 'Wallet', icon: '💳', route: '/(tabs)/wallet', status: 'mock' },
+        { title: 'Food Court', icon: '🍽️', route: '/(tabs)/foodcourt', status: 'mock' },
+        { title: 'Fee Structure', icon: '💰', route: '/(tabs)/fee-structure', status: 'mock' },
+        { title: 'Chat', icon: '💬', route: '/chat', status: 'mock' },
+        { title: 'File Management', icon: '📁', route: '/file-management', status: 'mock' },
+        { title: 'Weather', icon: '🌤️', route: '/weather', status: 'mock' },
+        { title: 'Sports', icon: '⚽', route: '/sports', status: 'mock' },
       ]
     },
     {
-      title: 'Management',
+      title: '🧪 Performance & Personal',
+      status: 'mock',
       items: [
-        { title: 'Inventory', icon: '📦', route: '/inventory', roles: ['admin', 'staff'] },
-        {
-          title: 'Stationery',
-          route: '/inventory/stationery', // Changed href to route for consistency
-          icon: '📝',
-        },
-        {
-          title: 'Stationery Fees',
-          route: '/inventory/stationery-fee', // Changed href to route for consistency
-          icon: '💰',
-        },
-        { title: 'Invoice', icon: '📄', route: '/invoice' },
-        { title: 'Sports', icon: '⚽', route: '/sports' },
+        { title: 'Employee Performance', icon: '👤', route: '/my-performance/employee', status: 'mock' },
+        { title: 'Task Performance', icon: '📋', route: '/my-performance/task', status: 'mock' },
+        { title: 'Expense Claims', icon: '💰', route: '/expense-claims', status: 'mock' },
+        { title: 'My Requests', icon: '📋', route: '/my-requests', status: 'mock' },
+        { title: 'My Rewards', icon: '🏆', route: '/my-rewards', status: 'mock' },
+        { title: 'My Tasks', icon: '📝', route: '/my-tasks', status: 'mock' },
+        { title: 'Timesheet', icon: '⏱️', route: '/timesheet', status: 'mock' },
       ]
-    }
+    },
+    {
+      title: '🧪 Academic Modules',
+      status: 'mock',
+      items: [
+        { title: 'Teacher Performance', icon: '👨‍🏫', route: '/academics/teacher-performance', status: 'mock' },
+        { title: 'Student Performance', icon: '📈', route: '/academics/student-performance', status: 'mock' },
+        { title: 'Classroom', icon: '🏫', route: '/academics/classroom', status: 'mock' },
+        { title: 'Online Class', icon: '💻', route: '/academics/online-class', status: 'mock' },
+        { title: 'Class Timetable', icon: '⏰', route: '/academics/class-timetable', status: 'mock' },
+      ]
+    },
+  ];
+
+  // Upcoming Features (🔮 Future)
+  const upcomingSections: DrawerSection[] = [
+    {
+      title: '🔮 Upcoming Features',
+      status: 'upcoming',
+      items: [
+        { title: 'Library Resources', icon: '📚', route: '/library/resources', status: 'upcoming' },
+        { title: 'E-Course', icon: '💻', route: '/library/ecourse', status: 'upcoming' },
+        { title: 'Money Request', icon: '💰', route: '/finance/money-request', status: 'upcoming' },
+        { title: 'Invoice System', icon: '📄', route: '/invoice', status: 'upcoming' },
+        { title: 'Advanced Analytics', icon: '📊', route: '/analytics/advanced', status: 'upcoming' },
+      ]
+    },
   ];
 
   const handleItemPress = (route: string) => {
@@ -164,10 +172,18 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
     onClose();
   };
 
-  // Helper function for navigation that also closes the drawer
   const handleNavigation = (route: string) => {
     router.push(route);
     onClose();
+  };
+
+  const getStatusIcon = (status?: string) => {
+    switch (status) {
+      case 'working': return '✅';
+      case 'mock': return '🧪';
+      case 'upcoming': return '🔮';
+      default: return '';
+    }
   };
 
   const renderSection = (section: DrawerSection, sectionIndex: number) => (
@@ -176,12 +192,10 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         {section.title}
       </Text>
       {section.items.map((item, index) => {
-        // Role-based visibility
         if (item.roles && !item.roles.includes(user?.role || 'student')) {
           return null;
         }
 
-        // Handle items that might not have a route but are part of the section definition
         if (!item.route && !item.href) return null;
 
         const navigationRoute = item.route || item.href;
@@ -189,13 +203,20 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         return (
           <TouchableOpacity
             key={index}
-            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === navigationRoute && styles.activeMenuItem]}
-            onPress={() => handleItemPress(navigationRoute!)} // Use ! as we've ensured it's not null
+            style={[
+              styles.menuItem,
+              { borderBottomColor: colors.border },
+              activeRoute === navigationRoute && styles.activeMenuItem
+            ]}
+            onPress={() => handleItemPress(navigationRoute!)}
           >
-            {item.icon && <Text style={styles.menuIcon}>{item.icon}</Text>}
-            <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-              {item.title}
-            </Text>
+            <View style={styles.menuItemContent}>
+              {item.icon && <Text style={styles.menuIcon}>{item.icon}</Text>}
+              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                {item.title}
+              </Text>
+              <Text style={styles.statusIcon}>{getStatusIcon(item.status)}</Text>
+            </View>
             <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
           </TouchableOpacity>
         );
@@ -239,143 +260,20 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
           {/* Menu Sections */}
           <ScrollView style={styles.menuContainer}>
-            {drawerSections.map((section, index) => {
-              if (section.title === 'Finance') {
-                return (
-                  <View key={index} style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: colors.primary }]}>
-                      {section.title}
-                    </Text>
-                    {section.items.map((item, itemIndex) => {
-                      if (item.roles && !item.roles.includes(user?.role || 'student')) {
-                        return null;
-                      }
-                      // Special handling for Student Fee and Fee Analytics
-                      if (item.route === '/finance/student-fee-list') {
-                        return (
-                          <TouchableOpacity
-                            key={itemIndex}
-                            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
-                            onPress={() => handleItemPress(item.route!)}
-                          >
-                            <MaterialIcons name="account-balance-wallet" size={24} color={colors.textSecondary} />
-                            <Text style={[styles.menuItemText, { color: colors.textSecondary }]}>Student Fees</Text>
-                          </TouchableOpacity>
-                        );
-                      } else if (item.route === '/finance/student-fee-analytics') {
-                        return (
-                          <TouchableOpacity
-                            key={itemIndex}
-                            style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
-                            onPress={() => handleItemPress(item.route!)}
-                          >
-                            <MaterialIcons name="analytics" size={24} color={colors.textSecondary} />
-                            <View style={styles.menuItemWithBadge}>
-                              <Text style={[styles.menuItemText, { color: colors.textSecondary }]}>Fee Analytics</Text>
-                              <View style={styles.newBadge}>
-                                <Text style={styles.newBadgeText}>NEW</Text>
-                              </View>
-                            </View>
-                          </TouchableOpacity>
-                        );
-                      }
-
-                      if (item.route === '/finance/staff-payroll') {
-                        return (
-                          <View key={itemIndex}>
-                            <TouchableOpacity
-                              key={itemIndex}
-                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
-                              onPress={() => handleItemPress(item.route!)}
-                            >
-                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Staff Payroll</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/finance/salary-templates' && styles.activeMenuItem]}
-                              onPress={() => {
-                                router.push('/finance/salary-templates');
-                                onClose();
-                              }}
-                            >
-                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Salary Templates</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/finance/school-expenditure' && styles.activeMenuItem]}
-                              onPress={() => {
-                                router.push('/finance/school-expenditure');
-                                onClose();
-                              }}
-                            >
-                              <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>School Expenditure</Text>
-                            </TouchableOpacity>
-                          </View>
-                        );
-                      }
-                      return (
-                        <TouchableOpacity
-                          key={itemIndex}
-                          style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
-                          onPress={() => handleItemPress(item.route!)}
-                        >
-                          <Text style={styles.menuIcon}>{item.icon}</Text>
-                          <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                            {item.title}
-                          </Text>
-                          <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                  </View>
-                );
-              }
-              // Add Inventory and Inventory Dashboard links here
-              if (section.title === 'Management') {
-                return (
-                  <View key={index} style={styles.section}>
-                    <Text style={[styles.sectionTitle, { color: colors.primary }]}>
-                      {section.title}
-                    </Text>
-                    {section.items.map((item, itemIndex) => {
-                      if (item.roles && !item.roles.includes(user?.role || 'student')) {
-                        return null;
-                      }
-                      return (
-                        <TouchableOpacity
-                          key={itemIndex}
-                          style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === item.route && styles.activeMenuItem]}
-                          onPress={() => handleItemPress(item.route!)}
-                        >
-                          <Text style={styles.menuIcon}>{item.icon}</Text>
-                          <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                            {item.title}
-                          </Text>
-                          <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
-                        </TouchableOpacity>
-                      );
-                    })}
-                    {/* Add Inventory Dashboard link */}
-                    <TouchableOpacity
-                      style={[styles.menuItem, { borderBottomColor: colors.border }, activeRoute === '/inventory-dashboard' && styles.activeMenuItem]}
-                      onPress={() => handleNavigation('/inventory-dashboard')}
-                    >
-                      <MaterialIcons name="dashboard" size={24} color={colors.textSecondary} />
-                      <Text style={[styles.menuItemText, { color: colors.textPrimary }]}>Inventory Dashboard</Text>
-                    </TouchableOpacity>
-                  </View>
-                );
-              }
-              return renderSection(section, index);
-            })}
+            {/* Working API-Integrated Sections */}
+            {workingSections.map((section, index) => renderSection(section, index))}
 
             {/* Exams Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/exams') && styles.activeMenuItem]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
               onPress={() => toggleSubmenu('exams')}
             >
-              <Text style={styles.menuIcon}>📝</Text>
-              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                Exams
-              </Text>
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>📝</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  ✅ Exams
+                </Text>
+              </View>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.exams ? '−' : '+'}
               </Text>
@@ -412,13 +310,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
             {/* Tasks Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/tasks') && styles.activeMenuItem]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
               onPress={() => toggleSubmenu('tasks')}
             >
-              <Text style={styles.menuIcon}>✅</Text>
-              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                Tasks
-              </Text>
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>✅</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  ✅ Tasks
+                </Text>
+              </View>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.tasks ? '−' : '+'}
               </Text>
@@ -455,13 +355,15 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
 
             {/* Leave Management Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/leave') && styles.activeMenuItem]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
               onPress={() => toggleSubmenu('leave')}
             >
-              <Text style={styles.menuIcon}>🏖️</Text>
-              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                Leave Management
-              </Text>
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>🏖️</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  ✅ Leave Management
+                </Text>
+              </View>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.leave ? '−' : '+'}
               </Text>
@@ -496,15 +398,17 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
               </View>
             )}
 
-            {/* Hostel Section - Added based on edited snippet */}
+            {/* Hostel Section */}
             <TouchableOpacity
-              style={[styles.menuItem, { backgroundColor: colors.surface }, activeRoute.startsWith('/hostel') && styles.activeMenuItem]}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
               onPress={() => toggleSubmenu('hostel')}
             >
-              <Text style={styles.menuIcon}>🏨</Text>
-              <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
-                Hostel
-              </Text>
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>🏨</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  ✅ Hostel
+                </Text>
+              </View>
               <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
                 {expandedMenus.hostel ? '−' : '+'}
               </Text>
@@ -550,47 +454,81 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                 </TouchableOpacity>
               </View>
             )}
-            
-            {/* New Navigation Items */}
+
+            {/* Mock Data Sections */}
             <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.border }]}
-              onPress={() => handleNavigation('/transport')}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              onPress={() => toggleSubmenu('mock')}
             >
-              <Text style={[styles.menuIcon, { color: colors.primary }]}>🚌</Text>
-              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
-                Transport
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>🧪</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  Mock Data Screens
+                </Text>
+              </View>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.mock ? '−' : '+'}
               </Text>
             </TouchableOpacity>
 
+            {expandedMenus.mock && (
+              <View style={styles.submenu}>
+                {mockSections.map((section, sectionIndex) => (
+                  <View key={sectionIndex}>
+                    <Text style={[styles.submenuSectionTitle, { color: colors.textSecondary }]}>
+                      {section.title}
+                    </Text>
+                    {section.items.map((item, itemIndex) => (
+                      <TouchableOpacity
+                        key={itemIndex}
+                        style={[styles.submenuItem, activeRoute === item.route && styles.activeSubmenuItem]}
+                        onPress={() => handleNavigation(item.route!)}
+                      >
+                        <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                          {item.icon} {item.title}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Upcoming Features */}
             <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.border }]}
-              onPress={() => handleNavigation('/locations')}
+              style={[styles.menuItem, { backgroundColor: colors.surface }]}
+              onPress={() => toggleSubmenu('upcoming')}
             >
-              <Text style={[styles.menuIcon, { color: colors.primary }]}>📍</Text>
-              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
-                Branch Locations
+              <View style={styles.menuItemContent}>
+                <Text style={styles.menuIcon}>🔮</Text>
+                <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
+                  Upcoming Features
+                </Text>
+              </View>
+              <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+                {expandedMenus.upcoming ? '−' : '+'}
               </Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.border }]}
-              onPress={() => handleNavigation('/support')}
-            >
-              <Text style={[styles.menuIcon, { color: colors.primary }]}>💬</Text>
-              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
-                Support
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.menuItem, { borderBottomColor: colors.border }]}
-              onPress={() => handleNavigation('/attendance-dashboard')}
-            >
-              <Text style={[styles.menuIcon, { color: colors.primary }]}>📊</Text>
-              <Text style={[styles.menuText, { color: colors.textPrimary }]}>
-                Attendance Dashboard
-              </Text>
-            </TouchableOpacity>
+            {expandedMenus.upcoming && (
+              <View style={styles.submenu}>
+                {upcomingSections.map((section, sectionIndex) => (
+                  <View key={sectionIndex}>
+                    {section.items.map((item, itemIndex) => (
+                      <TouchableOpacity
+                        key={itemIndex}
+                        style={[styles.submenuItem, { opacity: 0.6 }]}
+                        disabled={true}
+                      >
+                        <Text style={[styles.submenuText, { color: colors.textSecondary }]}>
+                          {item.icon} {item.title} (Coming Soon)
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                ))}
+              </View>
+            )}
           </ScrollView>
         </SafeAreaView>
         <TouchableOpacity style={styles.backdrop} onPress={onClose} />
@@ -606,7 +544,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   drawer: {
-    width: 300,
+    width: 320,
     height: '100%',
     elevation: 16,
     shadowColor: '#000',
@@ -678,6 +616,11 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 0.5,
   },
+  menuItemContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   menuIcon: {
     fontSize: 18,
     marginRight: 16,
@@ -689,6 +632,10 @@ const styles = StyleSheet.create({
     flex: 1,
     fontWeight: '500',
   },
+  statusIcon: {
+    fontSize: 12,
+    marginLeft: 8,
+  },
   chevron: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -696,36 +643,14 @@ const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
   },
-  menuItemText: {
-    marginLeft: 16,
-    fontSize: 16,
-  },
-  menuItemWithBadge: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginLeft: 16,
-  },
-  newBadge: {
-    backgroundColor: '#EF4444',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-  },
-  newBadgeText: {
-    color: '#FFFFFF',
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  expandIcon: { // Renamed from expandIcon to submenuIcon for clarity
+  expandIcon: {
     fontSize: 16,
     fontWeight: 'bold',
     marginLeft: 10,
   },
   submenu: {
     paddingLeft: 20,
-    backgroundColor: '#F9FAFB', // Light background for submenu
+    backgroundColor: '#F9FAFB',
   },
   submenuItem: {
     paddingVertical: 12,
@@ -737,11 +662,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '500',
   },
-  // Added styles for active menu items
+  submenuSectionTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 4,
+  },
   activeMenuItem: {
-    backgroundColor: '#E5E7EB', // Example active background color
+    backgroundColor: '#E5E7EB',
   },
   activeSubmenuItem: {
-    backgroundColor: '#D1D5DB', // Example active submenu background color
+    backgroundColor: '#D1D5DB',
   },
 });
