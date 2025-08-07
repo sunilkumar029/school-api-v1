@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,18 +7,18 @@ import {
   Modal,
   ScrollView,
   ActivityIndicator,
-} from 'react-native';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+} from "react-native";
+import { useTheme } from "@/contexts/ThemeContext";
+import { useGlobalFilters } from "@/contexts/GlobalFiltersContext";
 
 interface GlobalFiltersProps {
   showInline?: boolean;
   compact?: boolean;
 }
 
-export const GlobalFilters: React.FC<GlobalFiltersProps> = ({ 
-  showInline = false, 
-  compact = false 
+export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
+  showInline = false,
+  compact = false,
 }) => {
   const { colors } = useTheme();
   const {
@@ -36,8 +35,11 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
   const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [yearModalVisible, setYearModalVisible] = useState(false);
 
-  const selectedBranchName = branches.find(b => b.id === selectedBranch)?.name || 'Select Branch';
-  const selectedYearName = academicYears.find(y => y.id === selectedAcademicYear)?.name || 'Select Year';
+  const selectedBranchName =
+    branches.find((b) => b.id === selectedBranch)?.name || "Select Branch";
+  const selectedYearName =
+    academicYears.find((y) => y.id === selectedAcademicYear)?.name ||
+    "Select Year";
 
   const renderBranchModal = () => (
     <Modal
@@ -47,20 +49,30 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
       onRequestClose={() => setBranchModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+        <View
+          style={[styles.modalContent, { backgroundColor: colors.surface }]}
+        >
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Select Branch</Text>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+              Select Branch
+            </Text>
             <TouchableOpacity
               onPress={() => setBranchModalVisible(false)}
               style={styles.closeButton}
             >
-              <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
+              <Text style={[styles.closeButtonText, { color: colors.primary }]}>
+                ✕
+              </Text>
             </TouchableOpacity>
           </View>
-          
+
           <ScrollView style={styles.modalBody}>
             {branchesLoading ? (
-              <ActivityIndicator size="large" color={colors.primary} style={styles.loading} />
+              <ActivityIndicator
+                size="large"
+                color={colors.primary}
+                style={styles.loading}
+              />
             ) : (
               branches.map((branch) => (
                 <TouchableOpacity
@@ -68,26 +80,37 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
                   style={[
                     styles.modalItem,
                     {
-                      backgroundColor: selectedBranch === branch.id ? colors.primary + '20' : 'transparent',
+                      backgroundColor:
+                        selectedBranch === branch.id
+                          ? colors.primary + "20"
+                          : "transparent",
                       borderBottomColor: colors.border,
-                    }
+                    },
                   ]}
                   onPress={() => {
                     setSelectedBranch(branch.id);
                     setBranchModalVisible(false);
                   }}
                 >
-                  <Text style={[
-                    styles.modalItemText,
-                    { 
-                      color: selectedBranch === branch.id ? colors.primary : colors.textPrimary,
-                      fontWeight: selectedBranch === branch.id ? 'bold' : 'normal',
-                    }
-                  ]}>
+                  <Text
+                    style={[
+                      styles.modalItemText,
+                      {
+                        color:
+                          selectedBranch === branch.id
+                            ? colors.primary
+                            : colors.textPrimary,
+                        fontWeight:
+                          selectedBranch === branch.id ? "bold" : "normal",
+                      },
+                    ]}
+                  >
                     {branch.name}
                   </Text>
                   {selectedBranch === branch.id && (
-                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
+                    <Text style={[styles.checkmark, { color: colors.primary }]}>
+                      ✓
+                    </Text>
                   )}
                 </TouchableOpacity>
               ))
@@ -106,20 +129,30 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
       onRequestClose={() => setYearModalVisible(false)}
     >
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+        <View
+          style={[styles.modalContent, { backgroundColor: colors.surface }]}
+        >
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Select Academic Year</Text>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+              Select Academic Year
+            </Text>
             <TouchableOpacity
               onPress={() => setYearModalVisible(false)}
               style={styles.closeButton}
             >
-              <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
+              <Text style={[styles.closeButtonText, { color: colors.primary }]}>
+                ✕
+              </Text>
             </TouchableOpacity>
           </View>
-          
+
           <ScrollView style={styles.modalBody}>
             {academicYearsLoading ? (
-              <ActivityIndicator size="large" color={colors.primary} style={styles.loading} />
+              <ActivityIndicator
+                size="large"
+                color={colors.primary}
+                style={styles.loading}
+              />
             ) : (
               academicYears.map((year) => (
                 <TouchableOpacity
@@ -127,26 +160,37 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
                   style={[
                     styles.modalItem,
                     {
-                      backgroundColor: selectedAcademicYear === year.id ? colors.primary + '20' : 'transparent',
+                      backgroundColor:
+                        selectedAcademicYear === year.id
+                          ? colors.primary + "20"
+                          : "transparent",
                       borderBottomColor: colors.border,
-                    }
+                    },
                   ]}
                   onPress={() => {
                     setSelectedAcademicYear(year.id);
                     setYearModalVisible(false);
                   }}
                 >
-                  <Text style={[
-                    styles.modalItemText,
-                    { 
-                      color: selectedAcademicYear === year.id ? colors.primary : colors.textPrimary,
-                      fontWeight: selectedAcademicYear === year.id ? 'bold' : 'normal',
-                    }
-                  ]}>
+                  <Text
+                    style={[
+                      styles.modalItemText,
+                      {
+                        color:
+                          selectedAcademicYear === year.id
+                            ? colors.primary
+                            : colors.textPrimary,
+                        fontWeight:
+                          selectedAcademicYear === year.id ? "bold" : "normal",
+                      },
+                    ]}
+                  >
                     {year.name}
                   </Text>
                   {selectedAcademicYear === year.id && (
-                    <Text style={[styles.checkmark, { color: colors.primary }]}>✓</Text>
+                    <Text style={[styles.checkmark, { color: colors.primary }]}>
+                      ✓
+                    </Text>
                   )}
                 </TouchableOpacity>
               ))
@@ -159,21 +203,25 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
 
   if (showInline) {
     return (
-      <View style={[styles.inlineContainer, compact && styles.compactContainer]}>
+      <View
+        style={[styles.inlineContainer, compact && styles.compactContainer]}
+      >
         <TouchableOpacity
           style={[
             styles.filterButton,
             compact && styles.compactFilterButton,
-            { borderColor: colors.border, backgroundColor: colors.surface }
+            { borderColor: colors.border, backgroundColor: colors.surface },
           ]}
           onPress={() => setBranchModalVisible(true)}
         >
-          <Text style={[
-            styles.filterButtonText,
-            compact && styles.compactFilterButtonText,
-            { color: colors.textPrimary }
-          ]}>
-            {compact ? selectedBranchName.split(' ')[0] : selectedBranchName}
+          <Text
+            style={[
+              styles.filterButtonText,
+              compact && styles.compactFilterButtonText,
+              { color: colors.textPrimary },
+            ]}
+          >
+            {compact ? selectedBranchName.split(" ")[0] : selectedBranchName}
           </Text>
         </TouchableOpacity>
 
@@ -181,16 +229,18 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
           style={[
             styles.filterButton,
             compact && styles.compactFilterButton,
-            { borderColor: colors.border, backgroundColor: colors.surface }
+            { borderColor: colors.border, backgroundColor: colors.surface },
           ]}
           onPress={() => setYearModalVisible(true)}
         >
-          <Text style={[
-            styles.filterButtonText,
-            compact && styles.compactFilterButtonText,
-            { color: colors.textPrimary }
-          ]}>
-            {compact ? selectedYearName.split('-')[0] : selectedYearName}
+          <Text
+            style={[
+              styles.filterButtonText,
+              compact && styles.compactFilterButtonText,
+              { color: colors.textPrimary },
+            ]}
+          >
+            {compact ? selectedYearName.split("-")[0] : selectedYearName}
           </Text>
         </TouchableOpacity>
 
@@ -203,26 +253,36 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
   return (
     <View style={[styles.container, { backgroundColor: colors.surface }]}>
       <View style={styles.filtersRow}>
-        <Text style={[styles.label, { color: colors.textSecondary }]}>Filters:</Text>
-        
+        <Text style={[styles.label, { color: colors.textSecondary }]}>
+          Filters:
+        </Text>
+
         <TouchableOpacity
           style={[styles.filterButton, { borderColor: colors.border }]}
           onPress={() => setBranchModalVisible(true)}
         >
-          <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
+          <Text
+            style={[styles.filterButtonText, { color: colors.textPrimary }]}
+          >
             {selectedBranchName}
           </Text>
-          <Text style={[styles.dropdownIcon, { color: colors.textSecondary }]}>▼</Text>
+          <Text style={[styles.dropdownIcon, { color: colors.textSecondary }]}>
+            ▼
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={[styles.filterButton, { borderColor: colors.border }]}
           onPress={() => setYearModalVisible(true)}
         >
-          <Text style={[styles.filterButtonText, { color: colors.textPrimary }]}>
+          <Text
+            style={[styles.filterButtonText, { color: colors.textPrimary }]}
+          >
             {selectedYearName}
           </Text>
-          <Text style={[styles.dropdownIcon, { color: colors.textSecondary }]}>▼</Text>
+          <Text style={[styles.dropdownIcon, { color: colors.textSecondary }]}>
+            ▼
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -237,29 +297,29 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: "#E5E7EB",
   },
   inlineContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
   compactContainer: {
     gap: 4,
   },
   filtersRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 12,
   },
   label: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderWidth: 1,
@@ -274,7 +334,7 @@ const styles = StyleSheet.create({
   },
   filterButtonText: {
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     flex: 1,
   },
   compactFilterButtonText: {
@@ -286,42 +346,42 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
-    width: '80%',
-    maxHeight: '70%',
+    width: "80%",
+    maxHeight: "70%",
     borderRadius: 12,
     elevation: 8,
   },
   modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E7EB',
+    borderBottomColor: "#E5E7EB",
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   closeButton: {
     padding: 4,
   },
   closeButtonText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   modalBody: {
     maxHeight: 300,
   },
   modalItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     padding: 16,
     borderBottomWidth: 1,
   },
@@ -331,114 +391,9 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   loading: {
     padding: 20,
-  },
-});
-import React from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { useTheme } from '@/contexts/ThemeContext';
-import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
-
-export function GlobalFilters() {
-  const { colors } = useTheme();
-  const {
-    selectedBranch,
-    selectedAcademicYear,
-    branches,
-    academicYears,
-    setSelectedBranch,
-    setSelectedAcademicYear,
-    loading,
-    error
-  } = useGlobalFilters();
-
-  if (error) {
-    Alert.alert('Error', error);
-  }
-
-  return (
-    <View style={[styles.container, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-      <Text style={[styles.title, { color: colors.textPrimary }]}>Global Filters</Text>
-      
-      <View style={styles.filtersRow}>
-        <View style={styles.filterGroup}>
-          <Text style={[styles.label, { color: colors.textSecondary }]}>Branch</Text>
-          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-            <Picker
-              selectedValue={selectedBranch}
-              onValueChange={(value) => setSelectedBranch(value)}
-              style={[styles.picker, { color: colors.textPrimary }]}
-              enabled={!loading && branches.length > 0}
-            >
-              <Picker.Item label="Select Branch" value={null} />
-              {branches.map((branch) => (
-                <Picker.Item
-                  key={branch.id}
-                  label={branch.name}
-                  value={branch.id}
-                />
-              ))}
-            </Picker>
-          </View>
-        </View>
-
-        <View style={styles.filterGroup}>
-          <Text style={[styles.label, { color: colors.textSecondary }]}>Academic Year</Text>
-          <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-            <Picker
-              selectedValue={selectedAcademicYear}
-              onValueChange={(value) => setSelectedAcademicYear(value)}
-              style={[styles.picker, { color: colors.textPrimary }]}
-              enabled={!loading && academicYears.length > 0}
-            >
-              <Picker.Item label="Select Year" value={null} />
-              {academicYears.map((year) => (
-                <Picker.Item
-                  key={year.id}
-                  label={year.name}
-                  value={year.id}
-                />
-              ))}
-            </Picker>
-          </View>
-        </View>
-      </View>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    borderBottomWidth: 1,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 12,
-  },
-  filtersRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  filterGroup: {
-    flex: 1,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 4,
-  },
-  pickerContainer: {
-    borderWidth: 1,
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  picker: {
-    height: 40,
   },
 });

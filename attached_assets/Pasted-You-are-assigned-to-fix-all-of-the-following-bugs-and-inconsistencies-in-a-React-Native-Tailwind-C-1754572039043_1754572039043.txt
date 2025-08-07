@@ -1,0 +1,158 @@
+You are assigned to fix all of the following bugs and inconsistencies in a React Native + Tailwind CSS + Expo app. This app uses multiple API-integrated screens that must be refactored, stabilized, and standardized. Follow the instructions below precisely.
+
+🔁 GLOBAL FILTERS (MANDATORY ON ALL SCREENS)
+Implement Universal Global Filters for:
+
+Branch
+
+Academic Year
+
+Behavior:
+
+These filters must be available and functional on every screen using API data
+
+They must:
+
+Match the logic, state, and UI of the Dashboard filter system
+
+Dynamically update API requests based on the selected values
+
+Must co-exist with screen-specific filters (e.g., task status, leave type, etc.)
+
+Filters must use shared state/context (e.g., GlobalFilterContext)
+
+Keep UI consistent across screens
+
+No screen should use hardcoded or static branch/year IDs. All filtering must be dynamic.
+
+🔔 ✅ NEW: Notification Screen Integration
+Connect Notification Screen to API
+
+Use the provided Notifications API to fetch notifications
+
+API must support and respond to filter parameters
+
+Implement Filters:
+
+Notification Type (e.g., Announcement, Alert, Reminder, etc.)
+
+Branch and Academic Year (global filters)
+
+UI Requirements:
+
+Add filter UI at top of the notification screen
+
+Filter changes must dynamically update the notification list
+
+Use graceful fallback (e.g., empty list message if no results)
+
+Prevent errors like undefined.toUpperCase() or object rendering directly
+
+Fix Previous Error in NotificationCard Component:
+
+ts
+Copy
+Edit
+Cannot read properties of undefined (reading 'toUpperCase')
+✅ Add safety check before accessing any string methods
+
+Ensure Proper Display
+
+Do not render objects directly (e.g., {teacher}); extract readable fields
+
+Format all fields to readable UI (title, type, date, etc.)
+
+🔍 FIX EXISTING ERRORS & SCREEN ISSUES
+🧠 Runtime Errors
+toUpperCase on undefined in NotificationCard
+
+Objects rendered as React child
+
+getRandomColor used before initialization in Inventory Dashboard
+
+✅ Fix these globally using safe-access patterns, correct render logic, and reordering imports/definitions.
+
+📋 SCREEN-SPECIFIC FIXES & FILTER INTEGRATION
+✅ Tasks Module
+/tasks, /tasklist, /tasksubmission
+
+Fix broken filters
+
+Refactor layout (filters should not cover half the screen)
+
+Add and integrate global filters (Branch + Academic Year)
+
+✅ Leave Module
+/leave/leave-quota:
+
+Fix screen loading
+
+Replace fixed filters with global filters
+
+/leave/*:
+
+All leave module screens must support global filters + local filters (e.g., leave type/status)
+
+✅ Holiday Calendar
+/calendar/holidays:
+
+Fix rendering
+
+Add global filters to show holidays relevant to selected branch/year
+
+✅ Hostel Module
+/hostel/hostel-rooms: Fix API rendering + global filters
+
+/hostel/students: Add dashboard-style global filter
+
+/hostel/inventory: Add global filters + support additional filters
+
+/hostel/analytics: Style UI, connect filters, fix metrics rendering
+
+✅ Location Screen (Branch Address)
+Format address field from API JSON to readable string:
+
+json
+Copy
+Edit
+{
+  "city": "vizag",
+  "state": "Andhra Pradesh",
+  "street": "Main street",
+  "landmark": "Narsipatanam",
+  "zip_code": "741258"
+}
+👉 Convert and display as:
+
+css
+Copy
+Edit
+Main Street, Narsipatanam, Vizag - 741258, Andhra Pradesh
+✅ COMPLETION CHECKLIST
+The following must be true for every API-integrated screen:
+
+ Global filters (Branch + Academic Year) are present and functional
+
+ All filters are dynamic and API-aware (no hardcoding)
+
+ Additional filters (per screen) work together with global filters
+
+ UI is consistent and responsive
+
+ No runtime or rendering errors
+
+ Duplicate logic/components are removed and reused instead
+
+🔧 Utilities and Tips
+Use centralized state/context (e.g., useGlobalFilters)
+
+Create shared filter UI components (e.g., GlobalFilterHeader, FilterDropdown)
+
+Sanitize all API data before rendering
+
+Modularize styles and avoid inline clutter for readability
+
+🧠 Final Note to Agent
+Fix all existing issues and integrate the notification API with proper filters and error-free rendering. Ensure every screen with data uses the global filters like the Dashboard. Maintain a clean, minimal, and modular codebase with proper UI feedback.
+
+Begin now and provide updates as modules are completed.

@@ -1,0 +1,179 @@
+You are assigned to fix all the following bugs and UI/UX inconsistencies in a React Native project (with Tailwind CSS and Expo). This application uses API-integrated screens that must now be fully refactored and standardized. Follow these instructions exactly.
+
+🔁 GLOBAL FILTERS (MANDATORY ON ALL SCREENS)
+Implement Global Filters for:
+
+Branch
+
+Academic Year
+
+Behavior:
+
+These two filters must be available and functional on every API-integrated screen.
+
+Filters must update the API responses dynamically based on user selection.
+
+Global filter logic and UI must match exactly how it works on the Home Dashboard.
+
+Use shared GlobalFilterContext or similar persistent state (if not present, create it).
+
+Maintain these filters in a consistent layout at the top of each screen.
+
+Do NOT hardcode filters or pass fixed branch/year IDs in any screen. Make everything dynamic.
+
+Ensure global filters work alongside each screen’s additional filters.
+
+🔍 FIX THE FOLLOWING ERRORS AND SCREENS:
+🛑 1. NotificationCard Error
+Error: Cannot read properties of undefined (reading 'toUpperCase')
+
+Action:
+
+In the NotificationCard component, check if the property you're calling toUpperCase() on is undefined.
+
+Use optional chaining or default fallback before converting.
+
+🛑 2. React Rendering Error
+Error: Objects are not valid as a React child...
+
+Cause: Rendering an object (with keys like modified_by, teacher, etc.) instead of string
+
+Action:
+
+Check all JSX where an object is directly rendered.
+
+Extract specific readable fields (e.g., teacher.name) instead of rendering the whole object.
+
+Fix this across ALL screens where API data is rendered.
+
+🛑 3. getRandomColor Initialization
+Error: Cannot access 'getRandomColor' before initialization
+
+Action:
+
+Move the getRandomColor function above where it’s used in InventoryDashboardScreen
+
+Or move it to a separate utils file and import it properly.
+
+📋 SCREEN-SPECIFIC FIXES
+✅ Tasks Module
+/tasks, /tasks/tasklist, /tasks/tasksubmission:
+
+Fix non-functional filters (state not updating API queries).
+
+Fix layout — filters should not consume half of the screen space.
+
+Ensure global filters (branch/year) are present and fully functional on all pages.
+
+Additional filters (status, type, etc.) should work alongside global filters.
+
+✅ Leave Module
+/leave/leave-quota:
+
+Page not loading — investigate and fix API connection.
+
+Filters are static — convert to dynamic filters using global filter state.
+
+/leave/* (all leave-related screens):
+
+Add and integrate global filters.
+
+Ensure leave type, status, etc. are additional filters that work dynamically.
+
+✅ Holiday Calendar
+/calendar/holidays:
+
+Page is not rendering.
+
+Fix broken rendering logic.
+
+Integrate global filters for branch/year to show relevant holidays.
+
+✅ Hostel Module
+/hostel/hostel-rooms:
+
+API list not updating → fix data mapping.
+
+Add global filters (branch/year).
+
+Add additional filters as needed (e.g., floor, type).
+
+Ensure data updates on filter change.
+
+/hostel/students:
+
+Add and implement global filters at the top of the page (use same UI as dashboard).
+
+Ensure data reflects selected branch/year.
+
+/hostel/inventory:
+
+Add global filters.
+
+Keep screen-specific filters intact.
+
+Ensure data updates with correct filter combinations.
+
+/hostel/analytics:
+
+Fix UI styling.
+
+Add and integrate global filters.
+
+Add logic for any additional metrics or visualizations based on selected filters.
+
+✅ Location Screen (Branch Address Fix)
+Problem:
+
+API returns raw JSON address like:
+
+json
+Copy
+Edit
+{"city":"vizag","state":"Andhra Pradesh","street":"Main street","landmark":"Narsipatanam","zip_code":"741258"}
+Fix:
+
+Format this into a human-readable address:
+
+css
+Copy
+Edit
+Main Street, Narsipatanam, Vizag - 741258, Andhra Pradesh
+Use helper method to cleanly format address objects before rendering.
+
+✅ COMPLETION CRITERIA
+Agent must ensure the following for every API-integrated screen:
+
+ Global filters (Branch + Academic Year) exist and function as in the Dashboard
+
+ All additional filters on the screen work in conjunction with global filters
+
+ All filters affect data dynamically — no static IDs
+
+ Styling of filters is clean and responsive
+
+ No runtime errors (undefined access, object render errors, etc.)
+
+ No duplicated logic or layout — reusable components used wherever possible
+
+🧠 HINTS / UTILITIES
+Create a shared GlobalFilterProvider context or reuse the one in Dashboard.
+
+Move any repeated UI to a shared component file (e.g., FilterHeader, DataCard, etc.).
+
+Create a utility to format branch address.
+
+Always default-check optional values from API (avoid rendering raw objects).
+
+📣 Final Note to Agent
+Do a thorough pass across all mentioned screens. Prioritize stability, consistency, and responsiveness. After completing each screen, verify that:
+
+Global filters are visible and working
+
+Data loads according to current filter
+
+There are no errors in the console
+
+UI is clean and adaptive to different screen sizes
+
+Begin your process now. Confirm once you’ve started, and provide updates after each module is complete.
