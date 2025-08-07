@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -18,47 +19,45 @@ import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useLeaveRequests, useAllUsersExceptStudents } from '@/hooks/useApi';
+import { useInventory, useInventoryCategories } from '@/hooks/useApi';
 
-interface LeaveRequest {
+interface InventoryItem {
   id: number;
-  employee: {
-    id: number;
-    name: string;
-    email: string;
-    department?: {
-      id: number;
-      name: string;
-    };
-  };
-  leave_type: {
-    id: number;
-    name: string;
-    max_days_per_year: number;
-  };
-  start_date: string;
-  end_date: string;
-  days_requested: number;
-  reason: string;
-  status: 'pending' | 'approved' | 'rejected' | 'cancelled';
-  applied_date: string;
-  approved_by?: {
+  name: string;
+  description?: string;
+  category: {
     id: number;
     name: string;
   };
-  approved_date?: string;
-  rejection_reason?: string;
+  brand?: string;
+  model?: string;
+  serial_number?: string;
+  purchase_date?: string;
+  purchase_price?: number;
+  current_value?: number;
+  condition: 'excellent' | 'good' | 'fair' | 'poor' | 'damaged';
+  status: 'available' | 'in_use' | 'maintenance' | 'retired';
+  location?: string;
+  assigned_to?: {
+    id: number;
+    name: string;
+  };
+  branch: {
+    id: number;
+    name: string;
+  };
+  last_updated: string;
 }
 
-export default function LeaveRequestsScreen() {
+export default function InventoryManagementScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedEmployee, setSelectedEmployee] = useState<number | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
-  const [selectedLeaveType, setSelectedLeaveType] = useState<number | null>(null);
-  const [selectedRequest, setSelectedRequest] = useState<LeaveRequest | null>(null);
+  const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
 
   // Global filters
   const {
@@ -71,82 +70,93 @@ export default function LeaveRequestsScreen() {
   } = useGlobalFilters();
 
   // Fetch data
-  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({ 
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear 
-  });
+  const { data: categories = [], loading: categoriesLoading } = useInventoryCategories();
 
-  const requestsParams = useMemo(() => ({
+  const inventoryParams = useMemo(() => ({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
-    employee: selectedEmployee,
+    category: selectedCategory,
+    condition: selectedCondition,
     status: selectedStatus,
-    leave_type: selectedLeaveType,
-  }), [selectedBranch, selectedAcademicYear, selectedEmployee, selectedStatus, selectedLeaveType]);
+  }), [selectedBranch, selectedAcademicYear, selectedCategory, selectedCondition, selectedStatus]);
 
   const { 
-    data: leaveRequests = [], 
-    loading: requestsLoading, 
-    error: requestsError,
-    refetch: refetchRequests
-  } = useLeaveRequests(requestsParams);
-
-  // Extract leave types from requests
-  const leaveTypes = useMemo(() => {
-    const types = new Map();
-    leaveRequests.forEach((request: LeaveRequest) => {
-      if (request.leave_type) {
-        types.set(request.leave_type.id, request.leave_type);
-      }
-    });
-    return Array.from(types.values());
-  }, [leaveRequests]);
+    data: inventoryItems = [], 
+    loading: inventoryLoading, 
+    error: inventoryError,
+    refetch: refetchInventory
+  } = useInventory(inventoryParams);
 
   // Filter options
-  const employeeOptions = useMemo(() => [
-    { id: 0, name: 'All Employees' },
-    ...employees.map((employee: any) => ({
-      id: employee.id,
-      name: employee.name || employee.email || 'Unnamed Employee'
+  const categoryOptions = useMemo(() => [
+    { id: 0, name: 'All Categories' },
+    ...categories.map((category: any) => ({
+      id: category.id,
+      name: category.name || 'Unnamed Category'
     }))
-  ], [employees]);
+  ], [categories]);
+
+  const conditionOptions = useMemo(() => [
+    { id: 0, name: 'All Conditions' },
+    { id: 1, name: 'Excellent' },
+    { id: 2, name: 'Good' },
+    { id: 3, name: 'Fair' },
+    { id: 4, name: 'Poor' },
+    { id: 5, name: 'Damaged' },
+  ], []);
+
+  const conditionMapping = {
+    0: null,
+    1: 'excellent',
+    2: 'good',
+    3: 'fair',
+    4: 'poor',
+    5: 'damaged'
+  };
 
   const statusOptions = useMemo(() => [
-    { id: 0, name: 'All Statuses' },
-    { id: 1, name: 'Pending' },
-    { id: 2, name: 'Approved' },
-    { id: 3, name: 'Rejected' },
-    { id: 4, name: 'Cancelled' }
+    { id: 0, name: 'All Status' },
+    { id: 1, name: 'Available' },
+    { id: 2, name: 'In Use' },
+    { id: 3, name: 'Maintenance' },
+    { id: 4, name: 'Retired' },
   ], []);
 
   const statusMapping = {
     0: null,
-    1: 'pending',
-    2: 'approved',
-    3: 'rejected',
-    4: 'cancelled'
+    1: 'available',
+    2: 'in_use',
+    3: 'maintenance',
+    4: 'retired'
   };
 
-  const leaveTypeOptions = useMemo(() => [
-    { id: 0, name: 'All Leave Types' },
-    ...leaveTypes.map((type: any) => ({
-      id: type.id,
-      name: type.name || 'Unnamed Leave Type'
-    }))
-  ], [leaveTypes]);
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'pending': return colors.warning || '#f59e0b';
-      case 'approved': return colors.success || '#10b981';
-      case 'rejected': return colors.error || '#ef4444';
-      case 'cancelled': return colors.textSecondary || '#6b7280';
+  const getConditionColor = (condition: string) => {
+    switch (condition) {
+      case 'excellent': return colors.success || '#10b981';
+      case 'good': return colors.info || '#3b82f6';
+      case 'fair': return colors.warning || '#f59e0b';
+      case 'poor': return colors.error || '#ef4444';
+      case 'damaged': return colors.error || '#ef4444';
       default: return colors.textSecondary || '#6b7280';
     }
   };
 
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'available': return colors.success || '#10b981';
+      case 'in_use': return colors.info || '#3b82f6';
+      case 'maintenance': return colors.warning || '#f59e0b';
+      case 'retired': return colors.textSecondary || '#6b7280';
+      default: return colors.textSecondary || '#6b7280';
+    }
+  };
+
+  const getConditionLabel = (condition: string) => {
+    return condition.charAt(0).toUpperCase() + condition.slice(1);
+  };
+
   const getStatusLabel = (status: string) => {
-    return status.charAt(0).toUpperCase() + status.slice(1);
+    return status.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase());
   };
 
   const formatDate = (dateString: string) => {
@@ -158,90 +168,109 @@ export default function LeaveRequestsScreen() {
     }
   };
 
-  const calculateDays = (startDate: string, endDate: string) => {
-    if (!startDate || !endDate) return 0;
-    try {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const diffTime = Math.abs(end.getTime() - start.getTime());
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    } catch {
-      return 0;
-    }
+  const formatCurrency = (amount: number) => {
+    if (!amount) return 'N/A';
+    return `$${amount.toLocaleString()}`;
   };
 
   const handleRefresh = () => {
-    refetchRequests();
+    refetchInventory();
   };
 
-  const handleRequestPress = (request: LeaveRequest) => {
-    setSelectedRequest(request);
+  const handleItemPress = (item: InventoryItem) => {
+    setSelectedItem(item);
   };
 
-  const renderRequestCard = ({ item }: { item: LeaveRequest }) => (
+  const renderInventoryCard = ({ item }: { item: InventoryItem }) => (
     <TouchableOpacity 
-      style={[styles.requestCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-      onPress={() => handleRequestPress(item)}
+      style={[styles.inventoryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+      onPress={() => handleItemPress(item)}
     >
-      <View style={styles.requestHeader}>
-        <Text style={[styles.employeeName, { color: colors.textPrimary }]} numberOfLines={1}>
-          {item.employee?.name || item.employee?.email || 'Unknown Employee'}
+      <View style={styles.itemHeader}>
+        <Text style={[styles.itemName, { color: colors.textPrimary }]} numberOfLines={2}>
+          {item.name || 'Unnamed Item'}
         </Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
-          <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
-            {getStatusLabel(item.status)}
-          </Text>
+        <View style={styles.statusContainer}>
+          <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
+            <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
+              {getStatusLabel(item.status)}
+            </Text>
+          </View>
+          <View style={[styles.conditionBadge, { backgroundColor: getConditionColor(item.condition) + '20' }]}>
+            <Text style={[styles.conditionText, { color: getConditionColor(item.condition) }]}>
+              {getConditionLabel(item.condition)}
+            </Text>
+          </View>
         </View>
       </View>
 
-      <Text style={[styles.leaveType, { color: colors.primary }]}>
-        {item.leave_type?.name || 'Unknown Leave Type'}
+      <Text style={[styles.category, { color: colors.primary }]}>
+        {item.category?.name || 'Uncategorized'}
       </Text>
 
-      <View style={styles.dateRow}>
-        <Text style={[styles.dateText, { color: colors.textSecondary }]}>
-          From: {formatDate(item.start_date)}
+      {item.brand && (
+        <Text style={[styles.brandModel, { color: colors.textSecondary }]}>
+          {item.brand} {item.model && `- ${item.model}`}
         </Text>
-        <Text style={[styles.dateText, { color: colors.textSecondary }]}>
-          To: {formatDate(item.end_date)}
+      )}
+
+      {item.serial_number && (
+        <Text style={[styles.serialNumber, { color: colors.textSecondary }]}>
+          Serial: {item.serial_number}
         </Text>
+      )}
+
+      <View style={styles.itemDetails}>
+        {item.purchase_date && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Purchased: {formatDate(item.purchase_date)}
+          </Text>
+        )}
+
+        {item.purchase_price && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Purchase Price: {formatCurrency(item.purchase_price)}
+          </Text>
+        )}
+
+        {item.current_value && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Current Value: {formatCurrency(item.current_value)}
+          </Text>
+        )}
+
+        {item.location && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Location: {item.location}
+          </Text>
+        )}
+
+        {item.assigned_to && (
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            Assigned to: {item.assigned_to.name}
+          </Text>
+        )}
       </View>
 
-      <Text style={[styles.daysRequested, { color: colors.textSecondary }]}>
-        Days Requested: {item.days_requested || calculateDays(item.start_date, item.end_date)}
+      {item.description && (
+        <Text style={[styles.description, { color: colors.textSecondary }]} numberOfLines={2}>
+          {item.description}
+        </Text>
+      )}
+
+      <Text style={[styles.lastUpdated, { color: colors.textSecondary }]}>
+        Last Updated: {formatDate(item.last_updated)}
       </Text>
-
-      {item.reason && (
-        <Text style={[styles.reason, { color: colors.textSecondary }]} numberOfLines={2}>
-          Reason: {item.reason}
-        </Text>
-      )}
-
-      <Text style={[styles.appliedDate, { color: colors.textSecondary }]}>
-        Applied: {formatDate(item.applied_date)}
-      </Text>
-
-      {item.approved_by && (
-        <Text style={[styles.approvedBy, { color: colors.textSecondary }]}>
-          Approved by: {item.approved_by.name} on {formatDate(item.approved_date || '')}
-        </Text>
-      )}
-
-      {item.rejection_reason && (
-        <Text style={[styles.rejectionReason, { color: colors.error }]} numberOfLines={2}>
-          Rejection Reason: {item.rejection_reason}
-        </Text>
-      )}
     </TouchableOpacity>
   );
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <Text style={[styles.emptyStateTitle, { color: colors.textPrimary }]}>
-        No Leave Requests Found
+        No Inventory Items Found
       </Text>
       <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
-        There are no leave requests matching your current filters.
+        There are no inventory items matching your current filters.
       </Text>
     </View>
   );
@@ -249,7 +278,7 @@ export default function LeaveRequestsScreen() {
   const renderErrorState = () => (
     <View style={styles.errorState}>
       <Text style={[styles.errorTitle, { color: colors.error }]}>
-        Unable to Load Leave Requests
+        Unable to Load Inventory
       </Text>
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
@@ -269,7 +298,7 @@ export default function LeaveRequestsScreen() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <TopBar
-          title="Leave Requests"
+          title="Inventory Management"
           onMenuPress={() => setDrawerVisible(true)}
           onNotificationPress={() => router.push('/notifications')}
         />
@@ -287,7 +316,7 @@ export default function LeaveRequestsScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Leave Requests"
+        title="Inventory Management"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationPress={() => router.push('/notifications')}
       />
@@ -297,7 +326,7 @@ export default function LeaveRequestsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-
+            
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -305,7 +334,7 @@ export default function LeaveRequestsScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-
+            
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -313,29 +342,29 @@ export default function LeaveRequestsScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-
+            
             <ModalDropdownFilter
-              label="Employee"
-              items={employeeOptions}
-              selectedValue={selectedEmployee || 0}
-              onValueChange={(value) => setSelectedEmployee(value === 0 ? null : value)}
-              loading={employeesLoading}
+              label="Category"
+              items={categoryOptions}
+              selectedValue={selectedCategory || 0}
+              onValueChange={(value) => setSelectedCategory(value === 0 ? null : value)}
+              loading={categoriesLoading}
               compact={true}
             />
-
+            
+            <ModalDropdownFilter
+              label="Condition"
+              items={conditionOptions}
+              selectedValue={selectedCondition ? Object.keys(conditionMapping).find(key => conditionMapping[key] === selectedCondition) || 0 : 0}
+              onValueChange={(value) => setSelectedCondition(conditionMapping[value])}
+              compact={true}
+            />
+            
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
               selectedValue={selectedStatus ? Object.keys(statusMapping).find(key => statusMapping[key] === selectedStatus) || 0 : 0}
               onValueChange={(value) => setSelectedStatus(statusMapping[value])}
-              compact={true}
-            />
-
-            <ModalDropdownFilter
-              label="Leave Type"
-              items={leaveTypeOptions}
-              selectedValue={selectedLeaveType || 0}
-              onValueChange={(value) => setSelectedLeaveType(value === 0 ? null : value)}
               compact={true}
             />
           </View>
@@ -344,24 +373,24 @@ export default function LeaveRequestsScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        {requestsLoading ? (
+        {inventoryLoading ? (
           <View style={styles.loadingContainer}>
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-              Loading leave requests...
+              Loading inventory...
             </Text>
           </View>
-        ) : requestsError ? (
+        ) : inventoryError ? (
           renderErrorState()
         ) : (
           <FlatList
-            data={leaveRequests}
-            renderItem={renderRequestCard}
+            data={inventoryItems}
+            renderItem={renderInventoryCard}
             keyExtractor={(item) => item.id.toString()}
             contentContainerStyle={styles.listContainer}
             refreshControl={
               <RefreshControl
-                refreshing={requestsLoading}
+                refreshing={inventoryLoading}
                 onRefresh={handleRefresh}
                 colors={[colors.primary]}
               />
@@ -406,7 +435,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 32,
   },
-  requestCard: {
+  inventoryCard: {
     padding: 16,
     marginBottom: 12,
     borderRadius: 12,
@@ -417,63 +446,72 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 2,
   },
-  requestHeader: {
+  itemHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     marginBottom: 8,
   },
-  employeeName: {
+  itemName: {
     fontSize: 16,
     fontWeight: '600',
     flex: 1,
     marginRight: 8,
   },
+  statusContainer: {
+    alignItems: 'flex-end',
+    gap: 4,
+  },
   statusBadge: {
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 6,
-    minWidth: 80,
     alignItems: 'center',
+    minWidth: 70,
   },
   statusText: {
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: '600',
   },
-  leaveType: {
+  conditionBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 6,
+    alignItems: 'center',
+    minWidth: 70,
+  },
+  conditionText: {
+    fontSize: 10,
+    fontWeight: '600',
+  },
+  category: {
     fontSize: 14,
     fontWeight: '500',
+    marginBottom: 6,
+  },
+  brandModel: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  serialNumber: {
+    fontSize: 12,
     marginBottom: 8,
   },
-  dateRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 6,
+  itemDetails: {
+    marginBottom: 8,
   },
-  dateText: {
+  detailText: {
     fontSize: 12,
+    marginBottom: 2,
   },
-  daysRequested: {
-    fontSize: 14,
-    fontWeight: '500',
-    marginBottom: 6,
-  },
-  reason: {
+  description: {
     fontSize: 12,
-    marginBottom: 6,
+    marginBottom: 8,
     fontStyle: 'italic',
+    lineHeight: 16,
   },
-  appliedDate: {
+  lastUpdated: {
     fontSize: 12,
-    marginBottom: 4,
-  },
-  approvedBy: {
-    fontSize: 12,
-    marginBottom: 4,
-  },
-  rejectionReason: {
-    fontSize: 12,
-    fontStyle: 'italic',
   },
   loadingContainer: {
     flex: 1,

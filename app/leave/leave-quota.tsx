@@ -7,43 +7,43 @@ import {
   ScrollView,
   TouchableOpacity,
   FlatList,
-  Modal,
-  TextInput,
-  Alert,
   ActivityIndicator,
   RefreshControl,
+  ProgressBarAndroid,
+  Platform,
 } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
+import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {
-  useLeaveQuotas,
-  useBranches,
-  useAcademicYears,
-  useDepartments
-} from '@/hooks/useApi';
-import { apiService } from '@/api/apiService';
+import { useLeaveQuota, useAllUsersExceptStudents } from '@/hooks/useApi';
 
 interface LeaveQuota {
   id: number;
-  department: {
+  employee: {
     id: number;
     name: string;
+    email: string;
+    department?: {
+      id: number;
+      name: string;
+    };
   };
-  leave_type: string;
-  total_quota: number;
-  affects_salary: boolean;
-  branch: {
+  leave_type: {
     id: number;
     name: string;
+    max_days_per_year: number;
   };
-  academic_year: {
-    id: number;
-    name: string;
-  };
+  year: number;
+  total_allocated: number;
+  used_days: number;
+  remaining_days: number;
+  pending_days: number;
+  last_updated: string;
 }
 
 export default function LeaveQuotaScreen() {
@@ -51,408 +51,310 @@ export default function LeaveQuotaScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
-  const [selectedDepartment, setSelectedDepartment] = useState<number | undefined>();
-  const [selectedLeaveType, setSelectedLeaveType] = useState<string>('');
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingQuota, setEditingQuota] = useState<LeaveQuota | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<number | null>(null);
+  const [selectedYear, setSelectedYear] = useState<number | null>(new Date().getFullYear());
+  const [selectedLeaveType, setSelectedLeaveType] = useState<number | null>(null);
 
-  // Form State
-  const [quotaForm, setQuotaForm] = useState({
-    department: '',
-    leave_type: 'Sick Leave',
-    total_quota: '',
-    affects_salary: false,
-  });
+  // Global filters
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
+    academicYears,
+    branchesLoading,
+    academicYearsLoading
+  } = useGlobalFilters();
 
   // Fetch data
-  const { data: branches } = useBranches({ is_active: true });
-  const { data: academicYears } = useAcademicYears();
-  const { data: departments } = useDepartments({ 
+  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({ 
     branch: selectedBranch,
-    is_active: true 
+    academic_year: selectedAcademicYear 
   });
 
   const quotaParams = useMemo(() => ({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
-    ...(selectedDepartment && { department: selectedDepartment }),
-    ...(selectedLeaveType && { leave_type: selectedLeaveType }),
-  }), [selectedBranch, selectedAcademicYear, selectedDepartment, selectedLeaveType]);
+    employee: selectedEmployee,
+    year: selectedYear,
+    leave_type: selectedLeaveType,
+  }), [selectedBranch, selectedAcademicYear, selectedEmployee, selectedYear, selectedLeaveType]);
 
-  const {
-    data: quotas,
-    loading: quotasLoading,
+  const { 
+    data: leaveQuotas = [], 
+    loading: quotasLoading, 
     error: quotasError,
     refetch: refetchQuotas
-  } = useLeaveQuotas(quotaParams);
+  } = useLeaveQuota(quotaParams);
 
-  const leaveTypes = [
-    'Sick Leave',
-    'Casual Leave',
-    'Annual Leave',
-    'Maternity Leave',
-    'Paternity Leave',
-    'Emergency Leave',
-    'Study Leave',
-    'Sabbatical Leave'
-  ];
+  // Extract leave types from quotas
+  const leaveTypes = useMemo(() => {
+    const types = new Map();
+    leaveQuotas.forEach((quota: LeaveQuota) => {
+      if (quota.leave_type) {
+        types.set(quota.leave_type.id, quota.leave_type);
+      }
+    });
+    return Array.from(types.values());
+  }, [leaveQuotas]);
 
-  const handleCreateQuota = async () => {
+  // Generate year options (current year ± 5 years)
+  const yearOptions = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear - 5; year <= currentYear + 5; year++) {
+      years.push({ id: year, name: year.toString() });
+    }
+    return years;
+  }, []);
+
+  // Filter options
+  const employeeOptions = useMemo(() => [
+    { id: 0, name: 'All Employees' },
+    ...employees.map((employee: any) => ({
+      id: employee.id,
+      name: employee.name || employee.email || 'Unnamed Employee'
+    }))
+  ], [employees]);
+
+  const leaveTypeOptions = useMemo(() => [
+    { id: 0, name: 'All Leave Types' },
+    ...leaveTypes.map((type: any) => ({
+      id: type.id,
+      name: type.name || 'Unnamed Leave Type'
+    }))
+  ], [leaveTypes]);
+
+  const getUsageColor = (used: number, total: number) => {
+    const percentage = (used / total) * 100;
+    if (percentage >= 90) return colors.error || '#ef4444';
+    if (percentage >= 70) return colors.warning || '#f59e0b';
+    if (percentage >= 50) return colors.info || '#3b82f6';
+    return colors.success || '#10b981';
+  };
+
+  const formatDate = (dateString: string) => {
+    if (!dateString) return 'N/A';
     try {
-      if (!quotaForm.department || !quotaForm.total_quota) {
-        Alert.alert('Error', 'Please fill all required fields');
-        return;
-      }
-
-      const quotaData = {
-        ...quotaForm,
-        department: parseInt(quotaForm.department),
-        total_quota: parseInt(quotaForm.total_quota),
-        branch: selectedBranch,
-        academic_year: selectedAcademicYear,
-      };
-
-      if (editingQuota) {
-        await apiService.updateLeaveQuota(editingQuota.id, quotaData);
-        Alert.alert('Success', 'Leave quota updated successfully');
-      } else {
-        await apiService.createLeaveQuota(quotaData);
-        Alert.alert('Success', 'Leave quota created successfully');
-      }
-
-      setModalVisible(false);
-      resetForm();
-      refetchQuotas();
-    } catch (error) {
-      Alert.alert('Error', 'Failed to save leave quota');
+      return new Date(dateString).toLocaleDateString();
+    } catch {
+      return 'Invalid Date';
     }
   };
 
-  const handleEditQuota = (quota: LeaveQuota) => {
-    setEditingQuota(quota);
-    setQuotaForm({
-      department: quota.department.id.toString(),
-      leave_type: quota.leave_type,
-      total_quota: quota.total_quota.toString(),
-      affects_salary: quota.affects_salary,
-    });
-    setModalVisible(true);
+  const handleRefresh = () => {
+    refetchQuotas();
   };
 
-  const handleDeleteQuota = (quotaId: number) => {
-    Alert.alert(
-      'Confirm Delete',
-      'Are you sure you want to delete this leave quota?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Delete',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await apiService.deleteLeaveQuota(quotaId);
-              Alert.alert('Success', 'Leave quota deleted successfully');
-              refetchQuotas();
-            } catch (error) {
-              Alert.alert('Error', 'Failed to delete leave quota');
-            }
-          },
-        },
-      ]
+  const renderProgressBar = (used: number, total: number) => {
+    const percentage = Math.min((used / total) * 100, 100);
+    
+    return (
+      <View style={styles.progressContainer}>
+        <View style={[styles.progressBackground, { backgroundColor: colors.border }]}>
+          <View 
+            style={[
+              styles.progressFill, 
+              { 
+                width: `${percentage}%`,
+                backgroundColor: getUsageColor(used, total)
+              }
+            ]} 
+          />
+        </View>
+        <Text style={[styles.progressText, { color: colors.textSecondary }]}>
+          {percentage.toFixed(1)}%
+        </Text>
+      </View>
     );
   };
 
-  const resetForm = () => {
-    setQuotaForm({
-      department: '',
-      leave_type: 'Sick Leave',
-      total_quota: '',
-      affects_salary: false,
-    });
-    setEditingQuota(null);
-  };
-
-  const renderQuotaItem = ({ item }: { item: LeaveQuota }) => (
-    <View style={[
-      styles.quotaCard,
-      {
-        backgroundColor: colors.surface,
-        borderColor: colors.border,
-      }
-    ]}>
+  const renderQuotaCard = ({ item }: { item: LeaveQuota }) => (
+    <View style={[styles.quotaCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
       <View style={styles.quotaHeader}>
-        <View style={styles.quotaInfo}>
-          <Text style={[styles.quotaType, { color: colors.textPrimary }]}>
-            {item.leave_type}
-          </Text>
-          <Text style={[styles.quotaDepartment, { color: colors.textSecondary }]}>
-            {item.department.name}
-          </Text>
-        </View>
-
-        <View style={styles.quotaDetails}>
-          <Text style={[styles.quotaAmount, { color: colors.primary }]}>
-            {item.total_quota} days
-          </Text>
-          <View style={[
-            styles.salaryBadge,
-            { backgroundColor: item.affects_salary ? '#FF6B6B20' : '#4CAF5020' }
-          ]}>
-            <Text style={[
-              styles.salaryText,
-              { color: item.affects_salary ? '#FF6B6B' : '#4CAF50' }
-            ]}>
-              {item.affects_salary ? 'Affects Salary' : 'No Salary Impact'}
-            </Text>
-          </View>
-        </View>
+        <Text style={[styles.employeeName, { color: colors.textPrimary }]} numberOfLines={1}>
+          {item.employee?.name || item.employee?.email || 'Unknown Employee'}
+        </Text>
+        <Text style={[styles.year, { color: colors.primary }]}>
+          {item.year}
+        </Text>
       </View>
 
-      {user?.is_staff && (
-        <View style={styles.quotaActions}>
-          <TouchableOpacity
-            style={[styles.editButton, { backgroundColor: colors.primary }]}
-            onPress={() => handleEditQuota(item)}
-          >
-            <Text style={styles.editButtonText}>Edit</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.deleteButton, { backgroundColor: '#F44336' }]}
-            onPress={() => handleDeleteQuota(item.id)}
-          >
-            <Text style={styles.deleteButtonText}>Delete</Text>
-          </TouchableOpacity>
+      <Text style={[styles.leaveType, { color: colors.primary }]}>
+        {item.leave_type?.name || 'Unknown Leave Type'}
+      </Text>
+
+      <View style={styles.quotaStats}>
+        <View style={styles.statRow}>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Allocated:</Text>
+          <Text style={[styles.statValue, { color: colors.textPrimary }]}>{item.total_allocated} days</Text>
         </View>
-      )}
+        
+        <View style={styles.statRow}>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Used:</Text>
+          <Text style={[styles.statValue, { color: getUsageColor(item.used_days, item.total_allocated) }]}>
+            {item.used_days} days
+          </Text>
+        </View>
+        
+        <View style={styles.statRow}>
+          <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Remaining:</Text>
+          <Text style={[styles.statValue, { color: colors.success }]}>{item.remaining_days} days</Text>
+        </View>
+        
+        {item.pending_days > 0 && (
+          <View style={styles.statRow}>
+            <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Pending:</Text>
+            <Text style={[styles.statValue, { color: colors.warning }]}>{item.pending_days} days</Text>
+          </View>
+        )}
+      </View>
+
+      {renderProgressBar(item.used_days, item.total_allocated)}
+
+      <Text style={[styles.lastUpdated, { color: colors.textSecondary }]}>
+        Last Updated: {formatDate(item.last_updated)}
+      </Text>
     </View>
   );
 
-  const renderCreateQuotaModal = () => (
-    <Modal
-      visible={modalVisible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={() => setModalVisible(false)}
-    >
-      <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
-          <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
-              {editingQuota ? 'Edit Leave Quota' : 'Add Leave Quota'}
-            </Text>
-            <TouchableOpacity
-              onPress={() => {
-                setModalVisible(false);
-                resetForm();
-              }}
-              style={styles.closeButton}
-            >
-              <Text style={[styles.closeButtonText, { color: colors.primary }]}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          <ScrollView style={styles.modalBody}>
-            <View style={styles.formGroup}>
-              <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Department *</Text>
-              <View style={styles.dropdownContainer}>
-                {departments?.map((dept) => (
-                  <TouchableOpacity
-                    key={dept.id}
-                    style={[
-                      styles.dropdownItem,
-                      {
-                        backgroundColor: quotaForm.department === dept.id.toString() ? colors.primary + '20' : colors.background,
-                        borderColor: colors.border
-                      }
-                    ]}
-                    onPress={() => setQuotaForm(prev => ({ ...prev, department: dept.id.toString() }))}
-                  >
-                    <Text style={[
-                      styles.dropdownText,
-                      { 
-                        color: quotaForm.department === dept.id.toString() ? colors.primary : colors.textPrimary 
-                      }
-                    ]}>
-                      {dept.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.formGroup}>
-              <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Leave Type *</Text>
-              <View style={styles.dropdownContainer}>
-                {leaveTypes.map((type) => (
-                  <TouchableOpacity
-                    key={type}
-                    style={[
-                      styles.dropdownItem,
-                      {
-                        backgroundColor: quotaForm.leave_type === type ? colors.primary + '20' : colors.background,
-                        borderColor: colors.border
-                      }
-                    ]}
-                    onPress={() => setQuotaForm(prev => ({ ...prev, leave_type: type }))}
-                  >
-                    <Text style={[
-                      styles.dropdownText,
-                      { 
-                        color: quotaForm.leave_type === type ? colors.primary : colors.textPrimary 
-                      }
-                    ]}>
-                      {type}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-            </View>
-
-            <View style={styles.formGroup}>
-              <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Total Quota (Days) *</Text>
-              <TextInput
-                style={[styles.formInput, { borderColor: colors.border, color: colors.textPrimary }]}
-                placeholder="Enter number of days"
-                placeholderTextColor={colors.textSecondary}
-                keyboardType="numeric"
-                value={quotaForm.total_quota}
-                onChangeText={(text) => setQuotaForm(prev => ({...prev, total_quota: text}))}
-              />
-            </View>
-
-            <View style={styles.formGroup}>
-              <TouchableOpacity
-                style={styles.checkboxContainer}
-                onPress={() => setQuotaForm(prev => ({...prev, affects_salary: !prev.affects_salary}))}
-              >
-                <View style={[
-                  styles.checkbox,
-                  {
-                    backgroundColor: quotaForm.affects_salary ? colors.primary : 'transparent',
-                    borderColor: colors.border
-                  }
-                ]}>
-                  {quotaForm.affects_salary && (
-                    <Text style={styles.checkmark}>✓</Text>
-                  )}
-                </View>
-                <Text style={[styles.checkboxLabel, { color: colors.textPrimary }]}>
-                  Affects Salary
-                </Text>
-              </TouchableOpacity>
-            </View>
-
-            <TouchableOpacity
-              style={[styles.submitButton, { backgroundColor: colors.primary }]}
-              onPress={handleCreateQuota}
-            >
-              <Text style={styles.submitButtonText}>
-                {editingQuota ? 'Update Quota' : 'Add Quota'}
-              </Text>
-            </TouchableOpacity>
-          </ScrollView>
-        </View>
-      </View>
-    </Modal>
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <Text style={[styles.emptyStateTitle, { color: colors.textPrimary }]}>
+        No Leave Quotas Found
+      </Text>
+      <Text style={[styles.emptyStateText, { color: colors.textSecondary }]}>
+        There are no leave quotas matching your current filters.
+      </Text>
+    </View>
   );
+
+  const renderErrorState = () => (
+    <View style={styles.errorState}>
+      <Text style={[styles.errorTitle, { color: colors.error }]}>
+        Unable to Load Leave Quotas
+      </Text>
+      <Text style={[styles.errorText, { color: colors.textSecondary }]}>
+        Please check your connection and try again.
+      </Text>
+      <TouchableOpacity 
+        style={[styles.retryButton, { backgroundColor: colors.primary }]}
+        onPress={handleRefresh}
+      >
+        <Text style={[styles.retryButtonText, { color: colors.surface }]}>
+          Retry
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  if (branchesLoading || academicYearsLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <TopBar
+          title="Leave Quota"
+          onMenuPress={() => setDrawerVisible(true)}
+          onNotificationPress={() => router.push('/notifications')}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading filters...
+          </Text>
+        </View>
+        <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
         title="Leave Quota"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationsPress={() => router.push('/(tabs)/notifications')}
-        onSettingsPress={() => router.push('/(tabs)/settings')}
+        onNotificationPress={() => router.push('/notifications')}
       />
 
-      <SideDrawer
-        visible={drawerVisible}
-        onClose={() => setDrawerVisible(false)}
-      />
-
-      {/* Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: colors.surface }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
-            </Text>
-          </TouchableOpacity>
-
-          {departments && departments.length > 0 && (
-            <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-              <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-                {selectedDepartment ? departments.find(d => d.id === selectedDepartment)?.name : 'All Departments'}
-              </Text>
-            </TouchableOpacity>
-          )}
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Employee"
+              items={employeeOptions}
+              selectedValue={selectedEmployee || 0}
+              onValueChange={(value) => setSelectedEmployee(value === 0 ? null : value)}
+              loading={employeesLoading}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Year"
+              items={yearOptions}
+              selectedValue={selectedYear || new Date().getFullYear()}
+              onValueChange={(value) => setSelectedYear(value)}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Leave Type"
+              items={leaveTypeOptions}
+              selectedValue={selectedLeaveType || 0}
+              onValueChange={(value) => setSelectedLeaveType(value === 0 ? null : value)}
+              compact={true}
+            />
+          </View>
         </ScrollView>
-
-        {user?.is_staff && (
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
-            onPress={() => setModalVisible(true)}
-          >
-            <Text style={styles.addButtonText}>+ Add Quota</Text>
-          </TouchableOpacity>
-        )}
       </View>
 
       {/* Content */}
-      {quotasLoading ? (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-            Loading leave quotas...
-          </Text>
-        </View>
-      ) : quotasError ? (
-        <View style={styles.errorContainer}>
-          <Text style={[styles.errorText, { color: '#FF6B6B' }]}>
-            Failed to load leave quotas. Please try again.
-          </Text>
-          <TouchableOpacity
-            onPress={refetchQuotas}
-            style={[styles.retryButton, { backgroundColor: colors.primary }]}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      ) : (
-        <FlatList
-          data={quotas || []}
-          renderItem={renderQuotaItem}
-          keyExtractor={(item) => item.id.toString()}
-          style={styles.quotasList}
-          contentContainerStyle={styles.quotasListContent}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl
-              refreshing={quotasLoading}
-              onRefresh={refetchQuotas}
-              colors={[colors.primary]}
-              tintColor={colors.primary}
-            />
-          }
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                No leave quotas found for the selected criteria
-              </Text>
-            </View>
-          }
-        />
-      )}
+      <View style={styles.content}>
+        {quotasLoading ? (
+          <View style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color={colors.primary} />
+            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+              Loading leave quotas...
+            </Text>
+          </View>
+        ) : quotasError ? (
+          renderErrorState()
+        ) : (
+          <FlatList
+            data={leaveQuotas}
+            renderItem={renderQuotaCard}
+            keyExtractor={(item) => item.id.toString()}
+            contentContainerStyle={styles.listContainer}
+            refreshControl={
+              <RefreshControl
+                refreshing={quotasLoading}
+                onRefresh={handleRefresh}
+                colors={[colors.primary]}
+              />
+            }
+            ListEmptyComponent={renderEmptyState}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </View>
 
-      {renderCreateQuotaModal()}
+      <SideDrawer visible={drawerVisible} onClose={() => setDrawerVisible(false)} />
     </SafeAreaView>
   );
 }
@@ -462,38 +364,98 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   filtersContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
   },
-  filtersContent: {
+  filtersScroll: {
+    flexGrow: 0,
+  },
+  filtersRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
   },
-  filterButton: {
-    borderWidth: 1,
-    borderRadius: 6,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    minWidth: 70,
-  },
-  filterText: {
-    fontSize: 12,
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  addButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 6,
-  },
-  addButtonText: {
-    color: '#FFFFFF',
-    fontSize: 12,
+  filtersLabel: {
+    fontSize: 14,
     fontWeight: '600',
+    marginRight: 8,
+  },
+  content: {
+    flex: 1,
+  },
+  listContainer: {
+    padding: 16,
+    paddingBottom: 32,
+  },
+  quotaCard: {
+    padding: 16,
+    marginBottom: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  quotaHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 8,
+  },
+  employeeName: {
+    fontSize: 16,
+    fontWeight: '600',
+    flex: 1,
+    marginRight: 8,
+  },
+  year: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  leaveType: {
+    fontSize: 14,
+    fontWeight: '500',
+    marginBottom: 12,
+  },
+  quotaStats: {
+    marginBottom: 12,
+  },
+  statRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 14,
+  },
+  statValue: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  progressContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  progressBackground: {
+    flex: 1,
+    height: 8,
+    borderRadius: 4,
+    marginRight: 8,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressText: {
+    fontSize: 12,
+    minWidth: 40,
+  },
+  lastUpdated: {
+    fontSize: 12,
   },
   loadingContainer: {
     flex: 1,
@@ -502,212 +464,51 @@ const styles = StyleSheet.create({
     padding: 32,
   },
   loadingText: {
-    marginTop: 12,
+    marginTop: 16,
     fontSize: 16,
   },
-  errorContainer: {
+  emptyState: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
   },
-  errorText: {
-    fontSize: 16,
+  emptyStateTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    marginBottom: 8,
     textAlign: 'center',
-    marginBottom: 16,
+  },
+  emptyStateText: {
+    fontSize: 14,
+    textAlign: 'center',
+    lineHeight: 20,
+  },
+  errorState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  errorTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  errorText: {
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
   },
   retryButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
     borderRadius: 8,
   },
   retryButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  quotasList: {
-    flex: 1,
-  },
-  quotasListContent: {
-    padding: 16,
-  },
-  quotaCard: {
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
-    borderWidth: 1,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  quotaHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 12,
-  },
-  quotaInfo: {
-    flex: 1,
-  },
-  quotaType: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  quotaDepartment: {
     fontSize: 14,
-  },
-  quotaDetails: {
-    alignItems: 'flex-end',
-  },
-  quotaAmount: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  salaryBadge: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  salaryText: {
-    fontSize: 10,
-    fontWeight: 'bold',
-  },
-  quotaActions: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  editButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    flex: 1,
-    alignItems: 'center',
-  },
-  editButtonText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  deleteButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    flex: 1,
-    alignItems: 'center',
-  },
-  deleteButtonText: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  emptyContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-  },
-  emptyText: {
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    width: '90%',
-    maxHeight: '80%',
-    borderRadius: 12,
-    padding: 0,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  closeButton: {
-    padding: 4,
-  },
-  closeButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  modalBody: {
-    padding: 20,
-    maxHeight: 400,
-  },
-  formGroup: {
-    marginBottom: 16,
-  },
-  formLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-  },
-  formInput: {
-    height: 44,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    fontSize: 16,
-  },
-  dropdownContainer: {
-    maxHeight: 120,
-  },
-  dropdownItem: {
-    padding: 10,
-    borderWidth: 1,
-    borderRadius: 6,
-    marginBottom: 4,
-  },
-  dropdownText: {
-    fontSize: 14,
-  },
-  checkboxContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 4,
-    borderWidth: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
-  },
-  checkmark: {
-    color: '#FFFFFF',
-    fontSize: 12,
-    fontWeight: 'bold',
-  },
-  checkboxLabel: {
-    fontSize: 16,
-  },
-  submitButton: {
-    paddingVertical: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  submitButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
     fontWeight: '600',
   },
 });
