@@ -1,0 +1,103 @@
+# 🔧 TASK OBJECTIVE:
+Fix all bugs, errors, and styling inconsistencies across API-integrated screens. Implement unified global filters (Branch & Academic Year) using modal-based dropdowns. Ensure all screens use consistent design, proper API integration, and remove mock/static screens. Follow the categorization below.
+
+# 🧱 GLOBAL FILTER SYSTEM
+1. Replace all static filters with `ModalDropdownFilter` component.
+2. Apply global filters (Branch, Academic Year) on all API-integrated pages.
+3. Ensure filters are persistent using GlobalFiltersContext.
+4. Trigger screen refreshes and correct API queries on filter change.
+
+# 🧩 TARGET SCREENS FOR GLOBAL FILTER INTEGRATION
+Update the following screens to use the unified `ModalDropdownFilter` system:
+- [ ] /finance/student-fee-list.tsx
+- [ ] /finance/student-fee-analytics.tsx
+- [ ] /exams/student-exam-timetable.tsx
+- [ ] /exams/student-marks-table.tsx
+- [ ] /hostel/* (all hostel screens)
+- [ ] /transport.tsx
+- [ ] /inventory.tsx, /inventory-management.tsx, /inventory/stationary.tsx, /inventory/stationery-fee.tsx
+- [ ] /user-management.tsx
+
+# 💥 BUG FIXES (SCREEN SPECIFIC)
+1. **Classes Screen**
+   - Fix modal open on list item tap
+   - Ensure weekly timetable loads
+   - Fix all buttons
+
+2. **Staff Timetable**
+   - Already fixed to use modal dropdowns – ✅
+
+3. **Exam Module**
+   - /student-exam-timetable: Fix filter rendering, especially dark mode accessibility
+   - /student-marks-table: Fix failed API call ("Failed to load student marks"), connect filters
+   - /student-marks-analytics: Ensure modal filters apply correctly
+
+4. **Tasks API**
+   - Add fallback for 500 error (API-side issue)
+   - Wrap API call in circuit breaker (already applied in `useApi` hook)
+
+5. **Authentication**
+   - All API calls must check for valid token
+   - Ensure demo tokens are handled gracefully when auth is missing
+
+6. **Dashboard Enhancements**
+   - Add Branch & Academic Year filters (already added)
+   - Show proper loading & error states across all dashboard widgets
+
+7. **Notifications**
+   - Ensure notification types are passed as filters to the API
+   - Object rendering issues already resolved – ✅
+
+8. **Finance Module**
+   - student-fee-list: Apply modal filters, consistent styling
+   - student-fee-analytics: Same as above
+
+9. **Transport Module**
+   - Change static filters to modal-based filters
+   - Ensure filters impact results
+
+10. **User/Inventory/Stationery Management**
+    - Convert all dropdowns to modal filters
+    - Style filters consistently
+    - Match dashboard dropdown appearance
+
+11. **Attendance Dashboard**
+    - Convert static filters to modal dropdown
+    - Ensure theme compatibility (dark/light)
+
+# 🧹 CLEAN-UP TASKS
+1. Remove mock screens:
+   - `student-marks` (mock)
+   - `analytics` (unless integrated with live data)
+
+2. Ensure all navigation flows are dynamic and adapt to global filter changes
+
+3. Every API-integrated screen should:
+   - Use `useGlobalFilters()` for branch & academic year
+   - Pass correct filters in API request
+   - Show loading state, error fallback, and empty state
+
+# 📂 UPDATED/TOUCH FILES
+The following files are already updated:
+- hooks/useApi.ts
+- app/(tabs)/index.tsx
+- app/inventory-dashboard.tsx
+- app/(tabs)/notifications.tsx
+- contexts/GlobalFiltersContext.tsx
+- api/apiService.ts
+Continue working on:
+- ModalDropdownFilter component
+- All screens listed above
+
+# ✅ DONE TASKS (ALREADY IMPLEMENTED)
+- GlobalFiltersContext fixed
+- ModalDropdownFilter created
+- getRandomColor bug resolved
+- Notification object rendering issue fixed
+- Dashboard now uses modal filters
+- Inventory dashboard updated
+- Classes screen modal behavior fixed
+- APIService now has improved token/error handling
+
+# 🔚 FINAL GOAL
+Unify the app’s UI/UX across all API screens using consistent modal-based filtering, robust error handling, clean navigation, and real-time filtering based on global filters (Branch + Academic Year).
