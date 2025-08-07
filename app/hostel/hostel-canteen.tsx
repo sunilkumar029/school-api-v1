@@ -101,17 +101,17 @@ export default function HostelCanteenScreen() {
       <View style={styles.mealHeader}>
         <View style={styles.mealInfo}>
           <Text style={styles.mealIcon}>
-            {getMealTypeIcon(mealPlan.meal_type)}
+            {getMealTypeIcon(mealPlan?.meal_type)}
           </Text>
           <View style={styles.mealDetails}>
             <Text style={[styles.mealType, { color: colors.textPrimary }]}>
-              {mealPlan.meal_type?.toUpperCase()}
+              {(mealPlan?.meal_type || 'meal')?.toUpperCase()}
             </Text>
             <Text style={[styles.mealDate, { color: colors.textSecondary }]}>
-              {new Date(mealPlan.date).toLocaleDateString()}
+              {mealPlan?.date ? new Date(mealPlan.date).toLocaleDateString() : 'No date'}
             </Text>
             <Text style={[styles.mealTime, { color: colors.textSecondary }]}>
-              {mealPlan.start_time} - {mealPlan.end_time}
+              {mealPlan?.start_time || 'N/A'} - {mealPlan?.end_time || 'N/A'}
             </Text>
           </View>
         </View>
@@ -131,20 +131,20 @@ export default function HostelCanteenScreen() {
             Menu Items:
           </Text>
           <View style={styles.menuItems}>
-            {mealPlan.menu_items.map((item: any, index: number) => (
+            {(mealPlan.menu_items || []).map((item: any, index: number) => (
               <View
                 key={index}
                 style={[styles.menuItem, { backgroundColor: colors.background }]}
               >
                 <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-                  {item.name}
+                  {item?.name || 'Menu Item'}
                 </Text>
-                {item.description && (
+                {item?.description && (
                   <Text style={[styles.itemDescription, { color: colors.textSecondary }]}>
                     {item.description}
                   </Text>
                 )}
-                {item.dietary_info && (
+                {item?.dietary_info && Array.isArray(item.dietary_info) && (
                   <View style={styles.dietaryTags}>
                     {item.dietary_info.map((tag: string, tagIndex: number) => (
                       <View

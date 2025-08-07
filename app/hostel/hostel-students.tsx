@@ -75,9 +75,9 @@ export default function HostelStudentsScreen() {
   } = useUsers(studentsParams);
 
   const { data: rooms = [] } = useRooms({ branch: selectedBranch });
-  const { data: standards = [] } = useStandards({ 
-    branch: selectedBranch, 
-    academic_year: selectedAcademicYear 
+  const { data: standards = [] } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
   });
 
   // Filter options
@@ -102,7 +102,7 @@ export default function HostelStudentsScreen() {
     let filtered = students;
 
     if (selectedRoom) {
-      filtered = filtered.filter((student: any) => 
+      filtered = filtered.filter((student: any) =>
         student.room?.room_number === selectedRoom
       );
     }
@@ -124,10 +124,13 @@ export default function HostelStudentsScreen() {
   };
 
   const handleStudentAction = (student: any) => {
+    const firstName = student?.user?.first_name || student?.first_name || '';
+    const lastName = student?.user?.last_name || student?.last_name || '';
+
     if (student.status === 'Pending') {
       Alert.alert(
-        'Allocate Room',
-        `Allocate a room for ${student.user.first_name} ${student.user.last_name}?`,
+        'Room Allocation',
+        `Allocate a room for ${firstName} ${lastName}?`,
         [
           { text: 'Cancel', style: 'cancel' },
           { text: 'Allocate', onPress: () => console.log('Allocate room for:', student.id) }
@@ -154,10 +157,10 @@ export default function HostelStudentsScreen() {
       <View style={styles.studentHeader}>
         <View style={styles.studentInfo}>
           <Text style={[styles.studentName, { color: colors.textPrimary }]}>
-            {student.user.first_name} {student.user.last_name}
+            {student.user?.first_name} {student.user?.last_name}
           </Text>
           <Text style={[styles.studentEmail, { color: colors.textSecondary }]}>
-            {student.user.email}
+            {student.user?.email}
           </Text>
           {student.standard && (
             <Text style={[styles.studentClass, { color: colors.textSecondary }]}>

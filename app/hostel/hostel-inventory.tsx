@@ -107,14 +107,14 @@ export default function HostelInventoryScreen() {
       <View style={styles.itemHeader}>
         <View style={styles.itemInfo}>
           <Text style={styles.categoryIcon}>
-            {getCategoryIcon(item.category)}
+            {getCategoryIcon(item?.category)}
           </Text>
           <View style={styles.itemDetails}>
             <Text style={[styles.itemName, { color: colors.textPrimary }]}>
-              {item.name}
+              {item?.name || 'Unknown Item'}
             </Text>
             <Text style={[styles.itemCategory, { color: colors.textSecondary }]}>
-              {item.category} • SKU: {item.sku}
+              {item?.category || 'Uncategorized'} • SKU: {item?.sku || 'N/A'}
             </Text>
           </View>
         </View>
@@ -135,7 +135,7 @@ export default function HostelInventoryScreen() {
             Current Stock:
           </Text>
           <Text style={[styles.quantityValue, { color: colors.textPrimary }]}>
-            {item.quantity} {item.unit}
+            {item?.quantity || 0} {item?.unit || 'units'}
           </Text>
         </View>
         
@@ -144,11 +144,11 @@ export default function HostelInventoryScreen() {
             Min Required:
           </Text>
           <Text style={[styles.quantityValue, { color: colors.textSecondary }]}>
-            {item.min_quantity} {item.unit}
+            {item?.min_quantity || 0} {item?.unit || 'units'}
           </Text>
         </View>
 
-        {item.price && (
+        {item?.price && (
           <View style={styles.quantityRow}>
             <Text style={[styles.quantityLabel, { color: colors.textSecondary }]}>
               Unit Price:
@@ -160,7 +160,7 @@ export default function HostelInventoryScreen() {
         )}
       </View>
 
-      {item.location && (
+      {item?.location && (
         <View style={styles.locationInfo}>
           <Text style={[styles.locationLabel, { color: colors.textSecondary }]}>
             Location:
@@ -171,7 +171,7 @@ export default function HostelInventoryScreen() {
         </View>
       )}
 
-      {item.description && (
+      {item?.description && (
         <Text style={[styles.description, { color: colors.textSecondary }]}>
           {item.description}
         </Text>

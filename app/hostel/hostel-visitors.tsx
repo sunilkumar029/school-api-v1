@@ -121,12 +121,12 @@ export default function HostelVisitorsScreen() {
       <View style={styles.visitorHeader}>
         <View style={styles.visitorInfo}>
           <Text style={[styles.visitorName, { color: colors.textPrimary }]}>
-            {visitor.name}
+            {visitor?.name || 'Unknown Visitor'}
           </Text>
           <Text style={[styles.visitorType, { color: colors.textSecondary }]}>
-            {visitor.visitor_type} • {visitor.phone}
+            {visitor?.visitor_type || 'Unknown'} • {visitor?.phone || 'No phone'}
           </Text>
-          {visitor.student && (
+          {visitor?.student?.name && (
             <Text style={[styles.studentInfo, { color: colors.textSecondary }]}>
               Visiting: {visitor.student.name}
             </Text>
@@ -135,21 +135,23 @@ export default function HostelVisitorsScreen() {
 
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(visitor.status) }]}>
           <Text style={styles.statusText}>
-            {visitor.status.replace('_', ' ').toUpperCase()}
+            {(visitor.status || '').replace('_', ' ').toUpperCase()}
           </Text>
         </View>
       </View>
 
       <View style={styles.visitDetails}>
-        <Text style={[styles.visitTime, { color: colors.textPrimary }]}>
-          🕒 Check In: {new Date(visitor.check_in_time).toLocaleString()}
-        </Text>
-        {visitor.check_out_time && (
+        {visitor?.check_in_time && (
+          <Text style={[styles.visitTime, { color: colors.textPrimary }]}>
+            🕒 Check In: {new Date(visitor.check_in_time).toLocaleString()}
+          </Text>
+        )}
+        {visitor?.check_out_time && (
           <Text style={[styles.visitTime, { color: colors.textSecondary }]}>
             🚪 Check Out: {new Date(visitor.check_out_time).toLocaleString()}
           </Text>
         )}
-        {visitor.purpose && (
+        {visitor?.purpose && (
           <Text style={[styles.purpose, { color: colors.textSecondary }]}>
             Purpose: {visitor.purpose}
           </Text>

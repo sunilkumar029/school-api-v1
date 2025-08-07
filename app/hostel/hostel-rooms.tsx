@@ -127,19 +127,19 @@ export default function HostelRoomsScreen() {
 
       <View style={styles.roomDetails}>
         <Text style={[styles.roomType, { color: colors.textSecondary }]}>
-          {room.room_type} • Floor {room.floor}
+          {room?.room_type || 'Standard'} • Floor {room?.floor || 'N/A'}
         </Text>
         
         <View style={styles.capacityInfo}>
           <Text style={[styles.capacityText, { color: colors.textPrimary }]}>
-            Capacity: {room.capacity}
+            Capacity: {room?.capacity || 0}
           </Text>
           <Text style={[styles.occupancyText, { color: colors.textSecondary }]}>
-            Occupied: {room.occupied} | Available: {room.available}
+            Occupied: {room?.occupied || 0} | Available: {room?.available || 0}
           </Text>
         </View>
 
-        {room.amenities && room.amenities.length > 0 && (
+        {room?.amenities && Array.isArray(room.amenities) && room.amenities.length > 0 && (
           <View style={styles.amenitiesContainer}>
             <Text style={[styles.amenitiesLabel, { color: colors.textSecondary }]}>
               Amenities:
