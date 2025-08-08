@@ -392,7 +392,7 @@ export default function SchoolExpenditureScreen() {
                         },
                       ]}
                     >
-                      {year.year}
+                      {year.name}
                     </Text>
                   </TouchableOpacity>
                 ))}

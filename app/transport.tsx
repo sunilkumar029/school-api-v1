@@ -22,6 +22,8 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBranches, useAcademicYears } from '@/hooks/useApi';
 import { apiService } from '@/api/apiService';
+import { GlobalFilters } from '@/components/GlobalFilters';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 
 const { width } = Dimensions.get('window');
 
@@ -37,19 +39,25 @@ interface Vehicle {
   driver_id?: number;
   status: 'active' | 'inactive' | 'maintenance';
   license_expiry?: string;
+  vehicle_type?: string;
+  joining_date?: string;
+  registration_number?: string;
+  total_seats?: number;
 }
 
 interface Trip {
   id: number;
-  driver_name: string;
-  secondary_driver?: string;
+  primary_driver_name?: string;
+  secondary_driver_name?: string;
   start_point: string;
   end_point: string;
-  passengers: number;
+  passenger_count: number;
   vehicle_name: string;
   status: 'active' | 'completed' | 'cancelled';
   departure_time?: string;
   parking_location?: string;
+  total_passengers?: number;
+  stops: { stop_name: string }[];
 }
 
 interface TransportStats {
@@ -68,8 +76,8 @@ export default function TransportScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
+  // const [selectedBranch, setSelectedBranch] = useState<number>(1);
+  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [activeTab, setActiveTab] = useState<'dashboard' | 'vehicles' | 'trips' | 'drivers'>('dashboard');
   const [modalVisible, setModalVisible] = useState(false);
   const [modalType, setModalType] = useState<'vehicle' | 'trip' | null>(null);
@@ -77,6 +85,8 @@ export default function TransportScreen() {
   const [trips, setTrips] = useState<Trip[]>([]);
   const [drivers, setDrivers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
+
   const [transportStats, setTransportStats] = useState<TransportStats>({
     totalVehicles: 0,
     activeVehicles: 0,
@@ -114,27 +124,21 @@ export default function TransportScreen() {
   const fetchTransportData = async () => {
     try {
       setLoading(true);
-      
+
       const [vehiclesResponse, tripsResponse, driversResponse] = await Promise.all([
-        apiService.getVehicles({ branch: selectedBranch }).catch(() => ({ results: [] })),
-        apiService.getTrips({ branch: selectedBranch }).catch(() => ({ results: [] })),
-        apiService.getDrivers({ branch: selectedBranch }).catch(() => ({ results: [] }))
+        apiService.getVehicles({ branch: selectedBranch }).catch(() => ({ results: null })),
+        apiService.getTrips({ branch: selectedBranch }).catch(() => ({ results: null })),
+        apiService.getDrivers({ branch: selectedBranch }).catch(() => ({ results: null }))
       ]);
 
-      if (vehiclesResponse.results?.length > 0) {
-        setVehicles(vehiclesResponse.results);
-        setTrips(tripsResponse.results || []);
-        setDrivers(driversResponse.results || []);
-      } else {
-        // Generate fallback data
-        generateFallbackData();
-      }
+      setVehicles(vehiclesResponse.results || []);
+      setTrips(tripsResponse.results || []);
+      setDrivers(driversResponse.results || []);
 
       calculateStats();
-      
+
     } catch (error) {
       console.error('Error fetching transport data:', error);
-      generateFallbackData();
     } finally {
       setLoading(false);
     }
@@ -150,7 +154,7 @@ export default function TransportScreen() {
     for (let i = 1; i <= 15; i++) {
       const type = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
       const seats = type === 'Bus' ? 40 + Math.floor(Math.random() * 20) : type === 'Van' ? 12 + Math.floor(Math.random() * 8) : 4;
-      
+
       fallbackVehicles.push({
         id: i,
         name: `${type} ${i}`,
@@ -176,23 +180,23 @@ export default function TransportScreen() {
     }
 
     // Generate trips
-    for (let i = 1; i <= 25; i++) {
-      const vehicle = fallbackVehicles[Math.floor(Math.random() * fallbackVehicles.length)];
-      const driver = fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)];
-      
-      fallbackTrips.push({
-        id: i,
-        driver_name: `${driver.first_name} ${driver.last_name}`,
-        secondary_driver: Math.random() > 0.7 ? `${fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)].first_name} Helper` : undefined,
-        start_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
-        end_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
-        passengers: Math.floor(Math.random() * vehicle.seats * 0.8),
-        vehicle_name: vehicle.name,
-        status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.9 ? 'cancelled' : 'active',
-        departure_time: `${Math.floor(Math.random() * 12) + 6}:${Math.floor(Math.random() * 6)}0 AM`,
-        parking_location: 'Main Parking Area',
-      });
-    }
+    // for (let i = 1; i <= 25; i++) {
+    //   const vehicle = fallbackVehicles[Math.floor(Math.random() * fallbackVehicles.length)];
+    //   const driver = fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)];
+
+    //   fallbackTrips.push({
+    //     id: i,
+    //     primary_driver_name: `${driver.first_name} ${driver.last_name}`,
+    //     secondary_driver_name: Math.random() > 0.7 ? `${fallbackDrivers[Math.floor(Math.random() * fallbackDrivers.length)].first_name} Helper` : undefined,
+    //     start_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
+    //     end_point: ['School Campus', 'City Center', 'Station Area', 'Residential Complex'][Math.floor(Math.random() * 4)],
+    //     // passengers: Math.floor(Math.random() * vehicle.seats * 0.8),
+    //     vehicle_name: vehicle.name,
+    //     status: Math.random() > 0.7 ? 'completed' : Math.random() > 0.9 ? 'cancelled' : 'active',
+    //     departure_time: `${Math.floor(Math.random() * 12) + 6}:${Math.floor(Math.random() * 6)}0 AM`,
+    //     parking_location: 'Main Parking Area',
+    //   });
+    // }
 
     setVehicles(fallbackVehicles);
     setTrips(fallbackTrips);
@@ -203,11 +207,11 @@ export default function TransportScreen() {
     const totalVehicles = vehicles.length;
     const activeVehicles = vehicles.filter(v => v.status === 'active').length;
     const totalDrivers = drivers.length;
-    
+
     // Calculate license expiry alerts (within 30 days)
     const thirtyDaysFromNow = new Date();
     thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
-    
+
     const licenseExpiryAlerts = [
       ...vehicles.filter(v => v.license_expiry && new Date(v.license_expiry) <= thirtyDaysFromNow),
       ...drivers.filter(d => d.license_expiry && new Date(d.license_expiry) <= thirtyDaysFromNow)
@@ -221,7 +225,7 @@ export default function TransportScreen() {
       return tripDate >= weekAgo;
     }).length;
 
-    const passengers = trips.reduce((sum, trip) => sum + trip.passengers, 0);
+    const passengers = trips.reduce((sum, trip) => sum + (trip.total_passengers || 0), 0);
     const tripsWithTracking = trips.filter(t => t.status === 'active').length;
 
     setTransportStats({
@@ -324,7 +328,7 @@ export default function TransportScreen() {
               Total Vehicles
             </Text>
           </View>
-          
+
           <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.statValue, { color: '#4CAF50' }]}>
               {transportStats.activeVehicles}
@@ -344,7 +348,7 @@ export default function TransportScreen() {
               Total Drivers
             </Text>
           </View>
-          
+
           <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.statValue, { color: '#FF9800' }]}>
               {transportStats.licenseExpiryAlerts}
@@ -364,7 +368,7 @@ export default function TransportScreen() {
               Total Trips
             </Text>
           </View>
-          
+
           <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.statValue, { color: '#4CAF50' }]}>
               {transportStats.weeklyTrips}
@@ -384,7 +388,7 @@ export default function TransportScreen() {
               Passengers
             </Text>
           </View>
-          
+
           <View style={[styles.statCard, { backgroundColor: colors.surface }]}>
             <Text style={[styles.statValue, { color: '#2196F3' }]}>
               {transportStats.tripsWithTracking}
@@ -405,7 +409,7 @@ export default function TransportScreen() {
           {['Bus', 'Van', 'Car'].map((type) => {
             const count = vehicles.filter(v => v.type === type).length;
             const percentage = vehicles.length > 0 ? (count / vehicles.length) * 100 : 0;
-            
+
             return (
               <View key={type} style={styles.vehicleTypeItem}>
                 <Text style={[styles.vehicleTypeName, { color: colors.textPrimary }]}>
@@ -427,7 +431,7 @@ export default function TransportScreen() {
       data={vehicles}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.vehicleCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
           onPress={() => {
             // Handle vehicle detail view
@@ -439,21 +443,23 @@ export default function TransportScreen() {
             </Text>
             <View style={[
               styles.statusBadge,
-              { backgroundColor: item.status === 'active' ? '#4CAF50' : item.status === 'maintenance' ? '#FF9800' : '#F44336' }
+              { backgroundColor: item.vehicle_type === 'bus' ? '#4CAF50' : item.vehicle_type === 'van' ? '#FF9800' : '#F44336' }
             ]}>
-              <Text style={styles.statusText}>{item.status}</Text>
+              <Text style={styles.statusText}>
+                {item.vehicle_type ? item.vehicle_type.charAt(0).toUpperCase() + item.vehicle_type.slice(1) : 'Unknown'}
+              </Text>
             </View>
           </View>
-          
+
           <View style={styles.vehicleDetails}>
             <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
-              Type: {item.type} • Seats: {item.seats}
+              Seats: {item.total_seats}
             </Text>
             <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
-              License: {item.license_plate}
+              License: {item.registration_number}
             </Text>
             <Text style={[styles.vehicleInfo, { color: colors.textSecondary }]}>
-              DOJ: {new Date(item.date_of_joining).toLocaleDateString()}
+              DOJ: {item.joining_date ? new Date(item.joining_date).toLocaleDateString() : '-'}
             </Text>
           </View>
         </TouchableOpacity>
@@ -474,7 +480,7 @@ export default function TransportScreen() {
       data={trips}
       keyExtractor={(item) => item.id.toString()}
       renderItem={({ item }) => (
-        <TouchableOpacity 
+        <TouchableOpacity
           style={[styles.tripCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
           onPress={() => {
             // Handle trip detail view with tracking
@@ -491,19 +497,24 @@ export default function TransportScreen() {
               <Text style={styles.statusText}>{item.status}</Text>
             </View>
           </View>
-          
+
           <View style={styles.tripDetails}>
             <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
-              Driver: {item.driver_name}
+              Driver: {item.primary_driver_name}
             </Text>
-            {item.secondary_driver && (
+            {item.secondary_driver_name && (
               <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
-                Secondary: {item.secondary_driver}
+                Secondary: {item.secondary_driver_name}
               </Text>
             )}
             <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
-              Vehicle: {item.vehicle_name} • Passengers: {item.passengers}
+              Vehicle: {item.vehicle_name} • Passengers: {item.total_passengers}
             </Text>
+            {item.stops.length > 0 && (
+              <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
+                Stops: {item.stops.map((stop) => stop.stop_name).join(', ')}
+              </Text>
+            )}
             {item.departure_time && (
               <Text style={[styles.tripInfo, { color: colors.textSecondary }]}>
                 Departure: {item.departure_time}
@@ -530,17 +541,15 @@ export default function TransportScreen() {
       renderItem={({ item }) => (
         <View style={[styles.driverCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <Text style={[styles.driverName, { color: colors.textPrimary }]}>
-            {item.first_name} {item.last_name}
-          </Text>
-          <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
-            Phone: {item.phone}
+            {item.full_name}
           </Text>
           <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
             License: {item.license_number}
           </Text>
-          {item.license_expiry && (
+          {item.license_expiry_date && (
             <Text style={[styles.driverInfo, { color: colors.textSecondary }]}>
-              Expires: {new Date(item.license_expiry).toLocaleDateString()}
+              Expires: {new Date(item.license_expiry_date).toLocaleDateString()}
+              {/* Expires: {item.license_expiry_date} */}
             </Text>
           )}
         </View>
@@ -660,8 +669,8 @@ export default function TransportScreen() {
                     <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Driver *</Text>
                     <TouchableOpacity style={[styles.formInput, { borderColor: colors.border }]}>
                       <Text style={[styles.formInputText, { color: colors.textPrimary }]}>
-                        {tripForm.driver_id ? 
-                          drivers.find(d => d.id === tripForm.driver_id)?.first_name + ' ' + drivers.find(d => d.id === tripForm.driver_id)?.last_name : 
+                        {tripForm.driver_id ?
+                          drivers.find(d => d.id === tripForm.driver_id)?.first_name + ' ' + drivers.find(d => d.id === tripForm.driver_id)?.last_name :
                           'Select Driver'
                         }
                       </Text>
@@ -672,8 +681,8 @@ export default function TransportScreen() {
                     <Text style={[styles.formLabel, { color: colors.textPrimary }]}>Vehicle *</Text>
                     <TouchableOpacity style={[styles.formInput, { borderColor: colors.border }]}>
                       <Text style={[styles.formInputText, { color: colors.textPrimary }]}>
-                        {tripForm.vehicle_id ? 
-                          vehicles.find(v => v.id === tripForm.vehicle_id)?.name : 
+                        {tripForm.vehicle_id ?
+                          vehicles.find(v => v.id === tripForm.vehicle_id)?.name :
                           'Select Vehicle'
                         }
                       </Text>
@@ -743,40 +752,7 @@ export default function TransportScreen() {
       />
 
       {/* Filter Row */}
-      <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-              {branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
-            <Text style={[styles.filterText, { color: colors.textPrimary }]}>
-              {academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
-            </Text>
-          </TouchableOpacity>
-        </ScrollView>
-
-        {user?.is_staff && (
-          <TouchableOpacity
-            style={[styles.addButton, { backgroundColor: colors.primary }]}
-            onPress={() => {
-              if (activeTab === 'vehicles') {
-                setModalType('vehicle');
-                setModalVisible(true);
-              } else if (activeTab === 'trips') {
-                setModalType('trip');
-                setModalVisible(true);
-              }
-            }}
-          >
-            <Text style={styles.addButtonText}>
-              + {activeTab === 'vehicles' ? 'Vehicle' : activeTab === 'trips' ? 'Trip' : 'Add'}
-            </Text>
-          </TouchableOpacity>
-        )}
-      </View>
+      <GlobalFilters />
 
       {/* Tab Navigation */}
       <View style={[styles.tabContainer, { backgroundColor: colors.surface }]}>

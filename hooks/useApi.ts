@@ -62,7 +62,7 @@ export function useEvents(params?: any) {
           ...params
         };
 
-        const response = await apiService.getEvents(defaultParams);
+        const response = await apiService.getEvents();
         setData(response.results || []);
 
         setHasInitialized(true);
@@ -162,8 +162,8 @@ export function useStudentMarksAnalytics(params?: {
       console.error("Student marks analytics fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch student marks analytics",
+        err.message ||
+        "Failed to fetch student marks analytics",
       );
     } finally {
       setLoading(false);
@@ -208,8 +208,8 @@ export function useStudentMarksTable(params?: {
       console.error("Student marks table fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch student marks table",
+        err.message ||
+        "Failed to fetch student marks table",
       );
     } finally {
       setLoading(false);
@@ -253,8 +253,8 @@ export function useLeaveQuotas(params?: {
       console.error("Leave quotas fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch leave quotas",
+        err.message ||
+        "Failed to fetch leave quotas",
       );
     } finally {
       setLoading(false);
@@ -288,8 +288,8 @@ export function useAttendanceDashboard() {
       console.error("Attendance dashboard fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch attendance dashboard",
+        err.message ||
+        "Failed to fetch attendance dashboard",
       );
     } finally {
       setLoading(false);
@@ -792,8 +792,8 @@ export const useTeacherTimetable = (params: any = {}) => {
       console.error("Teacher timetable fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch teacher timetable",
+        err.message ||
+        "Failed to fetch teacher timetable",
       );
     } finally {
       setLoading(false);
@@ -826,8 +826,8 @@ export const useSections = (params: any = {}) => {
       console.error("Sections fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch sections",
+        err.message ||
+        "Failed to fetch sections",
       );
     } finally {
       setLoading(false);
@@ -925,8 +925,8 @@ export const useFeeTypes = (params: any = {}) => {
       console.error("Fee types fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch fee types",
+        err.message ||
+        "Failed to fetch fee types",
       );
     } finally {
       setLoading(false);
@@ -959,8 +959,8 @@ export const useStandards = (params: any = {}) => {
       console.error("Standards fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch standards",
+        err.message ||
+        "Failed to fetch standards",
       );
     } finally {
       setLoading(false);
@@ -994,8 +994,8 @@ export const useTotalFeeSummary = (params: any = {}) => {
       console.error("Total fee summary fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch total fee summary",
+        err.message ||
+        "Failed to fetch total fee summary",
       );
     } finally {
       setLoading(false);
@@ -1028,8 +1028,8 @@ export const useFeeSummary = (params: any = {}) => {
       console.error("Fee summary fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch fee summary",
+        err.message ||
+        "Failed to fetch fee summary",
       );
     } finally {
       setLoading(false);
@@ -1062,8 +1062,8 @@ export const useFeePayments = (params: any = {}) => {
       console.error("Fee payments fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch fee payments",
+        err.message ||
+        "Failed to fetch fee payments",
       );
     } finally {
       setLoading(false);
@@ -1103,8 +1103,8 @@ export const useFeeDashboardAnalytics = (params: any = {}) => {
       console.error("Fee dashboard analytics fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch fee dashboard analytics",
+        err.message ||
+        "Failed to fetch fee dashboard analytics",
       );
     } finally {
       setLoading(false);
@@ -1138,8 +1138,8 @@ export const useStationaryTypes = (params: any = {}) => {
       console.error("Stationary types fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch stationary types",
+        err.message ||
+        "Failed to fetch stationary types",
       );
     } finally {
       setLoading(false);
@@ -1172,8 +1172,8 @@ export const useStationary = (params: any = {}) => {
       console.error("Stationary fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch stationary",
+        err.message ||
+        "Failed to fetch stationary",
       );
     } finally {
       setLoading(false);
@@ -1206,8 +1206,8 @@ export const useStationaryFee = (params: any = {}) => {
       console.error("Stationary fee fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch stationary fee",
+        err.message ||
+        "Failed to fetch stationary fee",
       );
     } finally {
       setLoading(false);
@@ -1242,8 +1242,8 @@ export const useStudentDetails = (id: number) => {
       console.error("Student details fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch student details",
+        err.message ||
+        "Failed to fetch student details",
       );
     } finally {
       setLoading(false);
@@ -1276,8 +1276,8 @@ export const useInventoryTracking = (params: any = {}) => {
       console.error("Inventory tracking fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch inventory tracking",
+        err.message ||
+        "Failed to fetch inventory tracking",
       );
     } finally {
       setLoading(false);
@@ -1311,8 +1311,8 @@ export const useSalaryTemplatesGrouped = (params: any = {}) => {
       console.error("Salary templates fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch salary templates",
+        err.message ||
+        "Failed to fetch salary templates",
       );
     } finally {
       setLoading(false);
@@ -1345,8 +1345,8 @@ export const useSalaryCategories = (params: any = {}) => {
       console.error("Salary categories fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch salary categories",
+        err.message ||
+        "Failed to fetch salary categories",
       );
     } finally {
       setLoading(false);
@@ -1412,8 +1412,8 @@ export const useExpenditure = (params: any = {}) => {
       console.error("Expenditure fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch expenditure",
+        err.message ||
+        "Failed to fetch expenditure",
       );
     } finally {
       setLoading(false);
@@ -1450,8 +1450,8 @@ export const useExpenditureSummary = (branch: number, academicYear: number) => {
       console.error("Expenditure summary fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch expenditure summary",
+        err.message ||
+        "Failed to fetch expenditure summary",
       );
     } finally {
       setLoading(false);
@@ -1485,8 +1485,8 @@ export const useInventoryList = (params: any = {}) => {
       console.error("Inventory list fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch inventory list",
+        err.message ||
+        "Failed to fetch inventory list",
       );
     } finally {
       setLoading(false);
@@ -1519,8 +1519,8 @@ export const useInventoryTypes = (params: any = {}) => {
       console.error("Inventory types fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch inventory types",
+        err.message ||
+        "Failed to fetch inventory types",
       );
     } finally {
       setLoading(false);
@@ -1553,8 +1553,8 @@ export const useInventoryDashboard = (params: any = {}) => {
       console.error("Inventory dashboard fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch inventory dashboard",
+        err.message ||
+        "Failed to fetch inventory dashboard",
       );
     } finally {
       setLoading(false);
@@ -1620,8 +1620,8 @@ export const useHostelVisitors = (params: any = {}) => {
       console.error("Hostel visitors fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch visitors",
+        err.message ||
+        "Failed to fetch visitors",
       );
     } finally {
       setLoading(false);
@@ -1655,8 +1655,8 @@ export const useHostelMealPlans = (params: any = {}) => {
       console.error("Hostel meal plans fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch meal plans",
+        err.message ||
+        "Failed to fetch meal plans",
       );
     } finally {
       setLoading(false);
@@ -1690,8 +1690,8 @@ export const useHostelProducts = (params: any = {}) => {
       console.error("Hostel products fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch products",
+        err.message ||
+        "Failed to fetch products",
       );
     } finally {
       setLoading(false);
@@ -1753,8 +1753,8 @@ const useApi = <T>(
           } else {
             setError(
               err.response?.data?.message ||
-                err.message ||
-                `Failed to fetch ${endpoint}`,
+              err.message ||
+              `Failed to fetch ${endpoint}`,
             );
             setRetryAttempt(attempts);
             console.error(`API Error after retries for ${endpoint}:`, err);
@@ -1896,8 +1896,8 @@ export const useTaskSubmissions = (params?: Record<string, any>) => {
       console.error("Task submissions fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch task submissions",
+        err.message ||
+        "Failed to fetch task submissions",
       );
     } finally {
       setLoading(false);
@@ -1951,8 +1951,8 @@ export const useSalaryTemplates = (params?: Record<string, any>) => {
       console.error("Salary templates fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch salary templates",
+        err.message ||
+        "Failed to fetch salary templates",
       );
     } finally {
       setLoading(false);
@@ -2003,8 +2003,8 @@ export const useSchoolExpenditure = (params?: Record<string, any>) => {
       console.error("School expenditure fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch school expenditure",
+        err.message ||
+        "Failed to fetch school expenditure",
       );
     } finally {
       setLoading(false);
@@ -2045,8 +2045,8 @@ export const useExpenseCategories = () => {
       console.error("Expense categories fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch expense categories",
+        err.message ||
+        "Failed to fetch expense categories",
       );
     } finally {
       setLoading(false);
@@ -2166,8 +2166,8 @@ export const useLeaveRequests = (params?: Record<string, any>) => {
       console.error("Leave requests fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch leave requests",
+        err.message ||
+        "Failed to fetch leave requests",
       );
     } finally {
       setLoading(false);
@@ -2200,8 +2200,8 @@ export const useLeaveQuotasList = (params?: Record<string, any>) => {
       console.error("Leave quotas fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch leave quotas",
+        err.message ||
+        "Failed to fetch leave quotas",
       );
     } finally {
       setLoading(false);
@@ -2234,8 +2234,8 @@ export const useHolidays = (params?: Record<string, any>) => {
       console.error("Holidays fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch holidays",
+        err.message ||
+        "Failed to fetch holidays",
       );
     } finally {
       setLoading(false);
@@ -2269,8 +2269,8 @@ export const useNotifications = (params?: Record<string, any>) => {
       console.error("Notifications fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch notifications",
+        err.message ||
+        "Failed to fetch notifications",
       );
     } finally {
       setLoading(false);
@@ -2303,8 +2303,8 @@ export const useNotificationTypes = () => {
       console.error("Notification types fetch error:", err);
       setError(
         err.response?.data?.message ||
-          err.message ||
-          "Failed to fetch notification types",
+        err.message ||
+        "Failed to fetch notification types",
       );
     } finally {
       setLoading(false);

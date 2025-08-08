@@ -40,13 +40,13 @@ class ApiService {
           } else {
             // For development, provide a demo token if available
             console.warn("No auth token found. Some API calls may fail.");
-            
+
             // Check if this is a public endpoint that doesn't require auth
             const publicEndpoints = ['/api/academic-years/', '/api/branches/', '/api/departments/', '/api/standards/', '/api/sections/'];
-            const isPublicEndpoint = publicEndpoints.some(endpoint => 
+            const isPublicEndpoint = publicEndpoints.some(endpoint =>
               config.url?.includes(endpoint)
             );
-            
+
             if (!isPublicEndpoint) {
               // Add a demo token for development if available
               const demoToken = "35ffe211b31b6c6fa5ae8823f43ecf8c3d032cdc";
@@ -1079,51 +1079,51 @@ class ApiService {
 
   // Transport Management
   async getVehicles(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/vehicles/", { params });
+    const response = await this.api.get("/api/transport-vehicles/", { params });
     return response.data;
   }
 
   async createVehicle(data: any): Promise<any> {
-    const response = await this.api.post("/api/vehicles/", data);
+    const response = await this.api.post("/api/transport-vehicles/", data);
     return response.data;
   }
 
   async getTrips(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/trips/", { params });
+    const response = await this.api.get("/api/transport-trips/", { params });
     return response.data;
   }
 
   async createTrip(data: any): Promise<any> {
-    const response = await this.api.post("/api/trips/", data);
+    const response = await this.api.post("/api/transport-trips/", data);
     return response.data;
   }
 
   async getDrivers(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/drivers/", { params });
+    const response = await this.api.get("/api/transport-drivers/", { params });
     return response.data;
   }
 
-  // Class Attendance
-  async getClassAttendance(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/class-attendance/", { params });
-    return response.data;
-  }
+  // // Class Attendance
+  // async getClassAttendance(params?: any): Promise<PaginatedResponse<any>> {
+  //   const response = await this.api.get("/api/class-attendance/", { params });
+  //   return response.data;
+  // }
 
-  async createClassAttendance(data: any): Promise<any> {
-    const response = await this.api.post("/api/class-attendance/", data);
-    return response.data;
-  }
+  // async createClassAttendance(data: any): Promise<any> {
+  //   const response = await this.api.post("/api/class-attendance/", data);
+  //   return response.data;
+  // }
 
-  // Staff Attendance
-  async getStaffAttendance(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/staff-attendance/", { params });
-    return response.data;
-  }
+  // // Staff Attendance
+  // async getStaffAttendance(params?: any): Promise<PaginatedResponse<any>> {
+  //   const response = await this.api.get("/api/staff-attendance/", { params });
+  //   return response.data;
+  // }
 
-  async createStaffAttendance(data: any): Promise<any> {
-    const response = await this.api.post("/api/staff-attendance/", data);
-    return response.data;
-  }
+  // async createStaffAttendance(data: any): Promise<any> {
+  //   const response = await this.api.post("/api/staff-attendance/", data);
+  //   return response.data;
+  // }
 
   // Attendance Dashboard
   async getAttendanceAnalytics(params?: any): Promise<any> {

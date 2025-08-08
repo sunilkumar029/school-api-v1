@@ -19,12 +19,13 @@ import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLeaveRequests, useAllUsersExceptStudents } from '@/hooks/useApi';
+import { GlobalFilters } from '@/components/GlobalFilters';
 
 interface LeaveRequest {
   id: number;
   employee: {
     id: number;
-    name: string;
+    first_name: string;
     email: string;
     department?: {
       id: number;
@@ -60,20 +61,27 @@ export default function LeaveRequestsScreen() {
   const [selectedLeaveType, setSelectedLeaveType] = useState<number | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<LeaveRequest | null>(null);
 
+
   // Global filters
   const {
     selectedBranch,
     selectedAcademicYear,
-    branches,
-    academicYears,
+    // branches,
+    // academicYears,
     branchesLoading,
     academicYearsLoading
   } = useGlobalFilters();
 
+  // const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
+
+
+  // https://vai.dev.sms.visionariesai.com/api/leave/?branch=1&academic_year=2&employee=204&status=approved&limit=5&omit=modified_by,created_by,l1_approved_by__modified_by,l1_approved_by__group__permissions,l1_approved_by__education_details
+
+
   // Fetch data
-  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({ 
+  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
-    academic_year: selectedAcademicYear 
+    academic_year: selectedAcademicYear
   });
 
   const requestsParams = useMemo(() => ({
@@ -82,11 +90,17 @@ export default function LeaveRequestsScreen() {
     employee: selectedEmployee,
     status: selectedStatus,
     leave_type: selectedLeaveType,
+    // user: user?.id || null,
+    limit: 5,
+    omit: 'modified_by,created_by,l1_approved_by__modified_by,l1_approved_by__group__permissions,l1_approved_by__education_details',
+    // other: '&user=&limit=5&offset=0&omit=modified_by,created_by,l1_approved_by__modified_by,l1_approved_by__group__permissions,l1_approved_by__education_details',
   }), [selectedBranch, selectedAcademicYear, selectedEmployee, selectedStatus, selectedLeaveType]);
 
-  const { 
-    data: leaveRequests = [], 
-    loading: requestsLoading, 
+
+  // &user=&limit=5&offset=0&omit=modified_by,created_by,l1_approved_by__modified_by,l1_approved_by__group__permissions,l1_approved_by__education_details
+  const {
+    data: leaveRequests = [],
+    loading: requestsLoading,
     error: requestsError,
     refetch: refetchRequests
   } = useLeaveRequests(requestsParams);
@@ -121,10 +135,10 @@ export default function LeaveRequestsScreen() {
 
   const statusMapping = {
     0: null,
-    1: 'pending',
-    2: 'approved',
-    3: 'rejected',
-    4: 'cancelled'
+    1: 'Pending',
+    2: 'Approved',
+    3: 'Rejected',
+    4: 'Cancelled'
   };
 
   const leaveTypeOptions = useMemo(() => [
@@ -179,13 +193,14 @@ export default function LeaveRequestsScreen() {
   };
 
   const renderRequestCard = ({ item }: { item: LeaveRequest }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
+      key={item.id}
       style={[styles.requestCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
       onPress={() => handleRequestPress(item)}
     >
       <View style={styles.requestHeader}>
         <Text style={[styles.employeeName, { color: colors.textPrimary }]} numberOfLines={1}>
-          {item.employee?.name || item.employee?.email || 'Unknown Employee'}
+          {item.employee?.first_name || item.employee?.email || 'Unknown Employee'}
         </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
           <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
@@ -254,7 +269,7 @@ export default function LeaveRequestsScreen() {
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.retryButton, { backgroundColor: colors.primary }]}
         onPress={handleRefresh}
       >
@@ -296,13 +311,13 @@ export default function LeaveRequestsScreen() {
       <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
-            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            {/* <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text> */}
 
-            <ModalDropdownFilter
+            {/* <ModalDropdownFilter
               label="Branch"
               items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={() => { }} // Read-only from global filters
               compact={true}
             />
 
@@ -310,9 +325,12 @@ export default function LeaveRequestsScreen() {
               label="Academic Year"
               items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={() => { }} // Read-only from global filters
               compact={true}
-            />
+            /> */}
+
+            <GlobalFilters />
+
 
             <ModalDropdownFilter
               label="Employee"
@@ -356,8 +374,7 @@ export default function LeaveRequestsScreen() {
         ) : (
           <FlatList
             data={leaveRequests}
-            renderItem={renderRequestCard}
-            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => <View key={item.id}><>{renderRequestCard({ item })}</></View>}
             contentContainerStyle={styles.listContainer}
             refreshControl={
               <RefreshControl

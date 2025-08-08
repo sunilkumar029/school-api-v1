@@ -20,6 +20,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useDepartments, useBranches, useAcademicYears } from '@/hooks/useApi';
 import { Picker } from '@react-native-picker/picker';
 import Modal from 'react-native-modal';
+import { GlobalFilters } from '@/components/GlobalFilters';
 
 interface Department {
   id: number;
@@ -81,20 +82,21 @@ export default function DepartmentScreen() {
   const [appliedBranch, setAppliedBranch] = useState<number | null>(null);
   const [appliedAcademicYear, setAppliedAcademicYear] = useState<number | null>(null);
   const [appliedType, setAppliedType] = useState<string | null>(null);
+  
 
   // Fetch data with proper error handling
-  const { 
-    data: branches, 
-    loading: branchesLoading, 
+  const {
+    data: branches,
+    loading: branchesLoading,
     error: branchesError,
-    refetch: refetchBranches 
+    refetch: refetchBranches
   } = useBranches({ is_active: true });
 
-  const { 
-    data: academicYears, 
-    loading: academicYearsLoading, 
+  const {
+    data: academicYears,
+    loading: academicYearsLoading,
     error: academicYearsError,
-    refetch: refetchAcademicYears 
+    refetch: refetchAcademicYears
   } = useAcademicYears();
 
   // Build department params based on applied filters
@@ -106,11 +108,11 @@ export default function DepartmentScreen() {
     return params;
   }, [appliedBranch, appliedAcademicYear, appliedType]);
 
-  const { 
-    data: departments, 
-    loading: departmentsLoading, 
+  const {
+    data: departments,
+    loading: departmentsLoading,
     error: departmentsError,
-    refetch: refetchDepartments 
+    refetch: refetchDepartments
   } = useDepartments(departmentParams);
 
   // Filter departments based on search query
@@ -121,13 +123,13 @@ export default function DepartmentScreen() {
       const searchTerm = searchQuery.toLowerCase();
       const name = dept.name?.toLowerCase() || '';
       const type = dept.department_type?.toLowerCase() || '';
-      const hodName = dept.head_of_the_department 
+      const hodName = dept.head_of_the_department
         ? `${dept.head_of_the_department.first_name} ${dept.head_of_the_department.last_name}`.toLowerCase()
         : '';
 
-      return name.includes(searchTerm) || 
-             type.includes(searchTerm) || 
-             hodName.includes(searchTerm);
+      return name.includes(searchTerm) ||
+        type.includes(searchTerm) ||
+        hodName.includes(searchTerm);
     });
   }, [departments, searchQuery]);
 
@@ -154,8 +156,8 @@ export default function DepartmentScreen() {
 
   const hasFiltersChanged = useMemo(() => {
     return tempSelectedBranch !== appliedBranch ||
-           tempSelectedAcademicYear !== appliedAcademicYear ||
-           tempSelectedType !== appliedType;
+      tempSelectedAcademicYear !== appliedAcademicYear ||
+      tempSelectedType !== appliedType;
   }, [tempSelectedBranch, appliedBranch, tempSelectedAcademicYear, appliedAcademicYear, tempSelectedType, appliedType]);
 
   const handleDepartmentPress = useCallback((department: Department) => {
@@ -165,7 +167,8 @@ export default function DepartmentScreen() {
 
   const renderFilterSection = () => (
     <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
-      <TouchableOpacity
+      <GlobalFilters />
+      {/* <TouchableOpacity
         style={styles.filterHeader}
         onPress={() => setFiltersExpanded(!filtersExpanded)}
       >
@@ -175,7 +178,7 @@ export default function DepartmentScreen() {
         <Text style={[styles.filterToggle, { color: colors.primary }]}>
           {filtersExpanded ? '▲' : '▼'}
         </Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       {filtersExpanded && (
         <View style={styles.filterContent}>
@@ -193,10 +196,10 @@ export default function DepartmentScreen() {
               >
                 <Picker.Item label="All Branches" value={null} />
                 {branches?.map((branch: Branch) => (
-                  <Picker.Item 
-                    key={branch.id} 
-                    label={branch.name} 
-                    value={branch.id} 
+                  <Picker.Item
+                    key={branch.id}
+                    label={branch.name}
+                    value={branch.id}
                   />
                 ))}
               </Picker>
@@ -217,10 +220,10 @@ export default function DepartmentScreen() {
               >
                 <Picker.Item label="All Years" value={null} />
                 {academicYears?.map((year: AcademicYear) => (
-                  <Picker.Item 
-                    key={year.id} 
-                    label={year.year} 
-                    value={year.id} 
+                  <Picker.Item
+                    key={year.id}
+                    label={year.year}
+                    value={year.id}
                   />
                 ))}
               </Picker>
@@ -259,8 +262,8 @@ export default function DepartmentScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.filterButton, 
-                styles.applyButton, 
+                styles.filterButton,
+                styles.applyButton,
                 { backgroundColor: hasFiltersChanged ? colors.primary : colors.border }
               ]}
               onPress={handleApplyFilters}
@@ -554,8 +557,8 @@ export default function DepartmentScreen() {
       {renderFilterSection()}
 
       {/* Content */}
-      <ScrollView 
-        style={styles.content} 
+      <ScrollView
+        style={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl

@@ -134,16 +134,30 @@ export default function StudentFeeDetailsScreen() {
       `Download invoice for payment of ${formatCurrency(payment.amount)}?`,
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Download', onPress: () => {
-          // TODO: Implement invoice download functionality
-          Alert.alert('Info', 'Invoice download functionality will be implemented');
-        }},
+        {
+          text: 'Download', onPress: () => {
+            // TODO: Implement invoice download functionality
+            Alert.alert('Info', 'Invoice download functionality will be implemented');
+          }
+        },
       ]
     );
   };
 
   const renderPendingFees = () => {
+    if (!feeSummary || feeSummary.length === 0) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            No pending fees
+          </Text>
+        </View>
+      );
+    }
+
     let pendingFees = feeSummary.filter((item: FeeSummaryItem) => {
+      if (!item || !item.fee) return false;
+
       const pendingAmount = item.total_amount_to_pay - item.total_paid;
       const dueDate = new Date(item.fee.due_date);
       const today = new Date();
@@ -175,20 +189,24 @@ export default function StudentFeeDetailsScreen() {
     return (
       <View style={styles.tabContent}>
         {pendingFees.map((item: FeeSummaryItem) => {
+          if (!item || !item.fee) return null;
+
           const pendingAmount = item.total_amount_to_pay - item.total_paid;
           return (
             <View key={item.fee.id} style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={styles.feeHeader}>
-                <Text style={[styles.feeType, { color: colors.textPrimary }]}>{item.fee.fee_type.name}</Text>
+                <Text style={[styles.feeType, { color: colors.textPrimary }]}>
+                  {item.fee.fee_type?.name || 'Unknown Fee Type'}
+                </Text>
                 <View style={[styles.pendingBadge, { backgroundColor: '#EF4444' }]}>
                   <Text style={styles.badgeText}>Pending</Text>
                 </View>
               </View>
-              
+
               <Text style={[styles.feeDescription, { color: colors.textSecondary }]}>
-                {item.fee.fee_type.description}
+                {item.fee.fee_type?.description || 'No description available'}
               </Text>
-              
+
               <View style={styles.feeDetails}>
                 <View style={styles.feeRow}>
                   <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
@@ -226,7 +244,7 @@ export default function StudentFeeDetailsScreen() {
   };
 
   const renderPaymentHistory = () => {
-    if (paymentHistory.length === 0) {
+    if (!paymentHistory || paymentHistory.length === 0) {
       return (
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
@@ -251,7 +269,7 @@ export default function StudentFeeDetailsScreen() {
                 {formatCurrency(payment.amount)}
               </Text>
             </View>
-            
+
             <View style={styles.paymentDetails}>
               <View style={styles.paymentRow}>
                 <Text style={[styles.paymentLabel, { color: colors.textSecondary }]}>Payment Method:</Text>
@@ -313,7 +331,7 @@ export default function StudentFeeDetailsScreen() {
               {studentData.standard} - {studentData.section} | #{studentData.admission_number}
             </Text>
           </View>
-          
+
           <View style={styles.summaryStats}>
             <View style={styles.statItem}>
               <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Fee</Text>
@@ -401,7 +419,7 @@ export default function StudentFeeDetailsScreen() {
             Pending Fees
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[
             styles.tab,
@@ -421,7 +439,7 @@ export default function StudentFeeDetailsScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         refreshControl={
           <RefreshControl
@@ -462,26 +480,34 @@ export default function StudentFeeDetailsScreen() {
                 <Text style={[styles.closeButton, { color: colors.textPrimary }]}>✕</Text>
               </TouchableOpacity>
             </View>
-            
-            {selectedFeeItem && (
+
+            {selectedFeeItem && selectedFeeItem.fee && (
               <ScrollView style={styles.modalBody}>
                 <View style={styles.modalSection}>
                   <Text style={[styles.modalSectionTitle, { color: colors.primary }]}>Fee Information</Text>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Fee Type:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.fee_type.name}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {selectedFeeItem.fee.fee_type?.name || 'Unknown Fee Type'}
+                    </Text>
                   </View>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Description:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.fee_type.description}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {selectedFeeItem.fee.fee_type?.description || 'No description available'}
+                    </Text>
                   </View>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Standard:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.standard.name}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {selectedFeeItem.fee.standard?.name || 'Unknown Standard'}
+                    </Text>
                   </View>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Academic Year:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{selectedFeeItem.fee.academic_year.name}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {selectedFeeItem.fee.academic_year?.name || 'Unknown Academic Year'}
+                    </Text>
                   </View>
                 </View>
 
@@ -489,25 +515,35 @@ export default function StudentFeeDetailsScreen() {
                   <Text style={[styles.modalSectionTitle, { color: colors.primary }]}>Payment Summary</Text>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{formatCurrency(selectedFeeItem.fee.amount)}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {formatCurrency(selectedFeeItem.fee.amount || 0)}
+                    </Text>
                   </View>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Amount Paid:</Text>
-                    <Text style={[styles.modalValue, { color: '#10B981' }]}>{formatCurrency(selectedFeeItem.total_paid)}</Text>
+                    <Text style={[styles.modalValue, { color: '#10B981' }]}>
+                      {formatCurrency(selectedFeeItem.total_paid || 0)}
+                    </Text>
                   </View>
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Pending Amount:</Text>
-                    <Text style={[styles.modalValue, { color: '#EF4444' }]}>{formatCurrency(selectedFeeItem.total_amount_to_pay - selectedFeeItem.total_paid)}</Text>
+                    <Text style={[styles.modalValue, { color: '#EF4444' }]}>
+                      {formatCurrency((selectedFeeItem.total_amount_to_pay || 0) - (selectedFeeItem.total_paid || 0))}
+                    </Text>
                   </View>
                   {selectedFeeItem.total_concession && (
                     <View style={styles.modalRow}>
                       <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Concession:</Text>
-                      <Text style={[styles.modalValue, { color: '#10B981' }]}>{formatCurrency(selectedFeeItem.total_concession)}</Text>
+                      <Text style={[styles.modalValue, { color: '#10B981' }]}>
+                        {formatCurrency(selectedFeeItem.total_concession)}
+                      </Text>
                     </View>
                   )}
                   <View style={styles.modalRow}>
                     <Text style={[styles.modalLabel, { color: colors.textSecondary }]}>Due Date:</Text>
-                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>{formatDate(selectedFeeItem.fee.due_date)}</Text>
+                    <Text style={[styles.modalValue, { color: colors.textPrimary }]}>
+                      {selectedFeeItem.fee.due_date ? formatDate(selectedFeeItem.fee.due_date) : 'No due date'}
+                    </Text>
                   </View>
                 </View>
               </ScrollView>
@@ -531,7 +567,7 @@ export default function StudentFeeDetailsScreen() {
                 <Text style={[styles.closeButton, { color: colors.textPrimary }]}>✕</Text>
               </TouchableOpacity>
             </View>
-            
+
             {selectedPayment && (
               <ScrollView style={styles.modalBody}>
                 <View style={styles.modalSection}>

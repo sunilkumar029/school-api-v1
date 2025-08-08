@@ -24,6 +24,8 @@ import {
   useAcademicYears,
 } from "@/hooks/useApi";
 import { apiService } from "@/api/apiService";
+import { GlobalFilters } from "@/components/GlobalFilters";
+import { useGlobalFilters } from "@/contexts/GlobalFiltersContext";
 
 interface SalaryTemplate {
   category: string;
@@ -62,9 +64,11 @@ export default function SalaryTemplatesScreen() {
   );
 
   // Filter states
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
+  // const [selectedBranch, setSelectedBranch] = useState<number>(1);
+  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
+
 
   // Form states
   const [templateForm, setTemplateForm] = useState({
@@ -249,122 +253,123 @@ export default function SalaryTemplatesScreen() {
   };
 
   const renderFilters = () => (
-    <View
-      style={[styles.filtersContainer, { backgroundColor: colors.surface }]}
-    >
-      <TouchableOpacity
-        style={styles.filtersHeader}
-        onPress={() => setFiltersVisible(!filtersVisible)}
-      >
-        <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>
-          Filters
-        </Text>
-        <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
-          {filtersVisible ? "▲" : "▼"}
-        </Text>
-      </TouchableOpacity>
+    // <View
+    //   style={[styles.filtersContainer, { backgroundColor: colors.surface }]}
+    // >
+    //   <TouchableOpacity
+    //     style={styles.filtersHeader}
+    //     onPress={() => setFiltersVisible(!filtersVisible)}
+    //   >
+    //     <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>
+    //       Filters
+    //     </Text>
+    //     <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
+    //       {filtersVisible ? "▲" : "▼"}
+    //     </Text>
+    //   </TouchableOpacity>
 
-      {filtersVisible && (
-        <View style={styles.filtersContent}>
-          <TextInput
-            style={[
-              styles.searchInput,
-              {
-                backgroundColor: colors.background,
-                borderColor: colors.border,
-                color: colors.textPrimary,
-              },
-            ]}
-            placeholder="Search by name or department..."
-            placeholderTextColor={colors.textSecondary}
-            value={searchQuery}
-            onChangeText={setSearchQuery}
-          />
+    //   {filtersVisible && (
+    //     <View style={styles.filtersContent}>
+    //       <TextInput
+    //         style={[
+    //           styles.searchInput,
+    //           {
+    //             backgroundColor: colors.background,
+    //             borderColor: colors.border,
+    //             color: colors.textPrimary,
+    //           },
+    //         ]}
+    //         placeholder="Search by name or department..."
+    //         placeholderTextColor={colors.textSecondary}
+    //         value={searchQuery}
+    //         onChangeText={setSearchQuery}
+    //       />
 
-          <View style={styles.filterRow}>
-            <View style={styles.filterGroup}>
-              <Text
-                style={[styles.filterLabel, { color: colors.textSecondary }]}
-              >
-                Branch
-              </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {branches?.map((branch: any) => (
-                  <TouchableOpacity
-                    key={branch.id}
-                    style={[
-                      styles.filterChip,
-                      {
-                        borderColor: colors.border,
-                        backgroundColor:
-                          selectedBranch === branch.id
-                            ? colors.primary
-                            : "transparent",
-                      },
-                    ]}
-                    onPress={() => setSelectedBranch(branch.id)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterChipText,
-                        {
-                          color:
-                            selectedBranch === branch.id
-                              ? "#FFFFFF"
-                              : colors.textPrimary,
-                        },
-                      ]}
-                    >
-                      {branch.name}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
+    //       <View style={styles.filterRow}>
+    //         <View style={styles.filterGroup}>
+    //           <Text
+    //             style={[styles.filterLabel, { color: colors.textSecondary }]}
+    //           >
+    //             Branch
+    //           </Text>
+    //           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    //             {branches?.map((branch: any) => (
+    //               <TouchableOpacity
+    //                 key={branch.id}
+    //                 style={[
+    //                   styles.filterChip,
+    //                   {
+    //                     borderColor: colors.border,
+    //                     backgroundColor:
+    //                       selectedBranch === branch.id
+    //                         ? colors.primary
+    //                         : "transparent",
+    //                   },
+    //                 ]}
+    //                 onPress={() => setSelectedBranch(branch.id)}
+    //               >
+    //                 <Text
+    //                   style={[
+    //                     styles.filterChipText,
+    //                     {
+    //                       color:
+    //                         selectedBranch === branch.id
+    //                           ? "#FFFFFF"
+    //                           : colors.textPrimary,
+    //                     },
+    //                   ]}
+    //                 >
+    //                   {branch.name}
+    //                 </Text>
+    //               </TouchableOpacity>
+    //             ))}
+    //           </ScrollView>
+    //         </View>
 
-            <View style={styles.filterGroup}>
-              <Text
-                style={[styles.filterLabel, { color: colors.textSecondary }]}
-              >
-                Academic Year
-              </Text>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {academicYears?.map((year: any) => (
-                  <TouchableOpacity
-                    key={year.id}
-                    style={[
-                      styles.filterChip,
-                      {
-                        borderColor: colors.border,
-                        backgroundColor:
-                          selectedAcademicYear === year.id
-                            ? colors.primary
-                            : "transparent",
-                      },
-                    ]}
-                    onPress={() => setSelectedAcademicYear(year.id)}
-                  >
-                    <Text
-                      style={[
-                        styles.filterChipText,
-                        {
-                          color:
-                            selectedAcademicYear === year.id
-                              ? "#FFFFFF"
-                              : colors.textPrimary,
-                        },
-                      ]}
-                    >
-                      {year.year}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          </View>
-        </View>
-      )}
-    </View>
+    //         <View style={styles.filterGroup}>
+    //           <Text
+    //             style={[styles.filterLabel, { color: colors.textSecondary }]}
+    //           >
+    //             Academic Year
+    //           </Text>
+    //           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    //             {academicYears?.map((year: any) => (
+    //               <TouchableOpacity
+    //                 key={year.id}
+    //                 style={[
+    //                   styles.filterChip,
+    //                   {
+    //                     borderColor: colors.border,
+    //                     backgroundColor:
+    //                       selectedAcademicYear === year.id
+    //                         ? colors.primary
+    //                         : "transparent",
+    //                   },
+    //                 ]}
+    //                 onPress={() => setSelectedAcademicYear(year.id)}
+    //               >
+    //                 <Text
+    //                   style={[
+    //                     styles.filterChipText,
+    //                     {
+    //                       color:
+    //                         selectedAcademicYear === year.id
+    //                           ? "#FFFFFF"
+    //                           : colors.textPrimary,
+    //                     },
+    //                   ]}
+    //                 >
+    //                   {year.year}
+    //                 </Text>
+    //               </TouchableOpacity>
+    //             ))}
+    //           </ScrollView>
+    //         </View>
+    //       </View>
+    //     </View>
+    //   )}
+    // </View>
+    <GlobalFilters />
   );
 
   const renderEmployeeCard = (employee: Employee) => (

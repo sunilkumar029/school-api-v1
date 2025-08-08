@@ -16,13 +16,15 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
+import {
   useBranches,
   useAcademicYears,
   useStandards,
   useSections
 } from '@/hooks/useApi';
 import { apiService } from '@/api/apiService';
+import { GlobalFilters } from '@/components/GlobalFilters';
+import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 
 const { width } = Dimensions.get('window');
 
@@ -50,8 +52,8 @@ export default function AttendanceDashboardScreen() {
   const { user } = useAuth();
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
-  const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
+  // const [selectedBranch, setSelectedBranch] = useState<number>(1);
+  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [selectedStandard, setSelectedStandard] = useState<number | undefined>();
   const [selectedSection, setSelectedSection] = useState<string>('');
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
@@ -70,23 +72,25 @@ export default function AttendanceDashboardScreen() {
   });
   const [classAttendance, setClassAttendance] = useState<AttendanceRecord[]>([]);
   const [staffAttendance, setStaffAttendance] = useState<AttendanceRecord[]>([]);
+  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
+
 
   // Fetch data
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
-  const { data: standards } = useStandards({ 
-    branch: selectedBranch, 
-    academic_year: selectedAcademicYear 
+  const { data: standards } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
   });
-  const { data: sections } = useSections({ 
-    branch: selectedBranch, 
-    standard: selectedStandard 
+  const { data: sections } = useSections({
+    branch: selectedBranch,
+    standard: selectedStandard
   });
 
   const fetchAttendanceData = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch class attendance
       const classParams = {
         branch: selectedBranch,
@@ -120,7 +124,7 @@ export default function AttendanceDashboardScreen() {
 
       // Calculate statistics
       calculateStats();
-      
+
     } catch (error) {
       console.error('Error fetching attendance data:', error);
       generateFallbackData();
@@ -203,7 +207,7 @@ export default function AttendanceDashboardScreen() {
   const renderStatsCard = (title: string, stats: any, type: 'student' | 'teacher') => (
     <View style={[styles.statsCard, { backgroundColor: colors.surface }]}>
       <Text style={[styles.statsTitle, { color: colors.textPrimary }]}>{title}</Text>
-      
+
       <View style={styles.statsRow}>
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: colors.primary }]}>
@@ -211,14 +215,14 @@ export default function AttendanceDashboardScreen() {
           </Text>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total</Text>
         </View>
-        
+
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: '#4CAF50' }]}>
             {type === 'student' ? stats.presentStudents : stats.presentTeachers}
           </Text>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Present</Text>
         </View>
-        
+
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: '#F44336' }]}>
             {type === 'student' ? stats.absentStudents : stats.absentTeachers}
@@ -231,16 +235,16 @@ export default function AttendanceDashboardScreen() {
         <Text style={[styles.percentageText, { color: colors.textPrimary }]}>
           {(type === 'student' ? stats.studentAttendancePercentage : stats.teacherAttendancePercentage).toFixed(1)}% Attendance
         </Text>
-        
+
         <View style={styles.progressBar}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { 
+              styles.progressFill,
+              {
                 width: `${type === 'student' ? stats.studentAttendancePercentage : stats.teacherAttendancePercentage}%`,
                 backgroundColor: (type === 'student' ? stats.studentAttendancePercentage : stats.teacherAttendancePercentage) >= 75 ? '#4CAF50' : '#FF9800'
               }
-            ]} 
+            ]}
           />
         </View>
       </View>
@@ -254,7 +258,7 @@ export default function AttendanceDashboardScreen() {
     return (
       <View style={[styles.listContainer, { backgroundColor: colors.surface }]}>
         <Text style={[styles.listTitle, { color: colors.textPrimary }]}>{title}</Text>
-        
+
         {data.length === 0 ? (
           <View style={styles.emptyList}>
             <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
@@ -294,7 +298,7 @@ export default function AttendanceDashboardScreen() {
       />
 
       {/* Filter Row */}
-      <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
+      {/* <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           <TouchableOpacity style={[styles.filterButton, { borderColor: colors.border }]}>
             <Text style={[styles.filterText, { color: colors.textPrimary }]}>
@@ -308,7 +312,9 @@ export default function AttendanceDashboardScreen() {
             </Text>
           </TouchableOpacity>
         </ScrollView>
-      </View>
+      </View> */}
+
+      <GlobalFilters />
 
       <ScrollView
         style={styles.content}
@@ -352,7 +358,7 @@ export default function AttendanceDashboardScreen() {
                   Class Attendance
                 </Text>
               </TouchableOpacity>
-              
+
               <TouchableOpacity
                 style={[
                   styles.tab,

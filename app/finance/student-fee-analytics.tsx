@@ -29,13 +29,13 @@ export default function StudentFeeAnalyticsScreen() {
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
   const [selectedPeriod, setSelectedPeriod] = useState<string>('monthly');
 
-  const { 
-    selectedBranch, 
-    selectedAcademicYear, 
-    branches, 
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
     academicYears,
     setSelectedBranch,
-    setSelectedAcademicYear 
+    setSelectedAcademicYear
   } = useGlobalFilters();
 
   // API parameters
@@ -47,9 +47,9 @@ export default function StudentFeeAnalyticsScreen() {
   }), [selectedBranch, selectedAcademicYear, selectedStandard, selectedPeriod]);
 
   const { data: analyticsData, loading, error, refetch } = useFeeDashboardAnalytics(apiParams);
-  const { data: standards } = useStandards({ 
-    branch: selectedBranch, 
-    academic_year: selectedAcademicYear 
+  const { data: standards } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
   });
 
   const standardOptions = useMemo(() => {
@@ -121,15 +121,15 @@ export default function StudentFeeAnalyticsScreen() {
 
       {/* Global Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           style={styles.filtersScroll}
           contentContainerStyle={styles.filtersContentContainer}
         >
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -137,7 +137,7 @@ export default function StudentFeeAnalyticsScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -145,7 +145,7 @@ export default function StudentFeeAnalyticsScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Standard"
               items={standardOptions}
@@ -153,7 +153,7 @@ export default function StudentFeeAnalyticsScreen() {
               onValueChange={(value) => setSelectedStandard(value === 0 ? null : value)}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Period"
               items={periodOptions}
@@ -232,7 +232,7 @@ export default function StudentFeeAnalyticsScreen() {
                 </Text>
               </View>
             </View>
-            
+
             <View style={[styles.statusCard, { backgroundColor: colors.surface }]}>
               <View style={[styles.statusIndicator, { backgroundColor: '#FF9800' }]} />
               <View style={styles.statusContent}>
@@ -242,7 +242,7 @@ export default function StudentFeeAnalyticsScreen() {
                 </Text>
               </View>
             </View>
-            
+
             <View style={[styles.statusCard, { backgroundColor: colors.surface }]}>
               <View style={[styles.statusIndicator, { backgroundColor: '#F44336' }]} />
               <View style={styles.statusContent}>
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     marginHorizontal: -6,
   },
   metricCard: {
-    width: (width - 60) / 2,
+    width: '48%',
     padding: 16,
     borderRadius: 12,
     borderWidth: 1,

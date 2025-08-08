@@ -80,25 +80,25 @@ export default function UsersScreen() {
   const [appliedAcademicYear, setAppliedAcademicYear] = useState<number | null>(null);
 
   // Fetch data with proper error handling
-  const { 
-    data: branches, 
-    loading: branchesLoading, 
+  const {
+    data: branches,
+    loading: branchesLoading,
     error: branchesError,
-    refetch: refetchBranches 
+    refetch: refetchBranches
   } = useBranches();
 
-  const { 
-    data: groups, 
-    loading: groupsLoading, 
+  const {
+    data: groups,
+    loading: groupsLoading,
     error: groupsError,
-    refetch: refetchGroups 
+    refetch: refetchGroups
   } = useGroups();
 
-  const { 
-    data: academicYears, 
-    loading: academicYearsLoading, 
+  const {
+    data: academicYears,
+    loading: academicYearsLoading,
     error: academicYearsError,
-    refetch: refetchAcademicYears 
+    refetch: refetchAcademicYears
   } = useAcademicYears();
 
   // Build user params based on applied filters
@@ -110,11 +110,11 @@ export default function UsersScreen() {
     return params;
   }, [appliedBranch, appliedGroup, appliedAcademicYear]);
 
-  const { 
-    data: users, 
-    loading: usersLoading, 
+  const {
+    data: users,
+    loading: usersLoading,
     error: usersError,
-    refetch: refetchUsers 
+    refetch: refetchUsers
   } = useUsers(userParams);
 
   // Filter users based on search query
@@ -157,8 +157,8 @@ export default function UsersScreen() {
 
   const hasFiltersChanged = useMemo(() => {
     return tempSelectedBranch !== appliedBranch ||
-           tempSelectedGroup !== appliedGroup ||
-           tempSelectedAcademicYear !== appliedAcademicYear;
+      tempSelectedGroup !== appliedGroup ||
+      tempSelectedAcademicYear !== appliedAcademicYear;
   }, [tempSelectedBranch, appliedBranch, tempSelectedGroup, appliedGroup, tempSelectedAcademicYear, appliedAcademicYear]);
 
   const handleUserPress = useCallback((user: User) => {
@@ -227,8 +227,8 @@ export default function UsersScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={[
-                styles.filterButton, 
-                styles.applyButton, 
+                styles.filterButton,
+                styles.applyButton,
                 { backgroundColor: hasFiltersChanged ? colors.primary : colors.border }
               ]}
               onPress={handleApplyFilters}
@@ -454,6 +454,68 @@ export default function UsersScreen() {
         onNotificationsPress={() => router.push("/(tabs)/notifications")}
         onSettingsPress={() => router.push("/(tabs)/settings")}
       />
+
+      <ScrollView>
+        <TouchableOpacity onPress={() => setFiltersExpanded(!filtersExpanded)}>
+          <Text style={{ color: colors.textPrimary }}>Filters</Text>
+        </TouchableOpacity>
+        {filtersExpanded && (
+          <View>
+            {/* Branch Filter */}
+            <Text>Branches</Text>
+            <ScrollView horizontal>
+              {branches?.map(branch => (
+                <TouchableOpacity
+                  key={branch.id}
+                  onPress={() => setTempSelectedBranch(branch.id)}
+                >
+                  <Text style={{ color: colors.textPrimary }}>{branch.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            {/* Group Filter */}
+            <Text>Groups</Text>
+            <ScrollView horizontal>
+              {groups?.map(group => (
+                <TouchableOpacity
+                  key={group.id}
+                  onPress={() => setTempSelectedGroup(group.id)}
+                >
+                  <Text style={{ color: colors.textPrimary }}>{group.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            {/* Academic Year Filter */}
+            <Text>Academic Years</Text>
+            <ScrollView horizontal>
+              {academicYears?.map(year => (
+                <TouchableOpacity
+                  key={year.id}
+                  onPress={() => setTempSelectedAcademicYear(year.id)}
+                >
+                  <Text style={{ color: colors.textPrimary }}>{year.year}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+            <TouchableOpacity onPress={handleApplyFilters}>
+              <Text style={{ color: colors.primary }}>Apply Filters</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleClearFilters}>
+              <Text style={{ color: colors.primary }}>Clear Filters</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {usersLoading ? (
+          <ActivityIndicator size="large" color={colors.primary} />
+        ) : (
+          <View>
+            {users?.map(user => (
+              <Text key={user.id}>{`${user.first_name} ${user.last_name}`}</Text>
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
 
       <SideDrawer
         visible={drawerVisible}

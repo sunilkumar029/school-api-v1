@@ -19,6 +19,7 @@ import { apiService } from '@/api/apiService';
 import { useStandards, useSections, useUsers } from '@/hooks/useApi';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
+import { GlobalFilters } from '@/components/GlobalFilters';
 
 interface ClassData {
   id: number;
@@ -266,16 +267,7 @@ export default function ClassesScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      <View style={styles.filterBar}>
-        <TouchableOpacity
-          style={styles.filterButton}
-          onPress={() => setModalVisible(true)}
-        >
-          <Text style={[styles.filterButtonText, { color: colors.primary }]}>
-            Filter: {selectedBranch?.name || 'All Branches'} | {selectedAcademicYear?.name || 'All Years'}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <GlobalFilters />
 
       {modalVisible && (
         <View style={styles.modalOverlay}>

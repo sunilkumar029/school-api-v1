@@ -249,6 +249,10 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
       </View>
     );
   }
+  
+  // https://vai.dev.sms.visionariesai.com/api/sections/?branch=1
+  // https://vai.dev.sms.visionariesai.com/api/academic-years/
+  // https://vai.dev.sms.visionariesai.com/api/standards/?branch=1&academic_year=1
 
   return (
     <View style={[styles.container, { backgroundColor: colors.surface }]}>

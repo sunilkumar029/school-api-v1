@@ -17,8 +17,8 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  useTeacherTimetable, 
+import {
+  useTeacherTimetable,
   useStandards,
   useSections,
   usePeriods
@@ -85,13 +85,13 @@ export default function TimetableScreen() {
   const [selectedDepartment, setSelectedDepartment] = useState<string | null>(null);
   const [selectedDay, setSelectedDay] = useState<string>('Monday');
 
-  const { 
-    selectedBranch, 
-    selectedAcademicYear, 
-    branches, 
+  const {
+    selectedBranch,
+    selectedAcademicYear,
+    branches,
     academicYears,
     setSelectedBranch,
-    setSelectedAcademicYear 
+    setSelectedAcademicYear
   } = useGlobalFilters();
 
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -120,14 +120,14 @@ export default function TimetableScreen() {
   ];
 
   // Fetch data
-  const { data: standards } = useStandards({ 
-    branch: selectedBranch, 
-    academic_year: selectedAcademicYear 
+  const { data: standards } = useStandards({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear
   });
-  const { data: sections } = useSections({ 
-    branch: selectedBranch, 
+  const { data: sections } = useSections({
+    branch: selectedBranch,
     academic_year: selectedAcademicYear,
-    standard: selectedStandard 
+    standard: selectedStandard
   });
 
   // Teacher timetable params
@@ -137,11 +137,11 @@ export default function TimetableScreen() {
     return params;
   }, [selectedBranch]);
 
-  const { 
-    data: teacherTimetableData, 
-    loading: teacherTimetableLoading, 
+  const {
+    data: teacherTimetableData,
+    loading: teacherTimetableLoading,
     error: teacherTimetableError,
-    refetch: refetchTeacherTimetable 
+    refetch: refetchTeacherTimetable
   } = useTeacherTimetable(teacherTimetableParams);
 
   // Period params for section view
@@ -165,7 +165,7 @@ export default function TimetableScreen() {
     if (!sections) return [{ id: 0, name: "All Sections" }];
     return [{ id: 0, name: "All Sections" }, ...sections.map((s: any) => ({ id: s.id, name: s.name }))];
   }, [sections]);
-  
+
   const getSectionIdByName = (sectionName: string | undefined) => {
     if (!sectionName || !sections) return 0;
     const section = sections.find(s => s.name === sectionName);
@@ -312,7 +312,7 @@ export default function TimetableScreen() {
       filtered = Object.keys(filtered).reduce((acc, teacherKey) => {
         const dayData = filtered[teacherKey];
         if (dayData && dayData[selectedDay] && dayData[selectedDay].length > 0) {
-          const hasDepartment = dayData[selectedDay].some((entry: TimetableEntry) => 
+          const hasDepartment = dayData[selectedDay].some((entry: TimetableEntry) =>
             entry.department.name.toLowerCase() === selectedDepartment.toLowerCase()
           );
           if (hasDepartment) {
@@ -487,13 +487,13 @@ export default function TimetableScreen() {
                   const periodData = dayData.find((entry: TimetableEntry) => entry.period_number === periodNum);
 
                   return (
-                    <TouchableOpacity 
-                      key={periodNum} 
+                    <TouchableOpacity
+                      key={periodNum}
                       style={[
                         styles.periodCell,
-                        { 
+                        {
                           backgroundColor: periodData ? colors.primary + '20' : colors.surface,
-                          borderColor: colors.border 
+                          borderColor: colors.border
                         }
                       ]}
                       onPress={() => handleCellPress(teacherKey, periodNum, selectedDay, periodData)}
@@ -663,68 +663,70 @@ export default function TimetableScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
+
+            {activeView === 'teacher' && (
+              <>
+                <View style={styles.filterGroup}>
+                  <ModalDropdownFilter
+                    label="Department"
+                    items={departmentOptions}
+                    selectedValue={selectedDepartment}
+                    onValueChange={setSelectedDepartment}
+                    compact={true}
+                  />
+                </View>
+
+                <View style={styles.filterGroup}>
+                  <ModalDropdownFilter
+                    label="Day"
+                    items={dayOptions}
+                    selectedValue={selectedDay}
+                    onValueChange={setSelectedDay}
+                    compact={true}
+                  />
+                </View>
+              </>
+            )}
+            {activeView === 'section' && (
+              <>
+                <View style={styles.filterGroup}>
+                  <ModalDropdownFilter
+                    label="Standard"
+                    items={standardsForPicker}
+                    selectedValue={selectedStandard ?? 0}
+                    onValueChange={(value) => setSelectedStandard(value === 0 ? null : value)}
+                    compact={true}
+                  />
+                </View>
+
+                <View style={styles.filterGroup}>
+                  <ModalDropdownFilter
+                    label="Section"
+                    items={sectionsForPicker}
+                    selectedValue={getSectionIdByName(selectedSection)}
+                    onValueChange={(value) => setSelectedSection(getSectionNameById(value))}
+                    compact={true}
+                  />
+                </View>
+              </>
+            )}
           </View>
         </View>
       </View>
 
       {/* Local Filters */}
-      <ScrollView 
-        horizontal 
+      {/* <ScrollView
+        horizontal
         showsHorizontalScrollIndicator={false}
         style={[styles.filtersContainer, { backgroundColor: colors.surface }]}
         contentContainerStyle={styles.filtersContent}
       >
-        {activeView === 'teacher' && (
-          <>
-            <View style={styles.filterGroup}>
-              <ModalDropdownFilter
-                label="Department"
-                items={departmentOptions}
-                selectedValue={selectedDepartment}
-                onValueChange={setSelectedDepartment}
-                compact={true}
-              />
-            </View>
 
-            <View style={styles.filterGroup}>
-              <ModalDropdownFilter
-                label="Day"
-                items={dayOptions}
-                selectedValue={selectedDay}
-                onValueChange={setSelectedDay}
-                compact={true}
-              />
-            </View>
-          </>
-        )}
-        {activeView === 'section' && (
-          <>
-            <View style={styles.filterGroup}>
-              <ModalDropdownFilter
-                label="Standard"
-                items={standardsForPicker}
-                selectedValue={selectedStandard ?? 0}
-                onValueChange={(value) => setSelectedStandard(value === 0 ? null : value)}
-                compact={true}
-              />
-            </View>
-
-            <View style={styles.filterGroup}>
-              <ModalDropdownFilter
-                label="Section"
-                items={sectionsForPicker}
-                selectedValue={getSectionIdByName(selectedSection)}
-                onValueChange={(value) => setSelectedSection(getSectionNameById(value))}
-                compact={true}
-              />
-            </View>
-          </>
-        )}
-      </ScrollView>
+      </ScrollView> */}
 
       {/* Content */}
-      <ScrollView 
-        style={styles.content} 
+      <ScrollView
+        style={styles.content}
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -930,7 +932,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   filterGroup: {
-    minWidth: 180, 
+    minWidth: 180,
   },
   filterLabel: {
     fontSize: 14,

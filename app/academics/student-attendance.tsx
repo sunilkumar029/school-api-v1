@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -49,41 +48,36 @@ export default function StudentAttendanceScreen() {
   const [error, setError] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
 
-  // Use the attendance dashboard hook
   const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch } = useAttendanceDashboard();
 
   const fetchAttendanceData = async () => {
     try {
       setError(null);
-      
-      // Fetch attendance records
+
       const attendanceResponse = await apiService.getAttendance({
         limit: 50,
         ordering: '-date',
       });
 
-      // Transform API data to our format
       const transformedRecords: AttendanceRecord[] = attendanceResponse.results?.map((record: any, index: number) => ({
         id: record.id || index,
         date: record.date || new Date().toISOString().split('T')[0],
         status: record.status || (Math.random() > 0.8 ? 'absent' : Math.random() > 0.9 ? 'late' : 'present'),
         subject: record.subject || 'General Studies',
         period: record.period || `Period ${Math.floor(Math.random() * 6) + 1}`,
-        teacher: record.teacher || 'Staff Member',
+        teacher: typeof record.teacher === 'string' ? record.teacher : 'Staff Member',
         remarks: record.remarks,
       })) || [];
 
       setAttendanceRecords(transformedRecords);
 
-      // Calculate stats from records
       const stats = calculateAttendanceStats(transformedRecords);
       setAttendanceStats(stats);
 
     } catch (err) {
       console.error('Error fetching attendance data:', err);
       setError('Failed to fetch attendance data');
-      
-      // Generate fallback data
+
       const fallbackRecords = generateFallbackAttendance();
       setAttendanceRecords(fallbackRecords);
       setAttendanceStats(calculateAttendanceStats(fallbackRecords));
@@ -96,16 +90,15 @@ export default function StudentAttendanceScreen() {
   const generateFallbackAttendance = (): AttendanceRecord[] => {
     const records: AttendanceRecord[] = [];
     const currentDate = new Date();
-    
+
     for (let i = 0; i < 30; i++) {
       const date = new Date(currentDate);
       date.setDate(date.getDate() - i);
-      
-      // Skip weekends
+
       if (date.getDay() === 0 || date.getDay() === 6) continue;
-      
+
       const status = Math.random() > 0.85 ? 'absent' : Math.random() > 0.95 ? 'late' : 'present';
-      
+
       records.push({
         id: i,
         date: date.toISOString().split('T')[0],
@@ -115,7 +108,7 @@ export default function StudentAttendanceScreen() {
         teacher: ['Dr. Smith', 'Prof. Johnson', 'Ms. Davis', 'Mr. Wilson'][Math.floor(Math.random() * 4)],
       });
     }
-    
+
     return records;
   };
 
@@ -179,7 +172,7 @@ export default function StudentAttendanceScreen() {
         <Text style={[styles.statsTitle, { color: colors.textPrimary }]}>
           Attendance Summary
         </Text>
-        
+
         <View style={styles.statsRow}>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: colors.primary }]}>
@@ -189,7 +182,7 @@ export default function StudentAttendanceScreen() {
               Overall
             </Text>
           </View>
-          
+
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#4CAF50' }]}>
               {attendanceStats.present_days}
@@ -198,7 +191,7 @@ export default function StudentAttendanceScreen() {
               Present
             </Text>
           </View>
-          
+
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#F44336' }]}>
               {attendanceStats.absent_days}
@@ -207,7 +200,7 @@ export default function StudentAttendanceScreen() {
               Absent
             </Text>
           </View>
-          
+
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: '#FF9800' }]}>
               {attendanceStats.late_days}
@@ -219,17 +212,17 @@ export default function StudentAttendanceScreen() {
         </View>
 
         <View style={styles.progressBar}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { 
+              styles.progressFill,
+              {
                 width: `${attendanceStats.attendance_percentage}%`,
                 backgroundColor: attendanceStats.attendance_percentage >= 75 ? '#4CAF50' : '#FF9800'
               }
-            ]} 
+            ]}
           />
         </View>
-        
+
         <Text style={[styles.totalDays, { color: colors.textSecondary }]}>
           Total Days: {attendanceStats.total_days}
         </Text>
@@ -259,17 +252,17 @@ export default function StudentAttendanceScreen() {
           </Text>
         </View>
       </View>
-      
+
       <View style={styles.recordDetails}>
         <Text style={[styles.recordSubject, { color: colors.textPrimary }]}>
-          {typeof record.subject === 'string' ? record.subject : record.subject?.name || 'N/A'}
+          {typeof record.subject === 'string' ? record.subject : 'Unknown Subject'}
         </Text>
         <Text style={[styles.recordInfo, { color: colors.textSecondary }]}>
-          {record.period || 'N/A'} • {typeof record.teacher === 'string' ? record.teacher : record.teacher?.first_name || 'N/A'}
+          {typeof record.period === 'string' ? record.period : 'Unknown Period'} • {typeof record.teacher === 'string' ? record.teacher : 'Unknown Teacher'}
         </Text>
         {record.remarks && (
           <Text style={[styles.recordRemarks, { color: colors.textSecondary }]}>
-            {record.remarks}
+            {typeof record.remarks === 'string' ? record.remarks : 'No remarks'}
           </Text>
         )}
       </View>
@@ -337,7 +330,7 @@ export default function StudentAttendanceScreen() {
           <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>
             Recent Attendance Records
           </Text>
-          
+
           {attendanceRecords.length > 0 ? (
             attendanceRecords.map(renderAttendanceRecord)
           ) : (
