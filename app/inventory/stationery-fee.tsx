@@ -76,6 +76,8 @@ export default function StationeryFeeScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,

@@ -46,6 +46,8 @@ export default function StationeryScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,

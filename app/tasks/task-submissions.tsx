@@ -63,6 +63,8 @@ export default function TaskSubmissionsScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,

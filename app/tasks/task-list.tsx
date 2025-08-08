@@ -71,6 +71,8 @@ export default function TaskListScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,

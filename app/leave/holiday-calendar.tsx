@@ -49,6 +49,8 @@ export default function HolidayCalendarScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,

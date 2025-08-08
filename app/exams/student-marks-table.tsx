@@ -51,10 +51,12 @@ export default function StudentMarksTableScreen() {
   const {
     selectedBranch,
     selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear,
     branches,
     academicYears,
-    setSelectedBranch,
-    setSelectedAcademicYear
+    branchesLoading,
+    academicYearsLoading
   } = useGlobalFilters();
 
   // Fetch filter data
@@ -64,7 +66,8 @@ export default function StudentMarksTableScreen() {
   });
   const { data: apiSections } = useSections({
     branch: selectedBranch,
-    standard: selectedStandard
+    standard: selectedStandard,
+    omit: 'created_by'
   });
   const { data: apiExamTypes } = useExamTypes();
 

@@ -119,21 +119,23 @@ export const GlobalFiltersProvider: React.FC<GlobalFiltersProviderProps> = ({
     loadAndSetFilters();
   }, [branches, academicYears]); // Re-run if branches or academicYears data changes
 
-  const setSelectedBranch = async (branchId: number) => {
-    setSelectedBranchState(branchId);
+  const setSelectedBranch = async (branchId: number | null) => {
+    const id = branchId || 1;
+    setSelectedBranchState(id);
     try {
-      await AsyncStorage.setItem("global_selected_branch", branchId.toString());
+      await AsyncStorage.setItem("global_selected_branch", id.toString());
     } catch (error) {
       console.error("Error saving selected branch:", error);
     }
   };
 
-  const setSelectedAcademicYear = async (yearId: number) => {
-    setSelectedAcademicYearState(yearId);
+  const setSelectedAcademicYear = async (yearId: number | null) => {
+    const id = yearId || 1;
+    setSelectedAcademicYearState(id);
     try {
       await AsyncStorage.setItem(
         "global_selected_academic_year",
-        yearId.toString(),
+        id.toString(),
       );
     } catch (error) {
       console.error("Error saving selected academic year:", error);

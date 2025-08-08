@@ -1111,9 +1111,25 @@ class ApiService {
   }
 
   // Subjects
-  async getSubjects(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/subjects/", { params });
-    return response.data;
+  async getSubjects(params = {}): Promise<PaginatedResponse<any>> {
+    try {
+      const response = await this.api.get("/api/subjects/", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      throw error;
+    }
+  }
+
+  // Get sections
+  async getSections(params = {}): Promise<PaginatedResponse<any>> {
+    try {
+      const response = await this.api.get("/api/sections/", { params });
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching sections:", error);
+      throw error;
+    }
   }
 
   // Classes (using standards endpoint since classes endpoint doesn't exist)

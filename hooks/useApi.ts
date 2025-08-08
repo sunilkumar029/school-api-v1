@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { apiService } from "@/api/apiService";
+import { useQuery } from "@tanstack/react-query"; // Assuming useQuery is from react-query
 
 export function useAnnouncements(params?: any) {
   const [data, setData] = useState<any[]>([]);
@@ -1106,7 +1107,7 @@ export const useFeeDashboardAnalytics = (params: any = {}) => {
 };
 
 // Stationery Management hooks
-export const useStationaryTypes = (params: any = {}) => {
+export const useStationaryTypes = (params?: any) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1140,7 +1141,7 @@ export const useStationaryTypes = (params: any = {}) => {
   return { data, loading, error, refetch };
 };
 
-export const useStationary = (params: any = {}) => {
+export const useStationary = (params?: any) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -1174,7 +1175,7 @@ export const useStationary = (params: any = {}) => {
   return { data, loading, error, refetch };
 };
 
-export const useStationaryFee = (params: any = {}) => {
+export const useStationaryFee = (params?: any) => {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
