@@ -65,14 +65,14 @@ export default function StationeryScreen() {
 
   // Fetch data with memoized parameters
   const stationaryParams = useMemo(() => ({
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear,
+    branch: selectedBranch || 1,
+    academic_year: selectedAcademicYear || 1,
     is_active: true,
   }), [selectedBranch, selectedAcademicYear]);
 
-  const { data: stationaryTypes = [], loading: typesLoading, refetch: refetchTypes } = useStationaryTypes(stationaryParams);
-  const { data: stationaryItems = [], loading: itemsLoading, refetch: refetchItems } = useStationary(stationaryParams);
-  const { data: inventoryTracking = [], loading: trackingLoading, refetch: refetchTracking } = useInventoryTracking(stationaryParams);
+  const { data: stationaryTypes = [], loading: typesLoading, refetch: refetchTypes, error: typesError } = useStationaryTypes(stationaryParams);
+  const { data: stationaryItems = [], loading: itemsLoading, refetch: refetchItems, error: itemsError } = useStationary(stationaryParams);
+  const { data: inventoryTracking = [], loading: trackingLoading, refetch: refetchTracking, error: trackingError } = useInventoryTracking(stationaryParams);
   const { data: standards = [] } = useStandards({ is_active: true });
 
   const formatCurrency = (amount: number) => {
@@ -86,6 +86,7 @@ export default function StationeryScreen() {
     if (!stationaryTypes || !Array.isArray(stationaryTypes)) return [];
     
     return stationaryTypes.filter((item: StationaryItem) => {
+      if (!item || typeof item !== 'object') return false;
       if (!searchQuery) return true;
       
       const matchesSearch = (item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -357,6 +358,12 @@ export default function StationeryScreen() {
             <ActivityIndicator size="large" color={colors.primary} />
             <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
               Loading stationery items...
+            </Text>
+          </View>
+        ) : (typesError || itemsError || trackingError) ? (
+          <View style={styles.emptyContainer}>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+              Error loading data: {typesError || itemsError || trackingError}
             </Text>
           </View>
         ) : filteredItems.length === 0 ? (

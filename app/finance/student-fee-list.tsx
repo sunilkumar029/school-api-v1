@@ -29,6 +29,23 @@ interface FeeItem {
   pending_amount: number;
   status: 'paid' | 'partial' | 'pending';
   due_date: string;
+  student?: {
+    user?: {
+      first_name?: string;
+      last_name?: string;
+    };
+    admission_number?: string;
+    standard?: {
+      name?: string;
+    };
+    section?: {
+      name?: string;
+    };
+  };
+  payment_status?: string;
+  total_amount?: number;
+  paid_amount?: number;
+  due_amount?: number;
 }
 
 export default function StudentFeeListScreen() {
@@ -288,7 +305,7 @@ export default function StudentFeeListScreen() {
 
         {filteredData.map((fee, index) => (
             <TouchableOpacity
-              key={`fee-${fee.id}-${index}`}
+              key={`fee-item-${fee.id}-${index}`}
               style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
               onPress={() => handleViewDetails(fee)}
             >
@@ -301,8 +318,10 @@ export default function StudentFeeListScreen() {
                     #{fee.student?.admission_number}
                   </Text>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.payment_status) }]}>
-                  <Text style={styles.statusText}>{fee.payment_status || 'Pending'}</Text>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.payment_status || 'pending') + '20' }]}>
+                  <Text style={[styles.statusText, { color: getStatusColor(fee.payment_status || 'pending') }]}>
+                    {fee.payment_status?.toUpperCase() || 'PENDING'}
+                  </Text>
                 </View>
               </View>
 
@@ -310,7 +329,7 @@ export default function StudentFeeListScreen() {
                 <View style={styles.feeRow}>
                   <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Class:</Text>
                   <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
-                    {fee.student?.standard?.name} - {fee.student?.section?.name}
+                    {fee.student?.standard?.name || 'N/A'} - {fee.student?.section?.name || 'N/A'}
                   </Text>
                 </View>
 

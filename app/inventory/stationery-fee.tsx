@@ -89,13 +89,13 @@ export default function StationeryFeeScreen() {
 
   // Fetch data with memoized parameters
   const stationaryFeeParams = useMemo(() => ({
-    standard: selectedStandard,
-    academic_year: selectedAcademicYear,
-    branch: selectedBranch,
+    standard: selectedStandard || undefined,
+    academic_year: selectedAcademicYear || 1,
+    branch: selectedBranch || 1,
     omit: 'created_by,modified_by',
   }), [selectedBranch, selectedAcademicYear, selectedStandard]);
 
-  const { data: stationaryFeeData = [], loading: feeLoading, refetch: refetchFee } = useStationaryFee(stationaryFeeParams);
+  const { data: stationaryFeeData = [], loading: feeLoading, refetch: refetchFee, error: feeError } = useStationaryFee(stationaryFeeParams);
   const { data: standards = [] } = useStandards({ 
     branch: selectedBranch,
     is_active: true,
@@ -144,6 +144,16 @@ export default function StationeryFeeScreen() {
       );
     }
 
+    if (feeError) {
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+            Error loading stationery data: {feeError}
+          </Text>
+        </View>
+      );
+    }
+
     if (!stationaryFeeData || stationaryFeeData.length === 0) {
       return (
         <View style={styles.emptyContainer}>
@@ -156,12 +166,15 @@ export default function StationeryFeeScreen() {
 
     return (
       <ScrollView style={styles.overviewContent}>
-        {stationaryFeeData.map((item: StationaryFeeItem) => {
-          const activeItems = getActiveStationaryItems(item.standard?.stationary || []);
-          const totalValue = calculateTotalStationaryValue(item.standard?.stationary || []);
+        {Array.isArray(stationaryFeeData) && stationaryFeeData.map((item: StationaryFeeItem, index: number) => {
+          if (!item || typeof item !== 'object') return null;
+          
+          const stationary = item.standard?.stationary || [];
+          const activeItems = getActiveStationaryItems(stationary);
+          const totalValue = calculateTotalStationaryValue(stationary);
           
           return (
-            <View key={item.id} style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
+            <View key={item.id || index} style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={styles.cardHeader}>
                 <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>
                   {item.standard?.name || 'Unnamed Standard'}
@@ -182,15 +195,23 @@ export default function StationeryFeeScreen() {
                 </View>
               </View>
 
-              <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemsList}>
-                {activeItems.map((stationaryItem: any) => (
-                  <View key={stationaryItem.id} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                    <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem.name || 'Unnamed Item'}</Text>
-                    <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem.price || 0)}</Text>
-                    <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem.quantity || 0}</Text>
-                  </View>
-                ))}
-              </ScrollView>
+              {activeItems.length > 0 ? (
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemsList}>
+                  {activeItems.map((stationaryItem: any, itemIndex: number) => {
+                    if (!stationaryItem || typeof stationaryItem !== 'object') return null;
+                    
+                    return (
+                      <View key={stationaryItem.id || `item-${itemIndex}`} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                        <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem.name || 'Unnamed Item'}</Text>
+                        <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem.price || 0)}</Text>
+                        <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem.quantity || 0}</Text>
+                      </View>
+                    );
+                  })}
+                </ScrollView>
+              ) : (
+                <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No active items</Text>
+              )}
             </View>
           );
         })}
