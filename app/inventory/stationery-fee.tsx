@@ -95,17 +95,22 @@ export default function StationeryFeeScreen() {
     omit: 'created_by,modified_by',
   }), [selectedBranch, selectedAcademicYear, selectedStandard]);
 
-  const { data: stationaryFeeData = [], loading: feeLoading, refetch: refetchFee, error: feeError } = useStationaryFee(stationaryFeeParams);
-  const { data: standards = [] } = useStandards({ 
+  const { data: stationaryFeeData, loading: feeLoading, refetch: refetchFee, error: feeError } = useStationaryFee(stationaryFeeParams);
+  const { data: standards } = useStandards({ 
     branch: selectedBranch,
     is_active: true,
     academic_year: selectedAcademicYear,
   });
-  const { data: sections = [] } = useSections({ 
+  const { data: sections } = useSections({ 
     branch: selectedBranch,
     standard: selectedStandard,
     omit: 'created_by',
   });
+
+  // Ensure data arrays are never null
+  const safeStationaryFeeData = Array.isArray(stationaryFeeData) ? stationaryFeeData : [];
+  const safeStandards = Array.isArray(standards) ? standards : [];
+  const safeSections = Array.isArray(sections) ? sections : [];
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-IN', {
@@ -154,7 +159,7 @@ export default function StationeryFeeScreen() {
       );
     }
 
-    if (!stationaryFeeData || stationaryFeeData.length === 0) {
+    if (safeStationaryFeeData.length === 0) {
       return (
         <View style={styles.emptyContainer}>
           <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
@@ -166,7 +171,7 @@ export default function StationeryFeeScreen() {
 
     return (
       <ScrollView style={styles.overviewContent}>
-        {Array.isArray(stationaryFeeData) && stationaryFeeData.map((item: StationaryFeeItem, index: number) => {
+        {safeStationaryFeeData.map((item: StationaryFeeItem, index: number) => {
           if (!item || typeof item !== 'object') return null;
           
           const stationary = item.standard?.stationary || [];
@@ -195,16 +200,16 @@ export default function StationeryFeeScreen() {
                 </View>
               </View>
 
-              {activeItems.length > 0 ? (
+              {activeItems && activeItems.length > 0 ? (
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemsList}>
                   {activeItems.map((stationaryItem: any, itemIndex: number) => {
                     if (!stationaryItem || typeof stationaryItem !== 'object') return null;
                     
                     return (
-                      <View key={stationaryItem.id || `item-${itemIndex}`} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
-                        <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem.name || 'Unnamed Item'}</Text>
-                        <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem.price || 0)}</Text>
-                        <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem.quantity || 0}</Text>
+                      <View key={stationaryItem?.id || `item-${itemIndex}`} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
+                        <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem?.name || 'Unnamed Item'}</Text>
+                        <Text style={[styles.itemPrice, { color: colors.primary }]}>{formatCurrency(stationaryItem?.price || 0)}</Text>
+                        <Text style={[styles.itemQty, { color: colors.textSecondary }]}>Qty: {stationaryItem?.quantity || 0}</Text>
                       </View>
                     );
                   })}
@@ -356,12 +361,15 @@ export default function StationeryFeeScreen() {
 
               <View style={styles.detailSection}>
                 <Text style={[styles.sectionTitle, { color: colors.primary }]}>Items Taken</Text>
-                {Object.entries(selectedStudent.given_stationary_count || {}).map(([itemId, quantity]) => (
+                {selectedStudent?.given_stationary_count && Object.entries(selectedStudent.given_stationary_count).map(([itemId, quantity]) => (
                   <View key={itemId} style={styles.itemRow}>
                     <Text style={[styles.itemText, { color: colors.textPrimary }]}>Item ID: {itemId}</Text>
                     <Text style={[styles.quantityText, { color: colors.textSecondary }]}>Qty: {quantity}</Text>
                   </View>
                 ))}
+                {(!selectedStudent?.given_stationary_count || Object.keys(selectedStudent.given_stationary_count).length === 0) && (
+                  <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No items taken</Text>
+                )}
               </View>
             </ScrollView>
           )}
@@ -396,10 +404,10 @@ export default function StationeryFeeScreen() {
               label="Branch"
               selectedValue={selectedBranch}
               onValueChange={() => {}} // Read-only from global filters
-              options={branches.map((branch: any) => ({ 
-                label: branch.name || 'Unnamed Branch', 
-                value: branch.id 
-              }))}
+              options={Array.isArray(branches) ? branches.map((branch: any) => ({ 
+                label: branch?.name || 'Unnamed Branch', 
+                value: branch?.id 
+              })) : []}
               disabled={true}
             />
             
@@ -407,10 +415,10 @@ export default function StationeryFeeScreen() {
               label="Academic Year"
               selectedValue={selectedAcademicYear}
               onValueChange={() => {}} // Read-only from global filters
-              options={academicYears.map((year: any) => ({ 
-                label: year.name || 'Unnamed Year', 
-                value: year.id 
-              }))}
+              options={Array.isArray(academicYears) ? academicYears.map((year: any) => ({ 
+                label: year?.name || 'Unnamed Year', 
+                value: year?.id 
+              })) : []}
               disabled={true}
             />
             
@@ -420,9 +428,9 @@ export default function StationeryFeeScreen() {
               onValueChange={setSelectedStandard}
               options={[
                 { label: 'All Standards', value: null },
-                ...standards.map((standard: any) => ({ 
-                  label: standard.name || 'Unnamed Standard', 
-                  value: standard.id 
+                ...safeStandards.map((standard: any) => ({ 
+                  label: standard?.name || 'Unnamed Standard', 
+                  value: standard?.id 
                 }))
               ]}
             />
@@ -433,9 +441,9 @@ export default function StationeryFeeScreen() {
               onValueChange={setSelectedSection}
               options={[
                 { label: 'All Sections', value: null },
-                ...sections.map((section: any) => ({ 
-                  label: section.name || 'Unnamed Section', 
-                  value: section.id?.toString() 
+                ...safeSections.map((section: any) => ({ 
+                  label: section?.name || 'Unnamed Section', 
+                  value: section?.id?.toString() 
                 }))
               ]}
             />
