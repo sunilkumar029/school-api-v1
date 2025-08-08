@@ -96,6 +96,8 @@ export default function TaskListScreen() {
   } = useTasks(tasksParams);
 
   const filteredTasks = useMemo(() => {
+    if (!tasks || !Array.isArray(tasks)) return [];
+    
     return tasks.filter((task: Task) => {
       const matchesSearch = task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            task.description?.toLowerCase().includes(searchQuery.toLowerCase());

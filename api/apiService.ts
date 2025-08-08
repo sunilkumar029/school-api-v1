@@ -1063,17 +1063,19 @@ class ApiService {
   }
 
   async getNotificationTypes(): Promise<any> {
-    const response = await this.api.get("/api/notifications/notification-types/");
+    const response = await this.api.get("/api/notification-types/");
     return response.data;
   }
 
-  async getNotification(id: number): Promise<any> {
-    const response = await this.api.get(`/api/notifications/${id}/`);
+  // Subjects
+  async getSubjects(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/subjects/", { params });
     return response.data;
   }
 
-  async markNotificationAsRead(id: number): Promise<any> {
-    const response = await this.api.patch(`/api/notifications/${id}/`, { is_read: true });
+  // Classes
+  async getClasses(params?: any): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get("/api/classes/", { params });
     return response.data;
   }
 

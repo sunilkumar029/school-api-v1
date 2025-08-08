@@ -83,6 +83,8 @@ export default function StationeryScreen() {
   };
 
   const filteredItems = useMemo(() => {
+    if (!stationaryTypes || !Array.isArray(stationaryTypes)) return [];
+    
     return stationaryTypes.filter((item: StationaryItem) => {
       const matchesSearch = item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                            item.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -291,7 +293,7 @@ export default function StationeryScreen() {
               label="Branch"
               selectedValue={selectedBranch}
               onValueChange={() => {}} // Read-only from global filters
-              options={branches.map((branch: any) => ({ 
+              options={(branches || []).map((branch: any) => ({ 
                 label: branch.name || 'Unnamed Branch', 
                 value: branch.id 
               }))}
@@ -302,7 +304,7 @@ export default function StationeryScreen() {
               label="Academic Year"
               selectedValue={selectedAcademicYear}
               onValueChange={() => {}} // Read-only from global filters
-              options={academicYears.map((year: any) => ({ 
+              options={(academicYears || []).map((year: any) => ({ 
                 label: year.name || 'Unnamed Year', 
                 value: year.id 
               }))}

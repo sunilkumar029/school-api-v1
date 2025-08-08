@@ -88,6 +88,8 @@ export default function LeaveQuotaScreen() {
 
   // Extract leave types from quotas
   const leaveTypes = useMemo(() => {
+    if (!leaveQuotas || !Array.isArray(leaveQuotas)) return [];
+    
     const types = new Map();
     leaveQuotas.forEach((quota: LeaveQuota) => {
       if (quota.leave_type) {
@@ -110,7 +112,7 @@ export default function LeaveQuotaScreen() {
   // Filter options
   const employeeOptions = useMemo(() => [
     { id: 0, name: 'All Employees' },
-    ...employees.map((employee: any) => ({
+    ...(employees || []).map((employee: any) => ({
       id: employee.id,
       name: employee.name || employee.email || 'Unnamed Employee'
     }))
@@ -118,7 +120,7 @@ export default function LeaveQuotaScreen() {
 
   const leaveTypeOptions = useMemo(() => [
     { id: 0, name: 'All Leave Types' },
-    ...leaveTypes.map((type: any) => ({
+    ...(leaveTypes || []).map((type: any) => ({
       id: type.id,
       name: type.name || 'Unnamed Leave Type'
     }))

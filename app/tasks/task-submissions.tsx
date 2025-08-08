@@ -111,7 +111,7 @@ export default function TaskSubmissionsScreen() {
     { id: 4, name: 'Rejected' }
   ], []);
 
-  const statusMapping = {
+  const statusMapping: { [key: number]: string | null } = {
     0: null,
     1: 'submitted',
     2: 'reviewed', 
@@ -138,6 +138,7 @@ export default function TaskSubmissionsScreen() {
   };
 
   const getStatusLabel = (status: string) => {
+    if (!status || typeof status !== 'string') return 'Unknown';
     return status.charAt(0).toUpperCase() + status.slice(1);
   };
 
@@ -293,8 +294,8 @@ export default function TaskSubmissionsScreen() {
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
-              selectedValue={selectedStatus ? Object.keys(statusMapping).find(key => statusMapping[key] === selectedStatus) || 0 : 0}
-              onValueChange={(value) => setSelectedStatus(statusMapping[value])}
+              selectedValue={selectedStatus ? Object.keys(statusMapping).find(key => statusMapping[parseInt(key)] === selectedStatus) || 0 : 0}
+              onValueChange={(value) => setSelectedStatus(statusMapping[value as number])}
               compact={true}
             />
             

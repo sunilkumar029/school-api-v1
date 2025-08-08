@@ -1795,6 +1795,74 @@ export const useExamTypes = () => {
   return useApi<any[]>("/api/exam-types/");
 };
 
+export const useSubjects = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getSubjects(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error("Subjects fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to fetch subjects",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useClasses = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getClasses(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error("Classes fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to fetch classes",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
 export const useStudentExamMarks = (params?: Record<string, any>) => {
   return useApi<any[]>("/api/student-exam-marks/", params);
 };
@@ -2236,6 +2304,40 @@ export const useHolidays = (params?: Record<string, any>) => {
         err.response?.data?.message ||
         err.message ||
         "Failed to fetch holidays",
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, [JSON.stringify(params)]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const refetch = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return { data, loading, error, refetch };
+};
+
+export const useLeaveQuota = (params?: Record<string, any>) => {
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await apiService.getLeaveQuotas(params);
+      setData(response.results || []);
+    } catch (err: any) {
+      console.error("Leave quota fetch error:", err);
+      setError(
+        err.response?.data?.message ||
+        err.message ||
+        "Failed to fetch leave quota",
       );
     } finally {
       setLoading(false);

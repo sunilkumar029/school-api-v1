@@ -109,7 +109,7 @@ export default function StudentMarksAnalyticsScreen() {
   // Filter options
   const subjectOptions = useMemo(() => [
     { id: 0, name: 'All Subjects' },
-    ...subjects.map((subject: any) => ({
+    ...(subjects || []).map((subject: any) => ({
       id: subject.id,
       name: subject.name || 'Unnamed Subject'
     }))
@@ -117,7 +117,7 @@ export default function StudentMarksAnalyticsScreen() {
 
   const classOptions = useMemo(() => [
     { id: 0, name: 'All Classes' },
-    ...classes.map((cls: any) => ({
+    ...(classes || []).map((cls: any) => ({
       id: cls.id,
       name: cls.name || 'Unnamed Class'
     }))
@@ -125,7 +125,7 @@ export default function StudentMarksAnalyticsScreen() {
 
   const examOptions = useMemo(() => [
     { id: 0, name: 'All Exams' },
-    ...exams.map((exam: any) => ({
+    ...(exams || []).map((exam: any) => ({
       id: exam.id,
       name: exam.name || 'Unnamed Exam'
     }))
