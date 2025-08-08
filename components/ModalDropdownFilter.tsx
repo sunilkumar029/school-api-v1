@@ -42,8 +42,22 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
   const { colors } = useTheme();
   const [modalVisible, setModalVisible] = useState(false);
 
-  const selectedItem = items.find((item) => item.id === selectedValue);
+  // Ensure items is always an array to prevent errors
+  const safeItems = Array.isArray(items) ? items : [];
+
+  const selectedItem = safeItems.find((item) => item && item.id === selectedValue);
   const displayText = selectedItem ? selectedItem.name : placeholder;
+
+  const handleSelect = (value: number) => {
+    try {
+      onValueChange(value);
+      setModalVisible(false);
+    } catch (error) {
+      console.error('Error in ModalDropdownFilter handleSelect:', error);
+      // Optionally, you could show a user-facing error message here
+      setModalVisible(false); // Still close the modal even on error
+    }
+  };
 
   return (
     <View style={compact ? styles.compactContainer : styles.container}>
@@ -131,7 +145,7 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                     color={colors.primary}
                     style={styles.loading}
                   />
-                ) : items.length === 0 ? (
+                ) : safeItems.length === 0 ? (
                   <View style={styles.emptyStateContainer}>
                     <Text
                       style={[
@@ -143,9 +157,9 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                     </Text>
                   </View>
                 ) : (
-                  items.map((item) => (
+                  safeItems.map((item) => (
                     <TouchableOpacity
-                      key={item.id}
+                      key={item.id} // Assuming item.id is unique and stable
                       style={[
                         styles.modalItem,
                         {
@@ -156,10 +170,7 @@ export const ModalDropdownFilter: React.FC<ModalDropdownFilterProps> = ({
                           borderBottomColor: colors.border,
                         },
                       ]}
-                      onPress={() => {
-                        onValueChange(item.id);
-                        setModalVisible(false);
-                      }}
+                      onPress={() => handleSelect(item.id)}
                       accessibilityRole="menuitem"
                       accessibilityLabel={item.name}
                       accessibilityState={{

@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -57,6 +56,7 @@ export default function TaskSubmissionsScreen() {
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [selectedUser, setSelectedUser] = useState<number | null>(null);
   const [selectedSubmission, setSelectedSubmission] = useState<TaskSubmission | null>(null);
+  const [searchQuery, setSearchQuery] = useState(''); // Added search query state
 
   // Global filters
   const {
@@ -265,7 +265,7 @@ export default function TaskSubmissionsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -273,7 +273,7 @@ export default function TaskSubmissionsScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -281,7 +281,7 @@ export default function TaskSubmissionsScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Task"
               items={taskOptions}
@@ -290,7 +290,7 @@ export default function TaskSubmissionsScreen() {
               loading={tasksLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
@@ -298,7 +298,7 @@ export default function TaskSubmissionsScreen() {
               onValueChange={(value) => setSelectedStatus(statusMapping[value as number])}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="User"
               items={userOptions}
@@ -309,6 +309,18 @@ export default function TaskSubmissionsScreen() {
             />
           </View>
         </ScrollView>
+      </View>
+
+      {/* Search Bar */}
+      <View style={[styles.searchBarContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <TextInput
+          style={[styles.searchBarInput, { color: colors.textPrimary, borderColor: colors.border }]}
+          placeholder="Search submissions..."
+          placeholderTextColor={colors.textSecondary}
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          autoCapitalize="none"
+        />
       </View>
 
       {/* Content */}
@@ -367,6 +379,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginRight: 8,
+  },
+  searchBarContainer: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+  },
+  searchBarInput: {
+    height: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    fontSize: 14,
   },
   content: {
     flex: 1,

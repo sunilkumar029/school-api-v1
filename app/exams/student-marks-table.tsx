@@ -224,7 +224,36 @@ export default function StudentMarksTableScreen() {
         />
       </View>
 
-      <GlobalFilters />
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface, borderBottomColor: safeColors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: safeColors.textSecondary }]}>Global:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              selectedValue={selectedBranch}
+              onValueChange={() => {}} // Read-only from global filters
+              options={branches.map((branch: any) => ({ 
+                label: branch.name || 'Unnamed Branch', 
+                value: branch.id 
+              }))}
+              disabled={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              selectedValue={selectedAcademicYear}
+              onValueChange={() => {}} // Read-only from global filters
+              options={academicYears.map((year: any) => ({ 
+                label: year.name || 'Unnamed Year', 
+                value: year.id 
+              }))}
+              disabled={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
 
       {/* Additional Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface, borderBottomColor: safeColors.border }]}>
@@ -235,39 +264,54 @@ export default function StudentMarksTableScreen() {
             {apiStandards && apiStandards.length > 0 && (
               <ModalDropdownFilter
                 label="Class"
-                items={[{ id: null, name: 'All Classes' }, ...apiStandards.map(s => ({ id: s.id, name: s.name }))]}
                 selectedValue={selectedStandard}
                 onValueChange={(value) => {
                   setSelectedStandard(value);
                   setSelectedSection(null); // Reset dependent filters
                   setSelectedExamType(null);
                 }}
-                compact={true}
+                options={[
+                  { label: 'All Classes', value: null },
+                  ...apiStandards.map((s: any) => ({ 
+                    label: s.name || 'Unnamed Class', 
+                    value: s.id 
+                  }))
+                ]}
               />
             )}
             
             {apiSections && apiSections.length > 0 && (
               <ModalDropdownFilter
                 label="Section"
-                items={[{ id: null, name: 'All Sections' }, ...apiSections.map(s => ({ id: s.id, name: s.name }))]}
                 selectedValue={selectedSection}
                 onValueChange={(value) => {
                   setSelectedSection(value);
                   setSelectedExamType(null); // Reset dependent filters
                 }}
-                compact={true}
+                options={[
+                  { label: 'All Sections', value: null },
+                  ...apiSections.map((s: any) => ({ 
+                    label: s.name || 'Unnamed Section', 
+                    value: s.name 
+                  }))
+                ]}
               />
             )}
             
             {apiExamTypes && apiExamTypes.length > 0 && (
               <ModalDropdownFilter
                 label="Exam Type"
-                items={[{ id: null, name: 'All Exam Types' }, ...apiExamTypes.map(et => ({ id: et.name, name: et.name }))]}
                 selectedValue={selectedExamType}
                 onValueChange={(value) => {
                   setSelectedExamType(value);
                 }}
-                compact={true}
+                options={[
+                  { label: 'All Exam Types', value: null },
+                  ...apiExamTypes.map((et: any) => ({ 
+                    label: et.name || 'Unnamed Exam Type', 
+                    value: et.name 
+                  }))
+                ]}
               />
             )}
           </View>

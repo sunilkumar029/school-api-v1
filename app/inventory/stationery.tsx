@@ -86,8 +86,10 @@ export default function StationeryScreen() {
     if (!stationaryTypes || !Array.isArray(stationaryTypes)) return [];
     
     return stationaryTypes.filter((item: StationaryItem) => {
-      const matchesSearch = item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      if (!searchQuery) return true;
+      
+      const matchesSearch = (item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                           (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesSearch;
     });
   }, [stationaryTypes, searchQuery]);

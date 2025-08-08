@@ -99,10 +99,12 @@ export default function TaskListScreen() {
     if (!tasks || !Array.isArray(tasks)) return [];
     
     return tasks.filter((task: Task) => {
-      const matchesSearch = task.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           task.description?.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = !searchQuery || 
+        (task.title && task.title.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (task.description && task.description.toLowerCase().includes(searchQuery.toLowerCase()));
       
-      const matchesAssignedBy = !selectedAssignedBy || task.created_by?.id === selectedAssignedBy;
+      const matchesAssignedBy = !selectedAssignedBy || 
+        (task.created_by && task.created_by.id === selectedAssignedBy);
       
       return matchesSearch && matchesAssignedBy;
     });

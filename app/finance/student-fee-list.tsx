@@ -286,9 +286,69 @@ export default function StudentFeeListScreen() {
           Fee Summary ({filteredData.length} students)
         </Text>
 
-        {filteredData.length > 0 ? (
-          filteredData.map(renderFeeItem)
-        ) : (
+        {filteredData.map((fee, index) => (
+            <TouchableOpacity
+              key={`fee-${fee.id}-${index}`}
+              style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+              onPress={() => handleViewDetails(fee)}
+            >
+              <View style={styles.feeHeader}>
+                <View style={styles.studentInfo}>
+                  <Text style={[styles.studentName, { color: colors.textPrimary }]}>
+                    {fee.student?.user?.first_name} {fee.student?.user?.last_name}
+                  </Text>
+                  <Text style={[styles.admissionNumber, { color: colors.textSecondary }]}>
+                    #{fee.student?.admission_number}
+                  </Text>
+                </View>
+                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.payment_status) }]}>
+                  <Text style={styles.statusText}>{fee.payment_status || 'Pending'}</Text>
+                </View>
+              </View>
+
+              <View style={styles.feeDetails}>
+                <View style={styles.feeRow}>
+                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Class:</Text>
+                  <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
+                    {fee.student?.standard?.name} - {fee.student?.section?.name}
+                  </Text>
+                </View>
+
+                <View style={styles.feeRow}>
+                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
+                  <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
+                    ₹{fee.total_amount?.toLocaleString() || '0'}
+                  </Text>
+                </View>
+
+                <View style={styles.feeRow}>
+                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Paid Amount:</Text>
+                  <Text style={[styles.feeValue, { color: colors.success || '#10B981' }]}>
+                    ₹{fee.paid_amount?.toLocaleString() || '0'}
+                  </Text>
+                </View>
+
+                <View style={styles.feeRow}>
+                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Due Amount:</Text>
+                  <Text style={[styles.feeValue, { color: colors.error || '#EF4444' }]}>
+                    ₹{fee.due_amount?.toLocaleString() || '0'}
+                  </Text>
+                </View>
+              </View>
+
+              <TouchableOpacity
+                style={[styles.viewButton, { borderColor: colors.primary }]}
+                onPress={() => {
+                  console.log("View Details pressed for fee:", fee.id);
+                  handleViewDetails(fee);
+                }}
+              >
+                <Text style={[styles.viewButtonText, { color: colors.primary }]}>View Details</Text>
+              </TouchableOpacity>
+            </TouchableOpacity>
+          ))}
+
+        {filteredData.length === 0 && (
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
               No fee data found for the selected criteria
@@ -395,6 +455,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     flex: 1,
   },
+  admissionNumber: {
+    fontSize: 14,
+  },
   statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 4,
@@ -407,20 +470,16 @@ const styles = StyleSheet.create({
   feeDetails: {
     gap: 8,
   },
-  classInfo: {
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  amountRow: {
+  feeRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  label: {
+  feeLabel: {
     fontSize: 14,
     fontWeight: '500',
   },
-  amount: {
+  feeValue: {
     fontSize: 14,
     fontWeight: '600',
   },
@@ -428,6 +487,17 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
     marginTop: 4,
+  },
+  viewButton: {
+    marginTop: 16,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  viewButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
   emptyContainer: {
     alignItems: 'center',

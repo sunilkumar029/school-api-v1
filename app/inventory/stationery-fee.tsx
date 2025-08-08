@@ -223,8 +223,10 @@ export default function StationeryFeeScreen() {
     ];
 
     const filteredStudents = mockStudents.filter(student => {
-      const matchesSearch = student.user_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           student.admission_number?.toString().includes(searchQuery);
+      if (!searchQuery) return true;
+      
+      const matchesSearch = (student.user_name && student.user_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+                           (student.admission_number && student.admission_number.toString().includes(searchQuery));
       return matchesSearch;
     });
 
