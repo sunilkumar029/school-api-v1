@@ -1,0 +1,66 @@
+ const fetchClassesData = async () => {
+    try {
+      setError(null);
+
+      // Fetch data based on selected filters
+      const [departmentsResponse, branchesResponse] = await Promise.all([
+        apiService.getDepartments(selectedBranch),
+        apiService.getBranches(selectedBranch) // Assuming getBranches is always needed for the filter itself
+      ]);
+
+      // Transform departments into class-like data
+      const transformedClasses: ClassData[] = departmentsResponse.results?.map((dept: any, index: number) => ({
+        id: dept.id || index,
+        name: dept.name || 'Unknown Class',
+        section: dept.department_type || 'A',
+        subject: dept.description || 'General Studies',
+        teacher: dept.head_teacher || 'Staff Member',
+        schedule: 'Mon-Fri 9:00-16:00', // Placeholder, actual schedule might come from elsewhere
+        room: `Room ${100 + index}`, // Placeholder
+        student_count: Math.floor(Math.random() * 40) + 15, // Placeholder
+        is_active: dept.is_active !== false,
+      })) || [];
+
+      setClasses(transformedClasses);
+      // Update branches data if not already loaded or if it's the initial load
+      if (!selectedBranch) {
+        // Assuming branchesResponse.results contains the branch data
+        // You might need to adjust this based on the actual structure of branchesResponse
+        // For now, let's assume it's an array of objects with id and name
+        // Example: setSelectedBranches(branchesResponse.results.map(b => ({ id: b.id, name: b.name })));
+      }
+
+    } catch (err) {
+      console.error('Error fetching classes data:', err);
+      setError('Failed to fetch classes data');
+
+      // Fallback data
+      setClasses([
+        {
+          id: 1,
+          name: 'Computer Science',
+          section: 'A',
+          subject: 'Programming',
+          teacher: 'Dr. Smith',
+          schedule: 'Mon-Fri 9:00-11:00',
+          room: 'Lab 101',
+          student_count: 35,
+          is_active: true,
+        },
+        {
+          id: 2,
+          name: 'Mathematics',
+          section: 'B',
+          subject: 'Calculus',
+          teacher: 'Prof. Johnson',
+          schedule: 'Mon-Wed-Fri 11:00-12:30',
+          room: 'Room 205',
+          student_count: 42,
+          is_active: true,
+        },
+      ]);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
