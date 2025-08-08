@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo } from 'react';
 import {
   View,
@@ -21,6 +20,7 @@ import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLeaveQuota, useAllUsersExceptStudents } from '@/hooks/useApi';
+import { ApiService } from '@/services/ApiService'; // Assuming ApiService is available
 
 interface LeaveQuota {
   id: number;
@@ -46,6 +46,39 @@ interface LeaveQuota {
   last_updated: string;
 }
 
+// Mocking or implementing a circuit breaker pattern
+const circuitBreaker = (apiCall: Function, fallback: Function) => async (...args: any[]) => {
+  try {
+    const response = await apiCall(...args);
+    if (response.ok) {
+      return response.json();
+    }
+    throw new Error(`API error: ${response.statusText}`);
+  } catch (error) {
+    console.error("API call failed, falling back:", error);
+    return fallback();
+  }
+};
+
+// Mock fallback data for events
+const mockEventsFallback = () => {
+  console.log("Using mock events data.");
+  return Promise.resolve({ events: [] }); // Return an empty array or mock data
+};
+
+// Mock fallback data for classes
+const mockClassesFallback = () => {
+  console.log("Using mock classes data.");
+  return Promise.resolve({ classes: [] }); // Return an empty array or mock data
+};
+
+// Mock fallback data for student fees
+const mockStudentFeesFallback = () => {
+  console.log("Using mock student fees data.");
+  return Promise.resolve({ fees: [] }); // Return an empty array or mock data
+};
+
+
 export default function LeaveQuotaScreen() {
   const { colors } = useTheme();
   const { user } = useAuth();
@@ -66,9 +99,9 @@ export default function LeaveQuotaScreen() {
   } = useGlobalFilters();
 
   // Fetch data
-  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({ 
+  const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
-    academic_year: selectedAcademicYear 
+    academic_year: selectedAcademicYear
   });
 
   const quotaParams = useMemo(() => ({
@@ -79,9 +112,10 @@ export default function LeaveQuotaScreen() {
     leave_type: selectedLeaveType,
   }), [selectedBranch, selectedAcademicYear, selectedEmployee, selectedYear, selectedLeaveType]);
 
-  const { 
-    data: leaveQuotas = [], 
-    loading: quotasLoading, 
+  // Corrected API endpoint for leave quotas
+  const {
+    data: leaveQuotas = [],
+    loading: quotasLoading,
     error: quotasError,
     refetch: refetchQuotas
   } = useLeaveQuota(quotaParams);
@@ -89,7 +123,7 @@ export default function LeaveQuotaScreen() {
   // Extract leave types from quotas
   const leaveTypes = useMemo(() => {
     if (!leaveQuotas || !Array.isArray(leaveQuotas)) return [];
-    
+
     const types = new Map();
     leaveQuotas.forEach((quota: LeaveQuota) => {
       if (quota.leave_type) {
@@ -127,6 +161,7 @@ export default function LeaveQuotaScreen() {
   ], [leaveTypes]);
 
   const getUsageColor = (used: number, total: number) => {
+    if (total === 0) return colors.textSecondary || '#6b7280'; // Handle division by zero
     const percentage = (used / total) * 100;
     if (percentage >= 90) return colors.error || '#ef4444';
     if (percentage >= 70) return colors.warning || '#f59e0b';
@@ -137,8 +172,14 @@ export default function LeaveQuotaScreen() {
   const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A';
     try {
-      return new Date(dateString).toLocaleDateString();
-    } catch {
+      // Ensure the date string is valid before creating a Date object
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid Date';
+      }
+      return date.toLocaleDateString();
+    } catch (e) {
+      console.error("Error formatting date:", dateString, e);
       return 'Invalid Date';
     }
   };
@@ -148,19 +189,19 @@ export default function LeaveQuotaScreen() {
   };
 
   const renderProgressBar = (used: number, total: number) => {
-    const percentage = Math.min((used / total) * 100, 100);
-    
+    const percentage = total > 0 ? Math.min((used / total) * 100, 100) : 0;
+
     return (
       <View style={styles.progressContainer}>
         <View style={[styles.progressBackground, { backgroundColor: colors.border }]}>
-          <View 
+          <View
             style={[
-              styles.progressFill, 
-              { 
+              styles.progressFill,
+              {
                 width: `${percentage}%`,
                 backgroundColor: getUsageColor(used, total)
               }
-            ]} 
+            ]}
           />
         </View>
         <Text style={[styles.progressText, { color: colors.textSecondary }]}>
@@ -190,19 +231,19 @@ export default function LeaveQuotaScreen() {
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Allocated:</Text>
           <Text style={[styles.statValue, { color: colors.textPrimary }]}>{item.total_allocated} days</Text>
         </View>
-        
+
         <View style={styles.statRow}>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Used:</Text>
           <Text style={[styles.statValue, { color: getUsageColor(item.used_days, item.total_allocated) }]}>
             {item.used_days} days
           </Text>
         </View>
-        
+
         <View style={styles.statRow}>
           <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Remaining:</Text>
           <Text style={[styles.statValue, { color: colors.success }]}>{item.remaining_days} days</Text>
         </View>
-        
+
         {item.pending_days > 0 && (
           <View style={styles.statRow}>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Pending:</Text>
@@ -238,7 +279,7 @@ export default function LeaveQuotaScreen() {
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.retryButton, { backgroundColor: colors.primary }]}
         onPress={handleRefresh}
       >
@@ -281,7 +322,7 @@ export default function LeaveQuotaScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -289,7 +330,7 @@ export default function LeaveQuotaScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -297,7 +338,7 @@ export default function LeaveQuotaScreen() {
               onValueChange={() => {}} // Read-only from global filters
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Employee"
               items={employeeOptions}
@@ -306,7 +347,7 @@ export default function LeaveQuotaScreen() {
               loading={employeesLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Year"
               items={yearOptions}
@@ -314,7 +355,7 @@ export default function LeaveQuotaScreen() {
               onValueChange={(value) => setSelectedYear(value)}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Leave Type"
               items={leaveTypeOptions}

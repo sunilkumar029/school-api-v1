@@ -45,7 +45,7 @@ export function useEvents(params?: any) {
     async (isRetry = false) => {
       // Circuit breaker: stop trying after 3 failures
       if (isBlocked && retryCount >= 3) {
-        setError("Too many failed attempts. Please try again later.");
+        setError("Events service temporarily unavailable. Please try again later.");
         setLoading(false);
         return;
       }
@@ -54,15 +54,7 @@ export function useEvents(params?: any) {
         setLoading(true);
         setError(null);
 
-        // Use default params if none provided
-        const defaultParams = {
-          branch: 1,
-          academic_year: 1,
-          limit: 50,
-          ...params
-        };
-
-        const response = await apiService.getEvents();
+        const response = await apiService.getEvents(params);
         setData(response.results || []);
 
         setHasInitialized(true);
@@ -76,36 +68,27 @@ export function useEvents(params?: any) {
           if (axiosError.response) {
             const status = axiosError.response.status;
             if (status === 500) {
-              errorMessage =
-                "Server error. Events API may be experiencing issues.";
-            } else if (status === 502) {
-              errorMessage =
-                "Server temporarily unavailable. Please try again later.";
+              errorMessage = "Events service is temporarily down. Please try again later.";
+              setIsBlocked(true); // Block further requests on 500 errors
+            } else if (status === 502 || status === 503) {
+              errorMessage = "Server temporarily unavailable. Please try again later.";
+            } else if (status === 400) {
+              errorMessage = "Invalid request parameters.";
             } else {
-              errorMessage = `Error ${status}: ${axiosError.response.data?.message || axiosError.response.data || "Server Error"}`;
+              errorMessage = `Server error (${status}). Please try again.`;
             }
-          } else if (axiosError.message) {
-            if (axiosError.message.includes("timeout")) {
-              errorMessage =
-                "Request timed out. Please check your connection and try again.";
-            } else {
-              errorMessage = axiosError.message;
-            }
+          } else if (axiosError.code === 'ECONNABORTED') {
+            errorMessage = "Request timed out. Please check your connection.";
+          } else {
+            errorMessage = axiosError.message || "Network error occurred.";
           }
         }
 
         setError(errorMessage);
         console.error("Error fetching events:", err);
 
-        // Don't retry on 500 errors to avoid spam
-        if (
-          err &&
-          typeof err === "object" &&
-          (err as any).response?.status === 500
-        ) {
-          setIsBlocked(true);
-        } else {
-          // Increment retry count and set blocked state if too many failures
+        // Don't increment retry count on 500 errors since we're blocking
+        if (!isBlocked) {
           const newRetryCount = retryCount + 1;
           setRetryCount(newRetryCount);
           if (newRetryCount >= 3) {
@@ -227,34 +210,30 @@ export function useStudentMarksTable(params?: {
   return { data, loading, error, refetch };
 }
 
-// Leave Quotas
-export function useLeaveQuotas(params?: {
+// Leave Quotas - Fixed to use annual-leave-quotas endpoint
+export function useLeaveQuota(params?: {
   branch?: number;
   academic_year?: number;
-  department?: number;
-  leave_type?: string;
+  employee?: number;
+  year?: number;
+  leave_type?: number;
 }) {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
-    if (!params?.branch || !params?.academic_year) {
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       setError(null);
-      const response = await apiService.getLeaveQuotas(params || {});
-      setData(response);
+      const response = await apiService.getAnnualLeaveQuotas(params || {});
+      setData(response.results || []);
     } catch (err: any) {
-      console.error("Leave quotas fetch error:", err);
+      console.error("Leave quota fetch error:", err);
       setError(
         err.response?.data?.message ||
         err.message ||
-        "Failed to fetch leave quotas",
+        "Failed to fetch leave quota",
       );
     } finally {
       setLoading(false);
@@ -1838,7 +1817,8 @@ export const useClasses = (params?: Record<string, any>) => {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiService.getClasses(params);
+      // Use standards endpoint since classes endpoint doesn't exist
+      const response = await apiService.getStandards(params);
       setData(response.results || []);
     } catch (err: any) {
       console.error("Classes fetch error:", err);

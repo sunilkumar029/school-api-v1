@@ -109,11 +109,15 @@ export default function StudentFeeListScreen() {
     }
   };
 
+  const handleViewDetails = (item: FeeItem) => {
+    router.push(`/finance/student-fee-details?id=${item.id}`);
+  };
+
   const renderFeeItem = (item: FeeItem) => (
     <TouchableOpacity
-      key={item.id}
+      key={`fee-card-${item.id}`}
       style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-      onPress={() => router.push(`/finance/student-fee-details?id=${item.id}`)}
+      onPress={() => handleViewDetails(item)}
     >
       <View style={styles.feeHeader}>
         <Text style={[styles.studentName, { color: colors.textPrimary }]}>
@@ -196,9 +200,9 @@ export default function StudentFeeListScreen() {
 
       {/* Global Filters */}
       <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false} 
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
           style={styles.filtersScroll}
           contentContainerStyle={styles.filtersContentContainer}
         >

@@ -1073,9 +1073,9 @@ class ApiService {
     return response.data;
   }
 
-  // Classes
+  // Classes (using standards endpoint since classes endpoint doesn't exist)
   async getClasses(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/classes/", { params });
+    const response = await this.api.get("/api/standards/", { params });
     return response.data;
   }
 
