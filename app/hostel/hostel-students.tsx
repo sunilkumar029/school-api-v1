@@ -137,8 +137,21 @@ export default function HostelStudentsScreen() {
         ]
       );
     } else {
-      // Navigate to student details
-      console.log('View student details:', student.id);
+      // Show student details in alert
+      const studentDetails = `
+Name: ${firstName} ${lastName}
+Email: ${student.user?.email || 'N/A'}
+Class: ${student.standard?.name || 'N/A'}
+Room: ${student.room ? `${student.room.room_number} (Floor ${student.room.floor})` : 'Not Allocated'}
+Status: ${student.status}
+${student.allocation_date ? `Allocated Date: ${new Date(student.allocation_date).toLocaleDateString()}` : ''}
+      `.trim();
+
+      Alert.alert(
+        'Student Details',
+        studentDetails,
+        [{ text: 'OK', style: 'default' }]
+      );
     }
   };
 

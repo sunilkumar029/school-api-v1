@@ -1291,7 +1291,7 @@ export const useSalaryTemplatesGrouped = (params: any = {}) => {
       const response = await apiService.getSalaryTemplatesGrouped(params);
       setData(response || []);
     } catch (err: any) {
-      console.error("Salary templates fetch error:", err);
+      console.error("Salary templates grouped fetch error:", err);
       setError(
         err.response?.data?.message ||
           err.message ||

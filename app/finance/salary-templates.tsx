@@ -64,10 +64,13 @@ export default function SalaryTemplatesScreen() {
   );
 
   // Filter states
-  // const [selectedBranch, setSelectedBranch] = useState<number>(1);
-  // const [selectedAcademicYear, setSelectedAcademicYear] = useState<number>(1);
   const [searchQuery, setSearchQuery] = useState("");
-  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
+  const { 
+    selectedBranch, 
+    selectedAcademicYear,
+    setSelectedBranch,
+    setSelectedAcademicYear 
+  } = useGlobalFilters();
 
 
   // Form states
@@ -83,24 +86,32 @@ export default function SalaryTemplatesScreen() {
     is_deductible: false,
   });
 
-  // Fetch data
+  // Fetch data with proper filter parameters
+  const employeesParams = useMemo(() => ({
+    branch: selectedBranch,
+    academic_year: selectedAcademicYear,
+  }), [selectedBranch, selectedAcademicYear]);
+
   const {
     data: employees,
     loading: employeesLoading,
     error: employeesError,
     refetch: refetchEmployees,
-  } = useSalaryTemplatesGrouped();
+  } = useSalaryTemplatesGrouped(employeesParams);
+  
   const {
     data: categories,
     loading: categoriesLoading,
     refetch: refetchCategories,
   } = useSalaryCategories();
+  
   const { data: users, loading: usersLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
     limit: 200,
     is_active: true,
   });
+  
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
 
@@ -362,7 +373,31 @@ export default function SalaryTemplatesScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      <GlobalFilters />
+      {/* Global Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Branch"
+              items={branches || []}
+              selectedValue={selectedBranch}
+              onValueChange={setSelectedBranch}
+              compact={true}
+            />
+            
+            <ModalDropdownFilter
+              label="Academic Year"
+              items={academicYears || []}
+              selectedValue={selectedAcademicYear}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
+      
       {renderSearchBar()}
 
       <View style={styles.actionButtons}>
@@ -819,6 +854,22 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     padding: 16,
+  },
+  filtersContainer: {
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  filtersScroll: {
+    paddingHorizontal: 16,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   filtersContainer: {
     marginHorizontal: 16,

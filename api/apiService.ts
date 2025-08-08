@@ -749,9 +749,7 @@ class ApiService {
 
   // Salary Templates Management
   async getSalaryTemplatesGrouped(params?: any): Promise<any> {
-    const response = await this.api.get("/api/salary-templates/grouped/", {
-      params,
-    });
+    const response = await this.api.get("/api/salary-templates/grouped/", { params });
     return response.data;
   }
 
