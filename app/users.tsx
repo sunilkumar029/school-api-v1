@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  Alert,
+  RefreshControl,
 } from "react-native";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,6 +18,7 @@ import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useUsers, useBranches, useGroups, useAcademicYears } from "@/hooks/useApi";
 import { useGlobalFilters } from "@/contexts/GlobalFiltersContext";
+import { GlobalFilters } from "@/components/GlobalFilters";
 import { ModalDropdownFilter } from "@/components/ModalDropdownFilter";
 import Modal from "react-native-modal";
 
@@ -42,21 +43,9 @@ interface User {
   last_login?: string;
 }
 
-interface Branch {
-  id: number;
-  name: string;
-  address: any;
-}
-
 interface Group {
   id: number;
   name: string;
-}
-
-interface AcademicYear {
-  id: number;
-  year: string;
-  is_active: boolean;
 }
 
 export default function UsersScreen() {
@@ -65,28 +54,13 @@ export default function UsersScreen() {
   const router = useRouter();
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filtersExpanded, setFiltersExpanded] = useState(false);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [userDetailVisible, setUserDetailVisible] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<number | null>(null);
 
-  // Filter states (temporary until applied)
-  const [tempSelectedBranch, setTempSelectedBranch] = useState<number | null>(null);
-  const [tempSelectedGroup, setTempSelectedGroup] = useState<number | null>(null);
-  const [tempSelectedAcademicYear, setTempSelectedAcademicYear] = useState<number | null>(null);
+  const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
 
-  // Applied filter states
-  const [appliedBranch, setAppliedBranch] = useState<number | null>(null);
-  const [appliedGroup, setAppliedGroup] = useState<number | null>(null);
-  const [appliedAcademicYear, setAppliedAcademicYear] = useState<number | null>(null);
-
-  // Fetch data with proper error handling
-  const {
-    data: branches,
-    loading: branchesLoading,
-    error: branchesError,
-    refetch: refetchBranches
-  } = useBranches();
-
+  // Fetch data
   const {
     data: groups,
     loading: groupsLoading,
@@ -94,21 +68,14 @@ export default function UsersScreen() {
     refetch: refetchGroups
   } = useGroups();
 
-  const {
-    data: academicYears,
-    loading: academicYearsLoading,
-    error: academicYearsError,
-    refetch: refetchAcademicYears
-  } = useAcademicYears();
-
-  // Build user params based on applied filters
+  // Build user params based on filters
   const userParams = useMemo(() => {
-    const params: any = { limit: 50 };
-    if (appliedBranch) params.branch = appliedBranch;
-    if (appliedGroup) params.group = appliedGroup;
-    if (appliedAcademicYear) params.academic_year = appliedAcademicYear;
+    const params: any = { limit: 100 };
+    if (selectedBranch) params.branch = selectedBranch;
+    if (selectedAcademicYear) params.academic_year = selectedAcademicYear;
+    if (selectedGroup) params.group = selectedGroup;
     return params;
-  }, [appliedBranch, appliedGroup, appliedAcademicYear]);
+  }, [selectedBranch, selectedAcademicYear, selectedGroup]);
 
   const {
     data: users,
@@ -134,115 +101,14 @@ export default function UsersScreen() {
   }, [users, searchQuery]);
 
   const handleRefreshAll = useCallback(() => {
-    refetchBranches();
     refetchGroups();
-    refetchAcademicYears();
     refetchUsers();
-  }, [refetchBranches, refetchGroups, refetchAcademicYears, refetchUsers]);
-
-  const handleApplyFilters = useCallback(() => {
-    setAppliedBranch(tempSelectedBranch);
-    setAppliedGroup(tempSelectedGroup);
-    setAppliedAcademicYear(tempSelectedAcademicYear);
-  }, [tempSelectedBranch, tempSelectedGroup, tempSelectedAcademicYear]);
-
-  const handleClearFilters = useCallback(() => {
-    setTempSelectedBranch(null);
-    setTempSelectedGroup(null);
-    setTempSelectedAcademicYear(null);
-    setAppliedBranch(null);
-    setAppliedGroup(null);
-    setAppliedAcademicYear(null);
-  }, []);
-
-  const hasFiltersChanged = useMemo(() => {
-    return tempSelectedBranch !== appliedBranch ||
-      tempSelectedGroup !== appliedGroup ||
-      tempSelectedAcademicYear !== appliedAcademicYear;
-  }, [tempSelectedBranch, appliedBranch, tempSelectedGroup, appliedGroup, tempSelectedAcademicYear, appliedAcademicYear]);
+  }, [refetchGroups, refetchUsers]);
 
   const handleUserPress = useCallback((user: User) => {
     setSelectedUser(user);
     setUserDetailVisible(true);
   }, []);
-
-  const renderFilterSection = () => (
-    <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
-      <TouchableOpacity
-        style={styles.filterHeader}
-        onPress={() => setFiltersExpanded(!filtersExpanded)}
-      >
-        <Text style={[styles.filterTitle, { color: colors.textPrimary }]}>
-          Filters
-        </Text>
-        <Text style={[styles.filterToggle, { color: colors.primary }]}>
-          {filtersExpanded ? '▲' : '▼'}
-        </Text>
-      </TouchableOpacity>
-
-      {filtersExpanded && (
-        <View style={styles.filterContent}>
-          {/* Branch Filter */}
-          <View style={styles.filterRow}>
-            <ModalDropdownFilter
-              label="Branch"
-              items={[{ id: null, name: 'All Branches' }, ...(branches?.map((branch: Branch) => ({ id: branch.id, name: branch.name })) || [])]}
-              selectedValue={tempSelectedBranch}
-              onValueChange={setTempSelectedBranch}
-              compact={false}
-            />
-          </View>
-
-          {/* Group Filter */}
-          <View style={styles.filterRow}>
-            <ModalDropdownFilter
-              label="Group"
-              items={[{ id: null, name: 'All Groups' }, ...(groups?.map((group: Group) => ({ id: group.id, name: group.name })) || [])]}
-              selectedValue={tempSelectedGroup}
-              onValueChange={setTempSelectedGroup}
-              compact={false}
-            />
-          </View>
-
-          {/* Academic Year Filter */}
-          <View style={styles.filterRow}>
-            <ModalDropdownFilter
-              label="Academic Year"
-              items={[{ id: null, name: 'All Years' }, ...(academicYears?.map((year: AcademicYear) => ({ id: year.id, name: year.year })) || [])]}
-              selectedValue={tempSelectedAcademicYear}
-              onValueChange={setTempSelectedAcademicYear}
-              compact={false}
-            />
-          </View>
-
-          {/* Filter Action Buttons */}
-          <View style={styles.filterActions}>
-            <TouchableOpacity
-              style={[styles.filterButton, styles.clearButton, { borderColor: colors.border }]}
-              onPress={handleClearFilters}
-            >
-              <Text style={[styles.filterButtonText, { color: colors.textSecondary }]}>
-                Clear
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.filterButton,
-                styles.applyButton,
-                { backgroundColor: hasFiltersChanged ? colors.primary : colors.border }
-              ]}
-              onPress={handleApplyFilters}
-              disabled={!hasFiltersChanged}
-            >
-              <Text style={[styles.filterButtonText, { color: hasFiltersChanged ? '#FFFFFF' : colors.textSecondary }]}>
-                Apply Filters
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
-    </View>
-  );
 
   const renderUserCard = (user: User) => (
     <TouchableOpacity
@@ -425,26 +291,24 @@ export default function UsersScreen() {
     </Modal>
   );
 
-  const renderErrorState = () => {
-    const hasAnyError = branchesError || groupsError || academicYearsError || usersError;
-    if (!hasAnyError) return null;
-
+  if (usersLoading && !users) {
     return (
-      <View style={styles.errorContainer}>
-        <Text style={[styles.errorText, { color: '#F44336' }]}>
-          {usersError || "Some data failed to load"}
-        </Text>
-        <TouchableOpacity
-          onPress={handleRefreshAll}
-          style={[styles.retryButton, { backgroundColor: colors.primary }]}
-        >
-          <Text style={styles.retryButtonText}>Retry</Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+        <TopBar
+          title="Users"
+          onMenuPress={() => setDrawerVisible(true)}
+          onNotificationsPress={() => router.push("/(tabs)/notifications")}
+          onSettingsPress={() => router.push("/(tabs)/settings")}
+        />
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
+            Loading users...
+          </Text>
+        </View>
+      </SafeAreaView>
     );
-  };
-
-  const isLoading = branchesLoading || groupsLoading || academicYearsLoading || usersLoading;
+  }
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -455,72 +319,12 @@ export default function UsersScreen() {
         onSettingsPress={() => router.push("/(tabs)/settings")}
       />
 
-      <ScrollView>
-        <TouchableOpacity onPress={() => setFiltersExpanded(!filtersExpanded)}>
-          <Text style={{ color: colors.textPrimary }}>Filters</Text>
-        </TouchableOpacity>
-        {filtersExpanded && (
-          <View>
-            {/* Branch Filter */}
-            <Text>Branches</Text>
-            <ScrollView horizontal>
-              {branches?.map(branch => (
-                <TouchableOpacity
-                  key={branch.id}
-                  onPress={() => setTempSelectedBranch(branch.id)}
-                >
-                  <Text style={{ color: colors.textPrimary }}>{branch.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            {/* Group Filter */}
-            <Text>Groups</Text>
-            <ScrollView horizontal>
-              {groups?.map(group => (
-                <TouchableOpacity
-                  key={group.id}
-                  onPress={() => setTempSelectedGroup(group.id)}
-                >
-                  <Text style={{ color: colors.textPrimary }}>{group.name}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            {/* Academic Year Filter */}
-            <Text>Academic Years</Text>
-            <ScrollView horizontal>
-              {academicYears?.map(year => (
-                <TouchableOpacity
-                  key={year.id}
-                  onPress={() => setTempSelectedAcademicYear(year.id)}
-                >
-                  <Text style={{ color: colors.textPrimary }}>{year.year}</Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
-            <TouchableOpacity onPress={handleApplyFilters}>
-              <Text style={{ color: colors.primary }}>Apply Filters</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleClearFilters}>
-              <Text style={{ color: colors.primary }}>Clear Filters</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-        {usersLoading ? (
-          <ActivityIndicator size="large" color={colors.primary} />
-        ) : (
-          <View>
-            {users?.map(user => (
-              <Text key={user.id}>{`${user.first_name} ${user.last_name}`}</Text>
-            ))}
-          </View>
-        )}
-      </ScrollView>
-
-
       <SideDrawer
         visible={drawerVisible}
         onClose={() => setDrawerVisible(false)}
       />
+
+      <GlobalFilters />
 
       {/* Search Bar */}
       <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
@@ -540,26 +344,52 @@ export default function UsersScreen() {
         />
       </View>
 
-      {/* Filters */}
-      {renderFilterSection()}
+      {/* Additional Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: colors.surface, borderBottomColor: colors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
+            
+            <ModalDropdownFilter
+              label="Group"
+              items={[{ id: null, name: 'All Groups' }, ...(groups?.map((group: Group) => ({ id: group.id, name: group.name })) || [])]}
+              selectedValue={selectedGroup}
+              onValueChange={setSelectedGroup}
+              loading={groupsLoading}
+              compact={true}
+            />
+          </View>
+        </ScrollView>
+      </View>
 
       {/* Content */}
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        {/* Error State */}
-        {renderErrorState()}
-
-        {/* Loading State */}
-        {isLoading && (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color={colors.primary} />
-            <Text style={[styles.loadingText, { color: colors.textSecondary }]}>
-              Loading users...
+      <ScrollView 
+        style={styles.content} 
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={usersLoading}
+            onRefresh={handleRefreshAll}
+            colors={[colors.primary]}
+            tintColor={colors.primary}
+          />
+        }
+      >
+        {usersError && (
+          <View style={styles.errorContainer}>
+            <Text style={[styles.errorText, { color: '#F44336' }]}>
+              {usersError}
             </Text>
+            <TouchableOpacity
+              onPress={handleRefreshAll}
+              style={[styles.retryButton, { backgroundColor: colors.primary }]}
+            >
+              <Text style={styles.retryButtonText}>Retry</Text>
+            </TouchableOpacity>
           </View>
         )}
 
-        {/* Users List */}
-        {!isLoading && filteredUsers.length === 0 && !usersError && (
+        {!usersLoading && filteredUsers.length === 0 && !usersError && (
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
               {searchQuery ? "No users match your search criteria" : "No users found"}
@@ -567,7 +397,7 @@ export default function UsersScreen() {
           </View>
         )}
 
-        {!isLoading && filteredUsers.length > 0 && (
+        {!usersLoading && filteredUsers.length > 0 && (
           <View style={styles.usersList}>
             <Text style={[styles.resultsCount, { color: colors.textSecondary }]}>
               {filteredUsers.length} user{filteredUsers.length !== 1 ? 's' : ''} found
@@ -587,6 +417,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+  },
   searchContainer: {
     padding: 16,
   },
@@ -597,74 +436,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  filterContainer: {
-    marginHorizontal: 16,
-    borderRadius: 8,
-    marginBottom: 8,
-    elevation: 2,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-  },
-  filterHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-  },
-  filterTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  filterToggle: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  filterContent: {
+  filtersContainer: {
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    paddingBottom: 16,
+    borderBottomWidth: 1,
   },
-  filterRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
+  filtersScroll: {
+    flexDirection: 'row',
   },
-  filterLabel: {
-    fontSize: 14,
-    width: 100,
-    fontWeight: "500",
-  },
-  pickerContainer: {
-    flex: 1,
-    borderRadius: 8,
-    borderWidth: 1,
-    overflow: "hidden",
-  },
-  picker: {
-    height: 44,
-  },
-  filterActions: {
-    flexDirection: "row",
+  filtersRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     gap: 12,
-    marginTop: 8,
   },
-  filterButton: {
-    flex: 1,
-    height: 44,
-    borderRadius: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  clearButton: {
-    borderWidth: 1,
-  },
-  applyButton: {
-    // backgroundColor handled dynamically
-  },
-  filterButtonText: {
-    fontSize: 16,
-    fontWeight: "600",
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   content: {
     flex: 1,
@@ -689,15 +476,6 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "600",
-  },
-  loadingContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 40,
-  },
-  loadingText: {
-    marginTop: 10,
-    fontSize: 16,
   },
   emptyContainer: {
     alignItems: "center",

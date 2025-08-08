@@ -224,64 +224,53 @@ export default function StudentMarksTableScreen() {
         />
       </View>
 
-      {/* Filters */}
-      <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface }]}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filtersContent}>
-          <ModalDropdownFilter
-            title={branches?.find(b => b.id === selectedBranch)?.name || 'Branch'}
-            items={branches?.map(b => ({ label: b.name, value: b.id })) || []}
-            onSelect={(value) => {
-              setSelectedBranch(value);
-              setSelectedStandard(null); // Reset dependent filters
-              setSelectedSection(null);
-              setSelectedExamType(null);
-            }}
-            selected={selectedBranch}
-          />
-          <ModalDropdownFilter
-            title={academicYears?.find(ay => ay.id === selectedAcademicYear)?.name || 'Year'}
-            items={academicYears?.map(ay => ({ label: ay.name, value: ay.id })) || []}
-            onSelect={(value) => {
-              setSelectedAcademicYear(value);
-              setSelectedStandard(null); // Reset dependent filters
-              setSelectedSection(null);
-              setSelectedExamType(null);
-            }}
-            selected={selectedAcademicYear}
-          />
-          {apiStandards && apiStandards.length > 0 && (
-            <ModalDropdownFilter
-              title={apiStandards.find(s => s.id === selectedStandard)?.name || 'Class'}
-              items={apiStandards.map(s => ({ label: s.name, value: s.id }))}
-              onSelect={(value) => {
-                setSelectedStandard(value);
-                setSelectedSection(null); // Reset dependent filters
-                setSelectedExamType(null);
-              }}
-              selected={selectedStandard}
-            />
-          )}
-          {apiSections && apiSections.length > 0 && (
-            <ModalDropdownFilter
-              title={apiSections.find(s => s.id === selectedSection)?.name || 'Section'}
-              items={apiSections.map(s => ({ label: s.name, value: s.id }))}
-              onSelect={(value) => {
-                setSelectedSection(value);
-                setSelectedExamType(null); // Reset dependent filters
-              }}
-              selected={selectedSection}
-            />
-          )}
-          {apiExamTypes && apiExamTypes.length > 0 && (
-            <ModalDropdownFilter
-              title={apiExamTypes.find(et => et.name === selectedExamType)?.name || 'Exam Type'}
-              items={apiExamTypes.map(et => ({ label: et.name, value: et.name }))}
-              onSelect={(value) => {
-                setSelectedExamType(value);
-              }}
-              selected={selectedExamType}
-            />
-          )}
+      <GlobalFilters />
+
+      {/* Additional Filters */}
+      <View style={[styles.filtersContainer, { backgroundColor: safeColors.surface, borderBottomColor: safeColors.border }]}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
+          <View style={styles.filtersRow}>
+            <Text style={[styles.filtersLabel, { color: safeColors.textSecondary }]}>Filters:</Text>
+            
+            {apiStandards && apiStandards.length > 0 && (
+              <ModalDropdownFilter
+                label="Class"
+                items={[{ id: null, name: 'All Classes' }, ...apiStandards.map(s => ({ id: s.id, name: s.name }))]}
+                selectedValue={selectedStandard}
+                onValueChange={(value) => {
+                  setSelectedStandard(value);
+                  setSelectedSection(null); // Reset dependent filters
+                  setSelectedExamType(null);
+                }}
+                compact={true}
+              />
+            )}
+            
+            {apiSections && apiSections.length > 0 && (
+              <ModalDropdownFilter
+                label="Section"
+                items={[{ id: null, name: 'All Sections' }, ...apiSections.map(s => ({ id: s.id, name: s.name }))]}
+                selectedValue={selectedSection}
+                onValueChange={(value) => {
+                  setSelectedSection(value);
+                  setSelectedExamType(null); // Reset dependent filters
+                }}
+                compact={true}
+              />
+            )}
+            
+            {apiExamTypes && apiExamTypes.length > 0 && (
+              <ModalDropdownFilter
+                label="Exam Type"
+                items={[{ id: null, name: 'All Exam Types' }, ...apiExamTypes.map(et => ({ id: et.name, name: et.name }))]}
+                selectedValue={selectedExamType}
+                onValueChange={(value) => {
+                  setSelectedExamType(value);
+                }}
+                compact={true}
+              />
+            )}
+          </View>
         </ScrollView>
       </View>
 
@@ -351,15 +340,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   filtersContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 12,
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
   },
-  filtersContent: {
+  filtersScroll: {
+    flexDirection: 'row',
+  },
+  filtersRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 12,
+  },
+  filtersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
   },
   filterButton: {
     borderWidth: 1,

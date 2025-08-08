@@ -252,124 +252,23 @@ export default function SalaryTemplatesScreen() {
     }).format(amount);
   };
 
-  const renderFilters = () => (
-    // <View
-    //   style={[styles.filtersContainer, { backgroundColor: colors.surface }]}
-    // >
-    //   <TouchableOpacity
-    //     style={styles.filtersHeader}
-    //     onPress={() => setFiltersVisible(!filtersVisible)}
-    //   >
-    //     <Text style={[styles.filtersTitle, { color: colors.textPrimary }]}>
-    //       Filters
-    //     </Text>
-    //     <Text style={[styles.expandIcon, { color: colors.textSecondary }]}>
-    //       {filtersVisible ? "▲" : "▼"}
-    //     </Text>
-    //   </TouchableOpacity>
-
-    //   {filtersVisible && (
-    //     <View style={styles.filtersContent}>
-    //       <TextInput
-    //         style={[
-    //           styles.searchInput,
-    //           {
-    //             backgroundColor: colors.background,
-    //             borderColor: colors.border,
-    //             color: colors.textPrimary,
-    //           },
-    //         ]}
-    //         placeholder="Search by name or department..."
-    //         placeholderTextColor={colors.textSecondary}
-    //         value={searchQuery}
-    //         onChangeText={setSearchQuery}
-    //       />
-
-    //       <View style={styles.filterRow}>
-    //         <View style={styles.filterGroup}>
-    //           <Text
-    //             style={[styles.filterLabel, { color: colors.textSecondary }]}
-    //           >
-    //             Branch
-    //           </Text>
-    //           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-    //             {branches?.map((branch: any) => (
-    //               <TouchableOpacity
-    //                 key={branch.id}
-    //                 style={[
-    //                   styles.filterChip,
-    //                   {
-    //                     borderColor: colors.border,
-    //                     backgroundColor:
-    //                       selectedBranch === branch.id
-    //                         ? colors.primary
-    //                         : "transparent",
-    //                   },
-    //                 ]}
-    //                 onPress={() => setSelectedBranch(branch.id)}
-    //               >
-    //                 <Text
-    //                   style={[
-    //                     styles.filterChipText,
-    //                     {
-    //                       color:
-    //                         selectedBranch === branch.id
-    //                           ? "#FFFFFF"
-    //                           : colors.textPrimary,
-    //                     },
-    //                   ]}
-    //                 >
-    //                   {branch.name}
-    //                 </Text>
-    //               </TouchableOpacity>
-    //             ))}
-    //           </ScrollView>
-    //         </View>
-
-    //         <View style={styles.filterGroup}>
-    //           <Text
-    //             style={[styles.filterLabel, { color: colors.textSecondary }]}
-    //           >
-    //             Academic Year
-    //           </Text>
-    //           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-    //             {academicYears?.map((year: any) => (
-    //               <TouchableOpacity
-    //                 key={year.id}
-    //                 style={[
-    //                   styles.filterChip,
-    //                   {
-    //                     borderColor: colors.border,
-    //                     backgroundColor:
-    //                       selectedAcademicYear === year.id
-    //                         ? colors.primary
-    //                         : "transparent",
-    //                   },
-    //                 ]}
-    //                 onPress={() => setSelectedAcademicYear(year.id)}
-    //               >
-    //                 <Text
-    //                   style={[
-    //                     styles.filterChipText,
-    //                     {
-    //                       color:
-    //                         selectedAcademicYear === year.id
-    //                           ? "#FFFFFF"
-    //                           : colors.textPrimary,
-    //                     },
-    //                   ]}
-    //                 >
-    //                   {year.year}
-    //                 </Text>
-    //               </TouchableOpacity>
-    //             ))}
-    //           </ScrollView>
-    //         </View>
-    //       </View>
-    //     </View>
-    //   )}
-    // </View>
-    <GlobalFilters />
+  const renderSearchBar = () => (
+    <View style={[styles.searchContainer, { backgroundColor: colors.surface }]}>
+      <TextInput
+        style={[
+          styles.searchInput,
+          {
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            color: colors.textPrimary,
+          },
+        ]}
+        placeholder="Search by name or department..."
+        placeholderTextColor={colors.textSecondary}
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
+    </View>
   );
 
   const renderEmployeeCard = (employee: Employee) => (
@@ -463,7 +362,8 @@ export default function SalaryTemplatesScreen() {
         onClose={() => setDrawerVisible(false)}
       />
 
-      {renderFilters()}
+      <GlobalFilters />
+      {renderSearchBar()}
 
       <View style={styles.actionButtons}>
         <TouchableOpacity
@@ -916,6 +816,9 @@ const styles = StyleSheet.create({
   loadingText: {
     marginTop: 10,
     fontSize: 16,
+  },
+  searchContainer: {
+    padding: 16,
   },
   filtersContainer: {
     marginHorizontal: 16,
