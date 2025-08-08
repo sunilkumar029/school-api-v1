@@ -127,7 +127,7 @@ export default function HostelRoomsScreen() {
 
       <View style={styles.roomDetails}>
         <Text style={[styles.roomType, { color: colors.textSecondary }]}>
-          {typeof room?.room_type === 'object' ? room?.room_type?.name || 'Standard' : room?.room_type || 'Standard'} • Floor {room?.floor || 'N/A'}
+          {room?.room_type && typeof room.room_type === 'object' ? room.room_type.name || 'Standard' : room?.room_type || 'Standard'} • Floor {room?.floor || 'N/A'}
         </Text>
         
         <View style={styles.capacityInfo}>
@@ -146,9 +146,9 @@ export default function HostelRoomsScreen() {
             </Text>
             <View style={styles.amenitiesList}>
               {room.amenities.slice(0, 3).map((amenity: any, index: number) => (
-                <View key={index} style={[styles.amenityTag, { backgroundColor: colors.primary + '20' }]}>
+                <View key={`amenity-${index}`} style={[styles.amenityTag, { backgroundColor: colors.primary + '20' }]}>
                   <Text style={[styles.amenityText, { color: colors.primary }]}>
-                    {typeof amenity === 'object' ? amenity.name || amenity.title || 'Amenity' : amenity}
+                    {amenity && typeof amenity === 'object' ? (amenity.name || amenity.title || 'Amenity') : (amenity || 'Amenity')}
                   </Text>
                 </View>
               ))}

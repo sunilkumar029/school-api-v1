@@ -402,50 +402,46 @@ export default function StationeryFeeScreen() {
             
             <ModalDropdownFilter
               label="Branch"
+              items={Array.isArray(branches) ? branches : []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
-              options={Array.isArray(branches) ? branches.map((branch: any) => ({ 
-                label: branch?.name || 'Unnamed Branch', 
-                value: branch?.id 
-              })) : []}
-              disabled={true}
+              onValueChange={setSelectedBranch}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Academic Year"
+              items={Array.isArray(academicYears) ? academicYears : []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
-              options={Array.isArray(academicYears) ? academicYears.map((year: any) => ({ 
-                label: year?.name || 'Unnamed Year', 
-                value: year?.id 
-              })) : []}
-              disabled={true}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Standard"
-              selectedValue={selectedStandard}
-              onValueChange={setSelectedStandard}
-              options={[
-                { label: 'All Standards', value: null },
+              items={[
+                { id: null, name: 'All Standards' },
                 ...safeStandards.map((standard: any) => ({ 
-                  label: standard?.name || 'Unnamed Standard', 
-                  value: standard?.id 
+                  id: standard?.id, 
+                  name: standard?.name || 'Unnamed Standard'
                 }))
               ]}
+              selectedValue={selectedStandard}
+              onValueChange={setSelectedStandard}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Section"
-              selectedValue={selectedSection}
-              onValueChange={setSelectedSection}
-              options={[
-                { label: 'All Sections', value: null },
+              items={[
+                { id: null, name: 'All Sections' },
                 ...safeSections.map((section: any) => ({ 
-                  label: section?.name || 'Unnamed Section', 
-                  value: section?.id?.toString() 
+                  id: section?.id, 
+                  name: section?.name || 'Unnamed Section'
                 }))
               ]}
+              selectedValue={selectedSection}
+              onValueChange={setSelectedSection}
+              compact={true}
             />
           </View>
         </ScrollView>

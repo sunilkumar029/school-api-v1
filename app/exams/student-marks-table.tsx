@@ -232,24 +232,18 @@ export default function StudentMarksTableScreen() {
             
             <ModalDropdownFilter
               label="Branch"
+              items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
-              options={branches.map((branch: any) => ({ 
-                label: branch.name || 'Unnamed Branch', 
-                value: branch.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedBranch}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Academic Year"
+              items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
-              options={academicYears.map((year: any) => ({ 
-                label: year.name || 'Unnamed Year', 
-                value: year.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
             />
           </View>
         </ScrollView>
@@ -264,54 +258,55 @@ export default function StudentMarksTableScreen() {
             {apiStandards && apiStandards.length > 0 && (
               <ModalDropdownFilter
                 label="Class"
+                items={[
+                  { id: null, name: 'All Classes' },
+                  ...apiStandards.map((s: any) => ({ 
+                    id: s.id, 
+                    name: s.name || 'Unnamed Class'
+                  }))
+                ]}
                 selectedValue={selectedStandard}
                 onValueChange={(value) => {
                   setSelectedStandard(value);
-                  setSelectedSection(null); // Reset dependent filters
+                  setSelectedSection(null);
                   setSelectedExamType(null);
                 }}
-                options={[
-                  { label: 'All Classes', value: null },
-                  ...apiStandards.map((s: any) => ({ 
-                    label: s.name || 'Unnamed Class', 
-                    value: s.id 
-                  }))
-                ]}
+                compact={true}
               />
             )}
             
             {apiSections && apiSections.length > 0 && (
               <ModalDropdownFilter
                 label="Section"
+                items={[
+                  { id: null, name: 'All Sections' },
+                  ...apiSections.map((s: any) => ({ 
+                    id: s.name, 
+                    name: s.name || 'Unnamed Section'
+                  }))
+                ]}
                 selectedValue={selectedSection}
                 onValueChange={(value) => {
                   setSelectedSection(value);
-                  setSelectedExamType(null); // Reset dependent filters
+                  setSelectedExamType(null);
                 }}
-                options={[
-                  { label: 'All Sections', value: null },
-                  ...apiSections.map((s: any) => ({ 
-                    label: s.name || 'Unnamed Section', 
-                    value: s.name 
-                  }))
-                ]}
+                compact={true}
               />
             )}
             
             {apiExamTypes && apiExamTypes.length > 0 && (
               <ModalDropdownFilter
                 label="Exam Type"
-                selectedValue={selectedExamType}
-                onValueChange={(value) => {
-                  setSelectedExamType(value);
-                }}
-                options={[
-                  { label: 'All Exam Types', value: null },
+                items={[
+                  { id: null, name: 'All Exam Types' },
                   ...apiExamTypes.map((et: any) => ({ 
-                    label: et.name || 'Unnamed Exam Type', 
-                    value: et.name 
+                    id: et.name, 
+                    name: et.name || 'Unnamed Exam Type'
                   }))
                 ]}
+                selectedValue={selectedExamType}
+                onValueChange={setSelectedExamType}
+                compact={true}
               />
             )}
           </View>

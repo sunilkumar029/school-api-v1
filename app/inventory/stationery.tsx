@@ -294,24 +294,18 @@ export default function StationeryScreen() {
 
             <ModalDropdownFilter
               label="Branch"
+              items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
-              options={(branches || []).map((branch: any) => ({ 
-                label: branch.name || 'Unnamed Branch', 
-                value: branch.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedBranch}
+              compact={true}
             />
 
             <ModalDropdownFilter
               label="Academic Year"
+              items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
-              options={(academicYears || []).map((year: any) => ({ 
-                label: year.name || 'Unnamed Year', 
-                value: year.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
             />
           </View>
         </ScrollView>

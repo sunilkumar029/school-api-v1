@@ -318,7 +318,7 @@ export default function HolidayCalendarScreen() {
               label="Branch"
               items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={setSelectedBranch}
               compact={true}
             />
             
@@ -326,7 +326,7 @@ export default function HolidayCalendarScreen() {
               label="Academic Year"
               items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={setSelectedAcademicYear}
               compact={true}
             />
             

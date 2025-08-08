@@ -271,7 +271,7 @@ export default function TaskSubmissionsScreen() {
               label="Branch"
               items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={setSelectedBranch}
               compact={true}
             />
 
@@ -279,7 +279,7 @@ export default function TaskSubmissionsScreen() {
               label="Academic Year"
               items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
+              onValueChange={setSelectedAcademicYear}
               compact={true}
             />
 

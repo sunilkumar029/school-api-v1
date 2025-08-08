@@ -398,37 +398,32 @@ export default function TaskListScreen() {
             
             <ModalDropdownFilter
               label="Branch"
+              items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
-              options={branches.map((branch: any) => ({ 
-                label: branch.name || 'Unnamed Branch', 
-                value: branch.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedBranch}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Academic Year"
+              items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
-              options={academicYears.map((year: any) => ({ 
-                label: year.name || 'Unnamed Year', 
-                value: year.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
             />
             
             <ModalDropdownFilter
               label="Assigned By"
-              selectedValue={selectedAssignedBy}
-              onValueChange={setSelectedAssignedBy}
-              options={[
-                { label: 'All Users', value: null },
+              items={[
+                { id: null, name: 'All Users' },
                 ...users.map((user: any) => ({ 
-                  label: user.name || 'Unnamed User', 
-                  value: user.id 
+                  id: user.id, 
+                  name: user.name || 'Unnamed User'
                 }))
               ]}
+              selectedValue={selectedAssignedBy}
+              onValueChange={setSelectedAssignedBy}
+              compact={true}
             />
           </View>
         </ScrollView>
