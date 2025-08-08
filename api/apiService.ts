@@ -42,9 +42,15 @@ class ApiService {
             console.warn("No auth token found. Some API calls may fail.");
 
             // Check if this is a public endpoint that doesn't require auth
-            const publicEndpoints = ['/api/academic-years/', '/api/branches/', '/api/departments/', '/api/standards/', '/api/sections/'];
-            const isPublicEndpoint = publicEndpoints.some(endpoint =>
-              config.url?.includes(endpoint)
+            const publicEndpoints = [
+              "/api/academic-years/",
+              "/api/branches/",
+              "/api/departments/",
+              "/api/standards/",
+              "/api/sections/",
+            ];
+            const isPublicEndpoint = publicEndpoints.some((endpoint) =>
+              config.url?.includes(endpoint),
             );
 
             if (!isPublicEndpoint) {
@@ -77,7 +83,7 @@ class ApiService {
       (error) => {
         console.error("Request interceptor error:", error);
         return Promise.reject(error);
-      }
+      },
     );
 
     // Response interceptor for error handling
@@ -514,7 +520,9 @@ class ApiService {
   }
 
   async getTeacherTimetable(params?: any): Promise<any> {
-    const response = await this.api.get("/api/period/teacher-timetable/", { params });
+    const response = await this.api.get("/api/period/teacher-timetable/", {
+      params,
+    });
     return response.data;
   }
 
@@ -524,7 +532,9 @@ class ApiService {
   }
 
   async getAllUsers(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/users/get-all-users/", { params });
+    const response = await this.api.get("/api/users/get-all-users/", {
+      params,
+    });
     return response.data;
   }
 
@@ -638,7 +648,10 @@ class ApiService {
 
   // Fee Dashboard Analytics
   async getFeeDashboardAnalytics(params?: any): Promise<any> {
-    const response = await this.api.get("/api/fee-dashboard/fee-overview-analytics/", { params });
+    const response = await this.api.get(
+      "/api/fee-dashboard/fee-overview-analytics/",
+      { params },
+    );
     return response.data;
   }
 
@@ -688,7 +701,10 @@ class ApiService {
   }
 
   async updateInventoryTracking(id: number, data: any): Promise<any> {
-    const response = await this.api.patch(`/api/inventory-tracking/${id}/`, data);
+    const response = await this.api.patch(
+      `/api/inventory-tracking/${id}/`,
+      data,
+    );
     return response.data;
   }
 
@@ -733,7 +749,9 @@ class ApiService {
 
   // Salary Templates Management
   async getSalaryTemplatesGrouped(params?: any): Promise<any> {
-    const response = await this.api.get("/api/salary-templates/grouped/", { params });
+    const response = await this.api.get("/api/salary-templates/grouped/", {
+      params,
+    });
     return response.data;
   }
 
@@ -748,7 +766,10 @@ class ApiService {
   }
 
   async updateSalaryCategory(id: number, data: any): Promise<any> {
-    const response = await this.api.patch(`/api/salary-categories/${id}/`, data);
+    const response = await this.api.patch(
+      `/api/salary-categories/${id}/`,
+      data,
+    );
     return response.data;
   }
 
@@ -761,8 +782,13 @@ class ApiService {
     await this.api.delete(`/api/salary-categories/${id}/`);
   }
 
-  async getAllUsersExceptStudents(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/users/get-all-users-expect-students/", { params });
+  async getAllUsersExceptStudents(
+    params?: any,
+  ): Promise<PaginatedResponse<any>> {
+    const response = await this.api.get(
+      "/api/users/get-all-users-expect-students/",
+      { params },
+    );
     return response.data;
   }
 
@@ -787,8 +813,13 @@ class ApiService {
   }
 
   // Expenditure Summary
-  async getExpenditureSummary(branch: number, academicYear: number): Promise<any> {
-    const response = await this.api.get(`/api/expenditure/summary/branch-${branch}/academic-year-${academicYear}/`);
+  async getExpenditureSummary(
+    branch: number,
+    academicYear: number,
+  ): Promise<any> {
+    const response = await this.api.get(
+      `/api/expenditure/summary/branch-${branch}/academic-year-${academicYear}/`,
+    );
     return response.data;
   }
 
@@ -823,12 +854,16 @@ class ApiService {
   }
 
   async getInventoryDashboard(params?: any): Promise<any> {
-    const response = await this.api.get("/api/inventory/dashboard/", { params });
+    const response = await this.api.get("/api/inventory/dashboard/", {
+      params,
+    });
     return response.data;
   }
 
   async getInventoryStatus(params?: any): Promise<any> {
-    const response = await this.api.get("/api/inventory/inventory-status/", { params });
+    const response = await this.api.get("/api/inventory/inventory-status/", {
+      params,
+    });
     return response.data;
   }
 
@@ -858,7 +893,7 @@ class ApiService {
     section?: string;
     exam_type?: string;
   }): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/student-marks/", { params });
+    const response = await this.api.get("/api/student-exam-marks/", { params });
     return response.data;
   }
 
@@ -870,7 +905,9 @@ class ApiService {
     section?: string;
     exam_type?: string;
   }): Promise<any> {
-    const response = await this.api.get("/api/student-marks/analytics/", { params });
+    const response = await this.api.get("/api/student-marks/analytics/", {
+      params,
+    });
     return response.data;
   }
 
@@ -940,7 +977,10 @@ class ApiService {
   }
 
   async approveLeaveRequest(id: number, approvalData: any): Promise<any> {
-    const response = await this.api.patch(`/api/leave/${id}/approve/`, approvalData);
+    const response = await this.api.patch(
+      `/api/leave/${id}/approve/`,
+      approvalData,
+    );
     return response.data;
   }
 
@@ -966,22 +1006,22 @@ class ApiService {
 
   // Holiday Calendar
   async getHolidays(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/holidays/", { params });
+    const response = await this.api.get("/api/holiday-calendar/", { params });
     return response.data;
   }
 
   async createHoliday(data: any): Promise<any> {
-    const response = await this.api.post("/api/holidays/", data);
+    const response = await this.api.post("/api/holiday-calendar/", data);
     return response.data;
   }
 
   async updateHoliday(id: number, data: any): Promise<any> {
-    const response = await this.api.patch(`/api/holidays/${id}/`, data);
+    const response = await this.api.patch(`/api/holiday-calendar/${id}/`, data);
     return response.data;
   }
 
   async deleteHoliday(id: number): Promise<void> {
-    await this.api.delete(`/api/holidays/${id}/`);
+    await this.api.delete(`/api/holiday-calendar/${id}/`);
   }
 
   // Hostel Management
@@ -996,7 +1036,10 @@ class ApiService {
   }
 
   async assignBed(bedId: number, data: any): Promise<any> {
-    const response = await this.api.post(`/api/hostel-beds/${bedId}/assign_student/`, data);
+    const response = await this.api.post(
+      `/api/hostel-beds/${bedId}/assign_student/`,
+      data,
+    );
     return response.data;
   }
 
@@ -1006,7 +1049,9 @@ class ApiService {
   }
 
   async checkOutVisitor(visitorId: number): Promise<any> {
-    const response = await this.api.post(`/api/hostel-visitors/${visitorId}/check_out/`);
+    const response = await this.api.post(
+      `/api/hostel-visitors/${visitorId}/check_out/`,
+    );
     return response.data;
   }
 
@@ -1129,7 +1174,9 @@ class ApiService {
 
   // Attendance Dashboard
   async getAttendanceAnalytics(params?: any): Promise<any> {
-    const response = await this.api.get("/api/attendance-analytics/", { params });
+    const response = await this.api.get("/api/attendance-analytics/", {
+      params,
+    });
     return response.data;
   }
 }
