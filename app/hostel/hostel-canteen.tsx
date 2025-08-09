@@ -51,6 +51,8 @@ export default function HostelCanteenScreen() {
     refetch: refetchMealPlans
   } = useHostelMealPlans(mealPlansParams);
 
+  console.log('Meal plans:', mealPlans);
+
   const mealTypeOptions = [
     { id: null, name: 'All Meals' },
     { id: 'breakfast', name: 'Breakfast' },
@@ -105,24 +107,27 @@ export default function HostelCanteenScreen() {
           </Text>
           <View style={styles.mealDetails}>
             <Text style={[styles.mealType, { color: colors.textPrimary }]}>
-              {(mealPlan?.meal_type || 'meal')?.toUpperCase()}
+              {(mealPlan.day || 'meal')?.toUpperCase()}
             </Text>
             <Text style={[styles.mealDate, { color: colors.textSecondary }]}>
-              {mealPlan?.date ? new Date(mealPlan.date).toLocaleDateString() : 'No date'}
+              {getMealTypeIcon('breakfast')} BreakFast :{mealPlan.breakfast}
             </Text>
-            <Text style={[styles.mealTime, { color: colors.textSecondary }]}>
-              {mealPlan?.start_time || 'N/A'} - {mealPlan?.end_time || 'N/A'}
+            <Text style={[styles.mealDate, { color: colors.textSecondary }]}>
+              {getMealTypeIcon('lunch')} Lunch : {mealPlan.lunch}
+            </Text>
+            <Text style={[styles.mealDate, { color: colors.textSecondary }]}>
+              {getMealTypeIcon('dinner')} Dinner : {mealPlan.dinner}
             </Text>
           </View>
         </View>
-        
-        {mealPlan.price && (
+
+        {/* {mealPlan.price && (
           <View style={[styles.priceBadge, { backgroundColor: colors.primary + '20' }]}>
             <Text style={[styles.priceText, { color: colors.primary }]}>
               ₹{mealPlan.price}
             </Text>
           </View>
-        )}
+        )} */}
       </View>
 
       {mealPlan.menu_items && mealPlan.menu_items.length > 0 && (
@@ -196,7 +201,7 @@ export default function HostelCanteenScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -204,7 +209,7 @@ export default function HostelCanteenScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -212,7 +217,7 @@ export default function HostelCanteenScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Meal Type"
               items={mealTypeOptions}
@@ -220,7 +225,7 @@ export default function HostelCanteenScreen() {
               onValueChange={setSelectedMealType}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Date"
               items={dateOptions}

@@ -258,7 +258,7 @@ export default function StudentAttendanceScreen() {
           {typeof record.subject === 'string' ? record.subject : 'Unknown Subject'}
         </Text>
         <Text style={[styles.recordInfo, { color: colors.textSecondary }]}>
-          {typeof record.period === 'string' ? record.period : 'Unknown Period'} • {typeof record.teacher === 'string' ? record.teacher : 'Unknown Teacher'}
+          {typeof record.period.period === 'string' ? record.period : 'Unknown Period'} • {typeof record.teacher === 'string' ? record.teacher : 'Unknown Teacher'}
         </Text>
         {record.remarks && (
           <Text style={[styles.recordRemarks, { color: colors.textSecondary }]}>
@@ -273,7 +273,7 @@ export default function StudentAttendanceScreen() {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
         <TopBar
-          title="Student Attendance"
+          title="Staff Attendance"
           onMenuPress={() => setDrawerVisible(true)}
           onNotificationsPress={() => router.push('/(tabs)/notifications')}
           onSettingsPress={() => router.push('/(tabs)/settings')}
@@ -291,7 +291,7 @@ export default function StudentAttendanceScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <TopBar
-        title="Student Attendance"
+        title="Staff Attendance"
         onMenuPress={() => setDrawerVisible(true)}
         onNotificationsPress={() => router.push('/(tabs)/notifications')}
         onSettingsPress={() => router.push('/(tabs)/settings')}

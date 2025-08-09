@@ -50,10 +50,10 @@ export default function OnboardingScreen() {
   const handleGetStarted = async () => {
     try {
       await AsyncStorage.setItem('hasSeenOnboarding', 'true');
-      router.replace('/auth/organisation-email');
+      router.replace('/auth/login');
     } catch (error) {
       console.error('Error saving onboarding status:', error);
-      router.replace('/auth/organisation-email');
+      router.replace('/auth/login');
     }
   };
 
@@ -153,7 +153,6 @@ export default function OnboardingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#4A90E2',
   },
   skipButton: {
     position: 'absolute',

@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 interface OverviewCardProps {
   title: string;
   value: string;
-  icon: string;
+  icon?: string;
   onPress?: () => void;
   gradientColors?: string[];
 }

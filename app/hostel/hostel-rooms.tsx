@@ -97,7 +97,7 @@ export default function HostelRoomsScreen() {
   const getStatusColor = (status: string) => {
     switch (status?.toLowerCase()) {
       case 'available': return '#10B981';
-      case 'full': return '#EF4444';
+      case 'Unavailable': return '#EF4444';
       case 'maintenance': return '#F59E0B';
       case 'reserved': return '#8B5CF6';
       default: return '#6B7280';
@@ -118,18 +118,20 @@ export default function HostelRoomsScreen() {
     >
       <View style={styles.roomHeader}>
         <Text style={[styles.roomNumber, { color: colors.textPrimary }]}>
-          Room {room.room_number}
+          Room {room.block_number}
         </Text>
-        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(room.status) }]}>
-          <Text style={styles.statusText}>{room.status}</Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(room.status === 'Available' ? 'Available' : room?.total_beds === room?.available_beds && !room?.is_occupied ? 'Available' : 'Unavailable') }]}>
+          <Text style={styles.statusText}>
+            {room.status === 'Available' ? 'Available' : room?.total_beds === room?.available_beds && !room?.is_occupied ? 'Available' : 'Unavailable'}
+          </Text>
         </View>
       </View>
 
       <View style={styles.roomDetails}>
         <Text style={[styles.roomType, { color: colors.textSecondary }]}>
-          {room?.room_type && typeof room.room_type === 'object' ? room.room_type.name || 'Standard' : room?.room_type || 'Standard'} • Floor {room?.floor || 'N/A'}
+          {room?.room_type && typeof room.room_type === 'object' ? room.room_type.name || 'Standard' : room?.room_type || 'Standard'}
         </Text>
-        
+
         <View style={styles.capacityInfo}>
           <Text style={[styles.capacityText, { color: colors.textPrimary }]}>
             Capacity: {room?.capacity || 0}
@@ -160,6 +162,21 @@ export default function HostelRoomsScreen() {
             </View>
           </View>
         )}
+
+        {/* {room?.amenities && Array.isArray(room.amenities) && room.amenities.length > 0 && (
+          <View style={styles.amenitiesContainer}>
+            <Text style={[styles.amenitiesLabel, { color: colors.textSecondary }]}>
+              Amenities:
+            </Text>
+            <View style={styles.amenitiesList}>
+              {room.amenities.slice(0, 3).map((amenity: any, index: number) => (
+                <View key={`amenity-${index}`} style={[styles.amenityTag, { backgroundColor: colors.primary + '20' }]}>
+                  <Text style={[styles.amenityText, { color: colors.primary }]}>{amenity}</Text>
+                </View>
+              ))}
+            </View>
+          </View>
+        )} */}
       </View>
 
       <TouchableOpacity
@@ -208,7 +225,7 @@ export default function HostelRoomsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -216,7 +233,7 @@ export default function HostelRoomsScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -224,7 +241,7 @@ export default function HostelRoomsScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Room Type"
               items={roomTypeOptions}
@@ -232,7 +249,7 @@ export default function HostelRoomsScreen() {
               onValueChange={setSelectedRoomType}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
@@ -240,7 +257,7 @@ export default function HostelRoomsScreen() {
               onValueChange={setSelectedStatus}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Floor"
               items={floorOptions}

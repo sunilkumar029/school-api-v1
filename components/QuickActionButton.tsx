@@ -4,14 +4,18 @@ import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface QuickActionButtonProps {
-  title: string;
-  icon: string;
+  title?: string;
+  icon?: string;
+  color?: string;
+  key?: string;
   onPress: () => void;
 }
 
 export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
   title,
   icon,
+  color,
+  key,
   onPress,
 }) => {
   const { colors } = useTheme();
@@ -21,6 +25,7 @@ export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
       style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}
       onPress={onPress}
       activeOpacity={0.7}
+      key={title}
     >
       <Text style={[styles.icon, { color: colors.primary }]}>{icon}</Text>
       <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>

@@ -285,7 +285,7 @@ export default function HolidayCalendarScreen() {
                 { color: getHolidayTypeColor(holiday.type) },
               ]}
             >
-              {holiday.type.toUpperCase()}
+              {/* {holiday.type.toUpperCase()} */}
             </Text>
           </View>
         </View>
@@ -443,8 +443,8 @@ export default function HolidayCalendarScreen() {
               selectedValue={
                 selectedType
                   ? Object.keys(typeMapping).find(
-                      (key) => typeMapping[key] === selectedType,
-                    ) || 0
+                    (key) => typeMapping[key] === selectedType,
+                  ) || 0
                   : 0
               }
               onValueChange={(value) => setSelectedType(typeMapping[value])}
@@ -477,7 +477,7 @@ export default function HolidayCalendarScreen() {
                 styles.viewModeText,
                 {
                   color:
-                    viewMode === "list" ? colors.surface : colors.textPrimary,
+                    viewMode === "list" ? colors.textPrimary : colors.surface,
                 },
               ]}
             >
@@ -500,8 +500,8 @@ export default function HolidayCalendarScreen() {
                 {
                   color:
                     viewMode === "calendar"
-                      ? colors.surface
-                      : colors.textPrimary,
+                      ? colors.textPrimary
+                      : colors.surface,
                 },
               ]}
             >

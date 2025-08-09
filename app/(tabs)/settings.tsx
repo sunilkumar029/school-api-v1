@@ -10,6 +10,7 @@ import {
   Alert,
   Modal,
   TextInput,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -35,6 +36,21 @@ export default function SettingsScreen() {
     phoneNotifications: false,
     twoFactorAuth: false,
   });
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [themeModalVisible, setThemeModalVisible] = useState(false);
+  const [fontModalVisible, setFontModalVisible] = useState(false);
+
+
+
+
+
+  const showAlert = (title: string, message: string) => {
+    if (Platform.OS === 'web') {
+      window.alert(`${title}\n\n${message}`);
+    } else {
+      Alert.alert(title, message);
+    }
+  };
 
   const handleThemeChange = (theme: 'light' | 'dark' | 'system') => {
     if (theme === 'system') {
@@ -59,28 +75,34 @@ export default function SettingsScreen() {
 
   const handlePasswordChange = () => {
     if (passwords.new !== passwords.confirm) {
-      Alert.alert('Error', 'New passwords do not match');
+      showAlert('Error', 'New passwords do not match');
+
       return;
     }
     if (passwords.new.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      showAlert('Error', 'Password must be at least 6 characters');
+
       return;
     }
     // Handle password change logic here
-    Alert.alert('Success', 'Password changed successfully');
+    showAlert('Success', 'Password changed successfully');
     setShowPasswordModal(false);
     setPasswords({ current: '', new: '', confirm: '' });
   };
 
+  // const handleLogout = () => {
+  //   console.log('Logging out...');
+  //   Alert.alert(
+  //     'Logout',
+  //     'Are you sure you want to logout?',
+  //     [
+  //       { text: 'Cancel', style: 'cancel' },
+  //       { text: 'Logout', style: 'destructive', onPress: logout },
+  //     ]
+  //   );
+  // };
   const handleLogout = () => {
-    Alert.alert(
-      'Logout',
-      'Are you sure you want to logout?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Logout', style: 'destructive', onPress: logout },
-      ]
-    );
+    setShowLogoutModal(true);
   };
 
   const SettingSection = ({ title, children }: { title: string; children: React.ReactNode }) => (
@@ -118,6 +140,8 @@ export default function SettingsScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+
+
       <TopBar
         title="Settings"
         onMenuPress={() => setDrawerVisible(true)}
@@ -137,44 +161,26 @@ export default function SettingsScreen() {
           <SettingItem
             title="Theme"
             subtitle={isDark ? 'Dark' : 'Light'}
-            onPress={() => {
-              Alert.alert(
-                'Select Theme',
-                '',
-                [
-                  { text: 'Light', onPress: () => handleThemeChange('light') },
-                  { text: 'Dark', onPress: () => handleThemeChange('dark') },
-                  { text: 'System Default', onPress: () => handleThemeChange('system') },
-                  { text: 'Cancel', style: 'cancel' },
-                ]
-              );
-            }}
-            rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
+            onPress={() => setThemeModalVisible(true)}
+            rightElement={
+              <Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>
+            }
           />
+
 
           <SettingItem
             title="Font Size"
             subtitle={fontSize.charAt(0).toUpperCase() + fontSize.slice(1)}
-            onPress={() => {
-              Alert.alert(
-                'Select Font Size',
-                '',
-                [
-                  { text: 'Small', onPress: () => handleFontSizeChange('small') },
-                  { text: 'Medium', onPress: () => handleFontSizeChange('medium') },
-                  { text: 'Large', onPress: () => handleFontSizeChange('large') },
-                  { text: 'Cancel', style: 'cancel' },
-                ]
-              );
-            }}
+            onPress={() => setFontModalVisible(true)}
             rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
           />
+
 
           <SettingItem
             title="Language"
             subtitle="English"
             onPress={() => {
-              Alert.alert('Coming Soon', 'Multi-language support will be available soon');
+              showAlert('Coming Soon', 'Language support will be added soon');
             }}
             rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
           />
@@ -208,7 +214,7 @@ export default function SettingsScreen() {
               title="Role Switcher"
               subtitle="Switch between roles"
               onPress={() => {
-                Alert.alert('Coming Soon', 'Role switching will be available soon');
+                showAlert('Coming Soon', 'Role switching will be available soon');
               }}
               rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
             />
@@ -270,7 +276,7 @@ export default function SettingsScreen() {
           <SettingItem
             title="Terms of Service"
             onPress={() => {
-              Alert.alert('Coming Soon', 'Terms of Service will be available soon');
+              showAlert('Coming Soon', 'Terms of Service will be available soon');
             }}
             rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
           />
@@ -278,7 +284,7 @@ export default function SettingsScreen() {
           <SettingItem
             title="Privacy Policy"
             onPress={() => {
-              Alert.alert('Coming Soon', 'Privacy Policy will be available soon');
+              showAlert('Coming Soon', 'Privacy Policy will be available soon');
             }}
             rightElement={<Text style={[styles.chevron, { color: colors.textSecondary }]}>›</Text>}
           />
@@ -332,7 +338,7 @@ export default function SettingsScreen() {
 
             <View style={styles.modalActions}>
               <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: colors.border }]}
+                // style={[styles.modalButton, { backgroundColor: colors.border }]}
                 onPress={() => setShowPasswordModal(false)}
               >
                 <Text style={[styles.modalButtonText, { color: colors.textPrimary }]}>Cancel</Text>
@@ -348,7 +354,119 @@ export default function SettingsScreen() {
           </View>
         </View>
       </Modal>
-    </SafeAreaView>
+
+
+      <Modal
+        visible={showLogoutModal}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setShowLogoutModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Logout</Text>
+            <Text style={{ color: colors.textSecondary, marginBottom: 16 }}>
+              Are you sure you want to logout?
+            </Text>
+
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: colors.border }]}
+                onPress={() => setShowLogoutModal(false)}
+              >
+                <Text style={[styles.modalButtonText, { color: colors.textPrimary }]}>Cancel</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.modalButton, { backgroundColor: '#FF6B6B' }]}
+                onPress={() => {
+                  setShowLogoutModal(false);
+                  logout();
+                }}
+              >
+                <Text style={styles.modalButtonText}>Logout</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+
+      <Modal
+        animationType="fade"
+        transparent
+        visible={fontModalVisible}
+        onRequestClose={() => setFontModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>
+              Select Font Size
+            </Text>
+
+            {['small', 'medium', 'large'].map((size) => (
+              <TouchableOpacity
+                key={size}
+                style={[styles.modalOptionButton, { backgroundColor: colors.primary }]}
+                onPress={() => {
+                  handleFontSizeChange(size);
+                  setFontModalVisible(false);
+                }}
+              >
+                <Text style={[styles.modalOptionButtonText, { color: colors.textPrimary }]}>
+                  {size.charAt(0).toUpperCase() + size.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity
+              style={[styles.modalOptionButton, { backgroundColor: colors.border }]}
+              onPress={() => setFontModalVisible(false)}
+            >
+              <Text style={[styles.modalOptionButtonText, { color: colors.textPrimary }]}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+
+
+      <Modal
+        visible={themeModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setThemeModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContent, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.modalTitle, { color: colors.textPrimary }]}>Select Theme</Text>
+
+            {['light', 'dark', 'system'].map((option) => (
+              <TouchableOpacity
+                key={option}
+                style={[styles.modalOptionButton, { backgroundColor: colors.primary }]}
+                onPress={() => {
+                  handleThemeChange(option);
+                  setThemeModalVisible(false);
+                }}
+              >
+                <Text style={[styles.modalOptionButtonText, { color: colors.textPrimary }]}>
+                  {option === 'system' ? 'System Default' : option.charAt(0).toUpperCase() + option.slice(1)}
+                </Text>
+              </TouchableOpacity>
+            ))}
+
+            <TouchableOpacity
+              style={[styles.modalOptionButton, { backgroundColor: colors.border }]}
+              onPress={() => setThemeModalVisible(false)}
+            >
+              <Text style={[styles.modalOptionButtonText, { color: colors.textPrimary }]}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+    </SafeAreaView >
   );
 }
 
@@ -362,6 +480,7 @@ const styles = StyleSheet.create({
   section: {
     marginBottom: 24,
   },
+
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -415,6 +534,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 12,
     elevation: 8,
+    gap: 12,
   },
   modalTitle: {
     fontSize: 18,
@@ -447,4 +567,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
+  modalOptionButton: {
+    width: '100%',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  modalOptionButtonText: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+
 });

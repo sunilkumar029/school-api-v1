@@ -18,8 +18,8 @@ import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  useStudentMarksAnalytics, 
+import {
+  useStudentMarksAnalytics,
   useSubjects,
   useClasses,
   useExams
@@ -78,9 +78,9 @@ export default function StudentMarksAnalyticsScreen() {
   } = useGlobalFilters();
 
   // Fetch data
-  const { data: subjects = [], loading: subjectsLoading } = useSubjects({ 
+  const { data: subjects = [], loading: subjectsLoading } = useSubjects({
     branch: selectedBranch,
-    academic_year: selectedAcademicYear 
+    academic_year: selectedAcademicYear
   });
 
   const { data: classes = [], loading: classesLoading } = useClasses({
@@ -101,9 +101,9 @@ export default function StudentMarksAnalyticsScreen() {
     exam: selectedExam,
   }), [selectedBranch, selectedAcademicYear, selectedSubject, selectedClass, selectedExam]);
 
-  const { 
-    data: analyticsData, 
-    loading: analyticsLoading, 
+  const {
+    data: analyticsData,
+    loading: analyticsLoading,
     error: analyticsError,
     refetch: refetchAnalytics
   } = useStudentMarksAnalytics(analyticsParams);
@@ -167,7 +167,7 @@ export default function StudentMarksAnalyticsScreen() {
               key={mode.key}
               style={[
                 styles.viewModeButton,
-                { 
+                {
                   backgroundColor: viewMode === mode.key ? colors.primary : 'transparent',
                   borderColor: colors.border
                 }
@@ -195,7 +195,7 @@ export default function StudentMarksAnalyticsScreen() {
     return (
       <View style={[styles.statsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>Overall Performance</Text>
-        
+
         <View style={styles.statsGrid}>
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: colors.primary }]}>
@@ -203,14 +203,14 @@ export default function StudentMarksAnalyticsScreen() {
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Total Students</Text>
           </View>
-          
+
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: colors.info }]}>
               {(stats.overall_average || 0).toFixed(1)}%
             </Text>
             <Text style={[styles.statLabel, { color: colors.textSecondary }]}>Average Marks</Text>
           </View>
-          
+
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: getPerformanceColor(stats.overall_pass_percentage || 0) }]}>
               {(stats.overall_pass_percentage || 0).toFixed(1)}%
@@ -233,14 +233,14 @@ export default function StudentMarksAnalyticsScreen() {
                   </Text>
                 </View>
                 <View style={[styles.gradeBar, { backgroundColor: colors.background }]}>
-                  <View 
+                  <View
                     style={[
-                      styles.gradeBarFill, 
-                      { 
+                      styles.gradeBarFill,
+                      {
                         width: `${grade.percentage}%`,
                         backgroundColor: getGradeColor(grade.grade)
                       }
-                    ]} 
+                    ]}
                   />
                 </View>
               </View>
@@ -265,13 +265,13 @@ export default function StudentMarksAnalyticsScreen() {
     return (
       <View style={[styles.analyticsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>Subject-wise Performance</Text>
-        
+
         {analyticsData.subject_wise.map((subject, index) => (
           <View key={index} style={[styles.subjectItem, { borderBottomColor: colors.border }]}>
             <Text style={[styles.subjectName, { color: colors.primary }]}>
               {subject.subject}
             </Text>
-            
+
             <View style={styles.subjectStats}>
               <View style={styles.subjectStatRow}>
                 <Text style={[styles.subjectStatLabel, { color: colors.textSecondary }]}>Average:</Text>
@@ -279,21 +279,21 @@ export default function StudentMarksAnalyticsScreen() {
                   {subject.average_marks.toFixed(1)}%
                 </Text>
               </View>
-              
+
               <View style={styles.subjectStatRow}>
                 <Text style={[styles.subjectStatLabel, { color: colors.textSecondary }]}>Highest:</Text>
                 <Text style={[styles.subjectStatValue, { color: colors.success }]}>
                   {subject.highest_marks}%
                 </Text>
               </View>
-              
+
               <View style={styles.subjectStatRow}>
                 <Text style={[styles.subjectStatLabel, { color: colors.textSecondary }]}>Lowest:</Text>
                 <Text style={[styles.subjectStatValue, { color: colors.error }]}>
                   {subject.lowest_marks}%
                 </Text>
               </View>
-              
+
               <View style={styles.subjectStatRow}>
                 <Text style={[styles.subjectStatLabel, { color: colors.textSecondary }]}>Pass Rate:</Text>
                 <Text style={[styles.subjectStatValue, { color: getPerformanceColor(subject.pass_percentage) }]}>
@@ -321,13 +321,13 @@ export default function StudentMarksAnalyticsScreen() {
     return (
       <View style={[styles.analyticsCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <Text style={[styles.cardTitle, { color: colors.textPrimary }]}>Class-wise Performance</Text>
-        
+
         {analyticsData.class_wise.map((classData, index) => (
           <View key={index} style={[styles.classItem, { borderBottomColor: colors.border }]}>
             <Text style={[styles.className, { color: colors.primary }]}>
               {classData.class_name}
             </Text>
-            
+
             <View style={styles.classStats}>
               <View style={styles.classStatRow}>
                 <Text style={[styles.classStatLabel, { color: colors.textSecondary }]}>Total Students:</Text>
@@ -335,21 +335,21 @@ export default function StudentMarksAnalyticsScreen() {
                   {classData.total_students}
                 </Text>
               </View>
-              
+
               <View style={styles.classStatRow}>
                 <Text style={[styles.classStatLabel, { color: colors.textSecondary }]}>Average Marks:</Text>
                 <Text style={[styles.classStatValue, { color: colors.info }]}>
                   {classData.average_marks.toFixed(1)}%
                 </Text>
               </View>
-              
+
               <View style={styles.classStatRow}>
                 <Text style={[styles.classStatLabel, { color: colors.textSecondary }]}>Passed:</Text>
                 <Text style={[styles.classStatValue, { color: colors.success }]}>
                   {classData.passed_students}
                 </Text>
               </View>
-              
+
               <View style={styles.classStatRow}>
                 <Text style={[styles.classStatLabel, { color: colors.textSecondary }]}>Failed:</Text>
                 <Text style={[styles.classStatValue, { color: colors.error }]}>
@@ -371,7 +371,7 @@ export default function StudentMarksAnalyticsScreen() {
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.retryButton, { backgroundColor: colors.primary }]}
         onPress={handleRefresh}
       >
@@ -414,7 +414,7 @@ export default function StudentMarksAnalyticsScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -422,7 +422,7 @@ export default function StudentMarksAnalyticsScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -430,7 +430,7 @@ export default function StudentMarksAnalyticsScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Subject"
               items={subjectOptions}
@@ -439,7 +439,7 @@ export default function StudentMarksAnalyticsScreen() {
               loading={subjectsLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Class"
               items={classOptions}
@@ -448,7 +448,7 @@ export default function StudentMarksAnalyticsScreen() {
               loading={classesLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Exam"
               items={examOptions}
@@ -465,7 +465,7 @@ export default function StudentMarksAnalyticsScreen() {
       {renderViewModeToggle()}
 
       {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         refreshControl={
           <RefreshControl

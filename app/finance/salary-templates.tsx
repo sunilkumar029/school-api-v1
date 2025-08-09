@@ -25,6 +25,7 @@ import {
 } from "@/hooks/useApi";
 import { apiService } from "@/api/apiService";
 import { GlobalFilters } from "@/components/GlobalFilters";
+import { ModalDropdownFilter } from "@/components/ModalDropdownFilter";
 import { useGlobalFilters } from "@/contexts/GlobalFiltersContext";
 
 interface SalaryTemplate {
@@ -65,11 +66,11 @@ export default function SalaryTemplatesScreen() {
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
-  const { 
-    selectedBranch, 
+  const {
+    selectedBranch,
     selectedAcademicYear,
     setSelectedBranch,
-    setSelectedAcademicYear 
+    setSelectedAcademicYear
   } = useGlobalFilters();
 
 
@@ -98,20 +99,20 @@ export default function SalaryTemplatesScreen() {
     error: employeesError,
     refetch: refetchEmployees,
   } = useSalaryTemplatesGrouped(employeesParams);
-  
+
   const {
     data: categories,
     loading: categoriesLoading,
     refetch: refetchCategories,
   } = useSalaryCategories();
-  
+
   const { data: users, loading: usersLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
     academic_year: selectedAcademicYear,
     limit: 200,
     is_active: true,
   });
-  
+
   const { data: branches } = useBranches({ is_active: true });
   const { data: academicYears } = useAcademicYears();
 
@@ -378,7 +379,7 @@ export default function SalaryTemplatesScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={branches || []}
@@ -386,7 +387,7 @@ export default function SalaryTemplatesScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={academicYears || []}
@@ -397,7 +398,7 @@ export default function SalaryTemplatesScreen() {
           </View>
         </ScrollView>
       </View>
-      
+
       {renderSearchBar()}
 
       <View style={styles.actionButtons}>

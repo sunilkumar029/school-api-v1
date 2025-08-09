@@ -82,7 +82,7 @@ export default function DepartmentScreen() {
   const [appliedBranch, setAppliedBranch] = useState<number | null>(null);
   const [appliedAcademicYear, setAppliedAcademicYear] = useState<number | null>(null);
   const [appliedType, setAppliedType] = useState<string | null>(null);
-  
+
 
   // Fetch data with proper error handling
   const {
@@ -167,115 +167,7 @@ export default function DepartmentScreen() {
 
   const renderFilterSection = () => (
     <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
-      <GlobalFilters />
-      {/* <TouchableOpacity
-        style={styles.filterHeader}
-        onPress={() => setFiltersExpanded(!filtersExpanded)}
-      >
-        <Text style={[styles.filterTitle, { color: colors.textPrimary }]}>
-          Filters
-        </Text>
-        <Text style={[styles.filterToggle, { color: colors.primary }]}>
-          {filtersExpanded ? '▲' : '▼'}
-        </Text>
-      </TouchableOpacity> */}
-
-      {filtersExpanded && (
-        <View style={styles.filterContent}>
-          {/* Branch Dropdown */}
-          <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Branch:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedBranch}
-                onValueChange={setTempSelectedBranch}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Branches" value={null} />
-                {branches?.map((branch: Branch) => (
-                  <Picker.Item
-                    key={branch.id}
-                    label={branch.name}
-                    value={branch.id}
-                  />
-                ))}
-              </Picker>
-            </View>
-          </View>
-
-          {/* Academic Year Dropdown */}
-          <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Academic Year:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedAcademicYear}
-                onValueChange={setTempSelectedAcademicYear}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Years" value={null} />
-                {academicYears?.map((year: AcademicYear) => (
-                  <Picker.Item
-                    key={year.id}
-                    label={year.year}
-                    value={year.id}
-                  />
-                ))}
-              </Picker>
-            </View>
-          </View>
-
-          {/* Department Type Dropdown */}
-          <View style={styles.filterRow}>
-            <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>
-              Type:
-            </Text>
-            <View style={[styles.pickerContainer, { backgroundColor: colors.background, borderColor: colors.border }]}>
-              <Picker
-                selectedValue={tempSelectedType}
-                onValueChange={setTempSelectedType}
-                style={[styles.picker, { color: colors.textPrimary }]}
-                dropdownIconColor={colors.textSecondary}
-              >
-                <Picker.Item label="All Types" value={null} />
-                <Picker.Item label="Teaching" value="Teaching" />
-                <Picker.Item label="Non-Teaching" value="Non-Teaching" />
-                <Picker.Item label="Both" value="Both" />
-              </Picker>
-            </View>
-          </View>
-
-          {/* Filter Action Buttons */}
-          <View style={styles.filterActions}>
-            <TouchableOpacity
-              style={[styles.filterButton, styles.clearButton, { borderColor: colors.border }]}
-              onPress={handleClearFilters}
-            >
-              <Text style={[styles.filterButtonText, { color: colors.textSecondary }]}>
-                Clear
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.filterButton,
-                styles.applyButton,
-                { backgroundColor: hasFiltersChanged ? colors.primary : colors.border }
-              ]}
-              onPress={handleApplyFilters}
-              disabled={!hasFiltersChanged}
-            >
-              <Text style={[styles.filterButtonText, { color: hasFiltersChanged ? '#FFFFFF' : colors.textSecondary }]}>
-                Apply Filters
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      )}
+      {/* <GlobalFilters /> */}
     </View>
   );
 

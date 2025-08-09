@@ -4,32 +4,37 @@ import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '@/contexts/ThemeContext';
 
 interface EventItemProps {
-  title: string;
-  time: string;
-  type: string;
+  name?: string;
+  created?: string;
+  end_date?: string;
   onPress?: () => void;
 }
 
 export const EventItem: React.FC<EventItemProps> = ({
-  title,
-  time,
-  type,
+  name,
+  created,
+  end_date,
   onPress,
 }) => {
   const { colors } = useTheme();
+  console.log("EventItem props:", { name, created, end_date, onPress });
+
+  if (!name || !created || !end_date) {
+    return null;
+  }
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}
       onPress={onPress}
       activeOpacity={0.7}
     >
       <View style={styles.timeContainer}>
-        <Text style={[styles.time, { color: colors.primary }]}>{time}</Text>
+        <Text style={[styles.time, { color: colors.primary }]}>{created}</Text>
       </View>
       <View style={styles.content}>
-        <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>
-        <Text style={[styles.type, { color: colors.textSecondary }]}>{type}</Text>
+        <Text style={[styles.title, { color: colors.textPrimary }]}>{name}</Text>
+        <Text style={[styles.type, { color: colors.textSecondary }]}>{end_date}</Text>
       </View>
     </TouchableOpacity>
   );

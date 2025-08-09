@@ -19,8 +19,8 @@ import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { 
-  useTaskSubmissions, 
+import {
+  useTaskSubmissions,
   useAllUsersExceptStudents,
   useTasks
 } from '@/hooks/useApi';
@@ -37,12 +37,13 @@ interface TaskSubmission {
       name: string;
     };
   };
-  submitted_by: {
+  submitted_by_detail: {
     id: number;
     name: string;
-    email: string;
   };
-  submission_date: string;
+  submission_link: string;
+  submission_notes: string;
+  submitted_at: string;
   status: 'submitted' | 'reviewed' | 'approved' | 'rejected';
   comments: string;
   file_url?: string;
@@ -72,9 +73,9 @@ export default function TaskSubmissionsScreen() {
   } = useGlobalFilters();
 
   // Fetch data
-  const { data: users = [], loading: usersLoading } = useAllUsersExceptStudents({ 
+  const { data: users = [], loading: usersLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
-    academic_year: selectedAcademicYear 
+    academic_year: selectedAcademicYear
   });
 
   const { data: tasks = [], loading: tasksLoading } = useTasks({
@@ -90,12 +91,14 @@ export default function TaskSubmissionsScreen() {
     submitted_by: selectedUser,
   }), [selectedBranch, selectedAcademicYear, selectedTask, selectedStatus, selectedUser]);
 
-  const { 
-    data: submissions = [], 
-    loading: submissionsLoading, 
+  const {
+    data: submissions = [],
+    loading: submissionsLoading,
     error: submissionsError,
     refetch: refetchSubmissions
   } = useTaskSubmissions(submissionsParams);
+
+  console.log('Submissions:', submissions);
 
   // Filter options
   const taskOptions = useMemo(() => [
@@ -117,7 +120,7 @@ export default function TaskSubmissionsScreen() {
   const statusMapping: { [key: number]: string | null } = {
     0: null,
     1: 'submitted',
-    2: 'reviewed', 
+    2: 'reviewed',
     3: 'approved',
     4: 'rejected'
   };
@@ -163,27 +166,28 @@ export default function TaskSubmissionsScreen() {
   };
 
   const renderSubmissionCard = ({ item }: { item: TaskSubmission }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.submissionCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
       onPress={() => handleSubmissionPress(item)}
     >
+
       <View style={styles.submissionHeader}>
         <Text style={[styles.submissionTitle, { color: colors.textPrimary }]} numberOfLines={2}>
-          {item.task?.title || 'Untitled Task'}
+          {item.submission_notes || 'Untitled Task'}
         </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
           <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
-            {getStatusLabel(item.status)}
+            {formatDate(item.submitted_at)}
           </Text>
         </View>
       </View>
 
       <Text style={[styles.submissionUser, { color: colors.textSecondary }]}>
-        Submitted by: {item.submitted_by?.name || item.submitted_by?.email || 'Unknown User'}
+        Submitted by: {item.submitted_by_detail?.name || item.submitted_by_detail.name || 'Unknown User'}
       </Text>
 
       <Text style={[styles.submissionDate, { color: colors.textSecondary }]}>
-        Submission Date: {formatDate(item.submission_date)}
+        Submission Link: {item.submission_link}
       </Text>
 
       {item.task?.due_date && (
@@ -225,7 +229,7 @@ export default function TaskSubmissionsScreen() {
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.retryButton, { backgroundColor: colors.primary }]}
         onPress={handleRefresh}
       >
@@ -242,7 +246,7 @@ export default function TaskSubmissionsScreen() {
         <TopBar
           title="Task Submissions"
           onMenuPress={() => setDrawerVisible(true)}
-          onNotificationPress={() => router.push('/notifications')}
+          onNotificationsPress={() => router.push('/notifications')}
         />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
@@ -260,7 +264,7 @@ export default function TaskSubmissionsScreen() {
       <TopBar
         title="Task Submissions"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationPress={() => router.push('/notifications')}
+        onNotificationsPress={() => router.push('/notifications')}
       />
 
       {/* Global Filters */}

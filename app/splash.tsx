@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import {
   View,
@@ -38,47 +39,48 @@ export default function SplashScreen() {
       // Wait for splash duration
       setTimeout(async () => {
         try {
+          // Check if user has seen onboarding
           const hasSeenOnboarding = await AsyncStorage.getItem('hasSeenOnboarding');
+          
+          // Check if user is already logged in
           const userToken = await AsyncStorage.getItem('auth_token');
           const baseUrl = await AsyncStorage.getItem('base_url');
           
-          if (hasSeenOnboarding === 'true') {
-            // User has seen onboarding, check if they're logged in
-            if (userToken && baseUrl) {
-              // Verify token is still valid
-              try {
-                const response = await fetch(`${baseUrl}/api/academic-years/`, {
-                  method: 'HEAD', // Just check if endpoint is accessible
-                  headers: {
-                    'Authorization': `Token ${userToken}`,
-                  },
-                  timeout: 10000,
-                });
-                
-                if (response.ok) {
-                  // Token is valid, go to home
-                  router.replace('/(tabs)');
-                } else {
-                  // Token is invalid, clear and go to login
-                  await AsyncStorage.multiRemove(['auth_token', 'user_data']);
-                  router.replace('/auth/organisation-email');
-                }
-              } catch (tokenError) {
-                // Network error or invalid token, go to login
-                console.log('Token verification failed:', tokenError);
+          if (hasSeenOnboarding !== 'true') {
+            // First time user - show onboarding
+            router.replace('/onboarding');
+          } else if (userToken && baseUrl) {
+            // User has seen onboarding and is logged in - verify token
+            try {
+              const response = await fetch(`${baseUrl}/api/academic-years/`, {
+                method: 'HEAD',
+                headers: {
+                  'Authorization': `Token ${userToken}`,
+                },
+                timeout: 10000,
+              });
+              
+              if (response.ok) {
+                // Token is valid - go to home
+                router.replace('/(tabs)');
+              } else {
+                // Token is invalid - clear and go to login
                 await AsyncStorage.multiRemove(['auth_token', 'user_data']);
-                router.replace('/auth/organisation-email');
+                router.replace('/auth/login');
               }
-            } else {
-              // User has seen onboarding but not logged in, go to login
-              router.replace('/auth/organisation-email');
+            } catch (tokenError) {
+              // Network error or invalid token - go to login
+              console.log('Token verification failed:', tokenError);
+              await AsyncStorage.multiRemove(['auth_token', 'user_data']);
+              router.replace('/auth/login');
             }
           } else {
-            // User hasn't seen onboarding, show onboarding
-            router.replace('/onboarding');
+            // User has seen onboarding but not logged in - go to login
+            router.replace('/auth/login');
           }
         } catch (error) {
           console.error('Error checking app state:', error);
+          // On error, show onboarding to be safe
           router.replace('/onboarding');
         }
       }, 2500);

@@ -921,6 +921,7 @@ const styles = StyleSheet.create({
   globalFiltersContent: {
     flexDirection: 'row',
     gap: 8,
+    overflowX: 'scroll',
     flex: 1,
   },
   filtersContainer: {
@@ -1046,24 +1047,25 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   periodContent: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    width: '50%',
   },
   subjectText: {
-    fontSize: 10,
+    fontSize: 14,
     fontWeight: '600',
     textAlign: 'center',
     marginBottom: 2,
   },
   sectionText: {
-    fontSize: 9,
+    fontSize: 12,
     textAlign: 'center',
   },
   teacherText: {
-    fontSize: 9,
+    fontSize: 12,
     textAlign: 'center',
   },
   emptyPeriod: {
-    fontSize: 10,
+    fontSize: 14,
     fontStyle: 'italic',
   },
   sectionTimetableContainer: {

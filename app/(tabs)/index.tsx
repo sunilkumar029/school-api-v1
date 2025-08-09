@@ -42,6 +42,8 @@ export default function DashboardScreen() {
 
   const { selectedBranch, selectedAcademicYear } = useGlobalFilters();
 
+
+
   // API parameters with global filters
   const apiParams = useMemo(() => ({
     branch: selectedBranch,
@@ -163,36 +165,42 @@ export default function DashboardScreen() {
       title: 'Apply Leave',
       icon: '🏖️',
       color: '#E91E63',
+      key: 'apply-leave',
       onPress: () => router.push('/leave/leave-requests'),
     },
     {
       title: 'View Timetable',
       icon: '📅',
       color: '#3F51B5',
+      key: 'view-timetable',
       onPress: () => router.push('/academics/staff-timetable'),
     },
     {
       title: 'Mark Attendance',
       icon: '✅',
       color: '#4CAF50',
+      key: 'mark-attendance',
       onPress: () => router.push('/academics/student-attendance'),
     },
     {
-      title: 'Chat',
+      title: 'tasks',
       icon: '💬',
       color: '#FF5722',
-      onPress: () => router.push('/chat'),
+      key: 'tasks',
+      onPress: () => router.push('/tasks/task-list'),
     },
     {
       title: 'Student Fees',
       icon: '💳',
       color: '#795548',
+      key: 'student-fees',
       onPress: () => router.push('/finance/student-fee-list'),
     },
     {
       title: 'Support',
       icon: '🎧',
       color: '#009688',
+      key: 'support',
       onPress: () => router.push('/support'),
     },
   ];
@@ -215,6 +223,7 @@ export default function DashboardScreen() {
       icon: '📋',
     })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
@@ -243,7 +252,7 @@ export default function DashboardScreen() {
         {/* Greeting Section */}
         <View style={[styles.greetingContainer, { backgroundColor: colors.surface }]}>
           <Text style={[styles.greetingText, { color: colors.textPrimary }]}>
-            {getGreeting()}, {user?.first_name || user?.username || 'User'}! 👋
+            {getGreeting()}, {user?.email?.split('@')[0] || 'User'}! 👋
           </Text>
           <Text style={[styles.greetingSubtext, { color: colors.textSecondary }]}>
             Here's your daily overview
@@ -266,9 +275,9 @@ export default function DashboardScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
-            {quickActions.map((action, index) => (
-              <View key={index} style={styles.quickActionWrapper}>
-                <QuickActionButton {...action} />
+            {quickActions.map(({ title, ...props }) => (
+              <View key={title} style={styles.quickActionWrapper}>
+                <QuickActionButton {...props} />
               </View>
             ))}
           </View>
@@ -288,9 +297,35 @@ export default function DashboardScreen() {
             </View>
           ) : events && events.length > 0 ? (
             <View style={styles.eventsList}>
-              {events.map((event, index) => (
-                <EventItem key={event.id || index} event={event} />
+              {events.slice(0, 3).map((event, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.eventContainer, { backgroundColor: colors.card, borderColor: colors.border }]}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Event: ${event.name}, starting at ${event.created}, ending at ${event.end_date}`}
+                // onPress={() => router.push(`/event/${event.id}`)}
+                >
+                  <View style={styles.timeContainer}>
+                    <Text style={[styles.time, { color: colors.primary }]}>
+                      📅 {formatDate(event.created)}
+                    </Text>
+                  </View>
+                  <View style={styles.content}>
+                    <Text style={[styles.title, { color: colors.textPrimary }]}>
+                      {event.name}
+                    </Text>
+                    <Text style={[styles.type, { color: colors.textSecondary }]}>
+                      Ends: {formatDate(event.end_date)}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               ))}
+              {events.length > 7 && (
+                <TouchableOpacity onPress={() => router.push('/(tabs)/events')}>
+                  <Text style={[styles.viewAllText, { color: colors.primary }]}>View All</Text>
+                </TouchableOpacity>
+              )}
             </View>
           ) : (
             <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
@@ -299,6 +334,13 @@ export default function DashboardScreen() {
               </Text>
             </View>
           )}
+          {!events || events === null || events === undefined ? (
+            <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
+                📅 No upcoming events
+              </Text>
+            </View>
+          ) : null}
         </View>
 
         {/* Recent Activity */}
@@ -315,8 +357,16 @@ export default function DashboardScreen() {
             </View>
           ) : recentActivities.length > 0 ? (
             <View style={styles.activityList}>
-              {recentActivities.slice(0, 5).map((activity, index) => (
-                <RecentActivityItem key={activity.id || index} activity={activity} />
+              {recentActivities.slice(0, 3).map((activity, index) => (
+                // <RecentActivityItem key={activity.id || index} activity={activity} />
+                <View style={[styles.activitycontainer, { borderBottomColor: colors.border }]}>
+                  <Text style={[styles.icon, { color: colors.primary }]}>{recentActivities[index].icon}</Text>
+                  <View style={styles.content}>
+                    <Text style={[styles.title, { color: colors.textPrimary }]}>{recentActivities[index].target}</Text>
+                    <Text style={[styles.description, { color: colors.textSecondary }]}>{recentActivities[index].timestamp}</Text>
+                  </View>
+                  <Text style={[styles.time, { color: colors.textSecondary }]}>{recentActivities[index].action}</Text>
+                </View>
               ))}
             </View>
           ) : (
@@ -388,6 +438,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  eventContainer: {
+    flexDirection: 'column',
+    padding: 12,
+    // width: '48%',
+    borderRadius: 8,
+    borderWidth: 1,
+    marginBottom: 8,
+  },
   content: {
     flex: 1,
   },
@@ -443,9 +501,29 @@ const styles = StyleSheet.create({
     marginHorizontal: -6,
   },
   quickActionWrapper: {
-    width: width / 3 - 16,
+    width: "28%",
     marginHorizontal: 6,
     marginBottom: 12,
+  },
+  timeContainer: {
+    marginRight: 12,
+    // alignItems: 'center',
+    justifyContent: 'center',
+  },
+  time: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  title: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  type: {
+    fontSize: 12,
+  },
+  eventdate: {
+    fontSize: 12,
   },
   eventsList: {
     gap: 8,
@@ -455,6 +533,20 @@ const styles = StyleSheet.create({
   },
   pendingItemsContainer: {
     gap: 12,
+  },
+  activitycontainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+  },
+  icon: {
+    fontSize: 16,
+    marginRight: 12,
+    width: 20,
+  },
+  description: {
+    fontSize: 12,
   },
   pendingItem: {
     borderRadius: 12,

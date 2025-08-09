@@ -62,19 +62,13 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
         {
           title: "Dashboard",
           icon: "🏠",
-          route: "/(tabs)/index",
+          route: "/",
           status: "working",
         },
         {
           title: "Events",
           icon: "📅",
           route: "/(tabs)/events",
-          status: "working",
-        },
-        {
-          title: "Analytics",
-          icon: "📊",
-          route: "/(tabs)/analytics",
           status: "working",
         },
         {
@@ -89,12 +83,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       title: "Academic Management",
       status: "working",
       items: [
-        {
-          title: "Classes",
-          icon: "📚",
-          route: "/(tabs)/classes",
-          status: "working",
-        },
+
         {
           title: "Department",
           icon: "🏢",
@@ -107,12 +96,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
           route: "/academics/staff-timetable",
           status: "working",
         },
-        {
-          title: "Student Marks",
-          icon: "📝",
-          route: "/academics/student-marks",
-          status: "working",
-        },
+
         {
           title: "Student Attendance",
           icon: "✅",
@@ -137,12 +121,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
           route: "/finance/student-fee-analytics",
           status: "working",
         },
-        {
-          title: "Staff Payroll",
-          icon: "💼",
-          route: "/finance/staff-payroll",
-          status: "working",
-        },
+
         {
           title: "Salary Templates",
           icon: "📄",
@@ -237,6 +216,30 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
           icon: "🍽️",
           route: "/(tabs)/foodcourt",
           status: "mock",
+        },
+        {
+          title: "Analytics",
+          icon: "📊",
+          route: "/(tabs)/analytics",
+          status: "working",
+        },
+        {
+          title: "Classes",
+          icon: "📚",
+          route: "/(tabs)/classes",
+          status: "working",
+        },
+        {
+          title: "Student Marks",
+          icon: "📝",
+          route: "/academics/student-marks",
+          status: "working",
+        },
+        {
+          title: "Staff Payroll",
+          icon: "💼",
+          route: "/finance/staff-payroll",
+          status: "working",
         },
         {
           title: "Fee Structure",
@@ -374,10 +377,10 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
   const handleItemPress = (route: string) => {
     router.push(route as any);
     onClose();
-  };
+  }; ``
 
   const handleNavigation = (route: string) => {
-    router.push(route);
+    router.push(route as any);
     onClose();
   };
 
@@ -413,7 +416,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             key={index}
             style={[
               styles.menuItem,
-              { borderBottomColor: colors.border },
+              { borderBottomColor: colors.border, backgroundColor: colors.surface },
               activeRoute === navigationRoute && styles.activeMenuItem,
             ]}
             onPress={() => handleItemPress(navigationRoute!)}
@@ -508,7 +511,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/exams/student-exam-timetable" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() =>
                     handleNavigation("/exams/student-exam-timetable")
@@ -527,7 +530,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/exams/student-marks-table" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/exams/student-marks-table")}
                 >
@@ -544,7 +547,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/exams/student-marks-analytics" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() =>
                     handleNavigation("/exams/student-marks-analytics")
@@ -586,7 +589,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/tasks/task-list" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/tasks/task-list")}
                 >
@@ -603,7 +606,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/tasks/add-edit-task" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/tasks/add-edit-task")}
                 >
@@ -620,7 +623,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/tasks/task-submissions" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/tasks/task-submissions")}
                 >
@@ -660,7 +663,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/leave/leave-requests" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/leave/leave-requests")}
                 >
@@ -677,7 +680,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/leave/leave-quota" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/leave/leave-quota")}
                 >
@@ -694,7 +697,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/leave/holiday-calendar" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/leave/holiday-calendar")}
                 >
@@ -734,7 +737,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-rooms" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-rooms")}
                 >
@@ -751,7 +754,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-students" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-students")}
                 >
@@ -768,7 +771,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-visitors" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-visitors")}
                 >
@@ -785,7 +788,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-canteen" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-canteen")}
                 >
@@ -802,7 +805,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-inventory" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-inventory")}
                 >
@@ -819,7 +822,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                   style={[
                     styles.submenuItem,
                     activeRoute === "/hostel/hostel-analytics" &&
-                      styles.activeSubmenuItem,
+                    styles.activeSubmenuItem,
                   ]}
                   onPress={() => handleNavigation("/hostel/hostel-analytics")}
                 >
@@ -871,7 +874,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
                         style={[
                           styles.submenuItem,
                           activeRoute === item.route &&
-                            styles.activeSubmenuItem,
+                          styles.activeSubmenuItem,
                         ]}
                         onPress={() => handleNavigation(item.route!)}
                       >
@@ -1073,9 +1076,9 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   activeMenuItem: {
-    backgroundColor: "#E5E7EB",
+    backgroundColor: "auto",
   },
   activeSubmenuItem: {
-    backgroundColor: "#D1D5DB",
+    backgroundColor: "auto",
   },
 });

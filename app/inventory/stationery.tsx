@@ -18,11 +18,11 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
-import { 
-  useStationaryTypes, 
-  useStationary, 
+import {
+  useStationaryTypes,
+  useStationary,
   useInventoryTracking,
-  useStandards 
+  useStandards
 } from '@/hooks/useApi';
 
 interface StationaryItem {
@@ -86,13 +86,13 @@ export default function StationeryScreen() {
 
   const filteredItems = useMemo(() => {
     if (!stationaryTypes || !Array.isArray(stationaryTypes)) return [];
-    
+
     return stationaryTypes.filter((item: StationaryItem) => {
       if (!item || typeof item !== 'object') return false;
       if (!searchQuery) return true;
-      
+
       const matchesSearch = (item.name && item.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                           (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
+        (item.description && item.description.toLowerCase().includes(searchQuery.toLowerCase()));
       return matchesSearch;
     });
   }, [stationaryTypes, searchQuery]);
@@ -334,7 +334,7 @@ export default function StationeryScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         refreshControl={
           <RefreshControl

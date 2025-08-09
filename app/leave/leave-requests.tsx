@@ -32,13 +32,11 @@ interface LeaveRequest {
       name: string;
     };
   };
-  leave_type: {
-    id: number;
-    name: string;
-    max_days_per_year: number;
-  };
-  start_date: string;
-  end_date: string;
+
+  leave_type: string;
+  created: string;
+  from_date: string;
+  to_date: string;
   days_requested: number;
   reason: string;
   status: 'pending' | 'approved' | 'rejected' | 'cancelled';
@@ -47,6 +45,10 @@ interface LeaveRequest {
     id: number;
     name: string;
   };
+  user: {
+    first_name: string;
+    email: string;
+  }
   approved_date?: string;
   rejection_reason?: string;
 }
@@ -78,11 +80,13 @@ export default function LeaveRequestsScreen() {
   // https://vai.dev.sms.visionariesai.com/api/leave/?branch=1&academic_year=2&employee=204&status=approved&limit=5&omit=modified_by,created_by,l1_approved_by__modified_by,l1_approved_by__group__permissions,l1_approved_by__education_details
 
 
-  // Fetch data
+  // Fetch 2
   const { data: employees = [], loading: employeesLoading } = useAllUsersExceptStudents({
     branch: selectedBranch,
     academic_year: selectedAcademicYear
   });
+
+  // console.log('employees', employees);
 
   const requestsParams = useMemo(() => ({
     branch: selectedBranch,
@@ -105,6 +109,8 @@ export default function LeaveRequestsScreen() {
     refetch: refetchRequests
   } = useLeaveRequests(requestsParams);
 
+  // console.log('leaveRequests', leaveRequests);
+
   // Extract leave types from requests
   const leaveTypes = useMemo(() => {
     const types = new Map();
@@ -121,7 +127,7 @@ export default function LeaveRequestsScreen() {
     { id: 0, name: 'All Employees' },
     ...employees.map((employee: any) => ({
       id: employee.id,
-      name: employee.name || employee.email || 'Unnamed Employee'
+      name: employee.first_name || employee.email || 'Unnamed Employee'
     }))
   ], [employees]);
 
@@ -200,7 +206,7 @@ export default function LeaveRequestsScreen() {
     >
       <View style={styles.requestHeader}>
         <Text style={[styles.employeeName, { color: colors.textPrimary }]} numberOfLines={1}>
-          {item.employee?.first_name || item.employee?.email || 'Unknown Employee'}
+          {item.user?.first_name || item.employee?.email || 'Unknown Employee'}
         </Text>
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) + '20' }]}>
           <Text style={[styles.statusText, { color: getStatusColor(item.status) }]}>
@@ -210,20 +216,20 @@ export default function LeaveRequestsScreen() {
       </View>
 
       <Text style={[styles.leaveType, { color: colors.primary }]}>
-        {item.leave_type?.name || 'Unknown Leave Type'}
+        {item.leave_type || 'Unknown Leave Type'}
       </Text>
 
       <View style={styles.dateRow}>
         <Text style={[styles.dateText, { color: colors.textSecondary }]}>
-          From: {formatDate(item.start_date)}
+          From: {formatDate(item.from_date)}
         </Text>
         <Text style={[styles.dateText, { color: colors.textSecondary }]}>
-          To: {formatDate(item.end_date)}
+          To: {formatDate(item.to_date)}
         </Text>
       </View>
 
       <Text style={[styles.daysRequested, { color: colors.textSecondary }]}>
-        Days Requested: {item.days_requested || calculateDays(item.start_date, item.end_date)}
+        Days Requested: {item.days_requested || calculateDays(item.from_date, item.to_date)}
       </Text>
 
       {item.reason && (
@@ -233,7 +239,7 @@ export default function LeaveRequestsScreen() {
       )}
 
       <Text style={[styles.appliedDate, { color: colors.textSecondary }]}>
-        Applied: {formatDate(item.applied_date)}
+        Applied: {formatDate(item.created)}
       </Text>
 
       {item.approved_by && (

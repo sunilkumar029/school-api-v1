@@ -22,6 +22,9 @@ import { useUsers, useRooms, useStandards } from '@/hooks/useApi';
 
 interface HostelStudent {
   id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
   user: {
     first_name: string;
     last_name: string;
@@ -35,7 +38,7 @@ interface HostelStudent {
     name: string;
   };
   allocation_date?: string;
-  status: 'Allocated' | 'Pending' | 'Checked Out';
+  is_active: boolean;
 }
 
 export default function HostelStudentsScreen() {
@@ -80,6 +83,7 @@ export default function HostelStudentsScreen() {
     academic_year: selectedAcademicYear
   });
 
+
   // Filter options
   const roomOptions = [
     { id: null, name: 'All Rooms' },
@@ -114,10 +118,12 @@ export default function HostelStudentsScreen() {
     return filtered;
   }, [students, selectedRoom, selectedStatus]);
 
-  const getStatusColor = (status: string) => {
+
+
+  const getStatusColor = (status: any) => {
     switch (status?.toLowerCase()) {
-      case 'allocated': return '#10B981';
-      case 'pending': return '#F59E0B';
+      case true: return '#10B981';
+      case false: return '#F59E0B';
       case 'checked out': return '#6B7280';
       default: return '#8B5CF6';
     }
@@ -170,10 +176,10 @@ ${student.allocation_date ? `Allocated Date: ${new Date(student.allocation_date)
       <View style={styles.studentHeader}>
         <View style={styles.studentInfo}>
           <Text style={[styles.studentName, { color: colors.textPrimary }]}>
-            {student.user?.first_name} {student.user?.last_name}
+            {student.first_name} {student.last_name}
           </Text>
           <Text style={[styles.studentEmail, { color: colors.textSecondary }]}>
-            {student.user?.email}
+            {student.email}
           </Text>
           {student.standard && (
             <Text style={[styles.studentClass, { color: colors.textSecondary }]}>
@@ -183,7 +189,7 @@ ${student.allocation_date ? `Allocated Date: ${new Date(student.allocation_date)
         </View>
 
         <View style={[styles.statusBadge, { backgroundColor: getStatusColor(student.status) }]}>
-          <Text style={styles.statusText}>{student.status}</Text>
+          <Text style={styles.statusText}>{student.is_active ? 'Active' : 'Inactive'}</Text>
         </View>
       </View>
 

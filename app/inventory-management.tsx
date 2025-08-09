@@ -1,5 +1,5 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -19,7 +19,7 @@ import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
 import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useInventory, useInventoryCategories } from '@/hooks/useApi';
+import { useInventory, useInventoryTypes } from '@/hooks/useApi';
 
 interface InventoryItem {
   id: number;
@@ -58,11 +58,12 @@ export default function InventoryManagementScreen() {
   const [selectedCondition, setSelectedCondition] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string | null>(null);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
+  const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number | null>(null);
+
 
   // Global filters
   const {
-    selectedBranch,
-    selectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,
@@ -70,24 +71,41 @@ export default function InventoryManagementScreen() {
   } = useGlobalFilters();
 
   // Fetch data
-  const { data: categories = [], loading: categoriesLoading } = useInventoryCategories();
+  const { data: categories = [], loading: categoriesLoading } = useInventoryTypes();
 
-  const inventoryParams = useMemo(() => ({
-    branch: selectedBranch,
-    academic_year: selectedAcademicYear,
-    category: selectedCategory,
-    condition: selectedCondition,
-    status: selectedStatus,
-  }), [selectedBranch, selectedAcademicYear, selectedCategory, selectedCondition, selectedStatus]);
+  const inventoryParams = useMemo(() => {
+    const params: any = {};
+    if (selectedBranch) params.branch = selectedBranch;
+    if (selectedAcademicYear) params.academic_year = selectedAcademicYear;
+    if (selectedCategory) params.category = selectedCategory;
+    if (selectedCondition) params.condition = selectedCondition;
+    if (selectedStatus) params.status = selectedStatus;
+    return params;
+  }, [selectedBranch, selectedAcademicYear, selectedCategory, selectedCondition, selectedStatus]);
 
-  const { 
-    data: inventoryItems = [], 
-    loading: inventoryLoading, 
+  const {
+    data: inventoryItems = [],
+    loading: inventoryLoading,
     error: inventoryError,
     refetch: refetchInventory
   } = useInventory(inventoryParams);
 
-  // Filter options
+  useEffect(() => {
+    refetchInventory();
+  }, [selectedBranch, selectedAcademicYear, selectedCategory, selectedCondition, selectedStatus]);
+
+
+  // Filter options with proper structure for ModalDropdownFilter
+  const branchOptions = useMemo(() => [
+    { id: 0, name: 'All Branches' },
+    ...(branches || []).map((branch: any) => ({ id: branch.id, name: branch.name })),
+  ], [branches]);
+
+  const academicYearOptions = useMemo(() => [
+    { id: 0, name: 'All Years' },
+    ...(academicYears || []).map((year: any) => ({ id: year.id, name: year.name })),
+  ], [academicYears]);
+
   const categoryOptions = useMemo(() => [
     { id: 0, name: 'All Categories' },
     ...categories.map((category: any) => ({
@@ -105,7 +123,7 @@ export default function InventoryManagementScreen() {
     { id: 5, name: 'Damaged' },
   ], []);
 
-  const conditionMapping = {
+  const conditionMapping: { [key: number]: string | null } = {
     0: null,
     1: 'excellent',
     2: 'good',
@@ -122,7 +140,7 @@ export default function InventoryManagementScreen() {
     { id: 4, name: 'Retired' },
   ], []);
 
-  const statusMapping = {
+  const statusMapping: { [key: number]: string | null } = {
     0: null,
     1: 'available',
     2: 'in_use',
@@ -181,8 +199,21 @@ export default function InventoryManagementScreen() {
     setSelectedItem(item);
   };
 
+  // Get selected values for dropdowns
+  const getSelectedConditionValue = () => {
+    if (!selectedCondition) return 0;
+    const entry = Object.entries(conditionMapping).find(([_, value]) => value === selectedCondition);
+    return entry ? parseInt(entry[0]) : 0;
+  };
+
+  const getSelectedStatusValue = () => {
+    if (!selectedStatus) return 0;
+    const entry = Object.entries(statusMapping).find(([_, value]) => value === selectedStatus);
+    return entry ? parseInt(entry[0]) : 0;
+  };
+
   const renderInventoryCard = ({ item }: { item: InventoryItem }) => (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.inventoryCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
       onPress={() => handleItemPress(item)}
     >
@@ -283,7 +314,7 @@ export default function InventoryManagementScreen() {
       <Text style={[styles.errorText, { color: colors.textSecondary }]}>
         Please check your connection and try again.
       </Text>
-      <TouchableOpacity 
+      <TouchableOpacity
         style={[styles.retryButton, { backgroundColor: colors.primary }]}
         onPress={handleRefresh}
       >
@@ -300,7 +331,7 @@ export default function InventoryManagementScreen() {
         <TopBar
           title="Inventory Management"
           onMenuPress={() => setDrawerVisible(true)}
-          onNotificationPress={() => router.push('/notifications')}
+          onNotificationsPress={() => router.push('/notifications')}
         />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color={colors.primary} />
@@ -318,7 +349,7 @@ export default function InventoryManagementScreen() {
       <TopBar
         title="Inventory Management"
         onMenuPress={() => setDrawerVisible(true)}
-        onNotificationPress={() => router.push('/notifications')}
+        onNotificationsPress={() => router.push('/notifications')}
       />
 
       {/* Global Filters */}
@@ -326,23 +357,25 @@ export default function InventoryManagementScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
-              items={branches || []}
-              selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
+              items={branchOptions || []}
+              selectedValue={selectedBranch || 0}
+              onValueChange={(value) => setSelectedBranch(value === 0 ? 1 : value)}
+              loading={branchesLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
-              items={academicYears || []}
-              selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
+              items={academicYearOptions || []}
+              selectedValue={selectedAcademicYear || 0}
+              onValueChange={(value) => setSelectedAcademicYear(value === 0 ? 1 : value)}
+              loading={academicYearsLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Category"
               items={categoryOptions}
@@ -351,19 +384,19 @@ export default function InventoryManagementScreen() {
               loading={categoriesLoading}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Condition"
               items={conditionOptions}
-              selectedValue={selectedCondition ? Object.keys(conditionMapping).find(key => conditionMapping[key] === selectedCondition) || 0 : 0}
+              selectedValue={getSelectedConditionValue()}
               onValueChange={(value) => setSelectedCondition(conditionMapping[value])}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
-              selectedValue={selectedStatus ? Object.keys(statusMapping).find(key => statusMapping[key] === selectedStatus) || 0 : 0}
+              selectedValue={getSelectedStatusValue()}
               onValueChange={(value) => setSelectedStatus(statusMapping[value])}
               compact={true}
             />

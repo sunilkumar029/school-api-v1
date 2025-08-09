@@ -21,11 +21,12 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
-import { 
-  useInventoryList, 
-  useInventoryTypes, 
+import {
+  useInventoryList,
+  useInventoryTypes,
   useRooms,
-  useInventoryTracking
+  useInventoryTracking,
+  useInventory
 } from '@/hooks/useApi';
 import { apiService } from '@/api/apiService';
 
@@ -59,11 +60,12 @@ export default function InventoryScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [assignModalVisible, setAssignModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState<InventoryItem | null>(null);
-  
+  const [selectedBranch, setSelectedBranch] = useState<number | null>(null);
+  const [selectedAcademicYear, setSelectedAcademicYear] = useState<number | null>(null);
+
+
   // Global filters
   const {
-    selectedBranch,
-    selectedAcademicYear,
     branches,
     academicYears,
     branchesLoading,
@@ -73,7 +75,19 @@ export default function InventoryScreen() {
   // Local filter states
   const [selectedInventoryType, setSelectedInventoryType] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  
+
+  const branchOptions = useMemo(() => [
+    { id: 0, name: 'All Branches' },
+    ...(branches || []).map((branch: any) => ({ id: branch.id, name: branch.name })),
+  ], [branches]);
+
+  const academicYearOptions = useMemo(() => [
+    { id: 0, name: 'All Years' },
+    ...(academicYears || []).map((year: any) => ({ id: year.id, name: year.name })),
+  ], [academicYears]);
+
+
+
   // Form states
   const [formData, setFormData] = useState({
     name: '',
@@ -95,10 +109,15 @@ export default function InventoryScreen() {
   });
 
   // Fetch data with memoized parameters
-  const inventoryParams = useMemo(() => ({
-    branch: selectedBranch,
-    omit: 'created_by,modified_by,branch',
-  }), [selectedBranch]);
+  const inventoryParams = useMemo(() => {
+    const params: any = {};
+    if (selectedBranch) params.branch = selectedBranch;
+    if (selectedAcademicYear) params.academic_year = selectedAcademicYear;
+    return params;
+  }, [selectedBranch, selectedAcademicYear]);
+
+  const { data: inventory, isLoading: inventoryLoading } = useInventory(inventoryParams);
+
 
   const typesParams = useMemo(() => ({
     is_active: true,
@@ -150,12 +169,12 @@ export default function InventoryScreen() {
   const filteredItems = useMemo(() => {
     return inventoryItems.filter((item: InventoryItem) => {
       const matchesSearch = item.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           item.description?.toLowerCase().includes(searchQuery.toLowerCase());
-      
+        item.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
       const matchesType = !selectedInventoryType ||
-                         (selectedInventoryType === 'stationary' && item.is_stationary) ||
-                         (selectedInventoryType === 'inventory' && !item.is_stationary);
-      
+        (selectedInventoryType === 'stationary' && item.is_stationary) ||
+        (selectedInventoryType === 'inventory' && !item.is_stationary);
+
       return matchesSearch && matchesType;
     });
   }, [inventoryItems, searchQuery, selectedInventoryType]);
@@ -200,7 +219,7 @@ export default function InventoryScreen() {
 
   const handleEdit = useCallback(async () => {
     if (!selectedItem) return;
-    
+
     try {
       const payload = {
         id: selectedItem.id,
@@ -237,11 +256,11 @@ export default function InventoryScreen() {
 
   const handleAssign = useCallback(async () => {
     if (!selectedItem) return;
-    
+
     try {
       const availableQty = getAvailableQuantity(selectedItem);
       const requestedQty = parseInt(assignmentData.quantity);
-      
+
       if (requestedQty > availableQty) {
         Alert.alert('Error', `Only ${availableQty} items available for assignment`);
         return;
@@ -298,7 +317,7 @@ export default function InventoryScreen() {
 
   const renderInventoryCard = (item: InventoryItem) => {
     const availableQty = getAvailableQuantity(item);
-    
+
     return (
       <View key={item.id} style={[styles.itemCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
         <View style={styles.itemHeader}>
@@ -312,15 +331,15 @@ export default function InventoryScreen() {
             <Text style={styles.statusText}>{item.status || 'Unknown'}</Text>
           </View>
         </View>
-        
+
         {item.product_image && (
           <Image source={{ uri: item.product_image }} style={styles.productImage} />
         )}
-        
+
         <Text style={[styles.itemDescription, { color: colors.textSecondary }]}>
           {item.description || 'No description available'}
         </Text>
-        
+
         <View style={styles.itemDetails}>
           <View style={styles.quantityContainer}>
             <Text style={[styles.quantityLabel, { color: colors.textSecondary }]}>Total Quantity:</Text>
@@ -370,7 +389,7 @@ export default function InventoryScreen() {
           >
             <Text style={[styles.actionButtonText, { color: colors.primary }]}>Edit</Text>
           </TouchableOpacity>
-          
+
           {availableQty > 0 && (
             <TouchableOpacity
               style={[styles.actionButton, { borderColor: '#8B5CF6' }]}
@@ -382,7 +401,7 @@ export default function InventoryScreen() {
               <Text style={[styles.actionButtonText, { color: '#8B5CF6' }]}>Assign</Text>
             </TouchableOpacity>
           )}
-          
+
           <TouchableOpacity
             style={[styles.actionButton, { borderColor: '#EF4444' }]}
             onPress={() => handleDelete(item)}
@@ -430,9 +449,9 @@ export default function InventoryScreen() {
                 label="Select Type"
                 selectedValue={formData.inventory_type_id}
                 onValueChange={(value) => setFormData({ ...formData, inventory_type_id: value })}
-                options={inventoryTypes.map((type: any) => ({ 
-                  label: type.name || 'Unnamed Type', 
-                  value: type.id?.toString() || '' 
+                options={inventoryTypes.map((type: any) => ({
+                  label: type.name || 'Unnamed Type',
+                  value: type.id?.toString() || ''
                 }))}
               />
             </View>
@@ -548,9 +567,9 @@ export default function InventoryScreen() {
                 label="Select Room"
                 selectedValue={assignmentData.room_id}
                 onValueChange={(value) => setAssignmentData({ ...assignmentData, room_id: value })}
-                options={rooms.map((room: any) => ({ 
-                  label: room.name || 'Unnamed Room', 
-                  value: room.id?.toString() || '' 
+                options={rooms.map((room: any) => ({
+                  label: room.name || 'Unnamed Room',
+                  value: room.id?.toString() || ''
                 }))}
               />
             </View>
@@ -625,34 +644,21 @@ export default function InventoryScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
+              items={branches || []}
               selectedValue={selectedBranch}
-              onValueChange={() => {}} // Read-only from global filters
-              options={branches.map((branch: any) => ({ 
-                label: branch.name || 'Unnamed Branch', 
-                value: branch.id 
-              }))}
-              disabled={true}
+              onValueChange={setSelectedBranch}
+              compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
+              items={academicYears || []}
               selectedValue={selectedAcademicYear}
-              onValueChange={() => {}} // Read-only from global filters
-              options={academicYears.map((year: any) => ({ 
-                label: year.name || 'Unnamed Year', 
-                value: year.id 
-              }))}
-              disabled={true}
-            />
-            
-            <ModalDropdownFilter
-              label="Type"
-              selectedValue={selectedInventoryType}
-              onValueChange={setSelectedInventoryType}
-              options={inventoryTypeOptions}
+              onValueChange={setSelectedAcademicYear}
+              compact={true}
             />
           </View>
         </ScrollView>
@@ -669,7 +675,7 @@ export default function InventoryScreen() {
             onChangeText={setSearchQuery}
           />
         </View>
-        
+
         <TouchableOpacity
           style={[styles.addButton, { backgroundColor: '#10B981' }]}
           onPress={() => setAddModalVisible(true)}
@@ -679,7 +685,7 @@ export default function InventoryScreen() {
       </View>
 
       {/* Content */}
-      <ScrollView 
+      <ScrollView
         style={styles.content}
         refreshControl={
           <RefreshControl
