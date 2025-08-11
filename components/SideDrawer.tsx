@@ -61,19 +61,19 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Dashboard",
-          icon: "🏠",
+          icon: "home",
           route: "/",
           status: "working",
         },
         {
           title: "Events",
-          icon: "📅",
+          icon: "event",
           route: "/(tabs)/events",
           status: "working",
         },
         {
           title: "Notifications",
-          icon: "🔔",
+          icon: "notifications",
           route: "/(tabs)/notifications",
           status: "working",
         },
@@ -83,23 +83,21 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       title: "Academic Management",
       status: "working",
       items: [
-
         {
           title: "Department",
-          icon: "🏢",
+          icon: "business",
           route: "/(tabs)/department",
           status: "working",
         },
         {
           title: "Staff Timetable",
-          icon: "📅",
+          icon: "schedule",
           route: "/academics/staff-timetable",
           status: "working",
         },
-
         {
           title: "Student Attendance",
-          icon: "✅",
+          icon: "check-circle",
           route: "/academics/student-attendance",
           status: "working",
         },
@@ -111,26 +109,25 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Student Fees",
-          icon: "💳",
+          icon: "credit-card",
           route: "/finance/student-fee-list",
           status: "working",
         },
         {
           title: "Fee Analytics",
-          icon: "📊",
+          icon: "bar-chart",
           route: "/finance/student-fee-analytics",
           status: "working",
         },
-
         {
           title: "Salary Templates",
-          icon: "📄",
+          icon: "description",
           route: "/finance/salary-templates",
           status: "working",
         },
         {
           title: "School Expenditure",
-          icon: "💰",
+          icon: "attach-money",
           route: "/finance/school-expenditure",
           status: "working",
         },
@@ -142,26 +139,26 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Transport",
-          icon: "🚌",
+          icon: "directions-bus",
           route: "/transport",
           status: "working",
         },
         {
           title: "Attendance Dashboard",
-          icon: "📊",
+          icon: "bar-chart",
           route: "/attendance-dashboard",
           status: "working",
         },
         {
           title: "Branch Locations",
-          icon: "📍",
+          icon: "location-on",
           route: "/locations",
           status: "working",
         },
-        { title: "Support", icon: "💬", route: "/support", status: "working" },
+        { title: "Support", icon: "chat", route: "/support", status: "working" },
         {
           title: "Users Management",
-          icon: "👥",
+          icon: "group",
           route: "/users",
           status: "working",
         },
@@ -173,25 +170,25 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Inventory Dashboard",
-          icon: "📦",
+          icon: "inventory",
           route: "/inventory-dashboard",
           status: "working",
         },
         {
           title: "Inventory List",
-          icon: "📋",
+          icon: "list",
           route: "/inventory",
           status: "working",
         },
         {
           title: "Stationery",
-          icon: "📝",
+          icon: "edit",
           route: "/inventory/stationery",
           status: "working",
         },
         {
           title: "Stationery Fees",
-          icon: "💰",
+          icon: "monetization-on",
           route: "/inventory/stationery-fee",
           status: "working",
         },
@@ -207,55 +204,55 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Wallet",
-          icon: "💳",
+          icon: "credit-card",
           route: "/(tabs)/wallet",
           status: "mock",
         },
         {
           title: "Food Court",
-          icon: "🍽️",
+          icon: "restaurant",
           route: "/(tabs)/foodcourt",
           status: "mock",
         },
         {
           title: "Analytics",
-          icon: "📊",
+          icon: "bar-chart",
           route: "/(tabs)/analytics",
           status: "working",
         },
         {
           title: "Classes",
-          icon: "📚",
+          icon: "school",
           route: "/(tabs)/classes",
           status: "working",
         },
         {
           title: "Student Marks",
-          icon: "📝",
+          icon: "edit",
           route: "/academics/student-marks",
           status: "working",
         },
         {
           title: "Staff Payroll",
-          icon: "💼",
+          icon: "work",
           route: "/finance/staff-payroll",
           status: "working",
         },
         {
           title: "Fee Structure",
-          icon: "💰",
+          icon: "monetization-on",
           route: "/(tabs)/fee-structure",
           status: "mock",
         },
-        { title: "Chat", icon: "💬", route: "/chat", status: "mock" },
+        { title: "Chat", icon: "chat", route: "/chat", status: "mock" },
         {
           title: "File Management",
-          icon: "📁",
+          icon: "folder",
           route: "/file-management",
           status: "mock",
         },
-        { title: "Weather", icon: "🌤️", route: "/weather", status: "mock" },
-        { title: "Sports", icon: "⚽", route: "/sports", status: "mock" },
+        { title: "Weather", icon: "wb_sunny", route: "/weather", status: "mock" },
+        { title: "Sports", icon: "sports_soccer", route: "/sports", status: "mock" },
       ],
     },
     {
@@ -264,36 +261,36 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Employee Performance",
-          icon: "👤",
+          icon: "person",
           route: "/my-performance/employee",
           status: "mock",
         },
         {
           title: "Task Performance",
-          icon: "📋",
+          icon: "assignment",
           route: "/my-performance/task",
           status: "mock",
         },
         {
           title: "Expense Claims",
-          icon: "💰",
+          icon: "money-off",
           route: "/expense-claims",
           status: "mock",
         },
         {
           title: "My Requests",
-          icon: "📋",
+          icon: "assignment",
           route: "/my-requests",
           status: "mock",
         },
         {
           title: "My Rewards",
-          icon: "🏆",
+          icon: "emoji-events",
           route: "/my-rewards",
           status: "mock",
         },
-        { title: "My Tasks", icon: "📝", route: "/my-tasks", status: "mock" },
-        { title: "Timesheet", icon: "⏱️", route: "/timesheet", status: "mock" },
+        { title: "My Tasks", icon: "assignment", route: "/my-tasks", status: "mock" },
+        { title: "Timesheet", icon: "timer", route: "/timesheet", status: "mock" },
       ],
     },
     {
@@ -302,31 +299,31 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Teacher Performance",
-          icon: "👨‍🏫",
+          icon: "person",
           route: "/academics/teacher-performance",
           status: "mock",
         },
         {
           title: "Student Performance",
-          icon: "📈",
+          icon: "trending-up",
           route: "/academics/student-performance",
           status: "mock",
         },
         {
           title: "Classroom",
-          icon: "🏫",
+          icon: "class",
           route: "/academics/classroom",
           status: "mock",
         },
         {
           title: "Online Class",
-          icon: "💻",
+          icon: "computer",
           route: "/academics/online-class",
           status: "mock",
         },
         {
           title: "Class Timetable",
-          icon: "⏰",
+          icon: "schedule",
           route: "/academics/class-timetable",
           status: "mock",
         },
@@ -342,31 +339,31 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
       items: [
         {
           title: "Library Resources",
-          icon: "📚",
+          icon: "library-books",
           route: "/library/resources",
           status: "upcoming",
         },
         {
           title: "E-Course",
-          icon: "💻",
+          icon: "computer",
           route: "/library/ecourse",
           status: "upcoming",
         },
         {
           title: "Money Request",
-          icon: "💰",
+          icon: "attach-money",
           route: "/finance/money-request",
           status: "upcoming",
         },
         {
           title: "Invoice System",
-          icon: "📄",
+          icon: "receipt",
           route: "/invoice",
           status: "upcoming",
         },
         {
           title: "Advanced Analytics",
-          icon: "📊",
+          icon: "analytics",
           route: "/analytics/advanced",
           status: "upcoming",
         },
@@ -422,7 +419,7 @@ export const SideDrawer: React.FC<SideDrawerProps> = ({ visible, onClose }) => {
             onPress={() => handleItemPress(navigationRoute!)}
           >
             <View style={styles.menuItemContent}>
-              {item.icon && <Text style={styles.menuIcon}>{item.icon}</Text>}
+              {item.icon && <MaterialIcons name={item.icon} style={[styles.menuIcon, { color: colors.textPrimary }]} />}
               <Text style={[styles.menuTitle, { color: colors.textPrimary }]}>
                 {item.title}
               </Text>
@@ -1028,9 +1025,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   menuIcon: {
-    fontSize: 18,
+    fontSize: 24,
     marginRight: 16,
-    width: 24,
+    width: 28,
     textAlign: "center",
   },
   menuTitle: {

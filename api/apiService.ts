@@ -526,11 +526,6 @@ class ApiService {
     return response.data;
   }
 
-  async getSections(params?: any): Promise<PaginatedResponse<any>> {
-    const response = await this.api.get("/api/sections/", { params });
-    return response.data;
-  }
-
   async getAllUsers(params?: any): Promise<PaginatedResponse<any>> {
     const response = await this.api.get("/api/users/get-all-users/", {
       params,

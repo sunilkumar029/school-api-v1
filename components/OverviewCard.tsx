@@ -19,17 +19,21 @@ export const OverviewCard: React.FC<OverviewCardProps> = ({
 }) => {
   const { colors } = useTheme();
 
+
   return (
     <TouchableOpacity
       style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}
       onPress={onPress}
       activeOpacity={0.7}
     >
-      <View style={styles.header}>
-        <Text style={[styles.icon, { color: colors.primary }]}>{icon}</Text>
+      <View style={styles.footer}>
         <Text style={[styles.title, { color: colors.textSecondary }]}>{title}</Text>
+        <Text style={[styles.value, { color: colors.textPrimary }]}>{value}</Text>
       </View>
-      <Text style={[styles.value, { color: colors.textPrimary }]}>{value}</Text>
+      <Text style={[styles.icon, { color: colors.primary }]}>{icon}</Text>
+
+
+
     </TouchableOpacity>
   );
 };
@@ -46,14 +50,15 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-  },
-  header: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
+    justifyContent: 'space-between',
+  },
+  footer: {
+    flexDirection: 'column',
+    alignItems: 'flex-start',
   },
   icon: {
-    fontSize: 16,
+    fontSize: 28,
     marginRight: 6,
   },
   title: {

@@ -15,6 +15,17 @@
         "buildType": "apk"
       },
       "autoIncrement": true
+    },
+    "staging": {
+      "releaseChannel": "staging",
+      "distribution": "internal",
+      "developmentClient": true,
+      "env": {
+        "APP_ENV": "staging"
+      },
+      "android": {
+        "buildType": "apk"
+      }
     }
   },
   "submit": {

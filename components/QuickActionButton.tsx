@@ -25,7 +25,6 @@ export const QuickActionButton: React.FC<QuickActionButtonProps> = ({
       style={[styles.container, { backgroundColor: colors.card, borderColor: colors.border }]}
       onPress={onPress}
       activeOpacity={0.7}
-      key={title}
     >
       <Text style={[styles.icon, { color: colors.primary }]}>{icon}</Text>
       <Text style={[styles.title, { color: colors.textPrimary }]}>{title}</Text>

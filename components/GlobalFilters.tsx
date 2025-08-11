@@ -32,6 +32,26 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
     academicYearsLoading,
   } = useGlobalFilters();
 
+  const handleSelectBranch = (branchId: number) => {
+    try {
+      setSelectedBranch(branchId);
+      setBranchModalVisible(false);
+    } catch (error) {
+      console.error("Error selecting branch:", error);
+      // Optionally, show user feedback about the error
+    }
+  };
+
+  const handleSelectYear = (yearId: number) => {
+    try {
+      setSelectedAcademicYear(yearId);
+      setYearModalVisible(false);
+    } catch (error) {
+      console.error("Error selecting academic year:", error);
+      // Optionally, show user feedback about the error
+    }
+  };
+
   const [branchModalVisible, setBranchModalVisible] = useState(false);
   const [yearModalVisible, setYearModalVisible] = useState(false);
 
@@ -67,12 +87,10 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
           </View>
 
           <ScrollView style={styles.modalBody}>
-            {branchesLoading ? (
-              <ActivityIndicator
-                size="large"
-                color={colors.primary}
-                style={styles.loading}
-              />
+            {!branchesLoading && branches.length === 0 ? (
+              <Text style={{ color: colors.textSecondary, textAlign: "center", padding: 16 }}>
+                No branches available
+              </Text>
             ) : (
               branches.map((branch) => (
                 <TouchableOpacity
@@ -87,10 +105,11 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
                       borderBottomColor: colors.border,
                     },
                   ]}
-                  onPress={() => {
-                    setSelectedBranch(branch.id);
-                    setBranchModalVisible(false);
-                  }}
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${branch.name}`}
+                  onPress={() => handleSelectBranch(branch.id)}
+
                 >
                   <Text
                     style={[
@@ -167,10 +186,11 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
                       borderBottomColor: colors.border,
                     },
                   ]}
-                  onPress={() => {
-                    setSelectedAcademicYear(year.id);
-                    setYearModalVisible(false);
-                  }}
+                  accessible
+                  accessibilityRole="button"
+                  accessibilityLabel={`Select ${year.name}`}
+                  onPress={() => handleSelectYear(year.id)}
+
                 >
                   <Text
                     style={[
@@ -249,7 +269,7 @@ export const GlobalFilters: React.FC<GlobalFiltersProps> = ({
       </View>
     );
   }
-  
+
   // https://vai.dev.sms.visionariesai.com/api/sections/?branch=1
   // https://vai.dev.sms.visionariesai.com/api/academic-years/
   // https://vai.dev.sms.visionariesai.com/api/standards/?branch=1&academic_year=1

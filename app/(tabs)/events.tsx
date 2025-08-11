@@ -73,16 +73,16 @@ export default function EventsScreen() {
       title: event.name || "Untitled Event",
       date: event.start_date
         ? new Date(event.start_date).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        })
         : "TBD",
       time: event.start_date
         ? new Date(event.start_date).toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })
+          hour: "2-digit",
+          minute: "2-digit",
+        })
         : "TBD",
       location:
         event.location ||

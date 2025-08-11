@@ -30,8 +30,18 @@ import {
   useLeaveRequests,
   useInventoryDashboard
 } from '@/hooks/useApi';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 const { width } = Dimensions.get('window');
+
+interface QuickActionButtonProps {
+  title?: string;
+  icon?: string;
+  color?: string;
+  key?: string;
+  onPress: () => void;
+}
+
 
 export default function DashboardScreen() {
   const { colors } = useTheme();
@@ -57,6 +67,8 @@ export default function DashboardScreen() {
     ordering: '-start_date',
     limit: 3,
   });
+
+  // console.log(events);
 
   const { data: notifications, loading: notificationsLoading, refetch: refetchNotifications } = useNotifications({
     ...apiParams,
@@ -121,6 +133,7 @@ export default function DashboardScreen() {
       value: attendanceDashboard?.attendance_percentage || (attendanceLoading ? '...' : '0%'),
       subtitle: attendanceDashboard?.total_days ? `${attendanceDashboard.present_days}/${attendanceDashboard.total_days} days` : (attendanceLoading ? 'Loading...' : 'No data'),
       color: '#4CAF50',
+      icon: '📚',
       onPress: () => router.push('/attendance-dashboard'),
     },
     {
@@ -128,6 +141,7 @@ export default function DashboardScreen() {
       value: eventsLoading ? '...' : (events?.length?.toString() || '0'),
       subtitle: eventsLoading ? 'Loading...' : 'Upcoming events',
       color: '#2196F3',
+      icon: '📅',
       onPress: () => router.push('/(tabs)/events'),
     },
     {
@@ -135,6 +149,7 @@ export default function DashboardScreen() {
       value: tasksLoading ? '...' : (tasks?.length?.toString() || '0'),
       subtitle: tasksLoading ? 'Loading...' : 'Pending tasks',
       color: '#FF9800',
+      icon: '📝',
       onPress: () => router.push('/tasks/task-list'),
     },
     {
@@ -142,6 +157,7 @@ export default function DashboardScreen() {
       value: notificationsLoading ? '...' : (notifications?.length?.toString() || '0'),
       subtitle: notificationsLoading ? 'Loading...' : 'Recent updates',
       color: '#9C27B0',
+      icon: '🔔',
       onPress: () => router.push('/(tabs)/notifications'),
     },
     {
@@ -149,6 +165,7 @@ export default function DashboardScreen() {
       value: feeLoading ? '...' : (feeDashboard?.total_fees ? `₹${feeDashboard.total_fees}` : '₹0'),
       subtitle: feeLoading ? 'Loading...' : (feeDashboard?.paid_amount ? `₹${feeDashboard.paid_amount} paid` : 'No payments'),
       color: '#F44336',
+      icon: '💸',
       onPress: () => router.push('/finance/student-fee-analytics'),
     },
     {
@@ -156,6 +173,7 @@ export default function DashboardScreen() {
       value: inventoryLoading ? '...' : (inventoryDashboard?.total_items?.toString() || '0'),
       subtitle: inventoryLoading ? 'Loading...' : (inventoryDashboard?.low_stock_count ? `${inventoryDashboard.low_stock_count} low stock` : 'All good'),
       color: '#607D8B',
+      icon: '📦',
       onPress: () => router.push('/inventory-dashboard'),
     },
   ];
@@ -163,42 +181,42 @@ export default function DashboardScreen() {
   const quickActions = [
     {
       title: 'Apply Leave',
-      icon: '🏖️',
+      icon: 'flight-takeoff',
       color: '#E91E63',
       key: 'apply-leave',
       onPress: () => router.push('/leave/leave-requests'),
     },
     {
       title: 'View Timetable',
-      icon: '📅',
+      icon: 'event-note',
       color: '#3F51B5',
       key: 'view-timetable',
       onPress: () => router.push('/academics/staff-timetable'),
     },
     {
       title: 'Mark Attendance',
-      icon: '✅',
+      icon: 'check-box',
       color: '#4CAF50',
       key: 'mark-attendance',
       onPress: () => router.push('/academics/student-attendance'),
     },
     {
       title: 'tasks',
-      icon: '💬',
+      icon: 'chat',
       color: '#FF5722',
       key: 'tasks',
       onPress: () => router.push('/tasks/task-list'),
     },
     {
       title: 'Student Fees',
-      icon: '💳',
+      icon: 'attach-money',
       color: '#795548',
       key: 'student-fees',
       onPress: () => router.push('/finance/student-fee-list'),
     },
     {
       title: 'Support',
-      icon: '🎧',
+      icon: 'headset-mic',
       color: '#009688',
       key: 'support',
       onPress: () => router.push('/support'),
@@ -223,6 +241,10 @@ export default function DashboardScreen() {
       icon: '📋',
     })),
   ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
+
+  // console.log('recentActivities', recentActivities);
+
+
 
 
   return (
@@ -275,9 +297,20 @@ export default function DashboardScreen() {
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Quick Actions</Text>
           <View style={styles.quickActionsGrid}>
-            {quickActions.map(({ title, ...props }) => (
-              <View key={title} style={styles.quickActionWrapper}>
-                <QuickActionButton {...props} />
+            {quickActions.map(({ title, icon, color, onPress }, index) => (
+              <View key={`${title}-${index}`} style={styles.quickActionWrapper}>
+                <TouchableOpacity
+                  style={[
+                    styles.quickActionContainer,
+                    { backgroundColor: colors.card, borderColor: colors.border }
+                  ]}
+                  onPress={onPress}
+                  activeOpacity={0.7}
+                >
+                  {/* get material icon here */}
+                  <MaterialIcons name={icon} size={24} color={colors.primary} />
+                  <Text style={[styles.quickActionButtontitle, { color: colors.textPrimary }]}>{title}</Text>
+                </TouchableOpacity>
               </View>
             ))}
           </View>
@@ -304,19 +337,19 @@ export default function DashboardScreen() {
                   activeOpacity={0.7}
                   accessibilityRole="button"
                   accessibilityLabel={`Event: ${event.name}, starting at ${event.created}, ending at ${event.end_date}`}
-                // onPress={() => router.push(`/event/${event.id}`)}
                 >
-                  <View style={styles.timeContainer}>
-                    <Text style={[styles.time, { color: colors.primary }]}>
-                      📅 {formatDate(event.created)}
-                    </Text>
-                  </View>
+
                   <View style={styles.content}>
                     <Text style={[styles.title, { color: colors.textPrimary }]}>
                       {event.name}
                     </Text>
                     <Text style={[styles.type, { color: colors.textSecondary }]}>
                       Ends: {formatDate(event.end_date)}
+                    </Text>
+                  </View>
+                  <View style={styles.timeContainer}>
+                    <Text style={[styles.time, { color: colors.primary }]}>
+                      📅 {formatDate(event.created)}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -334,13 +367,6 @@ export default function DashboardScreen() {
               </Text>
             </View>
           )}
-          {!events || events === null || events === undefined ? (
-            <View style={[styles.emptyCard, { backgroundColor: colors.surface }]}>
-              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>
-                📅 No upcoming events
-              </Text>
-            </View>
-          ) : null}
         </View>
 
         {/* Recent Activity */}
@@ -358,15 +384,27 @@ export default function DashboardScreen() {
           ) : recentActivities.length > 0 ? (
             <View style={styles.activityList}>
               {recentActivities.slice(0, 3).map((activity, index) => (
-                // <RecentActivityItem key={activity.id || index} activity={activity} />
-                <View style={[styles.activitycontainer, { borderBottomColor: colors.border }]}>
-                  <Text style={[styles.icon, { color: colors.primary }]}>{recentActivities[index].icon}</Text>
+                <TouchableOpacity
+                  key={index}
+                  style={[styles.eventContainer, { backgroundColor: colors.card, borderColor: colors.border }]}
+                  activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={`Activity: ${activity.target}, performed by ${activity.user} at ${activity.timestamp}`}
+                >
                   <View style={styles.content}>
-                    <Text style={[styles.title, { color: colors.textPrimary }]}>{recentActivities[index].target}</Text>
-                    <Text style={[styles.description, { color: colors.textSecondary }]}>{recentActivities[index].timestamp}</Text>
+                    <Text style={[styles.title, { color: colors.textPrimary }]}>
+                      {activity.target}
+                    </Text>
+                    <Text style={[styles.description, { color: colors.textSecondary }]}>
+                      {activity.timestamp}
+                    </Text>
                   </View>
-                  <Text style={[styles.time, { color: colors.textSecondary }]}>{recentActivities[index].action}</Text>
-                </View>
+                  <View style={styles.timeContainer}>
+                    <Text style={[styles.time, { color: colors.primary }]}>
+                      {activity.icon}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
               ))}
             </View>
           ) : (
@@ -439,12 +477,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   eventContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
     padding: 12,
     // width: '48%',
     borderRadius: 8,
     borderWidth: 1,
     marginBottom: 8,
+    justifyContent: 'space-between',
   },
   content: {
     flex: 1,
@@ -504,6 +543,34 @@ const styles = StyleSheet.create({
     width: "28%",
     marginHorizontal: 6,
     marginBottom: 12,
+  },
+  quickActionContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    flex: 1,
+    margin: 6,
+    minHeight: 80,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    minWidth: "25%",
+    width: "100%",
+    // paddingHorizontal: 6,
+    // paddingVertical: 12,
+  },
+  QuickActionButtonicon: {
+    fontSize: 24,
+    marginBottom: 6,
+  },
+  quickActionButtontitle: {
+    fontSize: 12,
+    fontWeight: '500',
+    textAlign: 'center',
   },
   timeContainer: {
     marginRight: 12,

@@ -19,7 +19,7 @@ import { TopBar } from '@/components/TopBar';
 import { SideDrawer } from '@/components/SideDrawer';
 import { useGlobalFilters } from '@/contexts/GlobalFiltersContext';
 import { ModalDropdownFilter } from '@/components/ModalDropdownFilter';
-import { 
+import {
   useStationaryFee,
   useStandards,
   useSections,
@@ -71,18 +71,22 @@ export default function StationeryFeeScreen() {
   const [studentDetailsModalVisible, setStudentDetailsModalVisible] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'students'>('overview');
-  
+  const globalFilters = useGlobalFilters();
+  const branches = globalFilters && 'branches' in globalFilters ? globalFilters.branches : [];
+  const academicYears = globalFilters && 'academicYears' in globalFilters ? globalFilters.academicYears : [];
+  const branchesLoading = globalFilters && 'branchesLoading' in globalFilters ? globalFilters.branchesLoading : false;
+  const academicYearsLoading = globalFilters && 'academicYearsLoading' in globalFilters ? globalFilters.academicYearsLoading : false;
+
+
+
   // Global filters
   const {
     selectedBranch,
     selectedAcademicYear,
     setSelectedBranch,
     setSelectedAcademicYear,
-    branches,
-    academicYears,
-    branchesLoading,
-    academicYearsLoading
   } = useGlobalFilters();
+
 
   // Local filter states
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
@@ -98,12 +102,12 @@ export default function StationeryFeeScreen() {
   }), [selectedBranch, selectedAcademicYear, selectedStandard]);
 
   const { data: stationaryFeeData, loading: feeLoading, refetch: refetchFee, error: feeError } = useStationaryFee(stationaryFeeParams);
-  const { data: standards } = useStandards({ 
+  const { data: standards } = useStandards({
     branch: selectedBranch,
     is_active: true,
     academic_year: selectedAcademicYear,
   });
-  const { data: sections } = useSections({ 
+  const { data: sections } = useSections({
     branch: selectedBranch,
     standard: selectedStandard,
     omit: 'created_by',
@@ -175,11 +179,11 @@ export default function StationeryFeeScreen() {
       <ScrollView style={styles.overviewContent}>
         {safeStationaryFeeData.map((item: StationaryFeeItem, index: number) => {
           if (!item || typeof item !== 'object') return null;
-          
+
           const stationary = item.standard?.stationary || [];
           const activeItems = getActiveStationaryItems(stationary);
           const totalValue = calculateTotalStationaryValue(stationary);
-          
+
           return (
             <View key={item.id || index} style={[styles.overviewCard, { backgroundColor: colors.surface, borderColor: colors.border }]}>
               <View style={styles.cardHeader}>
@@ -206,7 +210,7 @@ export default function StationeryFeeScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.itemsList}>
                   {activeItems.map((stationaryItem: any, itemIndex: number) => {
                     if (!stationaryItem || typeof stationaryItem !== 'object') return null;
-                    
+
                     return (
                       <View key={stationaryItem?.id || `item-${itemIndex}`} style={[styles.itemChip, { backgroundColor: colors.background, borderColor: colors.border }]}>
                         <Text style={[styles.itemName, { color: colors.textPrimary }]}>{stationaryItem?.name || 'Unnamed Item'}</Text>
@@ -252,9 +256,9 @@ export default function StationeryFeeScreen() {
 
     const filteredStudents = mockStudents.filter(student => {
       if (!searchQuery) return true;
-      
+
       const matchesSearch = (student.user_name && student.user_name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-                           (student.admission_number && student.admission_number.toString().includes(searchQuery));
+        (student.admission_number && student.admission_number.toString().includes(searchQuery));
       return matchesSearch;
     });
 
@@ -269,7 +273,7 @@ export default function StationeryFeeScreen() {
                   {student.standard} - {student.section} | #{student.admission_number}
                 </Text>
               </View>
-              <View style={[styles.statusBadge, { 
+              <View style={[styles.statusBadge, {
                 backgroundColor: student.pending_amount > 0 ? '#EF4444' : '#10B981'
               }]}>
                 <Text style={styles.statusText}>
@@ -366,7 +370,7 @@ export default function StationeryFeeScreen() {
                 {selectedStudent?.given_stationary_count && Object.entries(selectedStudent.given_stationary_count).map(([itemId, quantity]) => (
                   <View key={itemId} style={styles.itemRow}>
                     <Text style={[styles.itemText, { color: colors.textPrimary }]}>Item ID: {itemId}</Text>
-                    <Text style={[styles.quantityText, { color: colors.textSecondary }]}>Qty: {quantity}</Text>
+                    <Text style={[styles.quantityText, { color: colors.textSecondary }]}>Qty: {quantity as number}</Text>
                   </View>
                 ))}
                 {(!selectedStudent?.given_stationary_count || Object.keys(selectedStudent.given_stationary_count).length === 0) && (
@@ -401,7 +405,7 @@ export default function StationeryFeeScreen() {
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filtersScroll}>
           <View style={styles.filtersRow}>
             <Text style={[styles.filtersLabel, { color: colors.textSecondary }]}>Filters:</Text>
-            
+
             <ModalDropdownFilter
               label="Branch"
               items={Array.isArray(branches) ? branches : []}
@@ -409,7 +413,7 @@ export default function StationeryFeeScreen() {
               onValueChange={setSelectedBranch}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Academic Year"
               items={Array.isArray(academicYears) ? academicYears : []}
@@ -417,13 +421,13 @@ export default function StationeryFeeScreen() {
               onValueChange={setSelectedAcademicYear}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Standard"
               items={[
                 { id: null, name: 'All Standards' },
-                ...safeStandards.map((standard: any) => ({ 
-                  id: standard?.id, 
+                ...safeStandards.map((standard: any) => ({
+                  id: standard?.id,
                   name: standard?.name || 'Unnamed Standard'
                 }))
               ]}
@@ -431,18 +435,18 @@ export default function StationeryFeeScreen() {
               onValueChange={setSelectedStandard}
               compact={true}
             />
-            
+
             <ModalDropdownFilter
               label="Section"
               items={[
                 { id: null, name: 'All Sections' },
-                ...safeSections.map((section: any) => ({ 
-                  id: section?.id, 
+                ...safeSections.map((section: any) => ({
+                  id: section?.id?.toString(),
                   name: section?.name || 'Unnamed Section'
                 }))
               ]}
-              selectedValue={selectedSection}
-              onValueChange={setSelectedSection}
+              selectedValue={Number(selectedSection)}
+              onValueChange={(value) => setSelectedSection(value.toString())}
               compact={true}
             />
           </View>
@@ -482,7 +486,7 @@ export default function StationeryFeeScreen() {
             Overview
           </Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity
           style={[
             styles.tab,

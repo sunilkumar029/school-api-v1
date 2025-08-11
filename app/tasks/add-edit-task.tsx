@@ -364,7 +364,7 @@ export default function AddEditTaskScreen() {
                       },
                     ]}
                   >
-                    {user.name}
+                    {user.first_name}
                   </Text>
                 </TouchableOpacity>
               ))}

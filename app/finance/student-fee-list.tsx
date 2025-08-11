@@ -44,7 +44,6 @@ interface FeeItem {
   };
   payment_status?: string;
   total_amount?: number;
-  paid_amount?: number;
   due_amount?: number;
 }
 
@@ -56,12 +55,14 @@ export default function StudentFeeListScreen() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedStandard, setSelectedStandard] = useState<number | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
+  const globalFilters = useGlobalFilters();
+  const branches = globalFilters && 'branches' in globalFilters ? globalFilters.branches : [];
+  const academicYears = globalFilters && 'academicYears' in globalFilters ? globalFilters.academicYears : [];
+
 
   const {
     selectedBranch,
     selectedAcademicYear,
-    branches,
-    academicYears,
     setSelectedBranch,
     setSelectedAcademicYear
   } = useGlobalFilters();
@@ -89,10 +90,10 @@ export default function StudentFeeListScreen() {
   }, [standards]);
 
   const statusOptions = [
-    { id: 'all', name: 'All Status' },
-    { id: 'paid', name: 'Paid' },
-    { id: 'partial', name: 'Partial' },
-    { id: 'pending', name: 'Pending' },
+    { id: 0, name: 'All Status' },
+    { id: 1, name: 'Paid' },
+    { id: 2, name: 'Partial' },
+    { id: 3, name: 'Pending' },
   ];
 
   // Filter data based on search query
@@ -119,9 +120,9 @@ export default function StudentFeeListScreen() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'paid': return '#4CAF50';
-      case 'partial': return '#FF9800';
-      case 'pending': return '#F44336';
+      case 'PAID': return '#4CAF50';
+      case 'PARTIAL': return '#FF9800';
+      case 'PENDING': return '#F44336';
       default: return colors.textSecondary;
     }
   };
@@ -253,8 +254,8 @@ export default function StudentFeeListScreen() {
             <ModalDropdownFilter
               label="Status"
               items={statusOptions}
-              selectedValue={selectedStatus}
-              onValueChange={setSelectedStatus}
+              selectedValue={parseInt(selectedStatus)}
+              onValueChange={(value) => setSelectedStatus(value.toString())}
               compact={true}
             />
           </View>
@@ -304,68 +305,68 @@ export default function StudentFeeListScreen() {
         </Text>
 
         {filteredData.map((fee, index) => (
+          <TouchableOpacity
+            key={`fee-item-${fee.id}-${index}`}
+            style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => handleViewDetails(fee)}
+          >
+            <View style={styles.feeHeader}>
+              <View>
+                <Text style={[styles.studentName, { color: colors.textPrimary }]}>
+                  {fee?.user_name}
+                </Text>
+                <Text style={[styles.admissionNumber, { color: colors.textSecondary }]}>
+                  #{fee.admission_number}
+                </Text>
+              </View>
+              <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.pending_fee < 0 ? 'PAID' : fee.pending_fee === 0 ? 'PARTIAL' : 'PENDING') + '20' }]}>
+                <Text style={[styles.statusText, { color: getStatusColor(fee.pending_fee < 0 ? 'PAID' : fee.pending_fee === 0 ? 'PARTIAL' : 'PENDING') }]}>
+                  {fee.pending_fee < 0 ? 'PAID' : fee.pending_fee === 0 ? 'PARTIAL' : 'PENDING'}
+                </Text>
+              </View>
+            </View>
+
+            <View style={styles.feeDetails}>
+              <View style={styles.feeRow}>
+                <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Class:</Text>
+                <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
+                  {fee.standard || 'N/A'} - {fee.section || 'N/A'}
+                </Text>
+              </View>
+
+              <View style={styles.feeRow}>
+                <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
+                <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
+                  ₹{fee.totalfee?.toLocaleString() || '0'}
+                </Text>
+              </View>
+
+              <View style={styles.feeRow}>
+                <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Paid Amount:</Text>
+                <Text style={[styles.feeValue, { color: colors.success || '#10B981' }]}>
+                  ₹{(fee.totalfee - fee.pending_fee)?.toLocaleString() || '0'}
+                </Text>
+              </View>
+
+              <View style={styles.feeRow}>
+                <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Due Amount:</Text>
+                <Text style={[styles.feeValue, { color: colors.error || '#EF4444' }]}>
+                  ₹{fee.pending_fee?.toLocaleString() || '0'}
+                </Text>
+              </View>
+            </View>
+
             <TouchableOpacity
-              key={`fee-item-${fee.id}-${index}`}
-              style={[styles.feeCard, { backgroundColor: colors.surface, borderColor: colors.border }]}
-              onPress={() => handleViewDetails(fee)}
+              style={[styles.viewButton, { borderColor: colors.primary }]}
+              onPress={() => {
+                console.log("View Details pressed for fee:", fee.id);
+                handleViewDetails(fee);
+              }}
             >
-              <View style={styles.feeHeader}>
-                <View style={styles.studentInfo}>
-                  <Text style={[styles.studentName, { color: colors.textPrimary }]}>
-                    {fee.student?.user?.first_name} {fee.student?.user?.last_name}
-                  </Text>
-                  <Text style={[styles.admissionNumber, { color: colors.textSecondary }]}>
-                    #{fee.student?.admission_number}
-                  </Text>
-                </View>
-                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(fee.payment_status || 'pending') + '20' }]}>
-                  <Text style={[styles.statusText, { color: getStatusColor(fee.payment_status || 'pending') }]}>
-                    {fee.payment_status?.toUpperCase() || 'PENDING'}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={styles.feeDetails}>
-                <View style={styles.feeRow}>
-                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Class:</Text>
-                  <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
-                    {fee.student?.standard?.name || 'N/A'} - {fee.student?.section?.name || 'N/A'}
-                  </Text>
-                </View>
-
-                <View style={styles.feeRow}>
-                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Amount:</Text>
-                  <Text style={[styles.feeValue, { color: colors.textPrimary }]}>
-                    ₹{fee.total_amount?.toLocaleString() || '0'}
-                  </Text>
-                </View>
-
-                <View style={styles.feeRow}>
-                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Paid Amount:</Text>
-                  <Text style={[styles.feeValue, { color: colors.success || '#10B981' }]}>
-                    ₹{fee.paid_amount?.toLocaleString() || '0'}
-                  </Text>
-                </View>
-
-                <View style={styles.feeRow}>
-                  <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Due Amount:</Text>
-                  <Text style={[styles.feeValue, { color: colors.error || '#EF4444' }]}>
-                    ₹{fee.due_amount?.toLocaleString() || '0'}
-                  </Text>
-                </View>
-              </View>
-
-              <TouchableOpacity
-                style={[styles.viewButton, { borderColor: colors.primary }]}
-                onPress={() => {
-                  console.log("View Details pressed for fee:", fee.id);
-                  handleViewDetails(fee);
-                }}
-              >
-                <Text style={[styles.viewButtonText, { color: colors.primary }]}>View Details</Text>
-              </TouchableOpacity>
+              <Text style={[styles.viewButtonText, { color: colors.primary }]}>View Details</Text>
             </TouchableOpacity>
-          ))}
+          </TouchableOpacity>
+        ))}
 
         {filteredData.length === 0 && (
           <View style={styles.emptyContainer}>
@@ -380,6 +381,21 @@ export default function StudentFeeListScreen() {
 }
 
 const styles = StyleSheet.create({
+  classInfo: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  amountRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  label: {
+    fontSize: 14,
+  },
+  amount: {
+    fontSize: 16,
+  },
   container: {
     flex: 1,
   },

@@ -60,13 +60,15 @@ export default function StudentFeeScreen() {
   const { data: standards } = useStandards({ branch: selectedBranch, academic_year: selectedAcademicYear });
   const { data: sections } = useSections({ branch: selectedBranch, standard: selectedStandard });
 
+
+
   const classes = ['All', ...(standards?.map(s => s.name) || [])];
   const statuses = ['All', 'Paid', 'Partially Paid', 'Pending'];
 
   // Transform API data to match interface
   const transformedFees: StudentFee[] = useMemo(() => {
     if (!feeSummary) return [];
-    
+
     return feeSummary.map((fee: any) => ({
       id: fee.id?.toString() || Math.random().toString(),
       student: {
@@ -78,18 +80,19 @@ export default function StudentFeeScreen() {
       total_fee: fee.total_fee || fee.total_amount || 0,
       paid_amount: fee.paid_amount || fee.paid_fee || 0,
       balance: (fee.total_fee || 0) - (fee.paid_amount || 0),
-      status: fee.paid_amount >= fee.total_fee ? 'Paid' : 
-              fee.paid_amount > 0 ? 'Partially Paid' : 'Pending',
+      status: fee.paid_amount >= fee.total_fee ? 'Paid' :
+        fee.paid_amount > 0 ? 'Partially Paid' : 'Pending',
       due_date: fee.due_date || new Date().toISOString().split('T')[0],
       last_payment_date: fee.last_payment_date,
       payment_history: fee.payment_history || [],
     }));
   }, [feeSummary]);
 
+  
   const filteredFees = useMemo(() => {
     return transformedFees.filter(fee => {
       const matchesSearch = fee.student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          (fee.student.roll_number && fee.student.roll_number.toLowerCase().includes(searchQuery.toLowerCase()));
+        (fee.student.roll_number && fee.student.roll_number.toLowerCase().includes(searchQuery.toLowerCase()));
       const matchesClass = filterClass === 'All' || fee.class === filterClass;
       const matchesStatus = filterStatus === 'All' || fee.status === filterStatus;
       return matchesSearch && matchesClass && matchesStatus;
@@ -131,7 +134,7 @@ export default function StudentFeeScreen() {
           <Text style={styles.statusText}>{fee.status}</Text>
         </View>
       </View>
-      
+
       <View style={styles.feeDetails}>
         <View style={styles.feeRow}>
           <Text style={[styles.feeLabel, { color: colors.textSecondary }]}>Total Fee:</Text>
@@ -160,7 +163,7 @@ export default function StudentFeeScreen() {
           Last payment: {new Date(fee.last_payment_date).toLocaleDateString()}
         </Text>
       )}
-      
+
       <View style={styles.cardActions}>
         <TouchableOpacity
           style={[styles.actionButton, { borderColor: colors.primary }]}
@@ -190,7 +193,7 @@ export default function StudentFeeScreen() {
               <Text style={[styles.closeButtonText, { color: colors.textPrimary }]}>✕</Text>
             </TouchableOpacity>
           </View>
-          
+
           {selectedStudent && (
             <ScrollView style={styles.modalBody}>
               <View style={styles.detailSection}>
@@ -225,8 +228,8 @@ export default function StudentFeeScreen() {
                   </View>
                   <View style={[styles.summaryRow, styles.balanceRow, { borderTopColor: colors.border }]}>
                     <Text style={[styles.summaryLabel, styles.balanceLabel, { color: colors.textPrimary }]}>Balance</Text>
-                    <Text style={[styles.summaryValue, styles.balanceValue, { 
-                      color: selectedStudent.balance > 0 ? '#EF4444' : '#10B981' 
+                    <Text style={[styles.summaryValue, styles.balanceValue, {
+                      color: selectedStudent.balance > 0 ? '#EF4444' : '#10B981'
                     }]}>
                       {formatCurrency(selectedStudent.balance)}
                     </Text>
@@ -260,17 +263,17 @@ export default function StudentFeeScreen() {
       {/* Search and Local Filters */}
       <View style={[styles.filterContainer, { backgroundColor: colors.surface }]}>
         <TextInput
-          style={[styles.searchInput, { 
-            backgroundColor: colors.background, 
-            borderColor: colors.border, 
-            color: colors.textPrimary 
+          style={[styles.searchInput, {
+            backgroundColor: colors.background,
+            borderColor: colors.border,
+            color: colors.textPrimary
           }]}
           placeholder="Search by student name or roll number..."
           placeholderTextColor={colors.textSecondary}
           value={searchQuery}
           onChangeText={setSearchQuery}
         />
-        
+
         <View style={styles.filterRow}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScrollView}>
             <Text style={[styles.filterLabel, { color: colors.textSecondary }]}>Class:</Text>
@@ -341,7 +344,7 @@ export default function StudentFeeScreen() {
           </TouchableOpacity>
         </View>
       ) : (
-        <ScrollView 
+        <ScrollView
           style={styles.feeList}
           refreshControl={
             <RefreshControl

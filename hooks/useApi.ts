@@ -2,11 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { apiService } from "@/api/apiService";
 import { useQuery } from "@tanstack/react-query"; // Assuming useQuery is from react-query
 
+
+
 export function useAnnouncements(params?: any) {
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hasInitialized, setHasInitialized] = useState(false);
+  
 
   const fetchData = useCallback(async () => {
     try {
@@ -292,7 +295,8 @@ export function useAttendanceDashboard() {
 }
 
 export function useAnnualLeaveQuotas(userId?: number) {
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -321,8 +325,7 @@ export function useAnnualLeaveQuotas(userId?: number) {
 }
 
 export function useAcademicYears(params?: any) {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<any[]>([]); const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchData = useCallback(async () => {
@@ -349,7 +352,7 @@ export function useAcademicYears(params?: any) {
 }
 
 export function useDepartments(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -377,7 +380,7 @@ export function useDepartments(params?: any) {
 }
 
 export function useBranches(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -403,7 +406,7 @@ export function useBranches(params?: any) {
 }
 
 export function useChatMessages(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -431,7 +434,7 @@ export function useChatMessages(params?: any) {
 }
 
 export function useDocuments(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -459,7 +462,7 @@ export function useDocuments(params?: any) {
 }
 
 export function useDeviceReadings(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -487,7 +490,7 @@ export function useDeviceReadings(params?: any) {
 }
 
 export function useAttendance(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -515,7 +518,7 @@ export function useAttendance(params?: any) {
 }
 
 export function useAmenities(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -543,7 +546,7 @@ export function useAmenities(params?: any) {
 }
 
 export function useDesignations(params?: any) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
